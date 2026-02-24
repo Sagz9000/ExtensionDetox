@@ -1,0 +1,986 @@
+{
+  "extension_id": "VPATHAIGmbH.vpathai-sysmlv2-agent",
+  "version": "0.5.37",
+  "display_name": "VPATH AI SysML v2 Agent",
+  "publisher_name": "VPATHAIGmbH",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "94d9013495c237b606db88e5487ed4ea2f73a34f0d95b7bad56f0dd4b3ee0d7f",
+  "install_count": 7,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T15:43:31.23Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 96,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Mass serialization of all environment variables",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 35,
+      "code_snippet": "Object.keys(process.env)",
+      "category": "credential_harvesting",
+      "pattern_id": "env_mass_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 31,
+      "code_snippet": "Buffer.from(d,f)}toString(d,f){return d instanceof Buffer?d.toString(f):new t.TextDecoder(f).decode(d)}asNative(d,f){return f===void 0?d instanceof Buffer?d:Buffer.from(d):d instanceof Buffer?d.slice(",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 35,
+      "code_snippet": "onDidOpenTextDocument(s=>{const l=s.textDocument,o=this._configuration.create(l.uri,l.languageId,l.version,l.text);this._syncedDocuments.set(l.uri,o);const u=Object.freeze({document:o});this._onDidOpe",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading document content and sending over network",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 47,
+      "code_snippet": "Document.getText().substring(e.tokenOffset,e.offset);if(this.fuzzyMatcher.match(i,t)){const s=e.textDocument.positionAt(e.tokenOffset),l=e.position;return{newText:r,range:{start:s,end:l}}}else return}",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_content_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading document content and sending over network",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 206,
+      "code_snippet": "Document.getText({start:{line:o,character:u},end:{line:o,character:u+f}})}})}__name(t,\"decode\"),e.decode=t;function r(n,i){const s=[];for(let l=0;l<n.length;l+=i){const o=n.slice(l,l+i);s.push(o)}retu",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_content_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 35,
+      "code_snippet": "global=\"global\"})(r||(e.UniquenessLevel=r={}));var n;(function(s){s.$import=\"import\",s.$export=\"export\",s.local=\"local\"})(n||(e.MonikerKind=n={}));var i;(function(s){s.method=\"textDocument/moniker\",s.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 197,
+      "code_snippet": "globalInterruptionPeriod=10;function startCancelableOperation(){return lastTick=performance.now(),new cancellation_exports.CancellationTokenSource}__name(startCancelableOperation,\"startCancelableOpera",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 205,
+      "code_snippet": "GlobalScope(e,t);if(i&&i.nameSegment){const s=i.nameSegment.range.start.line+1,l=i.nameSegment.range.start.character+1,o=i.documentUri.with({fragment:`L${s},${l}`});return`[${r}](${o.toString()})`}els",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 206,
+      "code_snippet": "readDirectory(){return[]}},EmptyFileSystem={fileSystemProvider:()=>new EmptyFileSystemProvider},minimalGrammarModule={Grammar:()=>{},LanguageMetaData:()=>({caseInsensitive:!1,fileExtensions:[\".langium",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 206,
+      "code_snippet": "workspace.getConfiguration(n)}):e;this.services.workspace.ConfigurationProvider.initialized(r).catch(n=>console.error(\"Error in ConfigurationProvider initialization:\",n)),this.services.workspace.Works",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28594,
+      "code_snippet": "onDidOpenTextDocument(i=>{const s=i.textDocument,o=this._configuration.create(s.uri,s.languageId,s.version,s.text);this._syncedDocuments.set(s.uri,o);const u=Object.freeze({document:o});this._onDidOpe",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading document content and sending over network",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28717,
+      "code_snippet": "Document.getText().substring(e.tokenOffset,e.offset);if(this.fuzzyMatcher.match(r,t)){const i=e.textDocument.positionAt(e.tokenOffset),s=e.position;return{newText:n,range:{start:i,end:s}}}else return}",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_content_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28594,
+      "code_snippet": "global=\"global\"})(n||(e.UniquenessLevel=n={}));var a;(function(i){i.$import=\"import\",i.$export=\"export\",i.local=\"local\"})(a||(e.MonikerKind=a={}));var r;(function(i){i.method=\"textDocument/moniker\",i.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28708,
+      "code_snippet": "globalScopeCache=new qp(e.shared)}getScope(e){const t=[],n=this.reflection.getReferenceType(e),a=Dt(e.container).precomputedScopes;if(a){let i=e.container;do{const s=a.get(i);s.length>0&&t.push(pe(s).",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28716,
+      "code_snippet": "GlobalScope(e,t);if(r&&r.nameSegment){const i=r.nameSegment.range.start.line+1,s=r.nameSegment.range.start.character+1,o=r.documentUri.with({fragment:`L${i},${s}`});return`[${n}](${o.toString()})`}els",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28717,
+      "code_snippet": "readDirectory(){return[]}},ay={fileSystemProvider:()=>new $1},Uq={Grammar:()=>{},LanguageMetaData:()=>({caseInsensitive:!1,fileExtensions:[\".langium\"],languageId:\"langium\"})},Bq={AstReflection:()=>new",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28717,
+      "code_snippet": "workspace.getConfiguration(a)}):e;this.services.workspace.ConfigurationProvider.initialized(n).catch(a=>console.error(\"Error in ConfigurationProvider initialization:\",a)),this.services.workspace.Works",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "btoa(d);}function T$(c){const w3=bC;let d=c[w3(0x326)](/-/g,'+')[w3(0x326)](/_/g,'/'),g='='['repeat']((0x4-d['length']%0x4)%0x4);return Af(d+g);}function j$(c){const w4=bC;return Mf(c)[w4(0x326)](/\\+/",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "globalRegistry','closeSSEStream','removeCatch','Completed','Connection\\x20closed','validateFormats','Failed\\x20to\\x20list\\x20tasks:\\x20','at\\x20most','_experimental','Invalid\\x20option:\\x20expected\\x2",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/webview/dist/assets/index.js",
+      "line_number": 40,
+      "code_snippet": "GLOBAL_HOOK__<\"u\"){var ji=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(!ji.isDisabled&&ji.supportsFiber)try{Zo=ji.inject(Hy),Rn=ji}catch{}}ln.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=$y;ln.createPortal",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/webview/dist/assets/index.js",
+      "line_number": 57,
+      "code_snippet": "global\",\"goto\",\"if\",\"implements\",\"instanceof\",\"insteadof\",\"int\",\"integer\",\"interface\",\"isset\",\"iterable\",\"list\",\"match|0\",\"mixed\",\"new\",\"never\",\"object\",\"or\",\"private\",\"protected\",\"public\",\"readonly\",",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/webview/dist/assets/index.js",
+      "line_number": 37,
+      "code_snippet": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0}),Gu=an(Rh),Mh=ye({},Ni,{touches:0,targetTouches:0,changedTouches:0,altKey:0,metaKey:0,ctrlKey:0,shif",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/webview/dist/assets/index.js",
+      "line_number": 40,
+      "code_snippet": "display=\"none\"):(a=d.stateNode,s=d.memoizedProps.style,l=s!=null&&s.hasOwnProperty(\"display\")?s.display:null,a.style.display=mf(\"display\",l))}catch(_){Ee(e,e.return,_)}}}else if(d.tag===6){if(c===null",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "LIFECYCLE_SCRIPT",
+      "description": "Extension has 'postinstall' script: cd gemini-cli-fork && npm install",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'new Function(' pattern",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 4,
+      "code_snippet": "|| ${as} === \"boolean\" || ${ap} === null`)[fO(0x57a)](at,(0x0,I['_'])`[${ap}]`);}}}function a5({gen:af,parentData:ai,parentDataProperty:aj},an){const fP=fG;af['if']((0x0,I['_'])`${ai} !== undefined`,("
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "HIGH_ENTROPY_BLOB",
+      "description": "File 'extension/webview/dist/vpath-logo.png' has high entropy (8.00/8.0) \u2014 possible encrypted shellcode or packed payload (105308 bytes)",
+      "file_path": "extension/webview/dist/vpath-logo.png"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "obfuscated_eval",
+      "description": "Obfuscated eval() / Function() execution",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 47,
+      "code_snippet": "Function(\"return",
+      "category": "builtin",
+      "pattern_id": "obfuscated_eval"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 197,
+      "code_snippet": "readFile(e);return this.createAsync(e,r,t)}fromTextDocument(e,t,r){return t=t??URI.parse(e.uri),cancellation_exports.CancellationToken.is(r)?this.createAsync(t,e,r):this.create(t,e,r)}fromString(e,t,r",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 206,
+      "code_snippet": "readFile(){throw new Error(\"No file system is available.\")}async readDirectory(){return[]}},EmptyFileSystem={fileSystemProvider:()=>new EmptyFileSystemProvider},minimalGrammarModule={Grammar:()=>{},La",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 206,
+      "code_snippet": "Request(createRequestHandler((r,n,i,s)=>{var l,o;return(o=(l=r.lsp)===null||l===void 0?void 0:l.RenameProvider)===null||o===void 0?void 0:o.rename(n,i,s)},t,DocumentState.IndexedReferences)),e.onPrepa",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 31,
+      "code_snippet": ".postMessage(S),Promise.resolve()}catch(v){return this.handleError(v,S),Promise.reject(v)}}handleError(S,v){this.errorCount++,this.fireError(S,v,this.errorCount)}end(){}};e.PortMessageWriter=y;var g=c",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 35,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 36,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 36,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 36,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 47,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 47,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 47,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 196,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 196,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 196,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 196,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 196,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 205,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 206,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 206,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": 206,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "obfuscated_eval",
+      "description": "Obfuscated eval() / Function() execution",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28605,
+      "code_snippet": "Function(\"return",
+      "category": "builtin",
+      "pattern_id": "obfuscated_eval"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28708,
+      "code_snippet": "readFile(e);return this.createAsync(e,n,t)}fromTextDocument(e,t,n){return t=t??ze.parse(e.uri),be.CancellationToken.is(n)?this.createAsync(t,e,n):this.create(t,e,n)}fromString(e,t,n){return be.Cancell",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28717,
+      "code_snippet": "readFile(){throw new Error(\"No file system is available.\")}async readDirectory(){return[]}},ay={fileSystemProvider:()=>new $1},Uq={Grammar:()=>{},LanguageMetaData:()=>({caseInsensitive:!1,fileExtensio",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28594,
+      "code_snippet": ".postMessage(u),Promise.resolve()}catch(l){return this.handleError(l,u),Promise.reject(l)}}handleError(u,l){this.errorCount++,this.fireError(u,l,this.errorCount)}end(){}};e.BrowserMessageWriter=s;func",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28594,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28594,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28594,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28605,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28605,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28605,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28707,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28707,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28707,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28707,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28707,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28708,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28716,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28716,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": 28716,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/webview/dist/assets/index.js",
+      "line_number": 40,
+      "code_snippet": ".postMessage(r)},onMessage:r=>{const i=o=>{const l=o.data;r(l)};return window.addEventListener(\"message\",i),()=>window.removeEventListener(\"message\",i)},getState:()=>e.getState(),setState:r=>e.setStat",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/webview/dist/assets/index.js",
+      "line_number": 60,
+      "code_snippet": ".postMessage({type:\"ready\"})),()=>window.removeEventListener(\"message\",d)},[]);const u=d=>{const f=d.trim();return f.startsWith(\"AIzaSy\")&&f.length===39},c=d=>{d.preventDefault();const f=r.trim();if(f",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "WASM-based mining (high CPU usage)",
+      "file_path": "extension/webview/dist/assets/index.js",
+      "line_number": 40,
+      "code_snippet": ".wasMultiple;i._wrapperState.wasMultiple=!!o.multiple;var p=o.value;p!=null?or(i,!!o.multiple,p,!1):f!==!!o.multiple&&(o.defaultValue!=null?or(i,!!o.multiple,o.defaultValue,!0):or(i,!!o.multiple,o.mul",
+      "category": "crypto_mining",
+      "pattern_id": "wasm_mining"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Sandbox environment detection",
+      "file_path": "extension/webview/dist/assets/index.js",
+      "line_number": 40,
+      "code_snippet": "sandbox",
+      "category": "persistence_evasion",
+      "pattern_id": "sandbox_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/webview/dist/assets/index.js",
+      "line_number": 55,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'vpathaigmbh' does not match GitHub org 'vpathai-com' in repo 'https://github.com/vpathai-com/vpath_vscode_sysmlv2_agent.git'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x0a\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hex_obfuscation",
+      "description": "Heavy hex string obfuscation",
+      "file_path": "extension/dist/mcp/proxy/index.js",
+      "line_number": 7,
+      "code_snippet": "\\x0a\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20\\x20",
+      "category": "builtin",
+      "pattern_id": "hex_obfuscation"
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "INFO",
+      "check_name": "LARGE_SOURCE_FILE",
+      "description": "Source file extension/dist/server/main-node.bundle.js is 2206KB \u2014 skipping pattern scan, needs AI chunking",
+      "file_path": "extension/dist/server/main-node.bundle.js",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "INFO",
+      "check_name": "LARGE_SOURCE_FILE",
+      "description": "Source file extension/dist/a2a-server/server.js is 10021KB \u2014 skipping pattern scan, needs AI chunking",
+      "file_path": "extension/dist/a2a-server/server.js",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "INFO",
+      "check_name": "LARGE_SOURCE_FILE",
+      "description": "Source file extension/dist/extension.js is 9409KB \u2014 skipping pattern scan, needs AI chunking",
+      "file_path": "extension/dist/extension.js",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "INFO",
+      "check_name": "LARGE_SOURCE_FILE",
+      "description": "Source file extension/dist/server/main.bundle.js is 3231KB \u2014 skipping pattern scan, needs AI chunking",
+      "file_path": "extension/dist/server/main.bundle.js",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "INFO",
+      "check_name": "LARGE_SOURCE_FILE",
+      "description": "Source file extension/dist/web/extension.js is 6953KB \u2014 skipping pattern scan, needs AI chunking",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "23 CRITICAL findings",
+    "48 HIGH findings",
+    "Composite risk 0.58 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T23:14:32.051174+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/server/main-node.bundle.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Code attempts to serialize and exfiltrate environment variables, which may include sensitive credentials.\",\n      \"code_reference\": \"line 35\",\n      \"line_hint\": 35\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Base64 encoding of data followed by network transmission, indicating potential data exfiltration activities.\",\n      \"code_reference\": \"line 31\",\n      \"line_hint\": 31\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"command_execution\",\n      \"description\": \"Use of `require('child_process')` which can be used for arbitrary command execution, posing a significant risk.\",\n      \"code_reference\": \"line 35\",\n      \"line_hint\": 35\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"persistence_evasion\",\n      \"description\": \"Multiple attempts to set file hidden attributes, potentially indicating an attempt to hide malicious files or activities.\",\n      \"code_reference\": \"lines 36,47,196\",\n      \"line_hint\": 36\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"data_access\",\n      \"description\": \"Attempts to read files which may include sensitive information, such as credential stores or configuration files.\",\n      \"code_reference\": \"lines 197,206\",\n      \"line_hint\": 197\n    }\n  ],\n  \"summary\": \"The extension exhibits multiple critical and high-risk behaviors, including credential harvesting, potential data exfiltration, and use of system manipulation techniques. The inclusion of environment variable serialization and network transmission of base64-encoded data raises significant security concerns. The use of `child_process` and file system operations further exacerbates the risk profile, indicating potential malicious intent or severe security mispractices.\"\n}\n```\n\n=== extension/dist/server/main-node.bundle.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code is part of a standard module system transformation and type-checking utilities. It does not exhibit any malicious or suspicious behavior, consisting solely of benign type-checking functions and module system handling. No critical-risk, high-risk, or medium-risk indicators were identified. The code appears to be part of a legitimate VS Code extension's setup, likely for language server or JSON-RPC functionality.\"\n}\n```\n\n=== extension/dist/server/main-node.bundle.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a JSON-RPC implementation, defining error handling and request types. No malicious or suspicious behavior was detected. The functionality aligns with typical VS Code extension behavior, and no critical-risk indicators were present.\"\n}\n```\n\n=== extension/dist/server/main-node.bundle.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of an extension's message type definitions, with no evidence of malicious behavior. It defines several classes extending a base class and sets type-specific parameters, which is consistent with standard extension functionality.\"\n}\n```\n\n=== extension/dist/server/main-node.bundle.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code is part of a JSON-RPC implementation, defining notification types and message validation logic. It does not exhibit any suspicious or malicious behavior, aligning with expected functionality for a messaging system within a VS Code extension. No critical-risk, high-risk, or medium-risk indicators were identified.\"\n}\n```\n\n=== extension/dist/server/main.bundle.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Attempt to read credential or key files detected.\",\n      \"code_reference\": \"line 28708\",\n      \"line_hint\": 28708\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Attempt to read credential or key files detected.\",\n      \"code_reference\": \"line 28717\",\n      \"line_hint\": 28717\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"data_exfiltration\",\n      \"description\": \"Pattern suggesting data exfiltration detected.\",\n      \"code_reference\": \"line 28594\",\n      \"line_hint\": 28594\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"persistence_evasion\",\n      \"description\": \"Setting file hidden attribute detected, potentially for persistence or evasion.\",\n      \"code_reference\": \"line 28594\",\n      \"line_hint\": 28594\n    }\n  ],\n  \"summary\": \"The code exhibits multiple suspicious patterns including attempts to read credential files, potential data exfiltration, and file system manipulation that sets hidden attributes. These activities are inconsistent with typical benign VS Code extension behavior and may indicate malicious intent. The findings suggest a high risk of potential abuse, though the exact purpose and full scope of these activities remain unclear.\"\n}\n```\n\n=== extension/dist/server/main.bundle.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a system modeling or specification language, defining abstract actions and their relationships. There are no signs of malicious behavior, secrets, or suspicious network activities. The code is focused on system modeling and does not exhibit any characteristics of malware or supply-chain attacks.\"\n}\n```\n\n=== extension/dist/server/main.bundle.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a domain-specific language or modeling tool, defining abstract actions and their relationships. There are no signs of malicious behavior, hardcoded secrets, or suspicious network activities. The code aligns with its likely purpose as a process modeling or action definition component, with no critical risks identified.\"\n}\n```\n\n=== extension/dist/server/main.bundle.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a domain-specific language or configuration file defining state transitions and control actions. It does not exhibit any malicious or suspicious patterns, such as secret leakage, credential harvesting, or network exfiltration. The code is likely benign and related to a legitimate state management or process control feature.\"\n}\n```\n\n=== extension/dist/server/main.bundle.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a domain-specific language or framework for defining actions and transitions, possibly within a state machine or workflow system. No critical, high-risk, or medium-risk indicators were identified. The code lacks any signs of malicious behavior, credential handling, or suspicious network activity. The functionality appears to be aligned with potential legitimate use cases within a VS Code extension context.\"\n}\n```"
+}
