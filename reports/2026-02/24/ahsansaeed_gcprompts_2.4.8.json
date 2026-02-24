@@ -1,0 +1,79 @@
+{
+  "extension_id": "ahsansaeed.gcprompts",
+  "version": "2.4.8",
+  "display_name": "Copilot Prompts",
+  "publisher_name": "ahsansaeed",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "3a4afa612b709e628a35da9b16a0dab603d704f463bfe0145c775276a236e3dc",
+  "install_count": 96,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T14:43:46.77Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.8,
+  "static_analysis_score": 0.8,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5925,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 4,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_token_theft",
+      "description": "VS Code authentication token / credential theft",
+      "file_path": "extension/out/extension.js",
+      "line_number": 215,
+      "code_snippet": "vscode.authentication.getSession",
+      "category": "builtin",
+      "pattern_id": "vscode_token_theft"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Accessing VSCode authentication session (GitHub/Azure tokens)",
+      "file_path": "extension/out/extension.js",
+      "line_number": 215,
+      "code_snippet": "authentication.getSession(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "auth_session_access"
+    }
+  ],
+  "high_findings": [],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'ahsansaeed' does not match GitHub org 'ahsancloudcode' in repo 'https://github.com/ahsancloudcode/GitHub-Copilot-Prompts-Viewer'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "Composite risk 0.46 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T15:05:33.462751+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Secrets & Credential Leakage\",\n      \"description\": \"Access to VS Code authentication sessions, potentially exposing GitHub or Azure tokens.\",\n      \"code_reference\": \"line 215\",\n      \"line_hint\": 215\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"Capability Disconnect\",\n      \"description\": \"Extension advertises as a GitHub Copilot prompt viewer but accesses authentication sessions, which is beyond its stated purpose.\",\n      \"code_reference\": \"DISCONNECT CHECK\",\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension accesses VS Code authentication sessions, which is unnecessary for its advertised functionality of viewing GitHub Copilot prompts. This indicates potential credential harvesting or misuse.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNUSUAL_FILE_SYSTEM_ACCESS\",\n      \"description\": \"The extension accesses the VS Code data directory at `~/.config/Code/User`, which may be unexpected for a Copilot prompts viewer.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": 56\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNEXPECTED_NETWORK_ACTIVITY\",\n      \"description\": \"The extension opens an external URL to a GitHub repository, which may be unnecessary for a Copilot prompts viewer and could indicate a capability disconnect.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": 67\n    }\n  ],\n  \"summary\": \"The extension exhibits some unusual\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"API_SERVER\",\n      \"description\": \"The extension starts an API server when JSON files are detected, which could indicate potential unauthorized access or data exfiltration.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": 20\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"GITHUB_AUTH\",\n      \"description\": \"Requests GitHub user email permissions, which could expose sensitive user information if not handled properly.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": 50\n    }\n  ],\n  \"summary\": \"The extension exhibits some concerning patterns, such as starting an API server and requesting GitHub authentication with email permissions. While not overtly malicious, these actions could pose risks if not properly managed. Further investigation is recommended to ensure data handling and permissions are secure.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"INFORMATION_COLLECTING\",\n      \"description\": \"The extension collects system information such as OS username, computer name, and VS Code data paths, which could be used for system fingerprinting.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"Lines 1-20\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"FILE_SYSTEM_INTERACTION\",\n      \"description\": \"The extension recursively scans files in the VS Code data path, potentially accessing sensitive information if the scope is not properly constrained.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"Lines 30-50\"\n    }\n  ],\n  \"summary\": \"The extension exhibits moderate-risk behavior by collecting system information and performing file system operations. While not overtly malicious, these actions could indicate potential information-gathering activities. The confidence level is moderate due to the lack of clear malicious intent but the presence of concerning patterns.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension focused on counting and displaying interactions, likely related to AI or language model usage. No critical, high-risk, or medium-risk indicators were detected. The code aligns with its expected functionality without signs of malicious behavior.\"\n}\n```"
+}
