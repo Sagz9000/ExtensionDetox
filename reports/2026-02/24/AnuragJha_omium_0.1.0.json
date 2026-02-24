@@ -1,0 +1,80 @@
+{
+  "extension_id": "AnuragJha.omium",
+  "version": "0.1.0",
+  "display_name": "Omium",
+  "publisher_name": "AnuragJha",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "b806455599bb8b7616dd69713017f61ce7fdf9a90c51bd5a8962e604a85294b6",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T07:56:53.573Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.4,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5025,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 4,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/out/extension.js",
+      "line_number": 107,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/out/extension.js",
+      "line_number": 177,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/out/extension.js",
+      "line_number": 101,
+      "code_snippet": "workspace.getConfiguration('omium').get('apiBaseUrl') || 'http",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'anuragjha' does not match GitHub org 'omium' in repo 'https://github.com/omium/omium-ide'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T09:10:49.714297+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/4) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Secrets & Credential Leakage\",\n      \"description\": \"Access to VS Code SecretStorage API which could expose sensitive user credentials.\",\n      \"code_reference\": \"line 107 and line 177\",\n      \"line_hint\": 107\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Capability Disconnect\",\n      \"description\": \"Extension reads VS Code configuration and sends it over network, which is not explicitly mentioned in the advertised function.\",\n      \"code_reference\": \"line 101\",\n      \"line_hint\": 101\n    }\n  ],\n  \"summary\": \"The extension exhibits critical-risk behavior by accessing VS Code's SecretStorage API and sending configuration data over the network. While its core functionality aligns with its description, the methods used to handle secrets and configuration data introduce significant risks. The capability to read and transmit configuration data without clear user consent or justification raises concerns about potential misuse.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/4) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"SECRET_STORAGE\",\n      \"description\": \"The extension stores access and refresh tokens in the VS Code secrets storage, which is a secure practice, but the code does not appear to validate the authenticity of the API response or implement proper error handling for token storage.\",\n      \"code_reference\": \"line 15-17\",\n      \"line_hint\": 15\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"NETWORK_CALLS\",\n      \"description\": \"The extension makes network calls to a hardcoded API base URL (`https://api.omium.ai`) without validating the certificate or using HTTPS properly, which could expose sensitive data over unsecured networks.\",\n      \"code_reference\": \"line 26\",\n      \"line_hint\": 26\n    }\n  ],\n  \"summary\": \"The extension exhibits some security best practices, such as storing tokens in the secrets storage and handling authentication. However, there are areas for improvement in terms of secure network communication and error handling, which could expose sensitive data or lead to unexpected behavior.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/4) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be a standard VS Code extension handling HTTP requests, token refresh, and applying code edits based on a diff. No suspicious or malicious behavior was detected. The code uses proper secret handling with context.secrets and performs network requests to expected endpoints. All operations are within the scope of a code-editing extension.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/4) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension handling file content and patches. No malicious or suspicious activities were detected. Functions are focused on file manipulation and path resolution using standard VS Code APIs. No critical-risk, high-risk, or medium-risk indicators were found. The code aligns with expected behavior for a code-editing-related extension.\"\n}\n```"
+}
