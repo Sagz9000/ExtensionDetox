@@ -1,0 +1,81 @@
+{
+  "extension_id": "doromiert.zenos-nix-extension-support",
+  "version": "0.0.6",
+  "display_name": "ZenOS nix extension support",
+  "publisher_name": "doromiert",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "cfe879b43585b6a047d59f86f7109af9788028ffa8eb3bb73aeca074cc58d79a",
+  "install_count": 4,
+  "average_rating": 0.0,
+  "published_date": "2026-02-22T20:08:29.81Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.7,
+  "static_analysis_score": 0.45999999999999996,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.4725,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 5,
+  "critical_findings": [],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/src/extension.ts",
+      "line_number": 2,
+      "code_snippet": "import * as cp from \"child_process\";"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 6,
+      "code_snippet": "const cp = require(\"child_process\");"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 6,
+      "code_snippet": "const cp = require(\"child_process\");"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 6,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [
+    {
+      "severity": "INFO",
+      "check_name": "EXTENSION_DEPENDENCIES",
+      "description": "Extension declares 1 extension dependencies: ['bbenoist.Nix']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": false,
+  "escalation_reasons": [],
+  "report_timestamp": "2026-02-24T09:39:46.282406+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.7,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"COMMAND_EXECUTION\",\n      \"description\": \"The extension imports the 'child_process' module, which can be used for arbitrary command execution. This poses a high risk as it could potentially be exploited for malicious activities such as executing shell commands.\",\n      \"code_reference\": \"const cp = require('child_process');\",\n      \"line_hint\": 3\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension's advertised function as a nix language extension does not proportionally justify the use of 'child_process'. This could indicate a potential capability disconnect, though it may also be a legitimate but risky feature.\",\n      \"code_reference\": \"extension's purpose and the use of child_process\",\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits a high-risk indicator by importing the 'child_process' module, which could enable arbitrary command execution. While the extension's primary functionality appears to align with its advertised purpose of supporting ZenOS's nix extensions, the inclusion of 'child_process' raises concerns about potential misuse. The capability disconnect between the module's purpose and the use of 'child_process' further warrants attention.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be a standard VS Code extension completion provider. It handles different code context scenarios and provides code suggestions. No malicious or suspicious patterns were detected. The functionality is proportional to its advertised purpose as a code completion tool.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a document formatting provider for a VS Code extension focused on Zen-nix syntax. It processes variable declarations and handles formatting using placeholders. No malicious or suspicious patterns were identified. The operations are confined to the extension's expected functionality, with no evidence of unauthorized access, data exfiltration, or persistence mechanisms.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"OBFUSCATION/ANOMALY\",\n      \"description\": \"Use of complex masking and placeholder generation which may indicate an attempt to obscure code behavior.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 4/5)\",\n      \"line_hint\": \"Lines 1-30\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"PROCESS EXECUTION\",\n      \"description\": \"Spawn of external process `nixfmt` which could potentially be misused for arbitrary command execution if not properly sanitized.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 4/5)\",\n      \"line_hint\": \"Line 40\"\n    }\n  ],\n  \"summary\": \"The code exhibits signs of potential obfuscation and external process execution which may indicate suspicious behavior. While not immediately critical, further investigation is recommended to ensure the process execution is properly controlled\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension for formatting Nix files. It contains standard VS Code API usage, process spawning for nixfmt, and static heuristic analysis. No critical, high-risk, or medium-risk indicators were found. The code's functionality aligns with its expected purpose.\"\n}\n```"
+}
