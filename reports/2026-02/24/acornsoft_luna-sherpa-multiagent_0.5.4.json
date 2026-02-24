@@ -1,0 +1,113 @@
+{
+  "extension_id": "acornsoft.luna-sherpa-multiagent",
+  "version": "0.5.4",
+  "display_name": "Luna Sherpa Multi-Agent",
+  "publisher_name": "acornsoft",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "2df6209dcaebf635b6fc036b02ba6cc29f1909e0f2d4025c30feae7776e9b97c",
+  "install_count": 4,
+  "average_rating": 0.0,
+  "published_date": "2026-02-21T14:41:30.093Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.7,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6074999999999999,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 8,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Webview panel with scripts enabled (potential C2 channel)",
+      "file_path": "extension/out/src/webviewManager.js",
+      "line_number": 8,
+      "code_snippet": "createWebviewPanel('xaiMultiAgent', title, viewColumn, { enableScripts: true",
+      "category": "vscode_api_abuse",
+      "pattern_id": "hidden_webview"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Webview panel with scripts enabled (potential C2 channel)",
+      "file_path": "extension/out/src/extension.js",
+      "line_number": 97,
+      "code_snippet": "createWebviewPanel('lunaTaskDecomposition', 'Luna - Task Decomposition & Artifact Generation', vscode.ViewColumn.One, { enableScripts: true",
+      "category": "vscode_api_abuse",
+      "pattern_id": "hidden_webview"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/out/src/configurationManager.js",
+      "line_number": 12,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    }
+  ],
+  "high_findings": [],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/out/src/extension.js",
+      "line_number": 97,
+      "code_snippet": "const panel = vscode.window.createWebviewPanel('lunaTaskDecomposition', 'Luna - Task Decomposition & Artifact Generation', vscode.ViewColumn.One, { enableScripts: true });"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'writeFile' pattern",
+      "file_path": "extension/out/src/extension.js",
+      "line_number": 1535,
+      "code_snippet": "await vscode.workspace.fs.writeFile(fileUri, Buffer.from(content, 'utf8'));"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/out/src/webviewManager.js",
+      "line_number": 8,
+      "code_snippet": "return vscode.window.createWebviewPanel('xaiMultiAgent', title, viewColumn, { enableScripts: true, retainContextWhenHidden: true });"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/out/src/webviewManager.js",
+      "line_number": 11,
+      "code_snippet": "return vscode.window.createWebviewPanel('xaiVideoAgent', title, viewColumn, {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/out/src/webviewManager.js",
+      "line_number": 18,
+      "code_snippet": "return vscode.window.createWebviewPanel('xaiVoiceAgent', title, viewColumn, {"
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "Composite risk 0.47 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T04:56:15.930086+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "```json\n{\n  \"risk_score\": 0.7,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"Webview panels created with `enableScripts: true`, which could enable arbitrary script execution. This capability doesn't align with typical extension functions like theme or formatting.\",\n      \"code_reference\": \"extension/out/src/webviewManager.js\",\n      \"line_hint\": 8\n    }\n  ],\n  \"summary\": \"The extension enables scripts in webview panels, which could allow arbitrary script execution. This capability doesn't align with typical extension functions, raising suspicions about its true purpose.\"\n}\n```\n\n=== extension/out/src/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.6,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"WEAKENED_SECURITY\",\n      \"description\": \"Webview panel created with scripts enabled, which could potentially allow execution of arbitrary JavaScript code, serving as a potential C2 channel.\",\n      \"code_reference\": \"line 97\",\n      \"line_hint\": 97\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"Extension's actual code capabilities (creation of webview panels with scripts enabled) may not be fully proportional to its advertised function as a macro flow tool and AI Sherpa, potentially indicating a capability disconnect.\",\n      \"code_reference\": \"line 97\",\n      \"line_hint\": 97\n    }\n  ],\n  \"summary\": \"The extension creates a webview panel with scripts enabled, which could potentially be exploited for malicious purposes. Additionally, the extension's capabilities, particularly the webview functionality, may not be fully aligned with its advertised purpose, raising concerns about potential misuse.\"\n}\n```\n\n=== extension/out/src/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNUSUAL_FILESYSTEM_ACTIVITY\",\n      \"description\": \"The extension modifies files in the workspace folder, specifically updating '.github/agents/Luna.agent.md'. This could potentially alter project configurations if not properly controlled.\",\n      \"code_reference\": \"extension/out/src/extension.js\",\n      \"line_hint\": \"Lines 15-20\"\n    }\n  ],\n  \"summary\": \"The extension exhibits moderate suspicion due to file modification activities within the workspace directory. While not inherently malicious, the behavior could pose risks if the file updates are not intended or properly secured.\"\n}\n```\n\n=== extension/out/src/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"WEAK_AUTHORIZATION\",\n      \"description\": \"Webview panel created with 'enableScripts: true' without proper content security restrictions, potentially allowing script execution from untrusted sources.\",\n      \"code_reference\": \"extension/out/src/extension.js\",\n      \"line_hint\": 10\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNSAFE_DYNAMIC_CONTENT\",\n      \"description\": \"Dynamic HTML content generated via 'getTaskDecompositionHtml()' may expose potential XSS risks if user input is not properly sanitized.\",\n      \"code_reference\": \"extension/out/src/extension.js\",\n      \"line_hint\": 12\n    }\n  ],\n  \"summary\": \"The extension exhibits moderate security concerns, primarily around webview content safety and potential input sanitization issues. While not overtly malicious, these patterns could pose risks if exploited.\"\n}\n```\n\n=== extension/out/src/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code provided appears to be part of a VS Code extension that handles file copying and directory setup for a Luna workspace. It includes functionality to check for existing files, prompt the user for confirmation, and copy files if necessary. No critical-risk, high-risk, or medium-risk indicators were identified. The operations are confined to file system interactions within a specific directory and do not exhibit any signs of malicious or suspicious behavior. The code's functionality appears to be proportional to its stated purpose.\"\n}\n```\n\n=== extension/out/src/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"Secrets & Credential Leakage\",\n      \"description\": \"Potential storage of API keys without encryption. The API key is stored in plain text using `configManager.storeApiKey(apiKey)`, which could be a security risk if not properly secured.\",\n      \"code_reference\": \"extension/out/src/extension.js\",\n      \"line_hint\": \"line 35-40\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"Info-Stealer Patterns\",\n      \"description\": \"Access to code context from the active text editor and sending it along with the user's query. This could potentially expose sensitive information if not handled properly.\",\n      \"code_reference\": \"extension/out/src/extension.js\",\n      \"line_hint\": \"line 55-65\"\n    }\n  ],\n  \"summary\": \"The code exhibits potential security risks related to handling and storing API keys, as well as accessing and transmitting code context which could expose sensitive information. While no critical vulnerabilities are immediately apparent, there are areas that could be improved to enhance security.\"\n}\n```"
+}
