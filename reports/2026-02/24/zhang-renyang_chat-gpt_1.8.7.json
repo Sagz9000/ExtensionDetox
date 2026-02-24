@@ -1,0 +1,504 @@
+{
+  "extension_id": "zhang-renyang.chat-gpt",
+  "version": "1.8.7",
+  "display_name": "ChatGPT",
+  "publisher_name": "zhang-renyang",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "dde8137d6715c0138e9576a401ad221e00c653e38fb2270dc8e125579937c9c6",
+  "install_count": 944508,
+  "average_rating": 4.2550335,
+  "published_date": "2022-12-30T02:03:03.913+00:00",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.35000000000000003,
+  "composite_score": 0.6174999999999999,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 46,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Mass serialization of all environment variables",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Object.keys(process.env)",
+      "category": "credential_harvesting",
+      "pattern_id": "env_mass_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Browser cookie exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "document.cookie=r.join(\"; \")},read:function(e){const t=document.cookie.match(new RegExp(\"(^|;\\\\s*)(\"+e+\")=([^;]*)\"));return t?decodeURIComponent(t[3]):null},remove:function(e){this.write(e,\"\",Date.now",
+      "category": "infostealer_behavior",
+      "pattern_id": "browser_cookie_theft"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Buffer.from(this._streams[n])]),\"string\"==typeof this._streams[n]&&this._streams[n].substring(2,t.length+2)===t||(e=Buffer.concat([e,Buffer.from(f.LINE_BREAK)])));return Buffer.concat([e,Buffer.from(t",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "readFileSync(e,{encoding:\"utf8\"});t&&this.updateGlobalPrompts(t)}}))}async appendPredefinedPrompts(){const e=this.getPredefinedPromptsPath();if(b.existsSync(e))try{const t=JSON.parse(b.readFileSync(e)",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading document content and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "document.getText(s.window.activeTextEditor?.selection),i=n.document.getText(),r=o||i;t.sendChatGPTRequest(e,!0,3,!1,r,a)}}await(0,l.i18nInit)({lng:n}),await t.resetCurrentConversation()}},2247:functio",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_content_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "globalName:null}).Provider={$$typeof:s,_context:e},e.Consumer=e},t.createElement=_,t.createFactory=function(e){var t=_.bind(null,e);return t.type=e,t},t.createRef=function(){return{current:null}},t.fo",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "display:none\" id=\"'),e.push(t.segmentPrefix),t=a.toString(16),e.push(t),e.push('\">');case 3:return e.push('<math aria-hidden=\"true\" style=\"display:none\" id=\"'),e.push(t.segmentPrefix),t=a.toString(16)",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "workspace.getConfiguration(\"\").update(c.default.model,e.value,!0)}async changeLanguage(e){await s.workspace.getConfiguration(\"\").update(c.default.lang,e,!0);const t=this.context.globalState.get(\"promp",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/media/highlight.js",
+      "line_number": 946,
+      "code_snippet": "globalenv Im interactive invisible is.array is.atomic is.call is.character is.complex is.double is.environment is.expression is.finite is.function is.infinite is.integer is.language is.list is.logical",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/media/markdown-it.js",
+      "line_number": 2,
+      "code_snippet": "globalThis?globalThis:e||self).markdownit=r()}(this,(function(){\"use strict\";function e(e){if(e.__esModule)return e;var r=Object.defineProperty({},\"__esModule\",{value:!0});return Object.keys(e).forEac",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/media/markedmin.js",
+      "line_number": 6,
+      "code_snippet": "globalThis?globalThis:e||self).marked={})}(this,function(r){\"use strict\";function i(e,t){for(var u=0;u<t.length;u++){var n=t[u];n.enumerable=n.enumerable||!1,n.configurable=!0,\"value\"in n&&(n.writable",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 25,
+      "code_snippet": "glob\":\"^3.2.12\",\"glob-parent\":\"^6.0.2\",\"is-glob\":\"^4.0.3\",lilconfig:\"^2.0.6\",micromatch:\"^4.0.5\",\"normalize-path\":\"^3.0.0\",\"object-hash\":\"^3.0.0\",picocolors:\"^1.0.0\",postcss:\"^8.0.9\",\"postcss-import\":",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 29,
+      "code_snippet": "glob?m.env.ROLLUP_WATCH===\"true\"?[{type:\"dependency\",file:r.base}]:[{type:\"dir-dependency\",dir:r.base,glob:r.glob}]:[{type:\"dependency\",file:r.base}]}var _d=_(()=>{l()});function no(r){return r.conten",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 25,
+      "code_snippet": "width:0;border-style:solid;border-color:theme('borderColor.DEFAULT', currentColor)}::after,::before{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-f",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "readFileSync(e,{encoding:\"utf8\"});t&&this.updateGlobalPrompts(t)}}))}async appendPredefinedPrompts(){const e=this.getPredefinedPromptsPath();if(b.existsSync(e))try{const t=JSON.parse(b.readFileSync(e)",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "readFileSync(e,{encoding:\"utf8\"});t&&this.updateGlobalPrompts(t)}}))}async appendPredefinedPrompts(){const e=this.getPredefinedPromptsPath();if(b.existsSync(e))try{const t=JSON.parse(b.readFileSync(e)",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "request(a):r.request(a),this.getLength(function(e,a){if(e&&\"Unknown stream\"!==e)this._error(e);else if(a&&n.setHeader(\"Content-Length\",a),this.pipe(n),t){var o,i=function(e,a){return n.removeListener(",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"post\"};return\"string\"==typeof e?(e=c(e),a=m({port:e.port,path:e.pathname,host:e.hostname,protocol:e.protocol},o)):(a=m(e,o)).port||(a.port=\"https:\"==a.protocol?443:80),a.headers=this.getHeader",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "webview_phishing",
+      "description": "WebView panel combined with external HTTP (potential phishing overlay)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "webview.html=await this.getHtml(e.webview),e.onDidChangeVisibility((()=>{e.visible&&this.sendMessage({type:\"focusInput\"})})),e.webview.onDidReceiveMessage((async e=>{switch(e.type){case\"askChatGPT\":th",
+      "category": "builtin",
+      "pattern_id": "webview_phishing"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Known miner executable reference",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "claymore",
+      "category": "crypto_mining",
+      "pattern_id": "xmrig_ref"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/markdown-it.js",
+      "line_number": 2,
+      "code_snippet": ".postProcess],[\"emphasis\",Ue.postProcess],[\"fragments_join\",function(e){var r,t,n=0,s=e.tokens,o=e.tokens.length;for(r=t=0;r<o;r++)s[r].nesting<0&&n--,s[r].level=n,s[r].nesting>0&&n++,\"text\"===s[r].ty",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/markdown-it.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/markdown-it.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/markdown-it.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/markdown-it.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/markdown-it.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/markdown-it.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(r,\"utf-8\"),t=bt(e);return{file:r,requires:t}}function jn(r){let t=[Jl(r)];for(let i of t)i.requires.filter(n=>n.startsWith(\"./\")||n.startsWith(\"../\")).forEach(n=>{try{let s=ne.dirname(i.f",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(r,\"utf-8\"),t=bt(e);return{file:r,requires:t}}function jn(r){let t=[Jl(r)];for(let i of t)i.requires.filter(n=>n.startsWith(\"./\")||n.startsWith(\"../\")).forEach(n=>{try{let s=ne.dirname(i.f",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 30,
+      "code_snippet": "readFileSync(y,\"utf8\"):x,h2(b(x),k,i,n)}Pe.DEBUG&&console.timeEnd(\"Reading changed files\");let s=r.classCache.size;Pe.DEBUG&&console.time(\"Generate rules\"),Pe.DEBUG&&console.time(\"Sorting candidates\")",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 23,
+      "code_snippet": ".postcssPlugin,e.setMessage()):i.postcssVersion}catch(n){console&&console.error&&console.error(n)}return e}async runAsync(){this.plugin=0;for(let e=0;e<this.plugins.length;e++){let t=this.plugins[e],i",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 25,
+      "code_snippet": ".postcssPlugin=e,o.postcssVersion=new Ca().version,o}let s;return Object.defineProperty(n,\"postcss\",{get(){return s||(s=n()),s}}),n.process=function(a,o,u){return $([n(u)]).process(a,o)},n};$.stringif",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 36,
+      "code_snippet": ".postcss=!0});var Wh=v((Z3,Po)=>{l();m.env.OXIDE?Po.exports=(Vl(),jl):Po.exports=Uh()});var Mn={};oe(Mn,{agents:()=>H2,feature:()=>Y2});function Y2(){return{status:\"cr\",title:\"CSS Feature Queries\",sta",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/tailwindcss.js",
+      "line_number": 25,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "14 CRITICAL findings",
+    "32 HIGH findings",
+    "Composite risk 0.52 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T03:31:18.233314+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.9,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Code attempts to read environment variables which could expose sensitive information.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Browser cookie exfiltration detected through document.cookie manipulation.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"crypto_mining\",\n      \"description\": \"Reference to known crypto mining software ('claymore') found in the code.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"persistence_evasion\",\n      \"description\": \"Multiple instances of virtual machine detection strings ('virtualbox', 'vbox') found, indicating potential evasion techniques.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"Capability_Disconnect\",\n      \"description\": \"Extension advertised as GPT-4, Key-free, Free of charge, but actual code shows crypto mining and credential harvesting activities, which is a major capability disconnect.\",\n      \"code_reference\": \"N/A\",\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits significant malicious behavior, including credential harvesting, crypto mining, and virtual machine detection. These activities are not aligned with the extension's advertised purpose, indicating a major capability disconnect. The presence of critical-risk indicators such as environment variable reading and browser cookie manipulation further supports the malicious classification. Confidence is high due to the clear evidence of malicious patterns in the code.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a module system handling asynchronous tasks and job processing. No critical, high-risk, or medium-risk indicators were identified. The code exhibits standard JavaScript/\n\n=== extension/dist/extension.js (chunk 3/5) ===\n\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a form data handling implementation, specifically managing multipart/form-data submissions. It includes methods for generating boundaries, setting headers, and processing form streams. No malicious or suspicious patterns were detected. The functionality aligns with typical form submission handling and does not indicate any supply-chain attack vectors.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to handle HTTP requests and manage data streams using standard Node.js modules. No critical, high-risk, or medium-risk indicators were found. The functionality seems consistent with legitimate network and stream handling operations.\"\n}\n```\n\n=== extension/media/highlight.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a syntax highlighting library (Highlight.js) with no evidence of malicious behavior. Functions are related to text manipulation, HTML styling, and tree structure management, which align with expected functionality for a highlighting tool.\"\n}\n```\n\n=== extension/media/highlight.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a syntax highlighting or code formatting extension. It contains standard JavaScript/TypeScript code with no evidence of malicious behavior, credential leakage, or unauthorized operations. The functionality is consistent with its likely purpose.\"\n}\n```\n\n=== extension/media/highlight.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code is a snippet from a syntax highlighting library, specifically related to defining token patterns and regular expressions. It does not exhibit any malicious behavior, secret leakage, or unauthorized system interactions. The operations are confined to text processing and do not indicate any supply-chain attack vectors.\"\n}\n```\n\n=== extension/media/highlight.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a syntax highlighting or code parsing feature within a VS Code extension. It contains standard configuration\n\n=== extension/media/highlight.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a syntax highlighting or code analysis system, focusing on regex compilation and execution. No malicious or suspicious patterns detected.\"\n}\n```"
+}
