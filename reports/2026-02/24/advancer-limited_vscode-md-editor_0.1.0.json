@@ -1,0 +1,111 @@
+{
+  "extension_id": "advancer-limited.vscode-md-editor",
+  "version": "0.1.0",
+  "display_name": "VS Code MD Editor",
+  "publisher_name": "advancer-limited",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "77fb1ce3044b44a1b015b2c52c24ffd8f2181b581f63fb6e81e4da3a618ffb7d",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T08:04:53.273Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.2,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.4325,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 7,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Streaming document changes with serialization (real-time code theft)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 76,
+      "code_snippet": "onDidChangeTextDocument(e=>{if(e.document.languageId===\"markdown\"||e.document.uri.fsPath.endsWith(\".md\")){if(e.contentChanges.length===0)return;this.updateTimer&&clearTimeout(this.updateTimer),this.up",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_change_stream"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Bulk workspace file discovery and reading",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 76,
+      "code_snippet": "workspace.findFiles(\"**/*.md\",\"**/node_modules/**\"),i=50;for(let t=0;t<e.length;t+=i){let s=e.slice(t,t+i);await Promise.all(s.map(n=>this.indexFile(n)))}this.registerWatchers(),this._onDidUpdateIndex",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_bulk_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 76,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 77,
+      "code_snippet": "GlobalGraph(){let e=this.fileIndexService.getAllFiles(),i=new Map,t=new Map;for(let n of e){let o=0;for(let c of n.outgoingLinks){let l=this.fileIndexService.resolveWikilink(c.target);if(!l)continue;o",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 100,
+      "code_snippet": "global\",localDepth:2,showOrphans:!0,folderFilter:[],tagFilter:[],searchQuery:\"\"},this.panel.webview.onDidReceiveMessage(o=>{switch(o.type){case\"ready\":this.sendGraphData();break;case\"openFile\":{let c=",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 67,
+      "code_snippet": "workspace.getConfiguration(\"vscodeMdEditor.languageTool\");return{enabled:e.get(\"enabled\",!0),apiUrl:e.get(\"apiUrl\",\"https://api.languagetoolplus.com/v2/check\"),apiKey:e.get(\"apiKey\",\"\"),username:e.get",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 70,
+      "code_snippet": "workspace.getConfiguration(\"http\").get(\"proxy\")||process.env.HTTPS_PROXY||process.env.HTTP_PROXY;if(c){this.postViaProxy(c,n,i).then(t,s);return}let l={hostname:n.hostname,port:n.port||(n.protocol===\"",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "7 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T09:07:34.309226+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension uses broad file discovery (Markdown files) but also accesses VS Code configuration and potentially sensitive paths, which may not be proportional to its advertised Markdown editing features.\",\n      \"code_reference\": \"line 76\",\n      \"line_hint\": 76\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Streaming document changes with serialization could enable real-time code theft.\",\n      \"code_reference\": \"line 76\",\n      \"line_hint\": 76\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Bulk workspace file discovery and reading using `**/*.md` pattern, potentially accessing many files.\",\n      \"code_reference\": \"line 76\",\n      \"line_hint\": 76\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Directory traversal paired with network send, possibly exfiltrating data.\",\n      \"code_reference\": \"line 77\",\n      \"line_hint\": 77\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Harvesting VSCode configuration and sending over network, which may expose user settings.\",\n      \"code_reference\": \"line 67\",\n      \"line_hint\": 67\n    }\n  ],\n  \"summary\": \"The extension exhibits several critical-risk patterns including real-time code streaming, bulk file discovery, and potential data exfiltration. While its features are somewhat proportional to its advertised function, the methods used raise concerns about privacy and security.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension handling Markdown editing functionality. It does not exhibit any suspicious or malicious behavior, adhering to standard VS Code extension patterns. No critical-risk, high-risk, or medium-risk indicators were identified. The code's functionality is proportional to its expected purpose.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension handling webview messages and document changes. No critical, high, or medium-risk indicators were identified. The code primarily deals with markdown editing, wikilink suggestions, and grammar checks, which aligns with typical VS Code extension behavior. There are no signs of secret leakage, credential harvesting, or malicious network activities. The operations are confined to the extension's expected functionality.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a VS Code extension focused on markdown editing. It exhibits standard usage of VS Code APIs, with no evidence of malicious behavior, secret leakage, or unauthorized access. The code aligns with its intended functionality, and no critical-risk indicators were identified.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CONFIGURATION\",\n      \"description\": \"The extension retrieves API keys and usernames from user configuration, which could be a vector for credential exposure if misconfigured.\",\n      \"code_reference\": \"line 14-15\",\n      \"line_hint\": 14\n    },\n    {\n      \"severity\": \"LOW\",\n      \"category\": \"NETWORK\",\n      \"description\": \"The extension makes network requests to a configurable API URL, which could potentially be misused if the URL is compromised.\",\n      \"code_reference\": \"line 25\",\n      \"line_hint\": 25\n    }\n  ],\n  \"summary\": \"The extension exhibits moderate security concerns, primarily related to configuration and network usage. While not immediately malicious, there are areas that could be improved to enhance security posture.\"\n}\n```"
+}
