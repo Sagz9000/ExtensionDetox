@@ -1,0 +1,71 @@
+{
+  "extension_id": "Infiniware.conflictcraft-vscode",
+  "version": "0.2.0",
+  "display_name": "ConflictCraft",
+  "publisher_name": "Infiniware",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "0feb8d5bd5629ceac573a91cbf6331daa9f173261457f77f02ec09cfaced26ce",
+  "install_count": 1,
+  "average_rating": 5.0,
+  "published_date": "2026-02-23T21:13:47.39Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.7,
+  "static_analysis_score": 0.5,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.7,
+  "composite_score": 0.475,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 4,
+  "critical_findings": [],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 38,
+      "code_snippet": "const cp = __importStar(require(\"node:child_process\"));"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/backendClient.js",
+      "line_number": 37,
+      "code_snippet": "const cp = __importStar(require(\"node:child_process\"));"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onCommand:conflictcraft.openEditor', 'onCommand:conflictcraft.resolveCurrentFile', 'onCommand:conflictcraft.runDoctor', 'onCommand:conflictcraft.scanWorkspaceConflicts', 'onCommand:conflictcraft.resolveGitUnmerged', 'onCommand:conflictcraft.openFullTutorial', 'onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 168,
+      "code_snippet": "panel = vscode.window.createWebviewPanel(\"conflictcraft\", `ConflictCraft: ${path.basename(document.uri.fsPath)}`, vscode.ViewColumn.Active, {"
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": false,
+  "escalation_reasons": [],
+  "report_timestamp": "2026-02-24T19:45:32.416740+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/4) ===\n```json\n{\n  \"risk_score\": 0.6,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"Extension uses `child_process` which wasn't mentioned in the README or package.json description.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 1/4)\",\n      \"line_hint\": 10\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"VSIX package size is 0.0 MB, which is unusually small for an extension with native code and backend processes.\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The ConflictCraft extension exhibits potential behavioral mismatches and capability disconnects. The use of `child_process` without mention in the README raises concerns about hidden functionality. The VSIX package size is unusually small, suggesting possible issues with the build process or hidden capabilities. While not overtly malicious, these indicators warrant closer scrutiny\n\n=== extension/out/extension.js (chunk 2/4) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension focused on conflict resolution and Git operations. It does not exhibit any signs of malicious behavior, secret leakage, or unauthorized access. All operations are within the expected scope of a code conflict resolution tool, and there are no critical-risk indicators present. The code aligns with its intended functionality and does not show any suspicious patterns.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/4) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be a standard VS Code extension for git conflict resolution. It uses VS Code APIs appropriately, handles file operations within expected boundaries, and does not exhibit any signs of malicious behavior. No critical, high-risk, or medium-risk indicators were detected. The functionality aligns with its stated purpose, and there are no behavioral disconnects or hidden capabilities.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/4) ===\n```json\n{\n  \"risk_score\": 0.7,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"The extension executes external scripts using child_process.spawn, which can be risky if not properly controlled. On Windows, it runs a PowerShell script, potentially allowing execution of arbitrary commands.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"lines 45-63\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension's functionality to execute external CLI tools or PowerShell scripts may not be proportional to its stated purpose, if any. This could indicate hidden capabilities not advertised.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"lines 45-63\"\n    }\n  ],\n  \"summary\": \"The extension exhibits high-risk behavior by executing external scripts, which could pose a security risk. The functionality to run CLI tools or PowerShell scripts raises concerns about capability alignment with its advertised purpose.\"\n}\n```"
+}
