@@ -1,0 +1,191 @@
+{
+  "extension_id": "Try-ripple.ripple-vscode",
+  "version": "0.1.9",
+  "display_name": "Ripple - Requirement Traceability",
+  "publisher_name": "Try-ripple",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "0a10c071bfff824d567baa29fceb360a7837bcaba94b1db91527f903c1716591",
+  "install_count": 5,
+  "average_rating": 0.0,
+  "published_date": "2026-02-20T23:21:10.48Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 15,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 184,
+      "code_snippet": "onDidSaveTextDocument(e=>{this.handleFileSave(e)}),this.stateUnsubscribe=this.stateManager.subscribe(()=>{this.stateManager.getActiveRequirement()||(this.suppressedTaskIds.clear(),this.recentlyLinked.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 170,
+      "code_snippet": "globalState.get(b)||null;c.report({message:\"Generating context file...\"});let S=le(u,{workspaceRoot:n,activeFilePath:h,previousRun:g}),q={timestamp:Date.now(),completedACs:(u.requirement.acceptanceCri",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "secretStorage.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"ripple\").get(\"apiUrl\")||\"https://try-ripple.vercel.app\"}async request(e,s={}){let t=await this.authService.getAccessToken();if(!t)return{success:!1,error:\"Not authenticated",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 170,
+      "code_snippet": "workspace.getConfiguration(\"ripple\").get(\"apiUrl\")||\"https://app.ripple.dev\"}/projects/${a.id}/requirements/${d.id}`;await l.env.openExternal(l.Uri.parse(o))})),i.subscriptions.push(l.commands.registe",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 170,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/webview-ui/build/assets/index.js",
+      "line_number": 40,
+      "code_snippet": "GLOBAL_HOOK__<\"u\"){var gr=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(!gr.isDisabled&&gr.supportsFiber)try{nl=gr.inject(Id),Ue=gr}catch{}}Se.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=Rd;Se.createPortal",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/webview-ui/build/assets/index.js",
+      "line_number": 37,
+      "code_snippet": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0}),eu=ke(Ef),Cf=$({},Jn,{touches:0,targetTouches:0,changedTouches:0,altKey:0,metaKey:0,ctrlKey:0,shift",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "method:\"POST\",body:JSON.stringify({filePath:s})})}async unlinkFile(e,s){return this.request(`/api/v1/requirements/${e}/linked-files/${s}`,{method:\"DELETE\"})}async getTestCases(e){return this.request(`",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 170,
+      "code_snippet": ".postStartWithAIResult({requirementId:d.id,agentName:null,success:!1}),l.window.showErrorMessage(`Failed to fetch context: ${p.error||\"Unknown error\"}`);return}let u=p.data,h=l.window.activeTextEditor",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "webview_phishing",
+      "description": "WebView panel combined with external HTTP (potential phishing overlay)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 170,
+      "code_snippet": "webview.html=this.getHtmlContent(e.webview),e.webview.onDidReceiveMessage(async r=>{await this.handleMessage(r)}),this.unsubscribe=this.stateManager.subscribe(r=>{this.postMessage({type:\"stateUpdate\",",
+      "category": "builtin",
+      "pattern_id": "webview_phishing"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/webview-ui/build/assets/index.js",
+      "line_number": 40,
+      "code_snippet": ".postMessage(e)}function Dd({projects:e,selectedId:t,onSelect:n}){return e.length===0?p.jsx(\"div\",{className:\"empty-hint\",style:{padding:\"8px 0\"},children:\"No projects found\"}):p.jsxs(\"div\",{style:{ma",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'try-ripple' does not match GitHub org 'yusuphwasiu' in repo 'https://github.com/yusuphwasiu/ripple-new'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "9 CRITICAL findings",
+    "4 HIGH findings",
+    "Composite risk 0.54 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T07:18:11.753756+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Secrets & Credential Leakage\",\n      \"description\": \"The extension accesses VS Code's secret storage API using `secretStorage.get()` which could expose sensitive user credentials or secrets.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Network Exfiltration\",\n      \"description\": \"Multiple network requests are made to external domains (`try-ripple.vercel.app`, `app.ripple.dev`) which are not documented in the extension's advertised functionality, suggesting potential data exfiltration.\",\n      \"code_reference\": \"line 1, line 170\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Credential Harvesting\",\n      \"description\": \"The extension reads VS Code configuration using `vscode.workspace.getConfiguration(\\\"ripple\\\")` and sends it over the network, potentially exposing user configuration data.\",\n      \"code_reference\": \"line 1, line 170\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Capability Disconnect\",\n      \"description\": \"The extension's actual capabilities, including secret storage access and network exfiltration, are not proportional to its advertised function of requirement-driven development. This indicates a major disconnect in intended vs actual behavior.\",\n      \"code_reference\": \"DISCONNECT CHECK\",\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits multiple critical security risks including secret storage access, network exfiltration, and capability disconnect from its advertised purpose. These findings strongly suggest malicious intent.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a legitimate VS Code extension handling API requests and OAuth flows. No critical, high-risk, or medium-risk indicators were identified. The functionality is proportional to its advertised purpose, with no evidence of malicious behavior.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"NETWORK_CALLS\",\n      \"description\": \"The extension makes network calls to external APIs which may not be fully documented or could indicate unintended functionality.\",\n      \"code_reference\": \"line 1-20\",\n      \"line_hint\": \"around line 5\"\n    }\n  ],\n  \"summary\": \"The code exhibits network communication patterns that may not align with its advertised functionality, raising concerns about potential capability mismatches. The code makes API calls that could be legitimate but require further context to confirm their purpose.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"OBFUSCATION/ANOMALY\",\n      \"description\": \"Use of variable names like 'V' and 'D' which are cryptic and could indicate obfuscation or less-than-transparent functionality.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 5/5)\",\n      \"line_hint\": \"line 10-20\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNUSUAL_BEHAVIOR\",\n      \"description\": \"Integration with multiple AI extensions (GitHub Copilot, Cursor, etc.) but no clear justification for such broad integration in a single extension, potentially indicating a platform for cross-extension attacks or unauthorized behavior.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 5/5)\",\n      \"line_hint\": \"line 40-50\"\n    }\n  ],\n  \"summary\": \"The extension exhibits some signs of potential obfuscation and unusual integration patterns, but no outright malicious behavior is evident. The findings suggest a need for further dynamic analysis to confirm intended functionality.\"\n}\n```\n\n=== extension/webview-ui/build/assets/index.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"network_activity\",\n      \"description\": \"Network calls to fetch modules using 'modulepreload' attribute, which could potentially be used for unauthorized resource loading or exfiltration.\",\n      \"code_reference\": \"chunk 1/5, line 40\",\n      \"line_hint\": 40\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Potential directory traversal paired with network send functionality detected.\",\n      \"code_reference\": \"chunk 1/5, line 40\",\n      \"line_hint\": 40\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Hidden zero-pixel iframe detected, which could be used for tracking or C2 beaconing.\",\n      \"code_reference\": \"chunk 1/5, line 37\",\n      \"line_hint\": 37\n    }\n  ],\n  \"summary\": \"The code exhibits suspicious network activity and potential iframe usage, which may indicate unauthorized behavior. However, without further context or malicious payload detection, the risk remains moderate.\"\n}\n```\n\n=== extension/webview-ui/build/assets/index.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a React-like implementation, handling component creation, state management, and rendering logic. No malicious or suspicious patterns were identified. The code's functionality aligns with typical React component behavior and does not exhibit any signs of credential leakage, info-stealing, or malicious execution.\"\n}\n```\n\n=== extension/webview-ui/build/assets/index.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code is a standard React-based implementation, likely part of a VS Code extension's webview UI. It contains no evidence of malicious behavior, credential leakage, or suspicious network activity. All observed functionality aligns with typical React component rendering and UI management.\"\n}\n```\n\n=== extension/webview-ui/build/assets/index.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be standard React-related JavaScript, likely part of a UI component or webview in the VS Code extension. There are no indicators of malicious behavior, credential harvesting, or suspicious network activity. The code is focused on React internals and JSX transformation, which is typical for UI-related extensions.\"\n}\n```\n\n=== extension/webview-ui/build/assets/index.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"OBFUSCATION\",\n      \"description\": \"The code exhibits heavy obfuscation with single-letter variable names and complex function structures, which could indicate an attempt to hide malicious behavior.\",\n      \"code_reference\": \"extension/webview"
+}
