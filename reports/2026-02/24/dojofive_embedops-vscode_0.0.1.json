@@ -1,0 +1,336 @@
+{
+  "extension_id": "dojofive.embedops-vscode",
+  "version": "0.0.1",
+  "display_name": "EmbedOps",
+  "publisher_name": "dojofive",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "b9843118cf1aa99af55a8527d76ef67a705037c2797fd57f21dfe9d6d9e59637",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T17:22:05.913Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 31,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Machine ID harvesting",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "machineId",
+      "category": "infostealer_behavior",
+      "pattern_id": "machine_id_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "lolbins_stagers",
+      "description": "Curl piped to shell (download-and-execute)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 157,
+      "code_snippet": "curl -fsSL https://gitlab.com/embedops-public/embedops-cli/-/raw/main/install.sh | sh",
+      "category": "lolbins_stagers",
+      "pattern_id": "curl_pipe_bash"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 155,
+      "code_snippet": "globalThis}async function ui(s,e=!0){try{let r=new Blob([s],{type:\"text/plain\"}).stream().pipeThrough(new CompressionStream(\"gzip\"));return await new Response(r).blob()}catch(t){return e&&console.erro",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "global.process.listeners(\"uncaughtException\").filter(o=>o.name!==\"domainUncaughtExceptionClear\"&&o._posthogErrorHandler!==!0).length===0;s(r,{mechanism:{type:\"onuncaughtexception\",handled:!1}}),!t&&n&",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 157,
+      "code_snippet": "workspace.getConfiguration(\"embedops\").update(\"defaultDevice\",s.deviceName,A.ConfigurationTarget.Workspace),A.window.showInformationMessage(`Default HIL device set to \"${s.deviceName}\" for this worksp",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 218,
+      "code_snippet": "workspace.getConfiguration(\"embedops\").get(\"defaultDevice\"),c=ls(e),l=(a||c.defaultDevice)??null;if(l){let d=o.find(m=>m.deviceName===l);if(d)return C.window.setStatusBarMessage(`HIL: Running on ${d.d",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 223,
+      "code_snippet": "workspace.getConfiguration(\"embedops\").get(\"defaultDevice\")||null,u=l??c,f=b=>b.isOnline&&b.appDefinedStatus===\"available\",h=o.map(b=>{let T=f(b),I=T?\"available\":b.appDefinedStatus+(b.isOnline?\"\":\" (o",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'eval(' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "`,[CHAR_f]:\"\\f\",[CHAR_r]:\"\\r\",[CHAR_QUOT]:'\"',[CHAR_BSOL]:\"\\\\\"};function isDigit(s){return s>=CHAR_0&&s<=CHAR_9}function isHexit(s){return s>=CHAR_A&&s<=CHAR_F||s>=CHAR_a&&s<=CHAR_f||s>=CHAR_0&&s<=CHA"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "`);for(let o=r;o<n.length;o++){let a=n[o];if(a.length>1024)continue;let c=va.test(a)?a.replace(va,\"$1\"):a;if(!c.match(/\\S*Error: /)){for(let l of e){let u=l(c,s);if(u){i.push(u);break}}if(i.length>=wa"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "`);for(let o=r;o<n.length;o++){let a=n[o];if(a.length>1024)continue;let c=va.test(a)?a.replace(va,\"$1\"):a;if(!c.match(/\\S*Error: /)){for(let l of e){let u=l(c,s);if(u){i.push(u);break}}if(i.length>=wa"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'execSync' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "`);for(let o=r;o<n.length;o++){let a=n[o];if(a.length>1024)continue;let c=va.test(a)?a.replace(va,\"$1\"):a;if(!c.match(/\\S*Error: /)){for(let l of e){let u=l(c,s);if(u){i.push(u);break}}if(i.length>=wa"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'execSync' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 157,
+      "code_snippet": "`)[0];if(t&&Ce.existsSync(t))return y.debug(`CLI found in PATH: ${t}`),t}catch(s){y.debug(`CLI not in PATH: ${s instanceof Error?s.message:\"not found\"}`)}for(let s of jd)if(Ce.existsSync(s))return y.d"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 163,
+      "code_snippet": "The CLI will be installed to /usr/local/bin.${i}`},\"Run Command\",\"View Documentation\");if(n===\"View Documentation\"){Y.env.openExternal(Y.Uri.parse(Gs()));return}if(n!==\"Run Command\")return;let o=Y.win"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 163,
+      "code_snippet": "The CLI will be installed to /usr/local/bin.${i}`},\"Run Command\",\"View Documentation\");if(n===\"View Documentation\"){Y.env.openExternal(Y.Uri.parse(Gs()));return}if(n!==\"Run Command\")return;let o=Y.win"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 210,
+      "code_snippet": "`),this.tooltip=i}},Yr=class s{_onDidChangeTreeData=new k.EventEmitter;onDidChangeTreeData=this._onDidChangeTreeData.event;devices=[];lastDeviceSnapshot=\"\";autoRefreshInterval=null;stateManager;backof"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 210,
+      "code_snippet": "`),this.tooltip=i}},Yr=class s{_onDidChangeTreeData=new k.EventEmitter;onDidChangeTreeData=this._onDidChangeTreeData.event;devices=[];lastDeviceSnapshot=\"\";autoRefreshInterval=null;stateManager;backof"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "readFileSync(s,\"utf-8\"),t=kt.parse(e),r=t.embedops_auth_token;return r?{token:r,refreshToken:t.embedops_refresh_token??null,tokenExpiry:t.embedops_token_expiry??null,origin:t.origin??Md,auth0Id:t.post",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 157,
+      "code_snippet": "readFileSync(e,\"utf-8\"),i=cs.parse(r);return{hilRoot:i.hil_root??t.hilRoot,hilResultsBase:i.hil_results_base??t.hilResultsBase,defaultDevice:i.default_device??t.defaultDevice}}catch(r){return y.warn(`",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "readFileSync(s,\"utf-8\"),t=kt.parse(e),r=t.embedops_auth_token;return r?{token:r,refreshToken:t.embedops_refresh_token??null,tokenExpiry:t.embedops_token_expiry??null,origin:t.origin??Md,auth0Id:t.post",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 157,
+      "code_snippet": "readFileSync(e,\"utf-8\"),i=cs.parse(r);return{hilRoot:i.hil_root??t.hilRoot,hilResultsBase:i.hil_results_base??t.hilResultsBase,defaultDevice:i.default_device??t.defaultDevice}}catch(r){return y.warn(`",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "fetch(e,t){return this.options.fetch?this.options.fetch(e,t):fetch(e,t)}getLibraryVersion(){return Na}getCustomUserAgent(){return`${this.getLibraryId()}/${this.getLibraryVersion()}`}enable(){return su",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 157,
+      "code_snippet": "fetch(t.tokenUrl,{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({grant_type:\"refresh_token\",client_id:t.clientId,refresh_token:s.refreshToken})});if(!i.ok)return y.warn",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 155,
+      "code_snippet": ".posthog.com\"),this.flushAt=t.flushAt?Math.max(t.flushAt,1):20,this.maxBatchSize=Math.max(this.flushAt,t.maxBatchSize??100),this.maxQueueSize=Math.max(this.flushAt,t.maxQueueSize??1e3),this.flushInter",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": ".post_context=[];for(let i=s+1;i<=r;i++){let n=t[i];if(n===void 0)break;e.post_context.push(n)}}function _a(s){delete s.pre_context,delete s.context_line,delete s.post_context}function Yh(s){return s.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 157,
+      "code_snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({grant_type:\"refresh_token\",client_id:t.clientId,refresh_token:s.refreshToken})});if(!i.ok)return y.warn(`Token refresh fa",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 156,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 163,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 210,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "terminal_injection",
+      "description": "Stealthy terminal command injection via VS Code API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 157,
+      "code_snippet": "sendText(`eo hil develop ${ot(s.deviceName)}`),Mi.window.showInformationMessage(\"Keep the terminal open to maintain the SSH tunnel.\")}var A=R(require(\"vscode\"));var Oc={production:{tokenUrl:\"https://e",
+      "category": "builtin",
+      "pattern_id": "terminal_injection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "terminal_injection",
+      "description": "Stealthy terminal command injection via VS Code API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 163,
+      "code_snippet": "sendText(r)}async function Pv(s){await new Promise(t=>setTimeout(t,1e3));let e=Ws();if(e&&Vs(e))y.info(`CLI installation verified at ${e}`),$(D.ONBOARDING_STEP_COMPLETED,{step:\"installCli\"}),Y.window.",
+      "category": "builtin",
+      "pattern_id": "terminal_injection"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "8 CRITICAL findings",
+    "23 HIGH findings",
+    "Composite risk 0.61 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T17:31:53.546568+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Secrets & Credential Leakage\",\n      \"description\": \"The code attempts to read sensitive files such as ~/.embedops/eosecrets.toml which may contain authentication tokens.\",\n      \"code_reference\": \"line 156-157\",\n      \"line_hint\": 156\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"Direct command / shell execution\",\n      \"description\": \"The code uses require('child_process') which allows arbitrary command execution, a high-risk indicator.\",\n      \"code_reference\": \"line 156, 163, 210\",\n      \"line_hint\": 156\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"Data Exfiltration\",\n      \"description\": \"Multiple fetch calls suggest potential data exfiltration, including POST requests to external domains.\",\n      \"code_reference\": \"line 155-157\",\n      \"line_hint\": 155\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"Capability Disconnect\",\n      \"description\": \"The extension's actual capabilities, including file system access and command execution, are far beyond its advertised purpose of displaying fleet devices.\",\n      \"code_reference\": \"DISCONNECT CHECK\",\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits critical-risk behavior by attempting to read sensitive credential files and high-risk behavior by enabling arbitrary command execution and data exfiltration. Its capabilities far exceed its advertised purpose, indicating a potential malicious intent or severe misuse.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a parser implementation, likely for a language service or data processing extension. No suspicious or malicious patterns were detected. The code's functionality aligns with typical parser behavior and does not exhibit any signs of credential leakage, info-stealing, or network exfiltration. The risk score is 0.0, indicating no detected threats.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a date/time parsing utility. It defines custom Date classes and helper functions for formatting dates. No malicious or suspicious patterns were detected. The functionality is limited to date/time manipulation, which aligns with typical utility extensions.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a string manipulation or configuration system within a VS Code extension. It defines character constants, helper functions for character classification, and creates custom object types using Symbols. No malicious or suspicious behavior was detected. The code is consistent with benign functionality, likely related to internal data handling or configuration management.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a type-handling and parsing library, specifically dealing with integers and floats. It does not exhibit any signs of malicious behavior, secret leakage, or unauthorized access. The functions and classes defined are focused on data type management and parsing, which aligns with typical benign VS Code extension functionality.\"\n}\n```"
+}
