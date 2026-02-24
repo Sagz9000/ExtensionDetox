@@ -1,0 +1,81 @@
+{
+  "extension_id": "wiseframework.flutter-wise",
+  "version": "0.0.4",
+  "display_name": "Flutter Wise",
+  "publisher_name": "wiseframework",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "b36f1bebe462de79e33920ed9a1bc2a7a3c714eeb39f1be33e06b60c71683b29",
+  "install_count": 3,
+  "average_rating": 0.0,
+  "published_date": "2026-02-20T10:53:29.753+00:00",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.8,
+  "static_analysis_score": 0.9500000000000001,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6299999999999999,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 4,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 132,
+      "code_snippet": "workspace.getConfiguration(\"android\").get(\"androidSdkPath\")),r.push(ee.workspace.getConfiguration(\"flutter\").get(\"androidSdkPath\")),process.platform===\"darwin\"&&r.push(te.join(process.env.HOME??\"\",\"Li",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 583,
+      "code_snippet": "workspace.getConfiguration(\"dart\").get(\"flutterSdkPath\")),r.push(oe.workspace.getConfiguration(\"flutter\").get(\"sdkPath\"));for(let e of r){if(!e)continue;let t=Se.join(e,\"bin\",Ve());if(await He(t))retu",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 132,
+      "code_snippet": "</html>`}};var A=m(require(\"vscode\")),ue=\"flutterWise.devices.refresh\",me=\"flutterWise.devices.connect\",ge=\"flutterWise.devices.connect.ip\",fe=\"flutterWise.devices.connect.qr\",ve=\"flutterWise.devices."
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 583,
+      "code_snippet": ".postInitState()}async onMessage(e){if(this.view){if(e.type===\"ready\"){await this.postInitState();return}if(e.type===\"pickFolder\"){await this.pickFolder();return}e.type===\"createProject\"&&await this.c",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "Composite risk 0.48 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T10:11:12.403361+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension harvests VS Code configuration data (androidSdkPath, flutterSdkPath) and sends it over the network, which is not advertised in the extension's README or features.\",\n      \"code_reference\": \"line 132, line 583\",\n      \"line_hint\": 132\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"The extension uses `vscode.workspace.getConfiguration()` to retrieve sensitive configuration data (androidSdkPath, flutterSdkPath) and appears to send this data over the network.\",\n      \"code_reference\": \"line 132, line 583\",\n      \"line_hint\": 132\n    }\n  ],\n  \"summary\": \"The extension exhibits suspicious behavior by harvesting VS Code configuration data related to Android and Flutter SDK paths and sending this data over the network. This activity is not proportional to the extension's advertised features, raising concerns about potential data exfiltration or misuse.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension for managing Flutter workspace configurations. It contains standard VS Code API usage for configuration management, theming, and workspace setup. No suspicious or malicious patterns were detected.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension for creating Flutter modules. It contains standard VS Code API usage for file operations, directory creation, and configuration. No malicious or suspicious patterns were detected.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be generating Dart files for a Flutter module, creating directories, and setting up a basic HTML structure with security headers. No critical, high-risk, or medium-risk indicators were found. The operations are proportional to the module's function, and there are no signs of malicious behavior.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be a standard VS Code extension focused on Flutter device management. It contains no signs of malicious behavior, secret leakage, or unauthorized operations. All functionality aligns with expected behavior for a development tool extension.\"\n}\n```"
+}
