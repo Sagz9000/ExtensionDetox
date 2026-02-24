@@ -1,0 +1,112 @@
+{
+  "extension_id": "moonolgerd.copilot-specs",
+  "version": "0.1.1",
+  "display_name": "Copilot Specs",
+  "publisher_name": "moonolgerd",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "6f6831b0c76655063dab66c0d457360043c292f355437eeaa61c28abd1bd496b",
+  "install_count": 1,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T01:46:20.477Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5375,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 7,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 50,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 351,
+      "code_snippet": "Glob})),{placeHolder:\"Select a spec to execute with Autopilot\"});if(!n)return;let{tasks:t}=await D(n.label),i=t.filter(o=>!o.completed);if(i.length===0){I.window.showInformationMessage(`All tasks in \"",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 351,
+      "code_snippet": "workspace.getConfiguration(\"copilot-specs\").get(\"autopilotConfirmEachTask\",!0),r=await nc(e,n),s=(await I.lm.selectChatModels({family:\"gpt-4o\"}))[0];if(!s){I.window.showWarningMessage(\"No Copilot mode",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 381,
+      "code_snippet": "readFile(e,\"utf8\");return ac(n)}catch{return}}async function pr(e){try{return await Ne.stat(e),!0}catch{return!1}}function wr(){let e=Un(),n=e?[he.join(e,\".vscode\",\"mcp.json\"),he.join(e,\".mcp.json\"),h",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 381,
+      "code_snippet": "readFile(e,\"utf8\");return ac(n)}catch{return}}async function pr(e){try{return await Ne.stat(e),!0}catch{return!1}}function wr(){let e=Un(),n=e?[he.join(e,\".vscode\",\"mcp.json\"),he.join(e,\".mcp.json\"),h",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 107,
+      "code_snippet": ".postprocess(u):u).catch(a);try{s.hooks&&(i=s.hooks.preprocess(i));let u=c(i,s);s.hooks&&(u=s.hooks.processAllTokens(u)),s.walkTokens&&this.walkTokens(u,s.walkToken",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished', 'workspaceContains:.github']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "3 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T03:34:15.056423+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension advertises spec-driven development but uses broad file enumeration and potential network operations, which are beyond its stated scope.\",\n      \"code_reference\": \"line 50, line 351\",\n      \"line_hint\": 50\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Broad glob pattern used to enumerate all workspace files (`workspace.findFiles(\"**\")`), which could be used to harvest sensitive information.\",\n      \"code_reference\": \"line 50\",\n      \"line_hint\": 50\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Attempt to read configuration and send data over network (`workspace.getConfiguration(...).get(...)` combined with network calls), which is inconsistent with the extension's advertised features.\",\n      \"code_reference\": \"line 351\",\n      \"line_hint\": 351\n    }\n  ],\n  \"summary\": \"The extension exhibits capabilities beyond its advertised functionality, including potential file enumeration and network operations that could be misused for malicious purposes. The disconnect between its intended use and actual code suggests a high-risk potential.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The analyzed code primarily contains standard file system operations and appears to be part of a VS Code extension handling file management within specific directories. No critical, high-risk, or medium-risk indicators were detected. The operations are consistent with expected behavior for an extension managing files related to skills, tasks, or specifications.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a YAML-related VS Code extension, focusing on error handling, string manipulation, and formatting. No critical, high-risk, or medium-risk indicators were identified. The code aligns with typical extension functionality for syntax handling and does not exhibit any malicious or suspicious behavior.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a YAML parser implementation, with functions handling different data types and structures. No critical, high, or medium-risk indicators were identified. The code is focused on parsing logic without any evidence of malicious behavior, making it a low-risk assessment.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk"
+}
