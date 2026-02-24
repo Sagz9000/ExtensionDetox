@@ -1,0 +1,72 @@
+{
+  "extension_id": "fabioc-aloha.mcp-app-starter",
+  "version": "0.1.5",
+  "display_name": "MCP App Starter",
+  "publisher_name": "fabioc-aloha",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "c31bc4207e4668a08c1cbba2709148431e6184362971eb929f36174b7d6ca01e",
+  "install_count": 17,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T16:54:39.367Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.2,
+  "static_analysis_score": 0.9500000000000001,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.42,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 3,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Bulk workspace file discovery and reading",
+      "file_path": "extension/out/extension.js",
+      "line_number": 107,
+      "code_snippet": "workspace.findFiles(\"**/mcp.json\",\"**/node_modules/**\");if(e.length===0){t.window.showWarningMessage(\"No mcp.json found in workspace.\");return}for(let o of e)try{let n=(await t.workspace.fs.readFile",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_bulk_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 107,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 107,
+      "code_snippet": "readFile(o)).toString();JSON.parse(n),c.appendLine(`\\u2705 ${o.fsPath} \\u2014 valid JSON`)}catch(n){c.appendLine(`\\u274C ${o.fsPath} \\u2014 ${n}`)}c.show(),t.window.showInformationMessage(\"MCP config",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T23:07:45.045014+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/4) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension uses `workspace.findFiles` with a broad glob pattern `**/mcp.json`, which may access files outside the intended scope.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 1/4)\",\n      \"line_hint\": 107\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"The extension uses `workspace.findFiles` with a broad glob pattern `**`, which could potentially enumerate all files in the workspace.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 1/4)\",\n      \"line_hint\": 107\n    }\n  ],\n  \"summary\": \"The MCP App Starter extension exhibits some concerning patterns, particularly its use of broad file search patterns. While not overtly malicious, these behaviors could indicate potential misuse or unintended side effects. The extension's capabilities are somewhat aligned with its advertised function, but there are notable behavioral mismatches that warrant closer monitoring.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/4) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension that generates a new server project using the Model Context Protocol (MCP). It creates directories, writes configuration files, and sets up a basic server structure. No malicious or suspicious activities were detected in the provided code snippet. The operations are consistent with a project generator and do not exhibit any signs of credential harvesting, network exfiltration, or persistence mechanisms. The code aligns with its intended functionality as a development tool.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/4) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a legitimate VS Code extension that scaffolds MCP server setups. It writes configuration files and READMEs, with no evidence of malicious behavior. The operations are within expected bounds for such an extension.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/4) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be a benign VS Code extension that validates MCP configuration files. It reads and parses `mcp.json` files within the workspace, displaying validation results to the user. No malicious or suspicious behavior was detected.\"\n}\n```"
+}
