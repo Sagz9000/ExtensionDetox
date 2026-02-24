@@ -1,0 +1,648 @@
+{
+  "extension_id": "Longmix.picgo-for-vscode",
+  "version": "1.0.2",
+  "display_name": "PicGo for VSCode extension",
+  "publisher_name": "Longmix",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "83789fd8d6b9b2801d9a9e6984fd41de887610bfdf83f7d8649d41ea07c137b8",
+  "install_count": 2,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T15:35:20.123Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.8,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6425000000000001,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 61,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Mass serialization of all environment variables",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Object.keys(process.env)",
+      "category": "credential_harvesting",
+      "pattern_id": "env_mass_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Browser cookie exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "document.cookie=a.join(\"; \")},read(e){if(\"undefined\"==typeof document)return null;const t=document.cookie.match(new RegExp(\"(?:^|; )\"+e+\"=([^;]*)\"));return t?decodeURIComponent(t[1]):null},remove(e){t",
+      "category": "infostealer_behavior",
+      "pattern_id": "browser_cookie_theft"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Buffer.from(JSON.stringify(e));s.gzip(i,async(i,r)=>{if(i)return n(i);await h.default(this.dbPath,Buffer.from(r)),t(e)})}})}async write(e){return new Promise((t,n)=>{e=Buffer.from(JSON.stringify(e)),s",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "readFile(u(this,r,\"f\"),\"utf-8\")}catch(e){if(\"ENOENT\"===e.code)return null;throw e}return e}write(e){return u(this,o,\"f\").write(e)}},r=new WeakMap,o=new WeakMap},5812(e,t,n){\"use strict\";Object.defineP",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "lolbins_stagers",
+      "description": "PowerShell execution policy bypass",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "PowerShell/PowerShell/issues/7233\\n# fix the output encoding bug\\n[console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding\\n\\nAdd-Type -Assembly PresentationCore\\nfun",
+      "category": "lolbins_stagers",
+      "pattern_id": "powershell_bypass"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading document content and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "document.getText(i)||\"image\");const o=`![${r}](${t})`;await e.edit(e=>{i.isEmpty?e.insert(i.active,o):e.replace(i,o)})}(e,u.imgUrl,u.fileName),a.window.showInformationMessage(\"Image uploaded successfu",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_content_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "readdirSync(e),n={};t.forEach(e=>{const t=e.replace(o.extname(e),\"\");n[t]=e}),a.logger.log(`guess locale file path from ${e}`),a.logger.log(`localeFileName: ${JSON.stringify(n)}`),this.localeFileName=",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Width:0,output:process.stdout,tty:n(2018)};return e?(Object.keys(t).forEach(function(n){e[n]||(e[n]=t[n])}),e):t}(e);if(t.output.getWindowSize)return t.output.getWindowSize()[0]||t.defaultWidth;if(t.t",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "workspace.getConfiguration(this.CONFIG_NAMESPACE);var t={picgoUploader:e.get(this.CONFIG_KEYS.PICGO_UPLOADER,\"\"),picgoCurrent:e.get(this.CONFIG_KEYS.PICGO_CURRENT,\"\"),autoUploadOnPaste:e.get(this.CONF",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "(()=>{var e,t={2621(e,t,n){\"use strict\";Object.defineProperty(t,\"__esModule\",{value:!0}),t.Low=void 0;var i=n(4996);t.Low=class{constructor(e){if(Object.defineProperty(this,\"adapter\",{enumerable:!0,co"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "(()=>{var e,t={2621(e,t,n){\"use strict\";Object.defineProperty(t,\"__esModule\",{value:!0}),t.Low=void 0;var i=n(4996);t.Low=class{constructor(e){if(Object.defineProperty(this,\"adapter\",{enumerable:!0,co"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'spawnSync' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "(()=>{var e,t={2621(e,t,n){\"use strict\";Object.defineProperty(t,\"__esModule\",{value:!0}),t.Low=void 0;var i=n(4996);t.Low=class{constructor(e){if(Object.defineProperty(this,\"adapter\",{enumerable:!0,co"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "obfuscated_eval",
+      "description": "Obfuscated eval() / Function() execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Function(\"return",
+      "category": "builtin",
+      "pattern_id": "obfuscated_eval"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "readFile(u(this,r,\"f\"),\"utf-8\")}catch(e){if(\"ENOENT\"===e.code)return null;throw e}return e}write(e){return u(this,o,\"f\").write(e)}},r=new WeakMap,o=new WeakMap},5812(e,t,n){\"use strict\";Object.defineP",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "readFile(u(this,r,\"f\"),\"utf-8\")}catch(e){if(\"ENOENT\"===e.code)return null;throw e}return e}write(e){return u(this,o,\"f\").write(e)}},r=new WeakMap,o=new WeakMap},5812(e,t,n){\"use strict\";Object.defineP",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Request()}function S(e){var t={maxRedirects:21,maxBodyLength:10485760},n={};return Object.keys(e).forEach(function(i){var r=i+\":\",o=n[r]=e[i],s=t[i]=Object.create(o);Object.defineProperties(s,{request",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".postProcess(r,t)}postProcess(e,t){if(e)return t?Object.keys(t).reduce((e,n)=>e.replace(\"${\"+n+\"}\",t[n]),e):e}}},7545(e,t,n){\"use strict\";Object.defineProperty(t,\"__esModule\",{value:!0});const i=n(163",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Known miner executable reference",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "claymore",
+      "category": "crypto_mining",
+      "pattern_id": "xmrig_ref"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Known miner executable reference",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "claymore",
+      "category": "crypto_mining",
+      "pattern_id": "xmrig_ref"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "WASM-based mining (high CPU usage)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".wasmflow.wafl\":{\"source\":\"iana\"},\"application/vnd.webturbo\":{\"source\":\"iana\",\"extensions\":[\"wtb\"]},\"application/vnd.wfa.dpp\":{\"source\":\"iana\"},\"application/vnd.wfa.p2p\":{\"source\":\"iana\"},\"application",
+      "category": "crypto_mining",
+      "pattern_id": "wasm_mining"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "rmm_tool_abuse",
+      "description": "Downloading MSI/EXE installer (potential RMM deployment)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Request()}function S(e){var t={maxRedirects:21,maxBodyLength:10485760},n={};return Object.keys(e).forEach(function(i){var r=i+\":\",o=n[r]=e[i],s=t[i]=Object.create(o);Object.defineProperties(s,{request",
+      "category": "rmm_tool_abuse",
+      "pattern_id": "rmm_msi_download"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/578.extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(\"/proc/self/cgroup\",\"utf8\").includes(\"docker\")}catch{return!1}}()),m)),p}const f=()=>{if(\"linux\"!==t.platform)return!1;if(c.release().toLowerCase().includes(\"microsoft\"))return!d();try{if",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/578.extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(\"/proc/self/cgroup\",\"utf8\").includes(\"docker\")}catch{return!1}}()),m)),p}const f=()=>{if(\"linux\"!==t.platform)return!1;if(c.release().toLowerCase().includes(\"microsoft\"))return!d();try{if",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "9 CRITICAL findings",
+    "52 HIGH findings",
+    "Composite risk 0.52 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T16:08:08.089981+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Code attempts to read environment variables which may contain sensitive information like API keys.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Browser cookie exfiltration detected through accessing document.cookie.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"crypto_mining\",\n      \"description\": \"Reference to 'claymore' and potential WASM-based mining activities detected.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"lolbins_stagers\",\n      \"description\": \"Potential PowerShell execution policy bypass detected in the code.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"persistence_evasion\",\n      \"description\": \"Virtual machine detection strings ('virtualbox') found in the code.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"command_execution\",\n      \"description\": \"Use of 'require('child_process')' which can be used for arbitrary command execution.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"obfuscation\",\n      \"description\": \"Obfuscated code using 'Function(\"return\"' which can be used\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a file handling system, with classes like JSONFile andFileSync. There are no signs of malicious behavior, credential harvesting, or network exfiltration. The operations are limited to file reading and writing, which aligns with typical VS Code extension behavior. No critical-risk indicators were found, and the code does not exhibit suspicious patterns.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"FUNCTION_CREATION\",\n      \"description\": \"Use of `Function()` constructor which can execute arbitrary code.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 3/5)\",\n      \"line_hint\": \"line 1841\"\n    }\n  ],\n  \"summary\": \"The code exhibits the use of the `Function()` constructor, which can be a vector for arbitrary code execution. While not inherently malicious in this context, it's a pattern often associated with obfuscation or malicious activities. The extension's functionality doesn't clearly justify this usage, raising suspicions about its true purpose.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"OBFUSCATION\",\n      \"description\": \"Use of obfuscated variable names and functions, potentially indicating an attempt to hide code behavior.\",\n      \"code_reference\": \"Lines 8869-8870 and 8682-8683\",\n      \"line_hint\": \"Lines 8869-8870\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNEXPECTED_BEHAVIOR\",\n      \"description\": \"LocalStorage usage with potentially obfuscated keys, which could be used for storing configuration or state, but may also indicate data tracking or persistence beyond the extension's advertised purpose.\",\n      \"code_reference\": \"Lines 8869-8870 and 8682-8683\",\n      \"line_hint\": \"Lines 8869-8870\"\n    }\n  ],\n  \"summary\": \"The code exhibits moderate signs of obfuscation and uses localStorage in a manner that could potentially store data beyond what is necessary for a typical VS Code extension. While not immediately malicious, these patterns raise concerns about the extension's true purpose and could indicate attempts to hide functionality.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a file handling module, performing standard read and write operations on text files. No malicious or suspicious patterns were detected. The functionality is consistent with expected behavior for a file manipulation extension.\"\n}\n```\n\n=== extension/dist/578.extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"The code contains suspicious use of `child_process.execFile` and `child_process.spawn`, which can execute arbitrary system commands. Additionally, there's a pattern of using `powershell.exe` with potentially dangerous arguments, including `-ExecutionPolicy Bypass`, which is commonly used for malicious purposes.\",\n      \"code_reference\": \"extension/dist/578.extension.js\",\n      \"line_hint\": \"Lines 1-100\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"Credential Harvesting\",\n      \"description\": \"The code attempts to read system files such as `/proc/self/cgroup` and `/etc/wsl.conf`, which could indicate an attempt to gather system information or detect specific environments (like Docker or WSL). This could be a precursor to more malicious activities.\",\n      \"code_reference\": \"extension/dist/578.extension.js\",\n      \"line_hint\": \"Lines 1-100\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"Obfuscation\",\n      \"description\": \"The code uses Base64 encoding for command execution, which is a common technique to hide malicious payloads. The `y.encodeCommand` function suggests encoding commands to avoid detection.\",\n      \"code_reference\": \"extension/dist/578.extension.js\",\n      \"line_hint\": \"Lines 1-100\"\n    }\n  ],\n  \"summary\": \"The extension exhibits several suspicious patterns, including the use of system command execution with potentially dangerous arguments, Base64 encoding of commands, and environment detection that could indicate malicious intent. While not immediately critical, these findings raise significant red flags about the extension's purpose.\"\n}\n```\n\n=== extension/dist/578.extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Use of `child_process.execFile` which can execute arbitrary commands on the system.\",\n      \"code_reference\": \"line 15-16\",\n      \"line_hint\": 15\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"Dynamic\n\n=== extension/dist/578.extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"COMMAND_EXECUTION\",\n      \"description\": \"Usage of `child_process.execFile` which allows arbitrary command execution.\",\n      \"code_reference\": \"chunk 3/5, line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"POWERSHELL_EXECUTION\",\n      \"description\": \"Execution of PowerShell commands via `y(r, { powerShellPath: e })` which can be used for malicious scripting.\",\n      \"code_reference\": \"chunk 3/5, line 30\",\n      \"line_hint\": 30\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"OBFUSCATION\",\n      \"description\": \"Use of complex variable names and potential obfuscation techniques to hide code intent.\",\n      \"code_reference\": \"chunk 3/5, line 15\",\n      \"line_hint\": 15\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"ENVIRONMENTAL_DETECTION\",\n      \"description\": \"Checking for SSH-related environment variables which may indicate environment fingerprinting.\",\n      \"code_reference\": \"chunk 3/5, line 3\",\n      \"line_hint\": 3\n    }\n  ],\n  \"summary\": \"The extension exhibits high-risk indicators including arbitrary command execution via `child_process.execFile` and PowerShell usage. These capabilities are not justified by the extension's apparent purpose, raising concerns about potential malicious behavior. The code\n\n=== extension/dist/578.extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a legitimate VS Code extension that queries system configurations to determine the default browser. No malicious or suspicious patterns were detected.\"\n}\n```\n\n=== extension/dist/578.extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"COMMAND_EXECUTION\",\n      \"description\": \"Use of `child_process.spawn()` which allows arbitrary command execution. This could be exploited if not properly sanitized.\",\n      \"code_reference\": \"extension/dist/578.extension.js\",\n      \"line_hint\": \"approximate line 30-50\"\n    }\n  ],\n  \"summary\": \"The code uses `child_process.spawn()` which poses a high risk of arbitrary command execution. While this could be part of legitimate functionality, it requires careful sanitization to prevent potential exploitation. No critical or medium-risk indicators were found, but the high-risk finding necessitates closer examination.\"\n}\n```"
+}
