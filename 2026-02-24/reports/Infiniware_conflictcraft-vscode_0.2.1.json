@@ -1,0 +1,85 @@
+{
+  "extension_id": "Infiniware.conflictcraft-vscode",
+  "version": "0.2.1",
+  "display_name": "ConflictCraft",
+  "publisher_name": "Infiniware",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "fd458b9f98427069857ab405a947b2daf1b631a6cd6fbdc4d619f80f4db9e9d9",
+  "install_count": 1,
+  "average_rating": 5.0,
+  "published_date": "2026-02-23T21:13:47.39Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.4,
+  "static_analysis_score": 0.5,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.7,
+  "composite_score": 0.37,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 5,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 240,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 38,
+      "code_snippet": "const cp = __importStar(require(\"node:child_process\"));"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/backendClient.js",
+      "line_number": 37,
+      "code_snippet": "const cp = __importStar(require(\"node:child_process\"));"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onCommand:conflictcraft.openEditor', 'onCommand:conflictcraft.resolveCurrentFile', 'onCommand:conflictcraft.runDoctor', 'onCommand:conflictcraft.scanWorkspaceConflicts', 'onCommand:conflictcraft.resolveGitUnmerged', 'onCommand:conflictcraft.openFullTutorial', 'onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 372,
+      "code_snippet": "panel = vscode.window.createWebviewPanel(\"conflictcraft\", `ConflictCraft: ${path.basename(document.uri.fsPath)}`, vscode.ViewColumn.Active, {"
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T19:44:06.052059+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Usage of `child_process.spawn()` which can execute arbitrary commands, posing a potential risk if not properly sanitized.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": 15\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"Extension's use of `child_process` may not be proportionate to its stated purpose of Git conflict resolution, potentially indicating hidden capabilities.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": 15\n    }\n  ],\n  \"summary\": \"The extension exhibits potential risks due to the use of `child_process.spawn()`, which could execute arbitrary commands. While the extension's primary functionality aligns with its description, the presence of this capability raises concerns about possible hidden or abusive behavior.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"ARBITRARY_COMMAND_EXECUTION\",\n      \"description\": \"The extension uses `child_process` which can execute arbitrary commands, posing a high risk of command injection attacks.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"Lines 1-10\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CONFIGURATION_ACCESS\",\n      \"description\": \"The extension accesses configuration settings which may include sensitive information if not properly sanitized.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"Lines 20-30\"\n    }\n  ],\n  \"summary\": \"The extension exhibits potential high-risk behavior due to the use of `child_process`, which can execute arbitrary commands. Additionally, it accesses configuration settings that may contain sensitive information. While no critical indicators were found, the extension requires careful monitoring to ensure it does not misuse these capabilities.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a conflict resolution tool for version control systems. It registers commands related to conflict resolution, toggling explain mode, undo/redo actions, running a self-check (doctor), and scanning the workspace for conflicts. No critical, high-risk, or medium-risk indicators were identified. The functionality appears to align with the extension's stated purpose, and there are no signs of malicious behavior or capability mismatches.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be a legitimate VS Code extension for handling git conflicts. It uses standard VS Code APIs and git CLI interactions without any signs of malicious behavior. No critical, high-risk, or medium-risk indicators were found. The functionality aligns with its stated purpose.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension focused on conflict resolution in files. No critical, high, or medium-risk indicators were identified. The code primarily handles backend errors, opens webview panels for the extension's interface, and saves resolved conflicts. All activities align with the extension's expected functionality, and no signs of malicious behavior or credential abuse were detected.\"\n}\n```"
+}
