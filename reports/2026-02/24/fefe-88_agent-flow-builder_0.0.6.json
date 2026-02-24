@@ -1,0 +1,244 @@
+{
+  "extension_id": "fefe-88.agent-flow-builder",
+  "version": "0.0.6",
+  "display_name": "Agent Flow Builder",
+  "publisher_name": "fefe-88",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "3becaa9775018e5a28bff2a7c1439776b7e661df4e6131e578a58515d10b6855",
+  "install_count": 6,
+  "average_rating": 0.0,
+  "published_date": "2026-02-21T07:18:34.303Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 20,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Buffer.from(s,\"utf8\"));const o=await r.workspace.openTextDocument(e);await r.commands.executeCommand(\"vscode.openWith\",o.uri,c.AgentBuilderEditorProvider.viewType)}var i})),e.subscriptions.push(r.comm",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(\\`${e}\\`, { encoding: 'base64' });\\n\\n`,c+=\"  const contents = [\\n\",c+=`    { text: \\`${r}\\` },\\n`,c+=\"    {\\n\",c+=\"      inlineData: {\\n\",c+=`        mimeType: '${i.sttAudioMimeType||\"au",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "onDidChangeTextDocument(n=>{if(n.document.uri.toString()===e.uri.toString()){const e=(0,l.parseAgentFile)(n.document.getText());t.webview.postMessage({type:\"update\",config:e})}});t.onDidDispose(()=>{f",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading document content and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "document.getText());t.webview.postMessage({type:\"update\",config:e})}});t.onDidDispose(()=>{f.dispose(),d.dispose(),u.dispose(),o.dispose(),clearInterval(h)})}async updateDocument(e,t){const n=new r.Wo",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_content_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Streaming document changes with serialization (real-time code theft)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "onDidChangeTextDocument(n=>{if(n.document.uri.toString()===e.uri.toString()){const e=(0,l.parseAgentFile)(n.document.getText());t.webview.postMessage({type:\"update\",config:e})}});t.onDidDispose(()=>{f",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_change_stream"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Bulk workspace file discovery and reading",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.findFiles(\"**/*.js\",\"**/node_modules/**\"),t=[];for(const n of e)try{if((await r.workspace.openTextDocument(n)).getText().includes(\"AGENT_BUILDER\")){const e=c.basename(n.fsPath,\".js\");t.push(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_bulk_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Global error:', msg, url, lineNo, columnNo, error);\\n      return false;\\n    };\\n  <\\/script>\\n  <script type=\"module\" nonce=\"${i}\" src=\"${t}\"><\\/script>\\n</body>\\n</html>`}}},398(e){e.exports=requir",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+      "file_path": "extension/webview-ui/dist/webview.js",
+      "line_number": 56,
+      "code_snippet": "addEventListener(\"keydown\",T),window.addEventListener(\"keyup\",V),()=>{window.removeEventListener(\"keydown\",T),window.removeEventListener(\"keyup\",V)}},[i,Fe]);const ut=T=>{var U;const $=T.target.closes",
+      "category": "infostealer_behavior",
+      "pattern_id": "keylogger_listener"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/webview-ui/dist/webview.js",
+      "line_number": 37,
+      "code_snippet": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0}),Jl=gt(zp),Lp=Te({},Jr,{touches:0,targetTouches:0,changedTouches:0,altKey:0,metaKey:0,ctrlKey:0,shif",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/webview-ui/dist/webview.js",
+      "line_number": 56,
+      "code_snippet": "Width:0},children:Fe()})]}),e.type===\"IF_ELSE\"&&e.settings.cases&&o.jsx(\"div\",{style:{width:\"100%\",display:\"flex\",flexDirection:\"column\",gap:\"4px\",position:\"relative\"},children:e.settings.cases.map((b",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(\\`${e}\\`, { encoding: 'base64' });\\n\\n`,c+=\"  const contents = [\\n\",c+=`    { text: \\`${r}\\` },\\n`,c+=\"    {\\n\",c+=\"      inlineData: {\\n\",c+=`        mimeType: '${i.sttAudioMimeType||\"au",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(\\`${e}\\`, { encoding: 'base64' });\\n\\n`,c+=\"  const contents = [\\n\",c+=`    { text: \\`${r}\\` },\\n`,c+=\"    {\\n\",c+=\"      inlineData: {\\n\",c+=`        mimeType: '${i.sttAudioMimeType||\"au",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "fetch(\"https://api.lemonsqueezy.com/v1/licenses/validate\",{method:\"POST\",headers:{Accept:\"application/json\",\"Content-Type\":\"application/x-www-form-urlencoded\"},body:new URLSearchParams(i)}),o=await s.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".postMessage({type:\"init\",config:s})},100),t.webview.onDidReceiveMessage(async n=>{switch(console.log(\"Received message from webview:\",n.type),n.type){case\"update\":await this.updateDocument(e,n.config",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "webview_phishing",
+      "description": "WebView panel combined with external HTTP (potential phishing overlay)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "webview.html=i;const s=(0,l.parseAgentFile)(e.getText());console.log(\"Parsed config:\",s),setTimeout(()=>{console.log(\"Sending initial config to webview\"),t.webview.postMessage({type:\"init\",config:s})}",
+      "category": "builtin",
+      "pattern_id": "webview_phishing"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/webview-ui/dist/webview.js",
+      "line_number": 56,
+      "code_snippet": ".postMessage({type:\"update\",config:r}),console.log(\"Config update sent to extension\",r)}catch(s){console.error(\"Failed to send update:\",s)}},setEnvErrors:n=>{e({envErrors:n})},setLicenseInfo:n=>{e({li",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "14 CRITICAL findings",
+    "9 HIGH findings",
+    "Composite risk 0.56 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T06:21:25.747371+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"Extension claims to be a visual AI workflow builder but exhibits critical exfiltration and credential access patterns.\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"INFostealer\",\n      \"description\": \"Multiple indicators of data exfiltration, including base64 encoding and network transmission of file contents.\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"CREDENTIAL_HARVESTING\",\n      \"description\": \"Attempts to read files using base64 encoding, potentially targeting sensitive information like credentials.\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"NETWORK_ACTIVITY\",\n      \"description\": \"Network calls to external domains and potential use of SecretStorage API, indicating unauthorized data transmission.\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits significant malicious behavior, including data exfiltration, credential harvesting, and unauthorized network activity. These activities are entirely inconsistent with its advertised purpose as an AI workflow builder, indicating a major capability disconnect and potential malicious intent.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be standard VS Code extension functionality, handling module exports, initializing services, and registering commands and providers. No malicious patterns or suspicious activities were identified.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension appears to handle license activation and write arbitrary JavaScript files, which may not be proportional to its advertised function if it's meant for a different purpose like theming or formatting.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a legitimate VS Code extension handling license management and documentation. No critical, high-risk, or medium-risk indicators were identified. The functionality is proportional to its advertised purpose with no signs of malicious behavior.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.15,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension that monitors JavaScript files for a specific keyword. It uses standard VS Code APIs for file watching and tree structure manipulation. No malicious or suspicious activities were detected. The functionality seems proportional to its likely purpose of file exploration and monitoring.\"\n}\n```\n\n=== extension/webview-ui/dist/webview.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.95,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be standard JavaScript/TypeScript code for a VS Code extension, primarily focusing on module loading and React component setup. No critical, high-risk, or medium-risk indicators were identified. The code does not exhibit signs of malicious behavior, credential leakage, or unauthorized access. The functionality aligns with typical web-based extension behavior.\"\n}\n```\n\n=== extension/webview-ui/dist/webview.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a React-like component implementation, focusing on component state and rendering logic. No critical, high-risk, or medium-risk indicators were identified. The code aligns with expected patterns for a webview UI in a VS Code extension, with no evidence of malicious or suspicious behavior.\"\n}\n```\n\n=== extension/webview-ui/dist/webview.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a React-based webview implementation within a VS Code extension. It contains standard React component handling and children management functions, which align with typical UI extension behavior. No malicious or suspicious patterns were identified during the analysis.\"\n}\n```\n\n=== extension/webview-ui/dist/webview.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a React-like library or JSX runtime implementation. It contains standard React component creation functions and does not exhibit any malicious or suspicious behavior. No critical-risk, high-risk, or medium-risk indicators were identified. The code is cleanly focused on UI component rendering and does not perform any actions outside the scope of a typical VS Code extension UI implementation.\"\n}\n```\n\n=== extension/webview-ui/dist/webview.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a task scheduling or animation frame system, likely from a UI component. It does not exhibit any malicious behavior, secret leakage, or suspicious patterns. The functions are focused on managing a priority queue and processing tasks, which aligns with expected behavior for a webview component in a VS Code extension. No critical, high-risk, or medium-risk indicators were identified.\"\n}\n```"
+}
