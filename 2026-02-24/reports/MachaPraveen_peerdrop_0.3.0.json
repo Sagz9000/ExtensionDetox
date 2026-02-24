@@ -1,0 +1,154 @@
+{
+  "extension_id": "MachaPraveen.peerdrop",
+  "version": "0.3.0",
+  "display_name": "PeerDrop - P2P File Transfer & Voice",
+  "publisher_name": "MachaPraveen",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "b27449ee1f812cd0423d1466f6369cd76fc7d759b4a3468e852057fc0559cb2a",
+  "install_count": 3,
+  "average_rating": 0.0,
+  "published_date": "2026-02-23T21:07:55.4Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.85,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6599999999999999,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 11,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readDirectory(e);for(const[r,o]of n){const n=s.Uri.joinPath(e,r);if(o===s.FileType.File)t.push(n);else if(o===s.FileType.Directory){const e=await l(n);t.push(...e)}}return t}},803(e,t,n){var r,o=this&",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"peerdrop\")}get signalingServerUrl(){return this.config.get(\"signalingServerUrl\",\"wss://peerdrop-signal.example.com\")}get displayName(){return this.config.get(\"displayName\",",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Media capture combined with network exfiltration",
+      "file_path": "extension/dist/webview.js",
+      "line_number": 1,
+      "code_snippet": "getUserMedia({audio:{echoCancellation:!0,noiseSuppression:!0,autoGainControl:!0},video:!1});for(const e of B.getAudioTracks())b.push(n.addTrack(e,B));(0,f.t)().postMessage({command:\"voiceCallStarted\"}",
+      "category": "infostealer_behavior",
+      "pattern_id": "media_capture"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Webcam/microphone access via MediaDevices API (review context)",
+      "file_path": "extension/dist/webview.js",
+      "line_number": 1,
+      "code_snippet": "navigator.mediaDevices.getUserMedia(",
+      "category": "infostealer_behavior",
+      "pattern_id": "media_access_standalone"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/webview.js",
+      "line_number": 1,
+      "code_snippet": "btoa){var o=btoa(unescape(encodeURIComponent(JSON.stringify(t)))),a=\"sourceMappingURL=data:application/json;charset=utf-8;base64,\".concat(o),r=\"/*# \".concat(a,\" */\");return[e].concat([r]).join(\"\\n\")}r",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/dist/webview.js",
+      "line_number": 1,
+      "code_snippet": "width: 0;\\n  padding: 6px 10px;\\n  background: var(--pd-input-bg);\\n  color: var(--pd-input-fg);\\n  border: 1px solid var(--pd-input-border);\\n  border-radius: var(--pd-radius);\\n  font-family: var(--",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFile(t.tempPath);await s.workspace.fs.writeFile(o,e)}catch(t){return(0,f.logError)(`Failed to write received file to ${o.fsPath}`,t),s.window.showErrorMessage(`PeerDrop: Failed to save \"${e.fileNa",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".postMessage({command:\"endVoiceCall\"}):s.window.showInformationMessage(\"PeerDrop: No active voice call.\")};const s=a(n(398))},942(e,t,n){var r,o=this&&this.__createBinding||(Object.create?function(e,t",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/webview.js",
+      "line_number": 1,
+      "code_snippet": ".postMessage({command:\"receiveFileMetadata\",payload:{transferId:t.transferId,fileName:t.fileName,fileSize:t.fileSize,totalChunks:t.totalChunks,sha256:t.sha256,senderId:t.senderId,senderName:t.senderNa",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/webview.js",
+      "line_number": 1,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/webview.js",
+      "line_number": 1,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "5 HIGH findings",
+    "Composite risk 0.50 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T19:52:00.814916+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"SECRET_LEAKAGE\",\n      \"description\": \"Potential credential harvesting via file reading.\",\n      \"code_reference\": \"readFile(t.tempPath)\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"CREDENTIAL_HARVESTING\",\n     \n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a peer connection handling system, with functions related to joining rooms and managing connections. No critical, high, or medium-risk indicators were identified. The code aligns with expected behavior for a collaboration or peer-sharing extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a VS Code extension handling room code generation and clipboard operations. No critical, high-risk, or medium-risk indicators were identified. The code aligns with expected functionality for a room code-sharing feature, utilizing standard VS Code APIs and showing no signs of malicious behavior or supply-chain attack patterns.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension contains functionality not explicitly described in its marketplace listing, particularly the file-sharing and peer-to-peer communication features.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 4/5)\",\n      \"line_hint\": \"line 20-40\"\n    }\n  ],\n  \"summary\": \"The extension exhibits functionality that may not be fully aligned with its advertised purpose, particularly in file-sharing and peer communication. While not overtly malicious, there are behavioral mismatches that warrant closer scrutiny.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a file-sharing feature in a VS Code extension, with no evidence of malicious behavior. The functionality is consistent with its expected purpose, and no critical, high, or medium-risk indicators were identified.\"\n}\n```\n\n=== extension/dist/webview.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.85,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Webcam and microphone access via MediaDevices API detected, which could indicate data harvesting.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"data_exfiltration\",\n      \"description\": \"Base64 encoding of data combined with network transmission, suggesting potential data exfiltration.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"network_activity\",\n      \"description\": \"Network postMessage and potential hidden iframe communication, possibly indicating C2 or beaconing activity.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    }\n  ],\n  \"summary\": \"The code exhibits multiple high-risk patterns including media device access, data encoding for network transmission, and potential hidden communication channels, suggesting suspicious or malicious behavior.\"\n}\n```\n\n=== extension/dist/webview.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code is a CSS stylesheet for a VS Code extension's webview component. It contains standard styling rules and does not exhibit any malicious or suspicious behavior. There are no signs of secret leakage, credential harvesting, information stealing, or network exfiltration. The code is benign and aligns with expected functionality for a webview-based extension.\"\n}\n```\n\n=== extension/dist/webview.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet contains CSS styling for a VS Code extension's webview, focusing on UI elements like buttons and inputs. No malicious or suspicious patterns were detected. The code appears to be benign, with no signs of secret leakage, credential harvesting, or network activity beyond standard UI theming.\"\n}\n```\n\n=== extension/dist/webview.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be a CSS file defining styles for a webview panel, likely part of a VS Code extension's user interface. No malicious or suspicious patterns were identified in the provided code snippet. The code focuses on styling elements such as progress bars and icons, which is consistent with expected behavior for a webview-based extension.\"\n}\n```\n\n=== extension/dist/webview.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be a standard part of a VS Code extension's Webpack bundle, referencing CSS files for styling. No malicious or suspicious patterns were identified in this snippet.\"\n}\n```"
+}
