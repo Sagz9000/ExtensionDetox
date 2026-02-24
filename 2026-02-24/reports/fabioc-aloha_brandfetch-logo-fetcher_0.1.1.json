@@ -1,0 +1,72 @@
+{
+  "extension_id": "fabioc-aloha.brandfetch-logo-fetcher",
+  "version": "0.1.1",
+  "display_name": "Brandfetch Logo Fetcher",
+  "publisher_name": "fabioc-aloha",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "26dce7a03c484ef8b2b881ad809885515659bf821ea6ddf901222502e048ffe3",
+  "install_count": 3,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T17:18:20.877Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.7,
+  "static_analysis_score": 0.7,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5325,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 3,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Embedded private key block",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "RSA",
+      "category": "leaked_secrets",
+      "pattern_id": "private_key_header"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(this.storePath,\"utf-8\"))}catch{}return{version:ee,lastUpdated:new Date().toISOString(),files:{}}}save(){this.store.lastUpdated=new Date().toISOString();let e=M.dirname(this.storePath);m.e",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"POST\",headers:{Authorization:`Bearer ${this.apiToken}`,\"Content-Type\":\"application/json\"},body:JSON.stringify({input:t})});if(!n.ok)throw new Error(`Replicate API error ${n.status}: ${await n.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T18:41:04.201851+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"builtin\",\n      \"description\": \"Pattern suggesting data exfiltration detected in network calls.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"leaked_secrets\",\n      \"description\": \"Embedded private key block detected.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    }\n  ],\n  \"summary\": \"The code shows signs of potential data exfiltration and embedded private keys, raising concerns about security and data handling. Further analysis is required to confirm the nature of these findings.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a file observation system, handling JSON data storage and file tracking. No suspicious or malicious patterns were detected. The operations are confined to expected file system interactions and do not exhibit any signs of secret leakage, credential harvesting, or network exfiltration. The code is clean and proportional to its apparent functionality.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.7,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"SECRET_PATTERNS\",\n      \"description\": \"The code includes patterns designed to detect sensitive information such as private keys and API tokens, which could indicate potential malicious activity or improper handling of sensitive data.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"around line 100\"\n    }\n  ],\n  \"summary\": \"The extension includes a secret scanning component with patterns targeting sensitive information like private keys and API tokens. While not overtly malicious, this indicates a potential capability for detecting and handling sensitive data, which may not align with the extension's advertised purpose if not explicitly stated.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a secret detection mechanism, scanning for potential credentials or secrets in code files. It defines patterns to identify various types of secrets (e.g., AWS keys, GitHub tokens) and reports matches with their severity. No evidence of malicious behavior, credential harvesting, or network exfiltration was found. The functionality aligns with its likely purpose as a security tool to detect exposed secrets in code.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code indicates integration with Replicate's API for model predictions, which may not be explicitly stated in the marketplace listing.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 5/5)\",\n      \"line_hint\": \"10-25\"\n    }\n  ],\n  \"summary\": \"The extension appears to integrate with Replicate's API for generating predictions, which could indicate functionality not explicitly disclosed. While not overtly malicious, there is a potential disconnect between the extension's advertised purpose and its actual capabilities.\"\n}\n```"
+}
