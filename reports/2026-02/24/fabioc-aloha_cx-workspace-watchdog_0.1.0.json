@@ -1,0 +1,81 @@
+{
+  "extension_id": "fabioc-aloha.cx-workspace-watchdog",
+  "version": "0.1.0",
+  "display_name": "CX Workspace Watchdog",
+  "publisher_name": "fabioc-aloha",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "b44a83c6db76cedf18bafbfdae9b64451982dd166e1c337fc02457fc594b2b0f",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T16:54:28.867Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.6,
+  "static_analysis_score": 0.7,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.4975,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 4,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Embedded private key block",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "RSA",
+      "category": "leaked_secrets",
+      "pattern_id": "private_key_header"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(this.storePath,\"utf-8\"))}catch{}return{version:ie,lastUpdated:new Date().toISOString(),files:{}}}save(){this.store.lastUpdated=new Date().toISOString();let e=H.dirname(this.storePath);v.e",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"POST\",headers:{Authorization:`Bearer ${this.apiToken}`,\"Content-Type\":\"application/json\"},body:JSON.stringify({input:t})});if(!n.ok)throw new Error(`Replicate API error ${n.status}: ${await n.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T17:04:29.343477+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.6,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Attempt to read files which may include sensitive information.\",\n      \"code_reference\": \"readFileSync(this.storePath,\\\"utf-8\\\")\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"data_exfiltration\",\n      \"description\": \"Network call with Authorization header potentially indicating data exfiltration.\",\n      \"code_reference\": \"method:\\\"POST\\\",headers:{Authorization:Bearer $ {this.apiToken}\",\n      \"line_hint\": \"2\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"secrets_leakage\",\n      \"description\": \"Potential embedded private key block with RSA, though not directly visible in provided code.\",\n      \"code_reference\": \"RSA\",\n      \"line_hint\": \"1\"\n    }\n  ],\n  \"summary\": \"The code exhibits signs of potential credential access and data exfiltration, which do not align with the extension's advertised purpose of file monitoring. Further investigation is required to confirm the nature of these activities.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a file observation feature, handling JSON data storage and file path operations. No malicious or suspicious patterns were identified in this snippet.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a file observation and secret scanning system. It defines file tracking logic and secret detection patterns, but does not exhibit any malicious behavior. The secret patterns are used for detection, not extraction or misuse. No critical-risk indicators were found.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a secret detection mechanism, scanning for potential API keys and credentials in code. It defines patterns to identify various secrets like AWS keys, GitHub tokens, and Azure connections strings. The functionality is legitimate and proportional to a security-focused extension, with no evidence of malicious behavior.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension that interacts with the Replicate AI API. It contains a ReplicateClient class that handles API token management and makes authenticated requests to the Replicate API endpoints. No critical, high, or medium-risk indicators were identified. The code's functionality aligns with its expected purpose of generating AI outputs using specified models, and there are no signs of malicious or suspicious activities.\"\n}\n```"
+}
