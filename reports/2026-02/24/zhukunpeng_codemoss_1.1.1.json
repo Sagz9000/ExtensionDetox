@@ -1,0 +1,352 @@
+{
+  "extension_id": "zhukunpeng.codemoss",
+  "version": "1.1.1",
+  "display_name": "CodeMoss",
+  "publisher_name": "zhukunpeng",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "ab31663db633f0b288f97c18804cd56890fb1f45c77544574f1d3f949caa34f7",
+  "install_count": 9473,
+  "average_rating": 3.0,
+  "published_date": "2023-07-14T12:19:45.06+00:00",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.6,
+  "composite_score": 0.6549999999999999,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 32,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Mass serialization of all environment variables",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "Object.keys(process.env)",
+      "category": "credential_harvesting",
+      "pattern_id": "env_mass_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Browser cookie exfiltration",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "document.cookie=t.join(\"; \")},read:function(e){const a=document.cookie.match(new RegExp(\"(^|;\\\\s*)(\"+e+\")=([^;]*)\"));return a?decodeURIComponent(a[3]):null},remove:function(e){this.write(e,\"\",Date.now",
+      "category": "infostealer_behavior",
+      "pattern_id": "browser_cookie_theft"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "Buffer.from(this._streams[i])]),\"string\"==typeof this._streams[i]&&this._streams[i].substring(2,a.length+2)===a||(e=Buffer.concat([e,Buffer.from(x.LINE_BREAK)])));return Buffer.concat([e,Buffer.from(t",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "Global,t={command:\"CodeMoss.applyCallback\",callback:e=>{e?.()}},r={command:\"CodeMoss.setServerUrl\",callback:()=>{const e=n.workspace.getConfiguration(\"CodeMoss\");n.window.showInputBox({prompt:\"Enter t",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "workspace.getConfiguration(\"CodeMoss\");n.window.showInputBox({prompt:\"Enter the URL of your CodeMoss Server\",value:e.get(\"serverUrl\",\"\")}).then((a=>{a&&(console.debug(\"Set CodeMoss Server URL: \",a),e.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Browser Local Storage / IndexedDB access",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": 2,
+      "code_snippet": "IndexedDB",
+      "category": "credential_harvesting",
+      "pattern_id": "browser_local_storage"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Browser cookie exfiltration",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": 2,
+      "code_snippet": "document.cookie=a.join(\"; \")},read:function(t){const e=document.cookie.match(new RegExp(\"(^|;\\\\s*)(\"+t+\")=([^;]*)\"));return e?decodeURIComponent(e[3]):null},remove:function(t){this.write(t,\"\",Date.now",
+      "category": "infostealer_behavior",
+      "pattern_id": "browser_cookie_theft"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": 2,
+      "code_snippet": "Buffer.from(t):t}function u(t,n,o){let c=t;if(t&&!o&&\"object\"==typeof t)if(M.endsWith(n,\"{}\"))n=r?n:n.slice(0,-2),t=JSON.stringify(t);else if(M.isArray(t)&&function(t){return M.isArray(t)&&!t.some(D)}",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": 2,
+      "code_snippet": "globalThis?n.g:globalThis,l=o(),f=i(\"Array.prototype.indexOf\",!0)||function(t,e){for(var n=0;n<t.length;n+=1)if(t[n]===e)return n;return-1},p=i(\"String.prototype.slice\"),y={},d=Object.getPrototypeOf;c",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": 2,
+      "code_snippet": "workspace.getConfiguration(\"CodeMoss\");r.window.showInputBox({prompt:\"Enter the URL of your CodeMoss Server\",value:t.get(\"serverUrl\",\"\")}).then((e=>{e&&(console.debug(\"Set CodeMoss Server URL: \",e),t.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['*']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'assert' has 'prepare': npm run build",
+      "file_path": "extension/node_modules/assert/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'axios' has 'prepare': husky install && npm run prepare:hooks",
+      "file_path": "extension/node_modules/axios/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'new Function(' pattern",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": 2,
+      "code_snippet": "(()=>{var t={943:(t,e,n)=>{\"use strict\";var r=n(224);function o(t){return o=\"function\"==typeof Symbol&&\"symbol\"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&\"function\"==t"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "MAGIC_MISMATCH",
+      "description": "File 'extension/images/logo.png' claims to be '.png' but magic bytes indicate 'JPEG' (expected: {'PNG'})",
+      "file_path": "extension/images/logo.png"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"post\"};return\"string\"==typeof e?(e=c(e),n=m({port:e.port,path:e.pathname,host:e.hostname,protocol:e.protocol},o)):(n=m(e,o)).port||(n.port=\"https:\"==n.protocol?443:80),n.headers=this.getHeader",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Known miner executable reference",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "claymore",
+      "category": "crypto_mining",
+      "pattern_id": "xmrig_ref"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/node/extension.js",
+      "line_number": 2,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "obfuscated_eval",
+      "description": "Obfuscated eval() / Function() execution",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": 2,
+      "code_snippet": "Function(\"return",
+      "category": "builtin",
+      "pattern_id": "obfuscated_eval"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "obfuscated_eval",
+      "description": "Obfuscated eval() / Function() execution",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": 2,
+      "code_snippet": "Function(\"return",
+      "category": "builtin",
+      "pattern_id": "obfuscated_eval"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/web/extension.js",
+      "line_number": 2,
+      "code_snippet": ".postEvent(\"accept_word\"),r.commands.executeCommand(\"editor.action.inlineSuggest.acceptNextWord\")}}),p=t=>({command:\"CodeMoss.inlineCompletion.acceptNextLine\",callback:()=>{t.postEvent(\"accept_line\"),",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "10 CRITICAL findings",
+    "24 HIGH findings",
+    "Composite risk 0.64 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T03:34:35.221763+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/node/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Code attempts to serialize environment variables which could expose sensitive information.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Browser cookie exfiltration detected with document.cookie manipulation.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"crypto_mining\",\n      \"description\": \"Reference to known mining executable 'claymore' found, indicating potential crypto-mining activity.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"persistence_evasion\",\n      \"description\": \"Multiple instances of virtual machine detection strings ('virtualbox') found, suggesting attempts to avoid analysis in sandboxed environments.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"Extension's advertised function as a code completion tool does not align with detected capabilities like crypto-mining and credential harvesting.\",\n      \"code_reference\": \"DISCONNECT CHECK\",\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits several concerning patterns including credential harvesting, crypto-mining, and virtual machine detection, which are inconsistent with its advertised purpose of providing code completion functionality. These findings suggest potential malicious or deceptive behavior.\"\n}\n```\n\n=== extension/dist/node/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNUSUAL_PATTERN\",\n      \"description\": \"The code exhibits complex function calls and module interactions that don't align with standard VS Code extension behavior. This could indicate potential obfuscation or unintended functionality.\",\n      \"code_reference\": \"extension/dist/node/extension.js (chunk 2/5)\",\n      \"line_hint\": \"var t = i.keyedList ? i.keyedList[i.index] : i.index;\"\n    }\n  ],\n  \"summary\": \"The code shows signs of a complex module system with potential for hidden functionality. While not overtly malicious, the patterns suggest a need for further investigation to ensure it aligns with its advertised purpose.\"\n}\n```\n\n=== extension/dist/node/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNUSUAL_BEHAVIOR\",\n      \"description\": \"The code contains a loop that processes streams without clear bounds, potentially indicating excessive data handling.\",\n      \"code_reference\": \"extension/dist/node/extension.js (chunk 3/5)\",\n      \"line_hint\": \"around line 10-20\"\n    },\n    {\n      \"severity\": \"LOW\",\n      \"category\": \"CODE_QUALITY\",\n      \"description\": \"maxDataSize is set to Infinity (1/0), which might allow unbounded data processing.\",\n      \"code_reference\": \"extension/dist/node/extension.js (chunk 3/5)\",\n      \"line_hint\": \"around line 5\"\n    }\n  ],\n  \"summary\": \"The code exhibits unusual data handling patterns with potential for excessive data processing. While not overtly malicious, it raises questions about the extension's data handling practices and alignment with its intended functionality.\"\n}\n```\n\n=== extension/dist/node/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a logging or debugging utility, handling color formatting and storage settings. No malicious or suspicious behavior detected.\"\n}\n```\n\n=== extension/dist/node/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a logging or formatting utility within a benign VS Code extension. It defines color codes and a logging function with error handling. No malicious or suspicious activities were detected.\"\n}\n```\n\n=== extension/dist/web/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Access to browser cookies and IndexedDB which can be used to harvest sensitive information.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Pattern suggesting data exfiltration via base64 encoding and network transmission.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"obfuscation\",\n      \"description\": \"Obfuscated eval() / Function() execution detected, which can be used to execute arbitrary code.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Access to VS Code configuration and potential network exfiltration of sensitive data.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    }\n  ],\n  \"summary\": \"The code exhibits multiple critical-risk behaviors including credential harvesting, data exfiltration, and obfuscated code execution. These patterns are highly suspicious and indicative of potential malicious activity.\"\n}\n```\n\n=== extension/dist/web/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of an assertion library, likely used for testing or validation within the VS Code extension. It does not exhibit any malicious or suspicious behavior, such as secret leakage, network communication, or unauthorized file access. The functions are standard for assertion logic and do not indicate any capability beyond their advertised purpose.\"\n}\n```\n\n=== extension/dist/web/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.95,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a testing or assertion framework, with functions related to strict equality checks and configuration validation. No critical, high-risk, or medium-risk indicators were identified. The code does not exhibit signs of malicious behavior, credential leakage, or unauthorized system access. The functions and patterns observed are consistent with standard testing utilities.\"\n}\n```\n\n=== extension/dist/web/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a testing or assertion framework, handling promise rejections and exceptions. No critical, high-risk, or medium-risk indicators were identified. The code lacks signs of malicious behavior, such as secret leakage, credential harvesting, or network exfiltration. The operations are consistent with standard error handling and test assertion logic.\"\n}\n```\n\n=== extension/dist/web/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a testing framework or utility functions within a VS Code extension. It contains functions related to error handling and asynchronous operations, which are common in JavaScript/TypeScript projects. No critical, high-risk, or medium-risk indicators were identified. The code does not exhibit signs of malicious behavior, secret leakage, or unauthorized access. The functionality appears to be aligned with typical testing and utility operations within an extension.\"\n}\n```"
+}
