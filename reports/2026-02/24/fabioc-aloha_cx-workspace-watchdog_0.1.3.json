@@ -1,0 +1,81 @@
+{
+  "extension_id": "fabioc-aloha.cx-workspace-watchdog",
+  "version": "0.1.3",
+  "display_name": "CX Workspace Watchdog",
+  "publisher_name": "fabioc-aloha",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "619f6662975d7dafd73fda2767b4915afe681b579c9ce66d66d16042e09b5699",
+  "install_count": 2,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T16:54:28.867Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.2,
+  "static_analysis_score": 0.7,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.3575,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 4,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Embedded private key block",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "RSA",
+      "category": "leaked_secrets",
+      "pattern_id": "private_key_header"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(this.storePath,\"utf-8\"))}catch{}return{version:ie,lastUpdated:new Date().toISOString(),files:{}}}save(){this.store.lastUpdated=new Date().toISOString();let e=H.dirname(this.storePath);v.e",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"POST\",headers:{Authorization:`Bearer ${this.apiToken}`,\"Content-Type\":\"application/json\"},body:JSON.stringify({input:t})});if(!n.ok)throw new Error(`Replicate API error ${n.status}: ${await n.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T17:45:22.737653+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"credential_leakage\",\n      \"description\": \"Potential attempt to read credential or key files detected.\",\n      \"code_reference\": \"readFileSync(this.storePath,\\\"utf-8\\\")\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"data_exfiltration\",\n      \"description\": \"Pattern suggesting data exfiltration with POST method and Authorization header using an API token.\",\n      \"code_reference\": \"method:\\\"POST\\\",headers:{Authorization:$\\n{\\n  this.apiToken\\n}\\n,\\\"Content-Type\\\":\\\"application/json\\\"}\",\n      \"line_hint\": \"2\"\n    }\n  ],\n  \"summary\": \"The code shows potential signs of credential access and data exfiltration, which do not align with the extension's advertised purpose of file monitoring. Further analysis is required to determine if these activities are legitimate or malicious.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a file observation system, handling JSON configuration files and file paths. No critical-risk, high-risk, or medium-risk indicators were found. The operations are confined to file system interactions and JSON data handling, which align with expected behavior for a file observation feature in a VS Code extension. No signs of credential leakage, network exfiltration, or malicious network calls were detected.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"SECRET_DETECTION\",\n      \"description\": \"The code includes a SecretScanner that detects sensitive patterns like private keys and API keys, which could indicate potential security monitoring but may also pose risks if misused.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"around line 100\"\n    }\n  ],\n  \"summary\": \"The extension includes a SecretScanner with patterns to detect sensitive information like private keys and API keys. While this could be part of legitimate security features, it raises concerns about how such secrets are handled and stored within the extension, potentially indicating a capability disconnect if the extension's purpose doesn't align with security scanning.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"SECRET_DETECTION\",\n      \"description\": \"The code contains a secret detection mechanism targeting various high-risk credentials and secrets with regular expressions.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"1-25\"\n    }\n  ],\n  \"summary\": \"The code implements a secret detection system with patterns targeting sensitive credentials like AWS keys, GitHub tokens, and Azure API keys. While legitimate for security purposes, the presence of such patterns in a VS Code extension could indicate monitoring or harvesting of sensitive information, depending on the extension's intended use.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension that interacts with an AI/ML model via the Replicate API. It contains no obvious malicious behavior, secrets, or credential harvesting. The functionality is proportional to its apparent purpose, with no major capability disconnect. The code is well-behaved and follows expected patterns for such an extension.\"\n}\n```"
+}
