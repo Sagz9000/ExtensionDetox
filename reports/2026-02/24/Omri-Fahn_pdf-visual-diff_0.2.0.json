@@ -1,0 +1,1325 @@
+{
+  "extension_id": "Omri-Fahn.pdf-visual-diff",
+  "version": "0.2.0",
+  "display_name": "PDF Visual Diff",
+  "publisher_name": "Omri-Fahn",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "879a4b081cb8d36953596e770c16f23ede98b2718854ba51a3711365fdcf7776",
+  "install_count": 2,
+  "average_rating": 5.0,
+  "published_date": "2026-02-21T14:18:27.927Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.8,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.7,
+  "composite_score": 0.635,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 129,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"pdfVisualDiff\").get(\"maxFileSizeMB\",50),o=n[0].resourceUri;try{const e=(await a.workspace.fs.stat(o)).size/1048576;if(e>r&&\"Open Anyway\"!==await a.window.showWarningMessage",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "addEventListener(\"keydown\",this.keydown.bind(this),{signal:t});window.addEventListener(\"keyup\",this.keyup.bind(this),{signal:t})}#Tt(){this.#et?.abort();this.#et=null}#Mt(){if(this.#O)return;this.#O=n",
+      "category": "infostealer_behavior",
+      "pattern_id": "keylogger_listener"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Screenshot being sent over network",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "toDataURL()}if(this.#Kr){const[t,e]=this.pageDimensions,i=Math.round(this.width*t*PixelsPerInch.PDF_TO_CSS_UNITS),s=Math.round(this.height*e*PixelsPerInch.PDF_TO_CSS_UNITS),n=new OffscreenCanvas(i,s);",
+      "category": "infostealer_behavior",
+      "pattern_id": "screenshot_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "btoa(l)});`}}`;this.insertRule(c);const u=this._document.createElement(\"div\");u.style.visibility=\"hidden\";u.style.width=u.style.height=\"10px\";u.style.position=\"absolute\";u.style.top=u.style.left=\"0px\"",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "readFile(t);return new Uint8Array(i)}const bt=\"Fill\",At=\"Stroke\",wt=\"Shading\";function applyBoundingBox(t,e){if(!e)return;const i=e[2]-e[0],s=e[3]-e[1],n=new Path2D;n.rect(e[0],e[1],i,s);t.clip(n)}cla",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "globalThis.pdfjsLib = {};t.d(__webpack_exports__,{AbortException:()=>AbortException,AnnotationEditorLayer:()=>AnnotationEditorLayer,AnnotationEditorParamsType:()=>m,AnnotationEditorType:()=>g,Annotati",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "width:0);if(t>i){s=a;i=t}else e?a>s&&(s=a):a<s&&(s=a)}return[e?1-s:s,i]}show(t,e,i){const[s,n]=this.#A(e,i),{style:a}=this.#s||=this.#f();t.append(this.#s);a.insetInlineEnd=100*s+\"%\";a.top=`calc(${100",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Key capture buffer being sent over network",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "Keystroke\",F:\"Format\",V:\"Validate\",C:\"Calculate\"},fA={WC:\"WillClose\",WS:\"WillSave\",DS:\"DidSave\",WP:\"WillPrint\",DP:\"DidPrint\"},pA={O:\"PageOpen\",C:\"PageClose\"},mA=1,yA=5,wA=1,DA=2,bA=3,FA=4,SA=5,kA=6,RA",
+      "category": "infostealer_behavior",
+      "pattern_id": "input_buffer_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAdrQQNxIgZFBEAgBy",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAAoAggiCSAAKAIEIg",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBAnRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA5BAnRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBAnRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBAnRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBAnRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBBXRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA1BBXRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA1BBXRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA1BBXRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA9qIg0oAgA2AgAgDC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA9qIQogCyARaiELIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAYgCWxBAnRqKAIANg",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAYgFWxBAnRqKAIANg",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAYgFWxBAnRqKAIANg",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAYgFWxBAnRqKAIANg",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBAnRqKAIANgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAkoAiwRDABFDQggDA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA9JDQMgBygCFCIVRQ",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA42AlQgCiAGKAIANg",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAYoAhA2AkAgBigCCC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA4gASABIA5LGzYCOC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA42AlQgCiATNgI8IA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAY2AjggCiAKKALEAT",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIASERIBAoAowBRQ0AI",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AkiASAMRg0BCwNAIAggA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAWtsRw0AIAooArQBI",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBzABsakEUa08NAC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAjYCACAKQbACaiEKI",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA5IGyAKIA1IGzYCAC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAdBBnRqIARqQTxrSQ",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAdBBnRqIARqQThrIg",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIANBAnQiAmogCyADQQ",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIABBAnQiA2ogCyAAQQ",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAFBBHRqIg4oAgBqIg",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAF2ayACbGo2AiRBAS",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIApFIAcbIQsgACgCCC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBCHRqIQoLIAAgCE",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAJBA3RqQQxqIgIgAU",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAdBAnQiA2pBBGsgAD",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAz9rgH9CwIAIARBBG",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAsgDWsiDCAKIAxKGy",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBgIAEcxAgIABBMC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAxsIAhqIQkCQAJAAk",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAsbIQpBACAMIAsbIQ",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAQ2AgAgAkEBQbcRIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAg2AihBoMIBIQQDQC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIASEICyAEQQFqIgQgC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA9rNgLwASAQIEkgD6",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAU0EQCAGQQJ0IRsMA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAiABIAtzIgFBEnRyQ",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAUgBygCACIEQR92Rh",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAUgBygCgAIiBEEfdk",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAVBCEEMIAEgBkkiCh",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAooAgBBgAJyNgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBDEEIIAEgBUkiCh",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA8bDAELIAYoAgQhCi",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIApFIA8bCyEGQRByIg",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBDEEIIAEgBkkiCh",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAooAgBBgBByNgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAZBCEEMIAEgBUkiCh",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAooAgBBgAJyNgIAIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAlBDEEIIAEgBUkiCh",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AkIAIQUMAQsgCUUNACAF",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIApBCU4bEB4gCkEJay",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAUgCkgbEB4gCiAFay",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAggC2oiFklxDQAgAi",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAtqIgsoAgAhDiAPIB",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAAoAlQbIRYgACgClA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAxJcQ0AIAJBfHEhAC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAtJIAEgCiAVQQJ0QQ",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA9JcQ0AGkEAIAAgC0",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIA4oAgAiASAYaiINIB",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAAgG2oiAUkgACAKIB",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAxGDQQgDiAQaiEOIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "AKIAxrIQYgAkEDaiECIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "globalThis.pdfjsWorker = {};e.d(__webpack_exports__,{WorkerMessageHandler:()=>WorkerMessageHandler});const t=!(\"object\"!=typeof process||process+\"\"!=\"[object process]\"||process.versions.nw||process.ve",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{\"use strict\";var e={265(e,t,i){var n,r=this&&this.__createBinding||(Object.create?function(e,t,i,n){void 0===n&&(n=i);var r=Object.getOwnPropertyDescriptor(t,i);r&&!(\"get\"in r?!t.__esModule:r.wr"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{\"use strict\";var e={265(e,t,i){var n,r=this&&this.__createBinding||(Object.create?function(e,t,i,n){void 0===n&&(n=i);var r=Object.getOwnPropertyDescriptor(t,i);r&&!(\"get\"in r?!t.__esModule:r.wr"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'new Function(' pattern",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": "*/var e={d:(t,i)=>{for(var a in i)e.o(i,a)&&!e.o(t,a)&&Object.defineProperty(t,a,{enumerable:!0,get:i[a]})},o:(e,t)=>Object.prototype.hasOwnProperty.call(e,t)},__webpack_exports__ = globalThis.pdfjsWo"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'new Function(' pattern",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "*/var t={d:(e,i)=>{for(var s in i)t.o(i,s)&&!t.o(e,s)&&Object.defineProperty(e,s,{enumerable:!0,get:i[s]})},o:(t,e)=>Object.prototype.hasOwnProperty.call(t,e)},__webpack_exports__ = globalThis.pdfjsLi"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFile(e.fsPath)}function g(e){return e?\"HEAD\"===e?\"HEAD\":/^[a-f0-9]{40}$/i.test(e)||/^[a-f0-9]{8,}$/i.test(e)?e.substring(0,8):e:\"Index\"}},344(e,t,i){var n,r=this&&this.__createBinding||(Object.cre",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "base64_payload",
+      "description": "Base64-encoded payload followed by execution",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "atob(\"T1RUTwALAIAAAwAwQ0ZGIDHtZg4AAAOYAAAAgUZGVE1lkzZwAAAEHAAAABxHREVGABQAFQAABDgAAAAeT1MvMlYNYwkAAAEgAAAAYGNtYXABDQLUAAACNAAAAUJoZWFk/xVFDQAAALwAAAA2aGhlYQdkA+oAAAD0AAAAJGhtdHgD6AAAAAAEWAAAAAZtYXhwAA",
+      "category": "builtin",
+      "pattern_id": "base64_payload"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "readFile(t);return new Uint8Array(i)}const bt=\"Fill\",At=\"Stroke\",wt=\"Shading\";function applyBoundingBox(t,e){if(!e)return;const i=e[2]-e[0],s=e[3]-e[1],n=new Path2D;n.rect(e[0],e[1],i,s);t.clip(n)}cla",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "fetch(t);if(!i.ok)throw new Error(i.statusText);switch(e){case\"arraybuffer\":return i.arrayBuffer();case\"blob\":return i.blob();case\"json\":return i.json()}return i.text()}return new Promise(((i,s)=>{con",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".postMessage({sourceName:i,targetName:s,callback:ot,callbackId:t.callbackId,data:e})}),(function(e){n.postMessage({sourceName:i,targetName:s,callback:lt,callbackId:t.callbackId,reason:wrapReason(e)})}",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Mining algorithm reference",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "etHash",
+      "category": "crypto_mining",
+      "pattern_id": "cryptonight_algo"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Mining algorithm reference",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "etHash",
+      "category": "crypto_mining",
+      "pattern_id": "cryptonight_algo"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Mining algorithm reference",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "etHash",
+      "category": "crypto_mining",
+      "pattern_id": "cryptonight_algo"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Web Worker performing hash computations (mining)",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": "new Worker(t,{type:\"module\"}),i=new MessageHandler(\"main\",\"worker\",e),terminateEarly=()=>{s.abort();i.destroy();e.terminate();this.destroyed?this._readyCapability.reject(new Error(\"Worker was destroye",
+      "category": "crypto_mining",
+      "pattern_id": "worker_hash_loop"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".postRun){\"function\"==typeof a.postRun&&(a.postRun=[a.postRun]);for(;a.postRun.length;)e=a.postRun.shift(),m.unshift(e)}var e;callRuntimeCallbacks(m)}()}}}}if(a.preInit){\"function\"==typeof a.preInit&&",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "WASM-based mining (high CPU usage)",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".wasmBinary;function tryParseAsDataURI(e){if(isDataURI(e))return function intArrayFromBase64(e){for(var t=atob(e),i=new Uint8Array(t.length),a=0;a<t.length;++a)i[a]=t.charCodeAt(a);return i}(e.slice(b",
+      "category": "crypto_mining",
+      "pattern_id": "wasm_mining"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/media/pdfjs/pdf.worker.min.mjs",
+      "line_number": 21,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [
+    {
+      "severity": "INFO",
+      "check_name": "EXTENSION_DEPENDENCIES",
+      "description": "Extension declares 1 extension dependencies: ['vscode.git']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "87 CRITICAL findings",
+    "41 HIGH findings",
+    "Composite risk 0.54 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-24T05:10:14.958733+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"COMMAND_EXECUTION\",\n      \"description\": \"Usage of `require('child_process')` which allows arbitrary command execution.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"VS_CODE_API_ABUSE\",\n      \"description\": \"Harvesting VSCode configuration and potential exfiltration via network.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"VS_CODE_API_ABUSE\",\n      \"description\": \"Enumerating installed extensions via `extensions.getExtension` which could be used for reconnaissance or malicious activities.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"Extension claims to provide PDF visual diffs but includes code for command execution and extension enumeration, which is a major capability disconnect.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    }\n  ],\n  \"summary\": \"The extension exhibits several high-risk behaviors including arbitrary command execution via `child_process`, VS Code configuration harvesting, and extension enumeration. These activities are not aligned with the extension's advertised purpose of providing PDF visual diffs, indicating a potential capability disconnect. The findings suggest possible malicious intent or poor coding practices.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension focused on Git and PDF file handling. It does not exhibit any malicious or suspicious behavior, with functions related to file operations and Git interactions. No critical-risk indicators were found, and the code's capabilities align with its likely intended functionality.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be a legitimate VS Code extension focused on handling Git repositories and PDF files. It uses standard Node.js and VS Code APIs without any signs of malicious behavior, such as secret leakage, credential harvesting, or unauthorized network communications. The functionality is proportional to its advertised purpose, with no evidence of suspicious or critical-risk activities.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Potential use of child_process which could enable arbitrary command execution.\",\n      \"code_reference\": \"i(350)\",\n      \"line_hint\": \"around line 344\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"file_system\",\n      \"description\": \"Use of fs.readFile which could potentially access sensitive files if not properly scoped.\",\n      \"code_reference\": \"l.promises.readFile\",\n      \"line_hint\": \"around line 350\"\n    }\n  ],\n  \"summary\": \"The code shows potential use of child_process and file reading operations which could be risky if not properly controlled. Further analysis is needed to determine if these operations are within the extension's legitimate scope.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a PDF visual diff extension, handling file operations and Git interactions. No malicious or suspicious patterns detected. The functionality is proportional to its advertised purpose.\"\n}\n```"
+}
