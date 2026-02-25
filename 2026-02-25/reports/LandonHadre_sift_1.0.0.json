@@ -1,0 +1,94 @@
+{
+  "extension_id": "LandonHadre.sift",
+  "version": "1.0.0",
+  "display_name": "Sift",
+  "publisher_name": "LandonHadre",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "cc335bec9ba14897a0419fe62c91494207224d9cacda4331a12c644e0fb8e042",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-25T14:03:21.157Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.4,
+  "static_analysis_score": 0.8,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.45249999999999996,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 6,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/out/workspaceIndex.js",
+      "line_number": 50,
+      "code_snippet": "workspace.findFiles('**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/out/searcher.js",
+      "line_number": 104,
+      "code_snippet": "workspace.findFiles('**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    }
+  ],
+  "high_findings": [],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'landonhadre' does not match GitHub org 'your-username' in repo 'https://github.com/your-username/sift'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/out/workspaceIndex.js",
+      "line_number": 99,
+      "code_snippet": "const bytes = await vscode.workspace.fs.readFile(uri);"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/out/searcher.js",
+      "line_number": 136,
+      "code_snippet": "const bytes = await vscode.workspace.fs.readFile(uri);"
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T14:36:05.384734+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/workspaceIndex.js (chunk 1/2) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The VSIX package size is listed as 0.0 MB, which is unusually small for a functional extension with file indexing capabilities. This discrepancy could indicate potential issues or omissions in the provided code.\",\n      \"code_reference\": \"null\",\n      \"line_hint\": \"null\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension uses a broad glob pattern `**/*` to enumerate all workspace files, which may access sensitive files beyond the extension's advertised search functionality. This could potentially expose unintended files in the workspace.\",\n      \"code_reference\": \"extension/out/workspaceIndex.js\",\n      \"line_hint\": \"50\"\n    }\n  ],\n  \"summary\": \"The extension exhibits some concerning patterns, such as a suspiciously small package size and the use of a broad file glob pattern. However, no critical indicators of malicious activity were found. The findings suggest potential issues with capability alignment and package integrity, but the code itself does not appear to contain overtly malicious behavior.\"\n}\n```\n\n=== extension/out/workspaceIndex.js (chunk 2/2) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a search/indexing functionality within a VS Code extension. It processes files, creates a search index, and searches through file contents. No malicious or suspicious behavior was detected. The operations are confined to the workspace files and do not exhibit any signs of credential harvesting, network exfiltration, or persistence mechanisms. The code aligns with its expected purpose and does not contain any obfuscation or unexpected functionality.\"\n}\n```\n\n=== extension/out/searcher.js (chunk 1/3) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension uses a broad file search pattern `**` which may access more files than necessary for its stated purpose.\",\n      \"code_reference\": \"extension/out/searcher.js\",\n      \"line_hint\": 104\n    }\n  ],\n  \"summary\": \"The extension exhibits suspicious behavior by using a broad file search pattern, potentially accessing more files than necessary. This indicates a possible capability disconnect, though no clear signs of malicious intent are present.\"\n}\n```\n\n=== extension/out/searcher.js (chunk 2/3) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a search functionality within a VS Code extension. It exhibits standard file search and content analysis patterns without any evidence of malicious behavior. The operations are confined to reading files, searching for keywords, and returning results, which aligns with expected behavior for a search-related extension. No critical-risk, high-risk, or medium-risk indicators were detected. The code does not exhibit any signs of secret leakage, credential harvesting, info-stealing, or network exfiltration. The use of VS Code APIs is within acceptable bounds for the described functionality.\"\n}\n```\n\n=== extension/out/searcher.js (chunk 3/3) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a search functionality, constructing regex patterns to match lines containing specific words in any order. No malicious or suspicious behavior was detected. The code is limited to regex operations and does not exhibit any signs of secret leakage, credential harvesting, network exfiltration, or other malicious activities. The functions are straightforward and aligned with their intended purpose, with no evidence of obfuscation, LOLBIN usage, or persistence mechanisms.\"\n}\n```"
+}
