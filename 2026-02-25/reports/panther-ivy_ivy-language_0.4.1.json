@@ -1,0 +1,289 @@
+{
+  "extension_id": "panther-ivy.ivy-language",
+  "version": "0.4.1",
+  "display_name": "Ivy Language",
+  "publisher_name": "panther-ivy",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "ac71cbe23a8a747f8f5ea3d5f9f486c272629b03ea6100ce9705a45ec9cb68a1",
+  "install_count": 20,
+  "average_rating": 0.0,
+  "published_date": "2026-02-25T09:31:09.637Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 26,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Mass serialization of all environment variables",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "Object.keys(process.env)",
+      "category": "credential_harvesting",
+      "pattern_id": "env_mass_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/out/extension.js",
+      "line_number": 31,
+      "code_snippet": "Buffer.from(e,t)}toString(e,t){return e instanceof Buffer?e.toString(t):new af.TextDecoder(t).decode(e)}asNative(e,t){return t===void 0?e instanceof Buffer?e:Buffer.from(e):e instanceof Buffer?e.slice",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 37,
+      "code_snippet": "onDidOpenTextDocument(t=>{if(t.uri.scheme!==n.CellScheme)return;let[r,i]=this.findNotebookDocumentAndCell(t);if(!(r===void 0||i===void 0))for(let s of this.registrations.values())s instanceof Zr&&s.di",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/out/extension.js",
+      "line_number": 35,
+      "code_snippet": "global=\"global\"})(mh||(tr.UniquenessLevel=mh={}));var yh;(function(n){n.$import=\"import\",n.$export=\"export\",n.local=\"local\"})(yh||(tr.MonikerKind=yh={}));var vh;(function(n){n.method=\"textDocument/mon",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/out/extension.js",
+      "line_number": 36,
+      "code_snippet": "GlobPattern:fn,asInlineCompletionResult:ue,asInlineCompletionItem:Tn}}Ws.createConverter=VC});var Ae=k(nn=>{\"use strict\";Object.defineProperty(nn,\"__esModule\",{value:!0});nn.generateUuid=nn.parse=nn.i",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/out/extension.js",
+      "line_number": 37,
+      "code_snippet": "glob:e,_src:i})}catch{return new RegExp(\"$.\")}}makeRe(){if(this.regexp||this.regexp===!1)return this.regexp;let e=this.set;if(!e.length)return this.regexp=!1,this.regexp;let t=this.options,r=t.noglobs",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/out/extension.js",
+      "line_number": 37,
+      "code_snippet": "workspace.getConfiguration(void 0,e).get(t));else{let s=ei.workspace.getConfiguration(t.substr(0,i),e);s&&(r=_r(s.get(t.substr(i+1))))}}else{let i=ei.workspace.getConfiguration(void 0,e);r={};for(let ",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "workspace.getConfiguration(this._id),i=A.Trace.Off,s=A.TraceFormat.Text;if(r){let o=r.get(\"trace.server\",\"off\");typeof o==\"string\"?i=A.Trace.fromString(o):(i=A.Trace.fromString(r.get(\"trace.server.ver",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "${e.message}`,void 0,i.handled===!0?!1:\"force\")}hookConfigurationChanged(e){this._listeners.push(Re.workspace.onDidChangeConfiguration(()=>{this.refreshTrace(e,!0)}))}refreshTrace(e,t=!1){let r=Re.wor"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "${e.message}`,void 0,i.handled===!0?!1:\"force\")}hookConfigurationChanged(e){this._listeners.push(Re.workspace.onDidChangeConfiguration(()=>{this.refreshTrace(e,!0)}))}refreshTrace(e,t=!1){let r=Re.wor"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'spawnSync' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "${e.message}`,void 0,i.handled===!0?!1:\"force\")}hookConfigurationChanged(e){this._listeners.push(Re.workspace.onDidChangeConfiguration(()=>{this.refreshTrace(e,!0)}))}refreshTrace(e,t=!1){let r=Re.wor"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/lspInstaller.js",
+      "line_number": 42,
+      "code_snippet": "const cp = __importStar(require(\"child_process\"));"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/out/lspInstaller.js",
+      "line_number": 42,
+      "code_snippet": "const cp = __importStar(require(\"child_process\"));"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/pythonFinder.js",
+      "line_number": 41,
+      "code_snippet": "const cp = __importStar(require(\"child_process\"));"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/out/pythonFinder.js",
+      "line_number": 41,
+      "code_snippet": "const cp = __importStar(require(\"child_process\"));"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "Request(e){let t=this.clientOptions.middleware?.handleRegisterCapability;return t?t(e,r=>this.doRegisterCapability(r)):this.doRegisterCapability(e)}async doRegisterCapability(e){if(!this.isRunning()){",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 31,
+      "code_snippet": ".postMessage(e),Promise.resolve()}catch(t){return this.handleError(t,e),Promise.reject(t)}}handleError(e,t){this.errorCount++,this.fireError(e,t,this.errorCount)}end(){}};pe.PortMessageWriter=rc;var p",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 36,
+      "code_snippet": ".post,o=r.split(\",\");o[o.length-1]+=\"{\"+i+\"}\";var a=Hg(s);return s.length&&(o[o.length-1]+=a.shift(),o.push.apply(o,a)),e.push.apply(e,o),e}function e_(n){return n?(n.substr(0,2)===\"{}\"&&(n=\"\\\\{\\\\}\"+n",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "rmm_tool_abuse",
+      "description": "Downloading MSI/EXE installer (potential RMM deployment)",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "Request(e){let t=this.clientOptions.middleware?.handleRegisterCapability;return t?t(e,r=>this.doRegisterCapability(r)):this.doRegisterCapability(e)}async doRegisterCapability(e){if(!this.isRunning()){",
+      "category": "rmm_tool_abuse",
+      "pattern_id": "rmm_msi_download"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/out/lspInstaller.js",
+      "line_number": 42,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/out/pythonFinder.js",
+      "line_number": 41,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'panther-ivy' does not match GitHub org 'elniak' in repo 'https://github.com/ElNiak/vscode-ivy'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "8 CRITICAL findings",
+    "17 HIGH findings",
+    "Composite risk 0.61 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T13:32:36.416705+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Code attempts to serialize and exfiltrate environment variables, which could include sensitive credentials.\",\n      \"code_reference\": \"line 42\",\n      \"line_hint\": 42\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"VS Code API misuse with directory traversal and network exfiltration, indicating potential unauthorized data transmission.\",\n      \"code_reference\": \"line 35-37\",\n      \"line_hint\": 35\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"direct_command_execution\",\n      \"description\": \"Usage of `require('child_process')` suggests potential arbitrary command execution, a significant security risk.\",\n      \"code_reference\": \"line 42\",\n      \"line_hint\": 42\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"data_exfiltration\",\n      \"description\": \"Base64 encoding and network transmission patterns indicate potential data exfiltration activities.\",\n      \"code_reference\": \"line 31\",\n      \"line_hint\": 31\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"rmm_tool_abuse\",\n      \"description\": \"Pattern suggesting potential RMM tool deployment via MSI/EXE download, indicating possible remote access abuse.\",\n      \"code_reference\": \"line 42\",\n      \"line_hint\": 42\n    }\n  ],\n  \"summary\": \"The extension exhibits multiple critical security risks, including credential harvesting, arbitrary command execution, and data exfiltration. These activities are inconsistent with the extension's stated purpose, indicating potential malicious intent or severe supply-chain compromise.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be standard utility functions for type checking and promise handling. No suspicious or malicious behavior was detected. The functions are straightforward and do not exhibit any indicators of compromise or\u4e0d\u826f\u884c\u4e3a.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a JSON-RPC implementation, defining error codes, request types, and parameter structures. No evidence of malicious behavior, credential leakage, or suspicious network activity was found. The code aligns with expected patterns for a VS Code extension using RPC communication.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The code defines complex data structures and notification handling which may not align with a simple extension's purpose.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 4/5)\",\n      \"line_hint\": \"1-100\"\n    }\n  ],\n  \"summary\": \"The code appears to define custom data structures and notification types, which could indicate a more complex functionality than initially advertised. While not overtly malicious, there's a potential disconnect in capability based on the extension's stated purpose.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a custom implementation of a LinkedMap data structure. It does not exhibit any signs of malicious or suspicious behavior. The code is focused on managing a linked list with nodes containing keys and values, and it does not perform any operations outside the scope of a standard data structure implementation. No critical-risk, high-risk, or medium-risk indicators were identified in this snippet.\"\n}\n```\n\n=== extension/out/lspInstaller.js (chunk 1/3) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"HIGH-RISK\",\n      \"description\": \"Usage of `require('child_process')` which can enable arbitrary command execution.\",\n      \"code_reference\": \"extension/out/lspInstaller.js\",\n      \"line_hint\": 4\n    }\n  ],\n  \"summary\": \"The code contains a HIGH-RISK indicator with the usage of `require('child_process')`, which could potentially enable arbitrary command execution. However, based on the provided code snippet, there is no immediate evidence of malicious usage. The extension appears to be focused on managing LSP installations, but the presence of `child_process` raises concerns about potential unauthorized command execution. The risk score is set to 0.2 due to the presence of this indicator, but the overall verdict is 'SUSPICIOUS' rather than 'MALICIOUS' as no clear malicious behavior is observed in the provided snippet.\"\n}\n```\n\n=== extension/out/lspInstaller.js (chunk 2/3) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code is part of a VS Code extension that manages a Python virtual environment and installs the ivy-lsp language server. The code performs standard file system operations, executes Python commands to check and install packages, and displays user feedback. No suspicious or malicious behavior was detected. The functionality is proportional to its stated purpose, and there are no capability or behavioral disconnects.\"\n}\n```\n\n=== extension/out/lspInstaller.js (chunk 3/3) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a language server protocol (LSP) extension for VS Code, specifically managing and upgrading the 'ivy-lsp' package. The functions are focused on process management, virtual environment cleanup, and package upgrades using Python's pip. No malicious or suspicious behavior was detected in the provided code snippet.\"\n}\n```"
+}
