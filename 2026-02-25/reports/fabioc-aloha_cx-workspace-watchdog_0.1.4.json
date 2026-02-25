@@ -1,0 +1,82 @@
+{
+  "extension_id": "fabioc-aloha.cx-workspace-watchdog",
+  "version": "0.1.4",
+  "display_name": "CX Workspace Watchdog",
+  "publisher_name": "fabioc-aloha",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "d96b16e6225091ee47eecd1152109e012952e69ab43da412db8ea9fd5d5e46c6",
+  "install_count": 8,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T16:54:28.867Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.8,
+  "static_analysis_score": 0.7,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5674999999999999,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 4,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Embedded private key block",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "RSA",
+      "category": "leaked_secrets",
+      "pattern_id": "private_key_header"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(this.storePath,\"utf-8\"))}catch{}return{version:ie,lastUpdated:new Date().toISOString(),files:{}}}save(){this.store.lastUpdated=new Date().toISOString();let e=H.dirname(this.storePath);v.e",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"POST\",headers:{Authorization:`Bearer ${this.apiToken}`,\"Content-Type\":\"application/json\"},body:JSON.stringify({input:t})});if(!n.ok)throw new Error(`Replicate API error ${n.status}: ${await n.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "Composite risk 0.43 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T03:58:30.157220+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a file monitoring and scoring system, with no evidence of malicious behavior. The code aligns with the extension's advertised purpose as a file health monitor. No critical-risk or high-risk indicators were detected, and the code appears to be benign.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a file observation system, handling JSON data storage and file tracking. No malicious or suspicious patterns detected. The operations are confined to file system interactions within a project-specific directory, and there are no signs of credential harvesting, network exfiltration, or obfuscation.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The analyzed code appears to be part of a file observation and tracking system within a VS Code extension. It does not exhibit any signs of malicious behavior, secret leakage, or unauthorized access. The operations are confined to file status tracking and do not indicate any suspicious patterns or supply-chain attack vectors.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Secrets & Credential Leakage\",\n      \"description\": \"The code contains patterns designed to detect and report sensitive information such as API keys, tokens, and credentials. This could potentially lead to exposure of sensitive data if not handled securely.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 4/5)\",\n      \"line_hint\": \"1-25\"\n    }\n  ],\n  \"summary\": \"The extension contains a suspicious pattern-matching system targeting sensitive information like AWS keys, GitHub tokens, and Azure credentials. While it doesn't actively exfiltrate data, the detection of such sensitive patterns raises concerns about potential misuse or unintended exposure of secrets. The code's purpose should be carefully reviewed to ensure it aligns with security best practices and doesn't inadvertently compromise user data.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code contains functionality that may not be fully described in its marketplace listing, particularly the integration with Replicate API which could imply hidden capabilities.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"15-30\"\n    }\n  ],\n  \"summary\": \"The code appears to be part of a security scanning or AI model integration tool, with potential for hidden capabilities beyond its advertised function. Moderate confidence in the finding due to the code's functionality potentially exceeding typical expectations for such extensions.\"\n}\n```"
+}
