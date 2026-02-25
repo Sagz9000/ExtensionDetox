@@ -1,0 +1,637 @@
+{
+  "extension_id": "sodiadrhain.cogento",
+  "version": "0.2.0",
+  "display_name": "Cogento AI Coding Agent",
+  "publisher_name": "sodiadrhain",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "ad4d619f7a6a9740cf1d62217d39cc9361285e94265406fc25c69faeb69eb9df",
+  "install_count": 3,
+  "average_rating": 0.0,
+  "published_date": "2026-02-23T17:14:55.75Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 60,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Mass serialization of all environment variables",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Object.keys(process.env)",
+      "category": "credential_harvesting",
+      "pattern_id": "env_mass_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 37,
+      "code_snippet": "toString(\"base64\")}async verify(e,t,r){let o=Da.createVerify(\"RSA-SHA256\");return o.update(t),o.end(),o.verify(e,r,\"base64\")}async sign(e,t){let r=Da.createSign(\"RSA-SHA256\");return r.update(t),r.end(",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 39,
+      "code_snippet": "toString(\"base64\");var i=e(r,o,s);return i}}function rU(){return function(){return\"\"}}function oU(){return function(e,t){return t===\"\"}}aC.exports=function(e){var t={hs:oC,rs:sC,ps:ZF,es:tU,none:rU},r",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 54,
+      "code_snippet": "Buffer.from(n),N_.readOnly=!1),e}dh.exports={concat:h1,mask:v0,toArrayBuffer:p1,toBuffer:N_,unmask:T0};if(!process.env.WS_NO_BUFFER_UTIL)try{let n=require(\"bufferutil\");dh.exports.mask=function(e,t,r,",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 128,
+      "code_snippet": "Buffer.from(n,\"base64\");return Array.from(new Float32Array(e.buffer,e.byteOffset,e.length/Float32Array.BYTES_PER_ELEMENT))}else{let e=atob(n),t=e.length,r=new Uint8Array(t);for(let o=0;o<t;o++)r[o]=e.",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 39,
+      "code_snippet": "readFile(e,\"utf8\")}catch{throw new lr(`Failed to read certificate config file at: ${e}`)}try{let r=JSON.parse(t),o=r?.cert_configs?.workload?.cert_path,s=r?.cert_configs?.workload?.key_path;if(!o||!s)",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 37,
+      "code_snippet": "token:\"compute-placeholder\"",
+      "category": "leaked_secrets",
+      "pattern_id": "generic_secret"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 39,
+      "code_snippet": "token:\"impersonated-placeholder\"",
+      "category": "leaked_secrets",
+      "pattern_id": "generic_secret"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Bulk workspace file discovery and reading",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 212,
+      "code_snippet": "workspace.findFiles(u,\"**/{node_modules,.git,dist,out,build,.next,.nx,coverage}/**\",5e3),p=new TextDecoder(\"utf-8\");for(let y of h){if(o>=s)break;try{let w=await qe.workspace.fs.readFile",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_bulk_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Bulk workspace file discovery and reading",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 223,
+      "code_snippet": "workspace.findFiles(`**/${a}`,\"**/node_modules/**\",1);if(u&&u.length>0){let c=await pe.workspace.openTextDocument",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_bulk_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 223,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 13,
+      "code_snippet": "globalThis<\"u\"?globalThis:n||self,e(n.WebStreamsPolyfill={}))})(sd,(function(n){\"use strict\";function e(){}function t(d){return typeof d==\"object\"&&d!==null||typeof d==\"function\"}let r=e;function o(d,",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 23,
+      "code_snippet": "globalThis.DOMException)try{let{MessageChannel:n}=require(\"worker_threads\"),e=new n().port1,t=new ArrayBuffer;e.postMessage(t,[t,t])}catch(n){n.constructor.name===\"DOMException\"&&(globalThis.DOMExcept",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 26,
+      "code_snippet": "globalThis.crypto?.randomUUID()||(await import(\"crypto\")).randomUUID(),fD=204,yd=class{agentCache=new Map;defaults;interceptors;constructor(e){this.defaults=e||{},this.interceptors={request:new XT.Gax",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 115,
+      "code_snippet": "globalThis;if(n?.randomUUID)return Zp=n.randomUUID.bind(n),n.randomUUID();let e=new Uint8Array(1),t=n?()=>n.getRandomValues(e)[0]:()=>Math.random()*255&255;return\"10000000-1000-4000-8000-100000000000\"",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 118,
+      "code_snippet": "globalThis.navigator<\"u\"&&globalThis.navigator.product===\"ReactNative\"?new oe(\"The default react-native fetch implementation does not support streaming. Please use expo/fetch: https://docs.expo.dev/ve",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 119,
+      "code_snippet": "globalThis,e=typeof n?.versions?.node==\"string\"&&parseInt(n.versions.node.split(\".\"))<20;throw new Error(\"`File` is not defined as a global, which is required for file uploads.\"+(e?\" Update to Node 20",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 128,
+      "code_snippet": "globalThis.process<\"u\")return globalThis.process.env?.[n]?.trim()??void 0;if(typeof globalThis.Deno<\"u\")return globalThis.Deno.env?.get?.(n)?.trim()};var mt,os,Mm,Qn,of,Cn,ss,Ui,rs,lf,$t,sf,af,Vl,Gl,H",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 137,
+      "code_snippet": "globalThis.Error){let T=`retrying, ${t} attempts remaining`;if(o.signal?.aborted)throw new Ye;let I=Tl(y)||/timed? ?out/i.test(String(y)+(\"cause\"in y?String(y.cause):\"\"));if(t)return Ke(this).info(`[$",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 140,
+      "code_snippet": "globalThis.navigator<\"u\"&&globalThis.navigator.product===\"ReactNative\"?new ae(\"The default react-native fetch implementation does not support streaming. Please use expo/fetch: https://docs.expo.dev/ve",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 141,
+      "code_snippet": "globalThis,e=typeof n?.versions?.node==\"string\"&&parseInt(n.versions.node.split(\".\"))<20;throw new Error(\"`File` is not defined as a global, which is required for file uploads.\"+(e?\" Update to Node 20",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 167,
+      "code_snippet": "globalThis.navigator<\"u\"&&globalThis.navigator.product===\"ReactNative\"?new ae(\"The default react-native fetch implementation does not support streaming. Please use expo/fetch: https://docs.expo.dev/ve",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 169,
+      "code_snippet": "globalThis.process<\"u\")return globalThis.process.env?.[n]?.trim()??void 0;if(typeof globalThis.Deno<\"u\")return globalThis.Deno.env?.get?.(n)?.trim()};var cg,fg,Vf,sv,iv=\"\\\\n\\\\nHuman:\",av=\"\\\\n\\\\nAssist",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 176,
+      "code_snippet": "globalThis.Error){let T=`retrying, ${t} attempts remaining`;if(o.signal?.aborted)throw new gt;let I=kr(y)||/timed? ?out/i.test(String(y)+(\"cause\"in y?String(y.cause):\"\"));if(t)return ct(this).info(`[$",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 178,
+      "code_snippet": "global\"),!(this.clientOptions.project&&this.clientOptions.location||this.clientOptions.apiKey)&&!this.customBaseUrl)throw new Error(\"Authentication is not set up. Please provide either a project and l",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 182,
+      "code_snippet": "globalThis;if(n?.randomUUID)return Ex=n.randomUUID.bind(n),n.randomUUID();let e=new Uint8Array(1),t=n?()=>n.getRandomValues(e)[0]:()=>Math.random()*255&255;return\"10000000-1000-4000-8000-100000000000\"",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 189,
+      "code_snippet": "globalThis.navigator<\"u\"&&globalThis.navigator.product===\"ReactNative\"?new Dt(\"The default react-native fetch implementation does not support streaming. Please use expo/fetch: https://docs.expo.dev/ve",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 190,
+      "code_snippet": "globalThis.process<\"u\")return(r=(t=(e=globalThis.process.env)===null||e===void 0?void 0:e[n])===null||t===void 0?void 0:t.trim())!==null&&r!==void 0?r:void 0;if(typeof globalThis.Deno<\"u\")return(i=(s=",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 225,
+      "code_snippet": "Global),this.agent=null;return;case\"changeModel\":pe.workspace.getConfiguration(\"cogento\").update(o.settingKey,o.model,pe.ConfigurationTarget.Global),this.agent=null;return;case\"stopAgent\":this.abortPe",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 137,
+      "code_snippet": "workspace.getConfiguration(\"cogento\").get(\"openaiModel\")??\"gpt-4o\",c=await this.client.chat.completions.create({model:u,messages:r,stream:!0,response_format:{type:\"json_object\"}},{signal:i.signal});fo",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 178,
+      "code_snippet": "workspace.getConfiguration(\"cogento\").get(\"anthropicModel\")??\"claude-sonnet-4-5\",h=await this.client.messages.create({model:c,max_tokens:4e3,system:u,messages:r,stream:!0},{signal:i.signal});for await",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 198,
+      "code_snippet": "workspace.getConfiguration(\"cogento\").get(\"geminiModel\")??\"gemini-2.5-flash\",u=!1,c=null,h=new AbortController,p=()=>{c&&clearTimeout(c),c=setTimeout(()=>{u=!0,h.abort()},6e4)};t.onCancellationRequest",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 225,
+      "code_snippet": "workspace.getConfiguration(\"cogento\").update(\"provider\",o.provider,pe.ConfigurationTarget.Global),this.agent=null;return;case\"changeModel\":pe.workspace.getConfiguration(\"cogento\").update(o.settingKey,",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 238,
+      "code_snippet": "workspace.getConfiguration(\"cogento\").get(\"provider\",\"openai\"),r=t===\"gemini\"?\"geminiModel\":t===\"anthropic\"?\"anthropicModel\":\"openaiModel\",o=pe.workspace.getConfiguration(\"cogento\").get(r,\"\");this._vi",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 48,
+      "code_snippet": "`+await n.crypto.sha256DigestHex(g),b=await mL(n.crypto,n.securityCredentials.secretAccessKey,i,n.region,r),S=await $u(n.crypto,b,w),T=`${jC} Credential=${n.securityCredentials.accessKeyId}/${y}, Sign"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 48,
+      "code_snippet": "`+await n.crypto.sha256DigestHex(g),b=await mL(n.crypto,n.securityCredentials.secretAccessKey,i,n.region,r),S=await $u(n.crypto,b,w),T=`${jC} Credential=${n.securityCredentials.accessKeyId}/${y}, Sign"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "MAGIC_MISMATCH",
+      "description": "File 'extension/media/icon.png' claims to be '.png' but magic bytes indicate 'JPEG' (expected: {'PNG'})",
+      "file_path": "extension/media/icon.png"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 39,
+      "code_snippet": "readFile(e,\"utf8\")}catch{throw new lr(`Failed to read certificate config file at: ${e}`)}try{let r=JSON.parse(t),o=r?.cert_configs?.workload?.cert_path,s=r?.cert_configs?.workload?.key_path;if(!o||!s)",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 48,
+      "code_snippet": "readFile(e,{encoding:\"utf8\"});if(t!==\"\")try{let r=JSON.parse(t);return new Bs.ExecutableResponse(r).isValid()?new Bs.ExecutableResponse(r):void 0}catch(r){throw r instanceof Bs.ExecutableResponseError",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 39,
+      "code_snippet": "readFile(e,\"utf8\")}catch{throw new lr(`Failed to read certificate config file at: ${e}`)}try{let r=JSON.parse(t),o=r?.cert_configs?.workload?.cert_path,s=r?.cert_configs?.workload?.key_path;if(!o||!s)",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 48,
+      "code_snippet": "readFile(e,{encoding:\"utf8\"});if(t!==\"\")try{let r=JSON.parse(t);return new Bs.ExecutableResponse(r).isValid()?new Bs.ExecutableResponse(r):void 0}catch(r){throw r instanceof Bs.ExecutableResponseError",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 39,
+      "code_snippet": "request({url:e,retry:!0});case 2:Un(ar,this,qC).call(this,{email:this.iss,sub:this.sub,key:this.key,keyFile:this.keyFile,scope:this.scope,additionalClaims:this.additionalClaims});case 3:return t.a(2)}",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 48,
+      "code_snippet": "request(r);return o.data.substr(0,o.data.length-1)}async getAwsSecurityCredentials(e){if(this.#o)return this.#o;let t=new Headers;this.imdsV2SessionTokenUrl&&t.set(\"x-aws-ec2-metadata-token\",await thi",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 37,
+      "code_snippet": "method:\"POST\",url:t,data:new URLSearchParams((0,JA.removeUndefinedValuesInObject)(o)),headers:r};La.AuthClient.setMethodName(s,\"getTokenAsync\");let i=await this.transporter.request(s),a=i.data;return ",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 39,
+      "code_snippet": "method:\"POST\",url:NC,data:new URLSearchParams({grant_type:\"urn:ietf:params:oauth:grant-type:jwt-bearer\",assertion:o}),responseType:\"json\",retryConfig:{httpMethodsToRetry:[\"POST\"]}});case 2:return s=p.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 48,
+      "code_snippet": "method:\"POST\"}),t=[];return bL.Gaxios.mergeHeaders({\"x-goog-cloud-target-resource\":this.audience},e.headers).forEach((o,s)=>t.push({key:s,value:o})),encodeURIComponent(JSON.stringify({url:e.url,method",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 54,
+      "code_snippet": "method:\"POST\",url:s.href,data:{payload:e.encodeBase64StringUtf8(r)},retry:!0,retryConfig:{httpMethodsToRetry:[\"POST\"]}})).data.signedBlob}};Ln.GoogleAuth=A_});var d0=X(ch=>{\"use strict\";Object.defineP",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 128,
+      "code_snippet": ".post(\"/chat/completions\",{body:e,...t,stream:e.stream??!1})}retrieve(e,t){return this._client.get(W`/chat/completions/${e}`,t)}update(e,t,r){return this._client.post(W`/chat/completions/${e}`,{body:t",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 145,
+      "code_snippet": ".post(\"/v1/files\",ha({body:o,...t,headers:be([{\"anthropic-beta\":[...r??[],\"files-api-2025-04-14\"].toString()},BE(o.file),t?.headers])},this._client))}};var ma=class extends Ge{retrieve(e,t={},r){let{b",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 168,
+      "code_snippet": ".post(\"/v1/messages?beta=true\",{body:s,timeout:i??6e5,...t,headers:be([{...o?.toString()!=null?{\"anthropic-beta\":o?.toString()}:void 0},a,t?.headers]),stream:r.stream??!1})}parse(e,t){return t={...t,h",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 169,
+      "code_snippet": ".post(\"/v1/messages\",{body:e,timeout:r??6e5,...t,headers:be([o,t?.headers]),stream:e.stream??!1})}parse(e,t){return this.create(e,t).then(r=>og(r,e,{logger:this._client.logger??console}))}stream(e,t){",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 178,
+      "code_snippet": "Method:\"POST\",httpOptions:(t=e.config)===null||t===void 0?void 0:t.httpOptions,abortSignal:(r=e.config)===null||r===void 0?void 0:r.abortSignal}).then(h=>h.json()),i.then(h=>Sw(h))}else{let c=AI(this.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 182,
+      "code_snippet": "Method:\"POST\",httpOptions:u});if(!c||!c?.headers)throw new Error(\"Server did not return an HttpResponse or the returned HttpResponse did not have headers.\");let h=(a=c?.headers)===null||a===void 0?voi",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 186,
+      "code_snippet": ".post(Ch`/${o}/interactions`,Object.assign(Object.assign({body:s},t),{stream:(r=e.stream)!==null&&r!==void 0?r:!1}))}delete(e,t={},r){let{api_version:o=this._client.apiVersion}=t??{};return this._clie",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 190,
+      "code_snippet": "Method:\"POST\",httpOptions:(t=e.config)===null||t===void 0?void 0:t.httpOptions,abortSignal:(r=e.config)===null||r===void 0?void 0:r.abortSignal}).then(h=>h.json().then(p=>{let g=p;return g.sdkHttpResp",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 225,
+      "code_snippet": ".postMessage({command:\"agentStatus\",status:\"idle\"});return;case\"retry\":{let s=[...this.currentConversation.messages].reverse().find(i=>i.isUser);if(s){let i=this.agent?this.agent.getHistory():this.cur",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 48,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 48,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "terminal_injection",
+      "description": "Stealthy terminal command injection via VS Code API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 212,
+      "code_snippet": "sendText(e.command),{success:!0,output:`Command \"${e.command}\" was successfully sent to the \"Cogento Execution\" terminal in VS Code. Please check the terminal panel for the output.`}}catch(r){return{s",
+      "category": "builtin",
+      "pattern_id": "terminal_injection"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "hardcoded_ip",
+      "description": "Hardcoded IP address (potential C2)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 37,
+      "code_snippet": "\"http://169.254.169.254\"",
+      "category": "builtin",
+      "pattern_id": "hardcoded_ip"
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "34 CRITICAL findings",
+    "25 HIGH findings",
+    "Composite risk 0.57 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T01:59:56.380159+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"SECRET_LEAKAGE\",\n      \"description\": \"Hardcoded IP address potentially used for C2 communication.\",\n      \"code_reference\": \"line 37\",\n      \"line_hint\": 37\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CREDENTIAL_HARVESTING\",\n      \"description\": \"Multiple attempts to read files which may contain sensitive credentials or configurations.\",\n      \"code_reference\": \"lines 39, 48\",\n      \"line_hint\": 39\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"DATA_EXFILTRATION\",\n      \"description\": \"Network requests with potential data exfiltration patterns, including POST methods to external services.\",\n      \"code_reference\": \"lines 37, 39, 48, 54, 128, 145, 168, 169\",\n      \"line_hint\": 37\n    }\n  ],\n  \"summary\": \"The extension exhibits critical indicators of potential malicious behavior, including hardcoded IP addresses, attempts to read sensitive files, and suspicious network activity. These activities are not aligned with the extension's advertised purpose as an AI coding agent, raising significant security concerns.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a retry operation utility, focusing on handling retries and managing timeouts. No suspicious or malicious behavior was detected. The functions are standard and do not indicate any secret leakage, credential harvesting, or network exfiltration activities. The code aligns with expected functionality for retry mechanisms in software development.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a retry and error handling mechanism for network operations. It defines custom errors, retry logic, and handles network request failures. No critical, high-risk, or medium-risk indicators were detected. The code aligns with expected patterns for handling network requests and retries in a VS Code extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"LOW\",\n      \"category\": \"UTILITY_FUNCTION\",\n      \"description\": \"The code contains utility functions for object manipulation which, while not inherently malicious, could be part of a larger malicious payload.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"line 10-20\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"THIRD_PARTY_DEPENDENCY\",\n      \"description\": \"The extension includes the 'gaxios' library, which is a known HTTP client. While legitimate, its presence should be verified against the extension's declared purpose.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"line 25-30\"\n    }\n  ],\n  \"summary\": \"The code contains utility functions and a third-party HTTP client. While not inherently malicious,\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be a standard Node.js module configuration and export setup. It contains no evidence of malicious behavior, suspicious patterns, or capability mismatches. The package.json appears legitimate, with standard scripts, dependencies, and configuration. No critical-risk, high-risk, or medium-risk indicators were identified. The code aligns with expected behavior for a library or tooling-related extension.\"\n}\n```"
+}
