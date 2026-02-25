@@ -1,0 +1,79 @@
+{
+  "extension_id": "fabioc-aloha.cx-markdown-to-word",
+  "version": "0.1.0",
+  "display_name": "CX Markdown to Word",
+  "publisher_name": "fabioc-aloha",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "65ded6c01807ca455ca80d9ba6ead185071e657236ef745e326af6d9f4c05f19",
+  "install_count": 5,
+  "average_rating": 0.0,
+  "published_date": "2026-02-25T13:25:47.683Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.2,
+  "static_analysis_score": 0.55,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.32,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 4,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"markdownToWord\"),i=r.get(\"pandocPath\")??\"pandoc\",t=r.get(\"referenceDoc\")??\"\",w=o??n.replace(/\\.md$/,\".docx\"),l=[n,\"-o\",w,\"--standalone\"];if(t)try{await P.promises.access(t)",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "\"use strict\";var k=Object.create;var m=Object.defineProperty;var M=Object.getOwnPropertyDescriptor;var W=Object.getOwnPropertyNames;var x=Object.getPrototypeOf,$=Object.prototype.hasOwnProperty;var E="
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "\"use strict\";var k=Object.create;var m=Object.defineProperty;var M=Object.getOwnPropertyDescriptor;var W=Object.getOwnPropertyNames;var x=Object.getPrototypeOf,$=Object.prototype.hasOwnProperty;var E="
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T16:04:47.598202+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/2) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"COMMAND_EXECUTION\",\n      \"description\": \"The extension uses `child_process.spawnSync` which allows arbitrary command execution. This could be risky if not properly sanitized.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"line 25\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CONFIGURATION_ACCESS\",\n      \"description\": \"The extension accesses VS Code configuration using `vscode.workspace.getConfiguration('markdownToWord')`, which could potentially expose sensitive user settings if misused.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"line 19\"\n    }\n  ],\n  \"summary\": \"The extension exhibits legitimate functionality but uses `child_process` which poses a potential security risk. The code aligns with its advertised purpose, but there are notable security concerns related to command execution and configuration access.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/2) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be a standard VS Code extension for converting Markdown to Word documents using Pandoc. It does not exhibit any signs of malicious behavior, secret leakage, or unauthorized access. The functionality aligns with its intended purpose, and there are no suspicious patterns or network activities detected.\"\n}\n```"
+}
