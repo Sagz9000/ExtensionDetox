@@ -1,0 +1,142 @@
+{
+  "extension_id": "OSQR.osqr-vscode",
+  "version": "0.1.1",
+  "display_name": "OSQR",
+  "publisher_name": "OSQR",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "699e340742fe40bdaf1dc8969d9745fbafe0769721dcbefd806e6efe34cb17d9",
+  "install_count": 1,
+  "average_rating": 0.0,
+  "published_date": "2026-02-25T13:41:29.68Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5375,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 10,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "btoa(t).replace(/\\+/g,\"-\").replace(/\\//g,\"_\").replace(/=+$/,\"\")}dispose(){this.disposables.forEach(e=>e.dispose()),this._onDidSignIn.dispose(),this._onDidSignOut.dispose(),this._onDidSessionExpire.dis",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading document content and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "document.getText(e)}function W(){let o=m.window.activeTextEditor;if(o)return D(o.document.uri.fsPath)}var E=class{authProvider;constructor(e){this.authProvider=e}async request(e,t={}){let s=await this",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_content_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"osqr\");return{apiEndpoint:o.get(\"apiEndpoint\",\"https://app.osqr.app\"),autoSaveConversations:o.get(\"autoSaveConversations\",!0),includeWorkspaceContext:o.get(\"includeWorkspac",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({grant_type:\"authorization_code\",code:e,redirect_uri:f.redirectUri,client_id:f.clientId,code_verifier:t})});if(!s.ok){let ",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".postMessage({type:\"streamContent\",text:b.text});else if(b.type===\"threadId\")this.currentThreadId=b.threadId;else if(b.type===\"tokensUsed\")S.commands.executeCommand(\"osqr.refreshUsage\");else if(b.type",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 303,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "3 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T15:11:00.776033+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Accessing VS Code's secret storage API which could expose sensitive information.\",\n      \"code_reference\": \"context.secrets.get()\",\n      \"line_hint\": \"Line 1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"data_exfiltration\",\n      \"description\": \"Base64 encoding data and potential network exfiltration.\",\n      \"code_reference\": \"btoa(t).replace(...)\",\n      \"line_hint\": \"Line 1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"info-stealer\",\n      \"description\": \"Reading document content and sending over network, potentially capturing user input.\",\n      \"code_reference\": \"document.getText(e)\",\n      \"line_hint\": \"Line 1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"capability_disconnect\",\n      \"description\": \"Extension's capabilities, including data exfiltration and secret\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"SECRET_HANDLING\",\n      \"description\": \"The extension interacts with VS Code's secret storage (`context.secrets.store` and `context.secrets.get`), which could potentially expose sensitive information if misused.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 2/5)\",\n      \"line_hint\": \"25, 35\"\n    }\n  ],\n  \"summary\": \"The extension handles OAuth authentication and interacts with VS Code's secret storage. While not inherently malicious, the use of secrets should be carefully managed to prevent potential leakage. No critical or high-risk indicators were found, but the secret handling warrants attention.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to handle OAuth token management and API interactions in a standard manner. No critical, high, or medium-risk indicators were identified. The functions are aligned with typical authentication and session management responsibilities of a VS Code extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension that handles authenticated API requests to a service, likely for chat or decision tracking. No critical, high, or medium-risk indicators were found. The code uses standard VS Code APIs and does not exhibit suspicious behavior.\"\n}\n```"
+}
