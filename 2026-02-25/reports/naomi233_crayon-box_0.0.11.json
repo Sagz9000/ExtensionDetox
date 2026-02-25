@@ -1,0 +1,291 @@
+{
+  "extension_id": "naomi233.crayon-box",
+  "version": "0.0.11",
+  "display_name": "CrayonBox",
+  "publisher_name": "naomi233",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "393feeeb967f09b036db7fcf728d52a641bbf2a938d55454b12689a2f7958e29",
+  "install_count": 308,
+  "average_rating": 0.0,
+  "published_date": "2024-11-12T06:38:28.23+00:00",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.8,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.6,
+  "composite_score": 0.62,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 25,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Mass serialization of all environment variables",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Object.keys(process.env)",
+      "category": "credential_harvesting",
+      "pattern_id": "env_mass_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Browser cookie exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 9,
+      "code_snippet": "document.cookie=o.join(\"; \")},read(e){let i=document.cookie.match(new RegExp(\"(^|;\\\\s*)(\"+e+\")=([^;]*)\"));return i?decodeURIComponent(i[3]):null},remove(e){this.write(e,\"\",Date.now()-864e5)}}:{write()",
+      "category": "infostealer_behavior",
+      "pattern_id": "browser_cookie_theft"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 9,
+      "code_snippet": "Buffer.from(t.auth,\"utf8\").toString(\"base64\");e.headers[\"Proxy-Authorization\"]=\"Basic \"+s}e.headers.host=e.hostname+(e.port?\":\"+e.port:\"\");let n=t.hostname||t.host;e.hostname=n,e.host=n,e.port=t.port,",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "globalThis<\"u\"?globalThis:e||self).dayjs=i()})(Ca,(function(){\"use strict\";var e=1e3,i=6e4,a=36e5,t=\"millisecond\",n=\"second\",s=\"minute\",o=\"hour\",p=\"day\",w=\"week\",y=\"month\",b=\"quarter\",E=\"year\",T=\"date",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 6,
+      "code_snippet": "globalThis<\"u\"?globalThis:typeof self<\"u\"?self:typeof window<\"u\"?window:global,Qt=e=>!ki(e)&&e!==He;function Aa(){let{caseless:e}=Qt(this)&&this||{},i={},a=(t,n)=>{let s=e&&Kt(i,n)||n;Ji(i[s])&&Ji(t)?",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 6,
+      "code_snippet": "workspace.getConfiguration(\"crayon-box\"),X=Hr;var le=te(require(\"vscode\"));var gi=te(wi());function Si(e,i){return function(){return e.apply(i,arguments)}}var{toString:Gr}=Object.prototype,{getPrototy",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".post-it-notes\":{source:\"iana\",extensions:[\"pwn\"]},\"application/vnd.accpac.simply.aso\":{source:\"iana\",extensions:[\"aso\"]},\"application/vnd.accpac.simply.imp\":{source:\"iana\",extensions:[\"imp\"]},\"applic",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"post\"};return typeof e==\"string\"?(e=cl(e),t=Ya({port:e.port,path:e.pathname,host:e.hostname,protocol:e.protocol},n)):(t=Ya(e,n),t.port||(t.port=t.protocol===\"https:\"?443:80)),t.headers=this.ge",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 6,
+      "code_snippet": ".postMessage(a,\"*\")}))(`axios@${Math.random()}`,[]):a=>setTimeout(a))(typeof setImmediate==\"function\",fe(He.postMessage)),Cc=typeof queueMicrotask<\"u\"?queueMicrotask.bind(He):typeof process<\"u\"&&proce",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 9,
+      "code_snippet": "method:\"POST\",get duplex(){return e=!0,\"half\"}}).headers.has(\"Content-Type\");return e&&!i}),wr=64*1024,At=Sr&&kr(()=>g.isReadableStream(new Response(\"\").body)),ga={stream:At&&(e=>e.body)};ya&&(e=>{[\"t",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Known miner executable reference",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "claymore",
+      "category": "crypto_mining",
+      "pattern_id": "xmrig_ref"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'naomi233' does not match GitHub org 'henvy-mango' in repo 'https://github.com/Henvy-Mango/crayon-box.git'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "17 HIGH findings",
+    "Composite risk 0.50 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T02:45:09.086309+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Code attempts to read environment variables which could expose sensitive information.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Browser cookie exfiltration detected with document.cookie and base64 encoding for data transmission.\",\n      \"code_reference\": \"line 9\",\n      \"line_hint\": 9\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"crypto_mining\",\n      \"description\": \"Reference to 'claymore' indicates potential crypto-mining activity, which is disproportionate to the extension's stated purpose.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"persistence_evasion\",\n      \"description\": \"Multiple checks for 'virtualbox' indicate potential anti-VM detection, commonly used in malicious software to avoid analysis.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    }\n  ],\n  \"summary\": \"The extension exhibits several malicious patterns including credential harvesting, potential crypto-mining, and anti-VM detection. These activities significantly deviate from the extension's stated purpose of displaying trading data, indicating a high risk of malicious intent.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code is part of a date/time handling module, specifically related to the Day.js library. It contains functions for parsing dates, formatting, and localization. No malicious or suspicious behavior was detected. The code appears to be clean and aligned with its intended purpose.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a date/time handling library, with functions for setting, getting, adding, and formatting dates. No critical, high-risk, or medium-risk indicators were identified. The code does not exhibit signs of malicious behavior, secrets leakage, or unauthorized system interactions. The operations are confined to date/time manipulation, which aligns with expected functionality for a utility extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a date/time formatting utility within a VS Code extension. It contains no evidence of malicious behavior, secret leakage, or unauthorized functionality. The operations are limited to date manipulation and formatting, which aligns with expected behavior for such an extension.\"\n}\n```"
+}
