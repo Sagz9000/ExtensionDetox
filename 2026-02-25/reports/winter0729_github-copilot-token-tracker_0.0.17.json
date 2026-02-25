@@ -1,0 +1,110 @@
+{
+  "extension_id": "winter0729.github-copilot-token-tracker",
+  "version": "0.0.17",
+  "display_name": "GitHub Copilot Token Tracker",
+  "publisher_name": "winter0729",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "3bdc3a5a5e22f9f486dd8886c62a2b1fadb3dc18265571fb46b4f380c5cc59a3",
+  "install_count": 1,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T23:25:36.227Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5375,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 7,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 300,
+      "code_snippet": "Global totals for this VS Code profile\"),o.push(`- Poll interval: ${Math.floor(t.pollIntervalMs/1e3)}s`),o.push(`- Last sync: ${Ce(t.lastSyncAt,\"Never\")}`),o.push(`- Total requests: ${u(s)}`),o.push(`",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 301,
+      "code_snippet": "Global totals for this VS Code profile\"),s.push(`Last sync: ${Ce(o,\"Never\")}`),s.push(`State updated at: ${Ce(e.lastUpdatedAt,\"Never\")}`),s.push(\"\"),s.push(`Total requests: ${u(n)}`),s.push(`Prompt to",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 304,
+      "code_snippet": "globalStorageUri,Vo),this.state=Fe(t.globalState.get($t)),this.settings=this.loadSettings()}async initialize(){await m.workspace.fs.createDirectory(this.extensionContext.globalStorageUri),this.copilot",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 305,
+      "code_snippet": "globalStorageUri,\"_extract.py\");await m.workspace.fs.writeFile(r,Buffer.from(n,\"utf8\"));try{let{execFile:a}=await import(\"child_process\"),i=await new Promise((l,T)=>{a(\"python\",[r.fsPath,s,t],{maxBuff",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 304,
+      "code_snippet": "workspace.getConfiguration(vt);return{pollIntervalMs:Math.max(zo,Math.floor(t.get(\"pollIntervalMs\",Go))),statusBarEnabled:t.get(\"statusBar.enabled\",!0),maxProcessedRequestIds:Math.max(100,Math.floor(t",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 305,
+      "code_snippet": "`),r=m.Uri.joinPath(this.extensionContext.globalStorageUri,\"_extract.py\");await m.workspace.fs.writeFile(r,Buffer.from(n,\"utf8\"));try{let{execFile:a}=await import(\"child_process\"),i=await new Promise("
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "5 CRITICAL findings",
+    "Composite risk 0.41 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T00:26:45.855094+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The VSIX package size is 0.0 MB, which is unusually small for a functional VS Code extension. This may indicate potential issues or hidden capabilities.\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The code contains file system operations (`vscode.workspace.fs.writeFile`) that may indicate directory traversal or unintended file access patterns, which are not\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a request metrics aggregation system, handling data combination and processing. No critical, high-risk, or medium-risk indicators were identified. The code focuses on internal data management without accessing sensitive resources or exhibiting malicious patterns. The functionality aligns with expected behavior for a metrics-tracking extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a request tracking or analytics system, with functions focused on processing and summarizing request data. No malicious or suspicious behavior was detected. The code aligns with expected functionality for data aggregation and metric calculation, with no signs of credential harvesting, network exfiltration, or malicious payload execution.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension handling internal metrics and data processing related to token usage and model performance. No critical, high-risk, or medium-risk indicators were identified. The code aligns with expected behavior for an extension focused on tracking and reporting usage statistics.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The code appears to handle token metrics, possibly for an AI/ML service, which may not align with the extension's stated purpose if it's advertised for a different function like formatting or linting.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1-20\"\n    }\n  ],\n  \"summary\": \"The code shows functions dealing with token metrics, possibly indicating usage tracking for an AI service. While not overtly malicious, there's a potential capability disconnect if the extension's purpose doesn't align with this functionality.\"\n}\n```"
+}
