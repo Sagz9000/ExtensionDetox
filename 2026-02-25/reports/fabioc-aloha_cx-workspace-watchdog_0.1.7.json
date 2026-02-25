@@ -1,0 +1,81 @@
+{
+  "extension_id": "fabioc-aloha.cx-workspace-watchdog",
+  "version": "0.1.7",
+  "display_name": "CX Workspace Watchdog",
+  "publisher_name": "fabioc-aloha",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "3b6a9107472022a371ff2ce51d3c7f9a3da67273061627212da264cf7d22c15a",
+  "install_count": 26,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T16:54:28.867Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 0.7,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.46249999999999997,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 4,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Embedded private key block",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "RSA",
+      "category": "leaked_secrets",
+      "pattern_id": "private_key_header"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(this.storePath,\"utf-8\"))}catch{}return{version:ie,lastUpdated:new Date().toISOString(),files:{}}}save(){this.store.lastUpdated=new Date().toISOString();let e=H.dirname(this.storePath);v.e",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"POST\",headers:{Authorization:`Bearer ${this.apiToken}`,\"Content-Type\":\"application/json\"},body:JSON.stringify({input:t})});if(!n.ok)throw new Error(`Replicate API error ${n.status}: ${await n.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T14:15:48.881181+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"Static rule engine detected potential credential reading and exfiltration patterns in the code, which do not align with the extension's advertised purpose of file health monitoring.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 1/5)\",\n      \"line_hint\": \"line 1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"Static rule engine detected network exfiltration patterns in the code, which do not align with the extension's advertised purpose of file health monitoring.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 1/5)\",\n      \"line_hint\": \"line 2\"\n    }\n  ],\n  \"summary\": \"The extension exhibits potential suspicious patterns related to credential handling and network activity, which do not align with its stated purpose of file health monitoring. While no outright malicious code is evident, the findings suggest a possible capability disconnect or misalignment with its intended function.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a file observation and storage mechanism, reading and writing to a JSON file in a specific directory structure. No critical, high-risk, or medium-risk indicators were identified. The operations are confined to file system interactions and do not exhibit signs of malicious behavior, credential harvesting, or network exfiltration. The code aligns with expected behavior for a file observation feature.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"SECRET_SCAN\",\n      \"description\": \"The extension includes a secret scanning feature that could potentially access sensitive information, though no hardcoded secrets are present.\",\n      \"code_reference\": \"var j = g(m => { ... m.SECRET_PATTERNS = [...]\",\n      \"line_hint\": \"approximate line 100-150\"\n    }\n  ],\n  \"summary\": \"The extension contains a secret scanning mechanism with predefined patterns to detect sensitive information such as private keys and API tokens. While no immediate malicious behavior is detected, the presence of this feature raises concerns about potential unauthorized access to sensitive data. The code appears to be part of a legitimate feature but requires careful review to ensure it does not exceed its stated purpose.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"SECRET_DETECTION\",\n      \"description\": \"The extension contains regex patterns designed to detect various API keys and secrets, which could be misused for credential harvesting.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"1-20\"\n    }\n  ],\n  \"summary\": \"The extension implements a secret detection mechanism targeting sensitive credentials like AWS, GitHub, and Azure keys. While legitimate for security purposes, the capability to extract and report such secrets could pose risks if misused.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Secrets & Credential Leakage\",\n      \"description\": \"Hardcoded API token usage in ReplicateClient constructor.\",\n      \"code_reference\": \"var D = class { apiToken; baseUrl = \\\"https://api.replicate.com/v1\\\"; constructor"
+}
