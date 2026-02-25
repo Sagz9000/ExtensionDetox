@@ -1,0 +1,90 @@
+{
+  "extension_id": "nulifyer.guget",
+  "version": "1.4.3",
+  "display_name": "guget - NuGet Package Manager",
+  "publisher_name": "nulifyer",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "f60925c9f67c6cab3e6f91c48d4e66fb94d66e0b32048747bbc36f72123ad5a6",
+  "install_count": 2,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T00:30:01.8Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.7,
+  "static_analysis_score": 0.9500000000000001,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.595,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 5,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"guget\").get(\"binaryPath\",\"\");if(e){if(await v(e))return e;u.window.showWarningMessage(`guget.binaryPath \"${e}\" is not a valid executable. Falling back to PATH.`)}for(let o ",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "\"use strict\";var F=Object.create;var c=Object.defineProperty;var E=Object.getOwnPropertyDescriptor;var G=Object.getOwnPropertyNames;var T=Object.getPrototypeOf,I=Object.prototype.hasOwnProperty;var B="
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "\"use strict\";var F=Object.create;var c=Object.defineProperty;var E=Object.getOwnPropertyDescriptor;var G=Object.getOwnPropertyNames;var T=Object.getPrototypeOf,I=Object.prototype.hasOwnProperty;var B="
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "3 HIGH findings",
+    "Composite risk 0.46 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T08:09:03.366456+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/2) ===\n```json\n{\n  \"risk_score\": 0.7,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Use of `require('child_process')` which allows arbitrary command execution.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Broad glob pattern `**` used in `workspace.findFiles` which may enumerate all workspace files.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Accessing VSCode configuration and potential network communication via `workspace.getConfiguration`.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    }\n  ],\n  \"summary\": \"The extension exhibits high-risk behavior by utilizing `child_process` for potential arbitrary command execution and employs broad file enumeration patterns. While its advertised functionality aligns with its purpose, the use of such APIs introduces significant security risks. The VSIX size and activation events are appropriate, but the code's capabilities may exceed what's necessary for a NuGet package manager, raising concerns about potential disconnect or misuse.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/2) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Use of `child_process.exec()` to execute arbitrary commands, which could potentially be exploited for command injection or execution of malicious binaries.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"200\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"Dynamic Execution\",\n      \"description\": \"Dynamic execution of the `guget` binary using `child_process.spawn()`, which could potentially be misused for executing unintended commands if the binary path is controlled by an attacker.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"195\"\n    }\n  ],\n  \"summary\": \"The extension exhibits high-risk behavior by executing arbitrary commands via `child_process.exec()`, which could be exploited for malicious purposes. While the current implementation appears legitimate, the use of such functions increases the risk potential.\"\n}\n```"
+}
