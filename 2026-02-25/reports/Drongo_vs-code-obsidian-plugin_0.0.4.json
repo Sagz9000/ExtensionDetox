@@ -1,0 +1,68 @@
+{
+  "extension_id": "Drongo.vs-code-obsidian-plugin",
+  "version": "0.0.4",
+  "display_name": "Obsidian Canvas Viewer",
+  "publisher_name": "Drongo",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "6b61a9f733c9d25be4ad971e2359e49f0ed68f32dc3089c9416f7d3605334eb0",
+  "install_count": 10,
+  "average_rating": 0.0,
+  "published_date": "2026-02-25T11:11:39.197Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.2,
+  "static_analysis_score": 0.4,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.2825,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 3,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/extension.js",
+      "line_number": 214,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    }
+  ],
+  "high_findings": [],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/extension.js",
+      "line_number": 95,
+      "code_snippet": "const bytes = await vscode.workspace.fs.readFile(resolvedInfo.uri);"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/extension.js",
+      "line_number": 254,
+      "code_snippet": "const bytes = await vscode.workspace.fs.readFile(uri);"
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T16:14:01.338381+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/extension.js (chunk 1/4) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension appears to enumerate installed extensions via `vscode.extensions.getExtension`, which is a critical-risk indicator often associated with reconnaissance or lateral movement. This behavior is not advertised in the extension's README or marketplace description, creating a capability disconnect.\",\n      \"code_reference\": \"extension/extension.js (chunk 1/4)\",\n      \"line_hint\": 214\n    }\n  ],\n  \"summary\": \"The extension demonstrates suspicious behavior by enumerating installed extensions, which is not aligned with its advertised purpose as a read-only viewer for Obsidian .canvas files. While the core functionality appears legitimate, the presence of this code raises concerns about potential malicious intent or unintended functionality.\"\n}\n```\n\n=== extension/extension.js (chunk 2/4) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code processes files, reads their content, and handles images and Markdown rendering. No critical, high, or medium-risk indicators were found. The operations appear proportional to a file-processing extension's capabilities.\"\n}\n```\n\n=== extension/extension.js (chunk 3/4) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a legitimate VS Code extension focused on rendering markdown or canvas-based content. No malicious or suspicious patterns were identified in the code. The functions are primarily related to content rendering, image handling, and webview setup, which align with expected behaviors for such an extension.\"\n}\n```\n\n=== extension/extension.js (chunk 4/4) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNUSUAL_FILE_ACCESS\",\n      \"description\": \"The `readTextFile` function can potentially access any file URI provided, which may include sensitive paths if misused.\",\n      \"code_reference\": \"extension/extension.js\",\n      \"line_hint\": \"1-12\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNUSUAL_FILE_ACCESS\",\n      \"description\": \"The `resolveNodeFileUri` function searches for files across workspace folders and could potentially access unintended files if provided with malicious paths.\",\n      \"code_reference\": \"extension/extension.js\",\n      \"line_hint\": \"14-43\"\n    }\n  ],\n  \"summary\": \"The code exhibits file-handling behavior that, while not inherently malicious, could pose risks if misused. The functions have the potential to access a wide range of files, which might not be aligned with the extension's stated purpose if not properly handled.\"\n}\n```"
+}
