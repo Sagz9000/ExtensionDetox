@@ -1,0 +1,100 @@
+{
+  "extension_id": "alyduho.alyplan-vscode",
+  "version": "0.2.1",
+  "display_name": "LaLaPlan",
+  "publisher_name": "alyduho",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "3425398f9c81841b48d037e5994a77dc4c1c7ce929b397fa104e817db72d4fd2",
+  "install_count": 17,
+  "average_rating": 0.0,
+  "published_date": "2026-02-24T08:56:32.457Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5375,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 6,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Bulk workspace file discovery and reading",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 24,
+      "code_snippet": "workspace.findFiles(\"**/*.suggestions.json\",null);this.log.appendLine(`[scanAll] Found ${t.length} .suggestions.json files`);for(let o of t)this.log.appendLine(`  - ${o.fsPath}`);await Promise.all(t.m",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_bulk_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 24,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+      "file_path": "extension/dist/flowEditor.js",
+      "line_number": 3,
+      "code_snippet": "addEventListener(\"keydown\",i=>{i.key===\"Enter\"&&n(),i.key===\"Escape\"&&e.remove()}),h.appendChild(e),e.focus(),e.select()}function Z(){let t=m.find(a=>a.id===f);if(!t)return;let e=l.find(a=>a.id===t.fr",
+      "category": "infostealer_behavior",
+      "pattern_id": "keylogger_listener"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 27,
+      "code_snippet": "readFile(t);return new TextDecoder(\"utf-8\").decode(o)}catch{return null}}async writeFlowMmd(e,t){let o=this.getFlowMmdUri(e);await this.ensureDir(f.Uri.joinPath(o,\"..\")),await f.workspace.fs.writeFile",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'alyduho' does not match GitHub org 'k984530' in repo 'https://github.com/k984530/AlyPlan'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "INFO",
+      "check_name": "LARGE_SOURCE_FILE",
+      "description": "Source file extension/dist/mermaid.min.js is 2713KB \u2014 skipping pattern scan, needs AI chunking",
+      "file_path": "extension/dist/mermaid.min.js",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-25T01:57:53.498271+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Use of broad glob pattern to enumerate all workspace files.\",\n      \"code_reference\": \"line 24\",\n      \"line_hint\": 24\n    }\n  ],\n  \"summary\": \"The extension exhibits a critical-risk indicator by using a broad glob pattern to enumerate all workspace files, which could potentially access sensitive files beyond the scope of its intended functionality. This behavior may indicate a capability disconnect or inappropriate file access, raising security concerns despite the extension's benign purpose.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension that processes markdown content and handles file suggestions. No critical, high-risk, or medium-risk indicators were detected. The code primarily deals with file reading, caching, and generating markdown reports, which aligns with expected behavior for a productivity-focused extension. No signs of malicious activity or capability mismatches were found.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension handling suggestions and file operations. No malicious or suspicious patterns were detected. The operations are within the expected scope of a code suggestion or analysis extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension that handles file watchers and text editor decorations. It uses standard VS Code APIs for file monitoring and configuration retrieval. No critical-risk indicators were found, and the code aligns with expected behavior for a file-based extension. No secrets, credential harvesting, or malicious network activities were detected.\"\n}\n```\n\n=== extension/dist/flowEditor.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a flowchart or diagramming tool within a VS Code extension. It contains standard functionality for creating and rendering nodes and connections, with no evidence of malicious behavior, secret leakage, or inappropriate network activity. The code aligns with its expected purpose as a flow editor.\"\n}\n```\n\n=== extension/dist/flowEditor.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The analyzed code is part of a flow editor and contains standard functionality for rendering nodes and edges in an SVG canvas. No malicious or suspicious activities were detected.\"\n}\n```\n\n=== extension/dist/flowEditor.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a flow editor or diagramming tool within a VS Code extension. It contains functions for creating and managing nodes and edges, handling user interactions like mouse events, and updating the visual representation of the diagram. No malicious or suspicious behavior was detected in the code. All activities appear to be related to the expected functionality of a diagramming tool, with no signs of secret leakage, credential harvesting, information stealing, or network exfiltration. The code does not exhibit any signs of persistence mechanisms, LOLBIN usage, or unexpected file system operations. The operations are confined to the expected behavior of a visual flow editor.\"\n}\n```\n\n=== extension/dist/flowEditor.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a flow editor or diagramming tool within a VS Code extension. It contains functions related to zooming, node creation, selection handling, and UI updates. No malicious or suspicious patterns were detected. The code aligns with expected behavior for such an extension, focusing on user interface manipulation and state management without accessing sensitive resources or exhibiting signs of unauthorized behavior.\"\n}\n```\n\n=== extension/dist/flowEditor.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a flowchart or diagram editor extension for VS Code. It contains CSS styles for nodes, edges, and UI elements, along with event handlers for adding elements and managing the canvas. No critical, high, or medium-risk indicators were identified. The code aligns with its expected functionality and does not exhibit signs of malicious behavior.\"\n}\n```"
+}
