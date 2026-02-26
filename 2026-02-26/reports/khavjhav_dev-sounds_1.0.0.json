@@ -1,0 +1,99 @@
+{
+  "extension_id": "khavjhav.dev-sounds",
+  "version": "1.0.0",
+  "display_name": "Dev Sounds \u2014 Test, Build & Git Sound Alerts",
+  "publisher_name": "khavjhav",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "fa3e01f0506b820e6e2cf9b0234829c4a15b8c7c0c7c74eff9d213981995d387",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-26T00:29:57.46Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.85,
+  "static_analysis_score": 0.9500000000000001,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6475,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 6,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/src/git-watcher.js",
+      "line_number": 17,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "lolbins_stagers",
+      "description": "PowerShell execution policy bypass",
+      "file_path": "extension/src/sound-player.js",
+      "line_number": 35,
+      "code_snippet": "powershell -NoProfile -ExecutionPolicy Bypass",
+      "category": "lolbins_stagers",
+      "pattern_id": "powershell_bypass"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/src/sound-player.js",
+      "line_number": 4,
+      "code_snippet": "const { exec } = require(\"child_process\");"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/src/sound-player.js",
+      "line_number": 4,
+      "code_snippet": "const { exec } = require(\"child_process\");"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/src/sound-player.js",
+      "line_number": 4,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "3 HIGH findings",
+    "Composite risk 0.53 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-26T01:10:04.395506+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension enumerates installed extensions using `vscode.extensions.getExtension`, which is a capability not explicitly stated in its advertised function of watching Git operations. This could be used for reconnaissance or potential abuse.\",\n      \"code_reference\": \"extension/src/git-watcher.js\",\n      \"line_hint\": 17\n    }\n  ],\n  \"summary\": \"The extension exhibits a capability disconnect by enumerating installed extensions via `vscode.extensions.getExtension`, which is not aligned with its stated purpose of watching Git operations. This could enable potential reconnaissance or abuse, raising security concerns.\"\n}\n```\n\n```json\n{\n  \"risk_score\": 0.85,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Execution of PowerShell with -ExecutionPolicy Bypass, a common technique for executing malicious scripts.\",\n      \"code_reference\": \"extension/src/sound-player.js\",\n      \"line_hint\": 35\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"Command Execution\",\n      \"description\": \"Use of child_process.exec() which allows arbitrary command execution.\",\n      \"code_reference\": \"extension/src/sound-player.js\",\n      \"line_hint\": 4\n    }\n  ],\n  \"summary\": \"The extension uses child_process.exec() and executes PowerShell with -ExecutionPolicy Bypass, indicating potential malicious behavior. These actions are inconsistent with a benign sound player extension and raise significant security concerns.\"\n}\n```"
+}
