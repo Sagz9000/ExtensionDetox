@@ -1,0 +1,220 @@
+{
+  "extension_id": "LRIntel.docgen-ai",
+  "version": "0.0.3",
+  "display_name": "Docgen AI",
+  "publisher_name": "LRIntel",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "10f1d213284e1bed73b3feb8d6e935aef5f180d90b5352633af722d7c846fe45",
+  "install_count": 2,
+  "average_rating": 5.0,
+  "published_date": "2026-02-25T23:34:51.463Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.6,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.7,
+  "composite_score": 0.565,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 18,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 24,
+      "code_snippet": "Buffer.from(o,\"utf8\"))}async function ut(t){let e;try{e=await P.workspace.fs.readFile(t)}catch{return}let n;try{n=JSON.parse(Buffer.from(e).toString(\"utf8\"))}catch{return}if(n.version!==ct||!n.config|",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 24,
+      "code_snippet": "readFile(t)}catch{return}let n;try{n=JSON.parse(Buffer.from(e).toString(\"utf8\"))}catch{return}if(n.version!==ct||!n.config||!Array.isArray(n.config.docTypeIds)||typeof n.config.prompt!=\"string\"||!Re(n",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "lolbins_stagers",
+      "description": "PowerShell execution policy bypass",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 10,
+      "code_snippet": "PowerShell):\",\"```powershell\",\"powershell -ExecutionPolicy Bypass",
+      "category": "lolbins_stagers",
+      "pattern_id": "powershell_bypass"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 26,
+      "code_snippet": "globalState.update(Ne,d),{valid:a.valid,checkedAt:c,expiresAt:a.expiresAt,plan:a.plan,message:a.message,quota:a.quota,source:\"backend\"}}catch(a){let c=Math.max(0,je(\"subscriptionOfflineGraceHours\",go)",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 26,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 26,
+      "code_snippet": "workspace.getConfiguration(\"aidocgen\").get(t,e)??e}function be(t,e){return oe.workspace.getConfiguration(\"aidocgen\").get(t,e)??e}var kt=require(\"node:crypto\"),q=M(require(\"vscode\")),Le=\"docgen.apiKey\"",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 24,
+      "code_snippet": "readFile(t)}catch{return}let n;try{n=JSON.parse(Buffer.from(e).toString(\"utf8\"))}catch{return}if(n.version!==ct||!n.config||!Array.isArray(n.config.docTypeIds)||typeof n.config.prompt!=\"string\"||!Re(n",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFile(t)}catch{return}if(!(e.byteLength>dn)&&!Sn(e))return{content:Buffer.from(e).toString(\"utf8\")}}function Sn(t){let e=Math.min(t.length,2048);for(let n=0;n<e;n+=1)if(t[n]===0)return!0;return!1}f",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 24,
+      "code_snippet": "readFile(t)}catch{return}let n;try{n=JSON.parse(Buffer.from(e).toString(\"utf8\"))}catch{return}if(n.version!==ct||!n.config||!Array.isArray(n.config.docTypeIds)||typeof n.config.prompt!=\"string\"||!Re(n",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 24,
+      "code_snippet": "fetch(t,{method:\"POST\",headers:{\"content-type\":\"application/json\",authorization:`Bearer ${n}`,\"x-docgen-client\":\"vscode-extension\"},body:JSON.stringify(o),signal:i.signal}),a=await no(r);if(!r.ok){let",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 26,
+      "code_snippet": "fetch(i,{method:\"POST\",headers:{\"content-type\":\"application/json\",authorization:`Bearer ${t}`,\"x-docgen-client\":\"vscode-extension\"},body:JSON.stringify({}),signal:s.signal}),c=await yo(a);if(!a.ok){le",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 24,
+      "code_snippet": "method:\"POST\",headers:{\"content-type\":\"application/json\",authorization:`Bearer ${n}`,\"x-docgen-client\":\"vscode-extension\"},body:JSON.stringify(o),signal:i.signal}),a=await no(r);if(!r.ok){let c=H(a.er",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 26,
+      "code_snippet": "method:\"POST\",headers:{\"content-type\":\"application/json\",authorization:`Bearer ${t}`,\"x-docgen-client\":\"vscode-extension\"},body:JSON.stringify({}),signal:s.signal}),c=await yo(a);if(!a.ok){let f=vt(c)",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 253,
+      "code_snippet": ".postMessage({type:\"children\",parentUri:n.toString(),nodes:o});return}if(e.type===\"toggle\"){let n=Be(e.uri);if(!n)return;await this.filesProvider.setSelectionByUri(n,e.checked),await this.pushInitPayl",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 716,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'lrintel' does not match GitHub org 'ryukiine' in repo 'https://github.com/ryukiine/AI-Docgen.git'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "9 HIGH findings",
+    "Composite risk 0.50 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-26T21:13:35.128983+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.6,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"INFostealer_behavior\",\n      \"description\": \"Potential data exfiltration via network calls with base64 encoding and file reading.\",\n      \"code_reference\": \"line 24\",\n      \"line_hint\": 24\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"VSCode_API_abuse\",\n      \"description\": \"Reading from VSCode SecretStorage API and global configuration, potentially exposing sensitive data.\",\n      \"code_reference\": \"line 26\",\n      \"line_hint\": 26\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"INFostealer_behavior\",\n      \"description\": \"Pattern suggesting data exfiltration via network calls with suspicious headers and authorization tokens.\",\n      \"code_reference\": \"line 24\",\n      \"line_hint\": 24\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"VSCode_API_abuse\",\n      \"description\": \"Directory traversal paired with network send, potentially indicating unauthorized file access.\",\n      \"code_reference\": \"line 26\",\n      \"line_hint\": 26\n    }\n  ],\n  \"summary\": \"The extension exhibits potential security risks, including suspicious network activity and handling of sensitive data. While the functionality aligns with its advertised purpose, there are significant security concerns that require further investigation.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension that handles file tree operations. It uses standard VS Code APIs and modules without any indication of malicious behavior. No critical-risk, high-risk, or medium-risk indicators were detected. The code's functionality aligns with typical file explorer behavior, and there are no signs of secret leakage, credential harvesting, or network exfiltration.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The analyzed code appears to be part of a VS Code extension handling file tree items and directory reading functionality. No critical, high, or medium-risk indicators were identified. The code primarily deals with standard VS Code API interactions for tree item management and file reading, which aligns with expected behavior for a documentation generator or similar tool. No signs of malicious activity, secret leakage, or inappropriate file system access were found.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a file or directory management system within a VS Code extension. It contains functions related to file counting, directory traversal, and state management of checkboxes. No critical, high, or medium-risk indicators were identified. The operations are confined to file system interactions and do not exhibit any signs of malicious behavior, secret leakage, or unauthorized access. The code aligns with expected functionality for an extension managing file or directory structures.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"OBFUSCATION\",\n      \"description\": \"Presence of minimal obfuscation techniques such as string splitting and variable naming that may indicate an attempt to obscure code behavior.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1-10\"\n    }\n  ],\n  \"summary\": \"The code exhibits minimal obfuscation and unusual string handling, which may suggest an attempt to obscure code behavior. However, no critical or high-risk indicators were found. The extension's functionality appears to be related to file path management, which aligns with its potential purpose as a file explorer or similar tool. The risk is low, but the obfuscation raises some concerns about potential hidden functionality.\"\n}\n```"
+}
