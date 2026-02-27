@@ -1,0 +1,262 @@
+{
+  "extension_id": "YiEvan.remote-test",
+  "version": "1.0.0",
+  "display_name": "remote-test",
+  "publisher_name": "YiEvan",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "35ad5a401b3140c25b08877e3c897f0e6a3e70283fb314a7cd9f66c33a6c6a17",
+  "install_count": 9,
+  "average_rating": 0.0,
+  "published_date": "2026-02-25T16:02:20.427Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 23,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Buffer.from;e.exports=function(e,n,i){if(\"number\"==typeof e)throw new TypeError('\"value\" argument must not be a number');return s=e,\"ArrayBuffer\"===t.call(s).slice(8,-1)?function(e,t,n){t>>>=0;var i=e",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFile(e,t,r){if(this.server)throw new Error(\"Client-only method called in server mode\");let n;if(\"function\"==typeof r?n=r:\"function\"==typeof t&&(n=t,t=void 0),\"string\"==typeof t)t={encoding:t,flag:",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "AKIAAgDkIIiDwACSAAIB",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Embedded private key block",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "OPENSSH",
+      "category": "leaked_secrets",
+      "pattern_id": "private_key_header"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Embedded private key block",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "OPENSSH",
+      "category": "leaked_secrets",
+      "pattern_id": "private_key_header"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "global?global:\"undefined\"!=typeof window?window:\"undefined\"!=typeof self?self:{}).Uint8Array||function(){},h=r(9023);i=h&&h.debuglog?h.debuglog(\"stream\"):function(){};var l,u,f,d=r(0),g=r(7353),p=r(41",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"RemoteTest\").get(\"configPath\")||\"RemoteTest-config.json\";E=a.workspace.createFileSystemWatcher(new a.RelativePattern(t,`**/${r}`),!1,!1,!1),E.onDidChange(e=>{y||(v(t),a.win",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={6395(e){e.exports={newInvalidAsn1Error:function(e){var t=new Error;return t.name=\"InvalidAsn1Error\",t.message=e||\"\",t}}},5670(e,t,r){var n=r(6395),i=r(6299),s=r(3319),o=r(1431);for(var a "
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={6395(e){e.exports={newInvalidAsn1Error:function(e){var t=new Error;return t.name=\"InvalidAsn1Error\",t.message=e||\"\",t}}},5670(e,t,r){var n=r(6395),i=r(6299),s=r(3319),o=r(1431);for(var a "
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'new Function(' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={6395(e){e.exports={newInvalidAsn1Error:function(e){var t=new Error;return t.name=\"InvalidAsn1Error\",t.message=e||\"\",t}}},5670(e,t,r){var n=r(6395),i=r(6299),s=r(3319),o=r(1431);for(var a "
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "obfuscated_eval",
+      "description": "Obfuscated eval() / Function() execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Function(\"return",
+      "category": "builtin",
+      "pattern_id": "obfuscated_eval"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readdir(e,(r,n)=>{if(r)s(this.fmtError(`${r.message} ${e}`,\"list\",r.code));else{const e=/-/gi,r=n.map(t=>({type:t.longname.slice(0,1),name:t.filename,size:t.attrs.size,modifyTime:1e3*t.attrs.mtime,acc",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFile(e,t,r){if(this.server)throw new Error(\"Client-only method called in server mode\");let n;if(\"function\"==typeof r?n=r:\"function\"==typeof t&&(n=t,t=void 0),\"string\"==typeof t)t={encoding:t,flag:",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "REQUEST (${e})`),v(this,this._packetRW.write.finalize(n))}authPassword(e,t,r){if(this._server)throw new Error(\"Client-only method called in server mode\");const n=Buffer.byteLength(e),i=Buffer.byteLeng",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".postRun)for(\"function\"==typeof t.postRun&&(t.postRun=[t.postRun]);t.postRun.length;){var e=t.postRun.shift();T.unshift(e)}F(T)}}if(!(0<O)){if(t.preRun)for(\"function\"==typeof t.preRun&&(t.preRun=[t.pr",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Mining algorithm reference",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "etHash",
+      "category": "crypto_mining",
+      "pattern_id": "cryptonight_algo"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Mining algorithm reference",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "etHash",
+      "category": "crypto_mining",
+      "pattern_id": "cryptonight_algo"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "WASM-based mining (high CPU usage)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".wasmBinary&&(_=t.wasmBinary),t.noExitRuntime,\"object\"!=typeof WebAssembly&&D(\"no native wasm support detected\");var m,y=!1;function w(e,t){e||D(\"Assertion failed: \"+t)}function b(e){var r=t[\"_\"+e];re",
+      "category": "crypto_mining",
+      "pattern_id": "wasm_mining"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'yievan' does not match GitHub org 'dontfork' in repo 'https://github.com/Dontfork/RemoteTest.git'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "7 CRITICAL findings",
+    "12 HIGH findings",
+    "Composite risk 0.66 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T07:35:49.160710+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.85,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"SECRETS_LEAKAGE\",\n      \"description\": \"Hardcoded AWS Access Key ID found in the source code.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": \"line 1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"SECRETS_LEAKAGE\",\n      \"description\": \"Embedded private key block (OPENSSH) found in the source code.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": \"line 1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"INFO_STEALER\",\n      \"description\": \"Pattern suggesting reading file content and immediately sending over network found.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": \"line 1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CRYPTO_MINING\",\n      \"description\": \"Mining algorithm reference (etHash) and WASM-based mining found in the source code.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": \"line 1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"C2_TUNNELING\",\n      \"description\": \"Attempt to read credential files and exfiltrate data found in the source code.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": \"line 1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBIN_STAGER\",\n      \"description\": \"Use of eval() and child_process.exec() for arbitrary command execution found in the source code.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": \"line 1\"\n    }\n  ],\n  \"summary\": \"The extension exhibits multiple malicious patterns including hardcoded secrets, credential harvesting, info-stealing behavior, and crypto mining activities. The presence of AWS access keys and private keys, combined with file reading and network exfiltration patterns, indicates a high risk of compromise. The extension's actual capabilities, including file upload and command execution, do not align with its advertised purpose, raising concerns about its true intent.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a binary data parser, likely handling ASN.1 encoded data. It defines methods for reading bytes, lengths, and various data types from a buffer. No malicious or suspicious activities were detected. The functionality aligns with legitimate data parsing operations, and there are no indicators of secret leakage, credential harvesting, or network exfiltration. The code does not exhibit any critical, high, or medium-risk behaviors.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a data parsing mechanism, likely handling ASN.1 or BER encoded data. It contains functions for reading different data types and processing them, such as reading OIDs and handling binary strings. There are no signs of malicious behavior, secret leakage, or unauthorized access. The code is clean and appears to be part of a legitimate data handling component.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a binary encoding/serialization mechanism, possibly for handling binary data in a VS Code extension. No suspicious or malicious patterns were identified in the code snippet provided. The functions are focused on writing bytes, handling buffers, and encoding/decoding data, which is consistent with typical extension behavior involving binary data manipulation. No critical-risk, high-risk, or medium-risk indicators were present in the code.\"\n}\n```"
+}
