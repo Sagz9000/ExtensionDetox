@@ -1,0 +1,492 @@
+{
+  "extension_id": "HanMaXiao.code-manager",
+  "version": "1.0.0",
+  "display_name": "\u4ee3\u7801\u7ba1\u7406\u8005 - Code Manager",
+  "publisher_name": "HanMaXiao",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "fbbff71a4cf3902f7e63829e469b140394c045b0f24494213fd683adfc3aad13",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-27T04:10:47.04Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.8,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6425000000000001,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 53,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": "readFile(r).then(r=>{t.webview.html=r.toString();const n=this._collectionService.getAllCollections();setTimeout(()=>{t.webview.postMessage({command:\"initialize\",collections:n.map(e=>({id:e.id,name:e.n",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": "onDidChangeTextDocument(async e=>{k.trackDocumentChange(e),E(e.document.uri.fsPath),T()}),I(),e.subscriptions.push(s.commands.registerCommand(\"codeManager.addBookmark\",()=>{P.showBookmarkDialog()}),s.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Streaming document changes with serialization (real-time code theft)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": "onDidChangeTextDocument(async e=>{k.trackDocumentChange(e),E(e.document.uri.fsPath),T()}),I(),e.subscriptions.push(s.commands.registerCommand(\"codeManager.addBookmark\",()=>{P.showBookmarkDialog()}),s.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_change_stream"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": "global\"===t.get(\"storageMode\",\"workspace\")?l.StorageMode.Global:l.StorageMode.Workspace,n=(0,v.createEventBus)({enableLogging:!1}),i=new l.StorageService(e,r),o=new d.NavigationService,a=new c.Bookmar",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": "workspace.getConfiguration(\"codeManager\"),r=\"global\"===t.get(\"storageMode\",\"workspace\")?l.StorageMode.Global:l.StorageMode.Workspace,n=(0,v.createEventBus)({enableLogging:!1}),i=new l.StorageService(e",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/src/services/path-matcher-service.ts",
+      "line_number": 105,
+      "code_snippet": "workspace.findFiles('**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'ajv' has 'prepublish': npm run build",
+      "file_path": "extension/node_modules/ajv/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'eventsource' has 'prepare': npm run build",
+      "file_path": "extension/node_modules/eventsource/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'express-rate-limit' has 'prepare': run-s compile && husky",
+      "file_path": "extension/node_modules/express-rate-limit/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'fast-deep-equal' has 'prepublish': npm run build",
+      "file_path": "extension/node_modules/fast-deep-equal/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'which' has 'prepublish': npm run changelog",
+      "file_path": "extension/node_modules/which/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'qs' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/qs/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'side-channel' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/side-channel/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'path-to-regexp' has 'prepare': ts-scripts install && npm run build",
+      "file_path": "extension/node_modules/path-to-regexp/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'es-errors' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/es-errors/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'object-inspect' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/object-inspect/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'side-channel-list' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/side-channel-list/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'side-channel-map' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/side-channel-map/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'side-channel-weakmap' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/side-channel-weakmap/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'call-bound' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/call-bound/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'get-intrinsic' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/get-intrinsic/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'call-bind-apply-helpers' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/call-bind-apply-helpers/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'es-define-property' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/es-define-property/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'es-object-atoms' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/es-object-atoms/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'function-bind' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/function-bind/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'get-proto' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/get-proto/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'gopd' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/gopd/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'has-symbols' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/has-symbols/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'hasown' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/hasown/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'math-intrinsics' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/math-intrinsics/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "POSTINSTALL_SCRIPT",
+      "description": "Bundled module 'dunder-proto' has 'prepublish': not-in-publish || npm run prepublishOnly",
+      "file_path": "extension/node_modules/dunder-proto/package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'new Function(' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{\"use strict\";var e={323(e,t){function r(e,t){return{validate:e,compare:t}}Object.defineProperty(t,\"__esModule\",{value:!0}),t.formatNames=t.fastFormats=t.fullFormats=void 0,t.fullFormats={date:r("
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'new Function(' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": "deps: ${r}}`};const a={keyword:\"dependencies\",type:\"object\",schemaType:\"object\",error:t.error,code(e){const[t,r]=function({schema:e}){const t={},r={};for(const n in e)\"__proto__\"!==n&&((Array.isArray("
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": "readFile(r).then(r=>{t.webview.html=r.toString();const n=this._collectionService.getAllCollections();setTimeout(()=>{t.webview.postMessage({command:\"initialize\",collections:n.map(e=>({id:e.id,name:e.n",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": "request({method:\"ping\"},i.EmptyResultSchema)}async createMessage(e,t){if((e.tools||e.toolChoice)&&!this._clientCapabilities?.sampling?.tools)throw new Error(\"Client does not support sampling tools cap",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 4,
+      "code_snippet": ".post)})):i.block(()=>I(e,\"$ref\",h.all.$ref.definition))}function w(e,t){const{gen:r,schema:n,opts:{useDefaults:i}}=e;i&&(0,s.assignDefaults)(e,t.type),r.block(()=>{for(const r of t.rules)(0,o.shouldU",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 7,
+      "code_snippet": ".post||function(){},e,\"\",e)};function r(e,i,o,a,s,c,u,l,d,m){if(a&&\"object\"==typeof a&&!Array.isArray(a)){for(var p in i(a,s,c,u,l,d,m),a){var f=a[p];if(Array.isArray(f)){if(p in t.arrayKeywords)for(v",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/src/panels/sidebar-panel.ts",
+      "line_number": 54,
+      "code_snippet": "const panel = vscode.window.createWebviewPanel("
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/src/panels/sidebar-panel.ts",
+      "line_number": 67,
+      "code_snippet": "vscode.workspace.fs.readFile(dialogPath).then(content => {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/src/panels/sidebar-panel.ts",
+      "line_number": 138,
+      "code_snippet": "const panel = vscode.window.createWebviewPanel("
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/src/panels/sidebar-panel.ts",
+      "line_number": 151,
+      "code_snippet": "vscode.workspace.fs.readFile(dialogPath).then(content => {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/src/panels/sidebar-panel.ts",
+      "line_number": 208,
+      "code_snippet": "const panel = vscode.window.createWebviewPanel("
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/src/panels/sidebar-panel.ts",
+      "line_number": 223,
+      "code_snippet": "vscode.workspace.fs.readFile(dialogPath).then(content => {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/dist/panels/sidebar-panel.js",
+      "line_number": 55,
+      "code_snippet": "const panel = vscode.window.createWebviewPanel('createBookmark', '\u521b\u5efa\u4e66\u7b7e', vscode.ViewColumn.One, {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/dist/panels/sidebar-panel.js",
+      "line_number": 61,
+      "code_snippet": "vscode.workspace.fs.readFile(dialogPath).then(content => {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/dist/panels/sidebar-panel.js",
+      "line_number": 122,
+      "code_snippet": "const panel = vscode.window.createWebviewPanel('createCollection', '\u521b\u5efa\u96c6\u5408', vscode.ViewColumn.One, {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/dist/panels/sidebar-panel.js",
+      "line_number": 128,
+      "code_snippet": "vscode.workspace.fs.readFile(dialogPath).then(content => {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/dist/panels/sidebar-panel.js",
+      "line_number": 177,
+      "code_snippet": "const panel = vscode.window.createWebviewPanel('addToCollection', '\u6dfb\u52a0\u5230\u96c6\u5408', vscode.ViewColumn.One, {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/dist/panels/sidebar-panel.js",
+      "line_number": 184,
+      "code_snippet": "vscode.workspace.fs.readFile(dialogPath).then(content => {"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "7 CRITICAL findings",
+    "143 HIGH findings",
+    "Composite risk 0.76 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T04:33:59.713738+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"INFostealer\",\n      \"description\": \"Pattern suggesting credential harvesting and data exfiltration via file reading and network transmission.\",\n      \"code_reference\": \"line 7\",\n      \"line_hint\": 7\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"VSCode_API Abuse\",\n      \"description\": \"VSCode document event listener paired with potential network exfiltration and unauthorized file access.\",\n      \"code_reference\": \"line 7\",\n      \"line_hint\": 7\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"Extension's actual code capabilities (credential access, data exfiltration) are NOT proportional to its advertised function (code bookmark management).\",\n      \"code_reference\": \"N/A\",\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits critical-risk patterns including potential credential harvesting and data exfiltration. The code's capabilities significantly exceed its advertised purpose, raising concerns about malicious intent or severe misimplementation. The VSIX package size and activation events align with the extension's metadata, but the actual code behavior does not match its stated functionality.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code contains a series of regular expressions for validating URLs, URIs, emails, hostnames, and IPv4 addresses. These are standard input validation patterns and do not exhibit any malicious or suspicious behavior. No indicators of compromise or\u4e0d\u826f\u884c\u4e3a were detected.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to define various validation patterns using regular expressions. It does not exhibit any signs of malicious behavior, such as secret leakage, credential harvesting, or network exfiltration. The functionality aligns with typical validation tasks and does not contain any suspicious or critical-risk indicators.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a utility extension focused on date/time validation and formatting. It\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a data validation or formatting utility, potentially related to JSON schema validation. It includes standard JavaScript practices and well-known libraries like `ajv-formats`. No critical, high-risk, or medium-risk indicators were identified. The code does not exhibit signs of malicious behavior, secret leakage, or unauthorized access. The functionality aligns with typical validation tasks, and there are no behavioral disconnects or suspicious patterns.\"\n}\n```"
+}
