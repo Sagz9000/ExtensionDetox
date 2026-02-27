@@ -1,0 +1,240 @@
+{
+  "extension_id": "PoojithGavini.graphql-clnt",
+  "version": "0.4.2",
+  "display_name": "GraphQL CLNT",
+  "publisher_name": "PoojithGavini",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "97a721fddf5e1906da77fdf138e7599302e33b756b1069ce804f80879bc6460d",
+  "install_count": 2,
+  "average_rating": 0.0,
+  "published_date": "2026-02-27T20:57:36.817Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5375,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 20,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 103,
+      "code_snippet": "Buffer.from(n).toString(\"utf-8\");try{let r=JSON.parse(s);if(r.scripts&&typeof r.scripts==\"object\")for(let i of Object.values(r.scripts)){let d=[/--port\\s+(\\d+)/g,/PORT[=\\s]+(\\d+)/g,/localhost:(\\d+)/g]",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 103,
+      "code_snippet": "readFile(t),s=Buffer.from(n).toString(\"utf-8\");try{let r=JSON.parse(s);if(r.scripts&&typeof r.scripts==\"object\")for(let i of Object.values(r.scripts)){let d=[/--port\\s+(\\d+)/g,/PORT[=\\s]+(\\d+)/g,/loca",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Bulk workspace file discovery and reading",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 103,
+      "code_snippet": "workspace.findFiles(\"**/package.json\",\"**/node_modules/**\",10);for(let t of e){let n=await X.workspace.fs.readFile",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_bulk_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 103,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 103,
+      "code_snippet": "globalState=e;this.secretStorage=t;this.workspaceState=n}migrateToWorkspace(){if(this.workspaceState.get(v.migrated))return;let e=this.globalState.get(v.collections);e&&e.length>0&&this.workspaceState",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 103,
+      "code_snippet": "secretStorage.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/sidebar.js",
+      "line_number": 160,
+      "code_snippet": ".postMessage({ type: 'loadEnv",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/sidebar.js",
+      "line_number": 991,
+      "code_snippet": ".postMessage({ type: 'saveEnvironments', payload: state.env",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/editor.js",
+      "line_number": 134,
+      "code_snippet": ".postMessage({ type: 'loadEnv",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/media/editor.js",
+      "line_number": 1174,
+      "code_snippet": ".postMessage({ type: 'saveEnvironments', payload: state.env",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 103,
+      "code_snippet": "readFile(t),s=Buffer.from(n).toString(\"utf-8\");try{let r=JSON.parse(s);if(r.scripts&&typeof r.scripts==\"object\")for(let i of Object.values(r.scripts)){let d=[/--port\\s+(\\d+)/g,/PORT[=\\s]+(\\d+)/g,/loca",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 73,
+      "code_snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\",Authorization:`Bearer ${n}`},body:JSON.stringify({model:t.model||\"gpt-4o-mini\",messages:[{role:\"system\",content:r},{role:\"user\",content:i}],tem",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 74,
+      "code_snippet": ".postMessage({type:\"collectionsLoaded\",payload:this.storage.loadCollections()})}refreshImpactReport(){let e=this.storage.loadImpactReport();if(!e||!this.view)return;let t=this.storage.loadSchema();if(",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 89,
+      "code_snippet": ".postMessage({type:\"openRequest\",payload:t})):this.createPanel(t)}enrichRequestWithSchema(e){let t=e;if(Array.isArray(t.availableFields)&&t.availableFields.length>0)return t;let n=this.storage.loadSch",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 103,
+      "code_snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({query:\"{ __typename }\"}),signal:e.signal});if(!n.ok)return!1;let s=await n.json();return\"data\"in s||\"errors\"in s}catch{re",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "webview_phishing",
+      "description": "WebView panel combined with external HTTP (potential phishing overlay)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 89,
+      "code_snippet": "createWebviewPanel(\"graphqlClient.editor\",\"GraphQL CLNT\",N.ViewColumn.One,{enableScripts:!0,retainContextWhenHidden:!0,localResourceRoots:[N.Uri.joinPath(this.extensionUri,\"media\")]}),this.panel.iconP",
+      "category": "builtin",
+      "pattern_id": "webview_phishing"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "webview_phishing",
+      "description": "WebView panel combined with external HTTP (potential phishing overlay)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 89,
+      "code_snippet": "webview.html=this.getHtmlContent(this.panel.webview),this.webviewReady=!1,this.pendingMessages=[],this.setupMessageHandler(this.panel.webview),this.pendingMessages.push({type:\"openRequest\",payload:e})",
+      "category": "builtin",
+      "pattern_id": "webview_phishing"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'poojithgavini' does not match GitHub org 'poojithg14' in repo 'https://github.com/poojithg14/GraphqlClient.git'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "11 HIGH findings",
+    "Composite risk 0.46 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T22:05:33.729949+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/media/sidebar.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The VSIX package size (0.1 MB) appears disproportionately small for the advertised features, which include schema introspection, query analysis, and security features. This suggests potential capability mismatch\n\n=== extension/media/sidebar.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 0.95,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension handling schema exploration and query operations. No critical, high, or medium-risk indicators were identified. The code primarily manages state and communicates via VS Code messages, which aligns with expected behavior for this type of extension. No signs of malicious activity or capability mismatches were detected.\"\n}\n```\n\n=== extension/media/sidebar.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a media-related VS Code extension's sidebar implementation. It contains standard UI elements like buttons, search bars, and configuration options. No malicious or suspicious patterns were identified in this code snippet. The functionality aligns with typical extension behavior, focusing on user interface interactions and configuration management. No critical, high, or medium-risk indicators were present.\"\n}\n```\n\n=== extension/media/sidebar.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"MEDIUM-RISK\",\n      \"description\": \"Use of `Function()` for filtering mutations which could be a potential vector for code injection or obfuscation.\",\n      \"code_reference\": \"extension/media/sidebar.js (chunk 4/5)\",\n      \"line_hint\": \"line 10-25\"\n    }\n  ],\n  \"summary\": \"The code exhibits moderate suspicious behavior due to the use of `Function()` for filtering mutations. While not inherently malicious, this could be a vector for code injection or obfuscation. The overall functionality appears to be related to schema-based suggestion features, but further analysis is recommended to rule out hidden capabilities.\"\n}\n```\n\n=== extension/media/sidebar.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to handle intent-based interactions and token processing, which is consistent with a feature-focused VS Code extension. No malicious or suspicious patterns were identified in the code snippet.\"\n}\n```\n\n=== extension/media/editor.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"DATA_EXFILTRATION\",\n      \"description\": \"Pattern suggesting data exfiltration detected in message posting.\",\n      \"code_reference\": \"extension/media/editor.js\",\n      \"line_hint\": 134\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"DATA_EXFILTRATION\",\n      \"description\": \"Pattern suggesting data exfiltration detected in message posting.\",\n      \"code_reference\": \"extension/media/editor.js\",\n      \"line_hint\": 1174\n    }\n  ],\n  \"summary\": \"The code exhibits patterns that could indicate data exfiltration through message posting, though the exact nature and intent are unclear. The findings suggest potential suspicious behavior that warrants further investigation.\"\n}\n```\n\n=== extension/media/editor.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension handling state and UI rendering. No critical, high, or medium-risk indicators were identified. The code focuses on message handling, state management, and UI updates, which align with typical VS Code extension behavior. No signs of malicious activity or capability mismatches were detected.\"\n}\n```\n\n=== extension/media/editor.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension related to query editing and tab management. It contains standard functionality for managing UI state, tracking provenance, and handling user interactions. No malicious or suspicious patterns were identified in this code snippet.\"\n}\n```\n\n=== extension/media/editor.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet does not exhibit any suspicious or malicious behavior. It primarily handles tab management, modal dialogs, and state synchronization using standard VS Code APIs. No critical-risk, high-risk, or medium-risk indicators were detected. The code appears to be benign and aligned with typical VS Code extension functionality.\"\n}\n```\n\n=== extension/media/editor.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension related to GraphQL query execution. It contains UI elements for handling query execution, endpoint configuration, and security/cost badges. No critical, high-risk, or medium-risk indicators were identified. The code aligns with its intended functionality and does not exhibit suspicious or malicious behavior.\"\n}\n```"
+}
