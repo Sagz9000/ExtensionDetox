@@ -1,0 +1,108 @@
+{
+  "extension_id": "duch-nuon.spotify-vscode-player",
+  "version": "1.2.1",
+  "display_name": "spotify-vscode",
+  "publisher_name": "duch-nuon",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "06b469a7cf0b543edbb7618f6902f7bef71527d1d5dedb78d451530a44447542",
+  "install_count": 4,
+  "average_rating": 0.0,
+  "published_date": "2026-02-25T11:32:57.42Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.7,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6074999999999999,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 7,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 53,
+      "code_snippet": "TOKEN: \"spotify_access_token\"",
+      "category": "leaked_secrets",
+      "pattern_id": "generic_secret"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 54,
+      "code_snippet": "TOKEN: \"spotify_refresh_token\"",
+      "category": "leaked_secrets",
+      "pattern_id": "generic_secret"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1049,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    }
+  ],
+  "high_findings": [],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hardcoded_ip",
+      "description": "Hardcoded IP address (potential C2)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 148,
+      "code_snippet": "\"http://127.0.0.1:7867/",
+      "category": "builtin",
+      "pattern_id": "hardcoded_ip"
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "Composite risk 0.54 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T08:50:52.352832+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.7,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"leaked_secrets\",\n      \"description\": \"Hardcoded Spotify access and refresh tokens in the source code, which could be exploited for unauthorized access.\",\n      \"code_reference\": \"src/auth/tokenStorage.ts lines 53-54\",\n      \"line_hint\": 53\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"network_activity\",\n      \"description\": \"Hardcoded IP address `127.0.0.1:7867` which may indicate potential C2 or local server communication, raising suspicion about its purpose.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 1/5)\",\n      \"line_hint\": 148\n    },\n    {\n      \"severity\": \"BEHAVIORAL_MISMATCH\",\n      \"category\": \"capability_disconnect\",\n      \"description\": \"The extension's code includes authentication and token storage functionality, which aligns with its advertised features. However, the presence of hardcoded tokens and potential network communication raises questions about proper security practices and could indicate a disconnect between intended and actual implementation.\",\n      \"code_reference\": \"N/A\",\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits signs of potential security misconfiguration with hardcoded tokens and suspicious network activity. While its primary functionality aligns with its description, the presence of critical security issues and questionable network patterns raises concerns about its implementation and potential risks.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension's code contains functions for storing and retrieving authentication tokens, which may not be fully aligned with its advertised purpose if not explicitly stated. The `REDIRECT_URI` is hardcoded to a local address, which should be validated against the extension's intended functionality.\",\n      \"code_reference\": \"src/auth/authProvider.ts\",\n      \"line_hint\": 14\n    }\n  ],\n  \"summary\": \"The extension appears to handle Spotify authentication tokens, with functions for storage, retrieval, and validation. While no critical vulnerabilities are present, the hardcoded redirect URI and token handling functions may indicate a capability not fully disclosed, raising a medium-risk flag for potential capability disconnect.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code shows signs of potential OAuth handling issues, such as improper server cleanup and potential resource leaks. While not inherently malicious, these could indicate poor coding practices or unexpected behavior.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"approximate line 50-100\"\n    }\n  ],\n  \"summary\": \"The extension appears to handle Spotify authentication with OAuth, which is appropriate for its function. However, there are potential issues with server resource management and error handling that could indicate unreliability, though no clear signs of malicious intent were found.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a legitimate VS Code extension for interacting with the Spotify API. It contains standard OAuth flow handling, token exchange, and API requests to Spotify's endpoints. No critical-risk, high-risk, or medium-risk indicators were identified. The code aligns with expected behavior for a Spotify integration, and there are no signs of malicious or suspicious activities.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be a legitimate VS Code extension for controlling Spotify playback. It contains standard API calls to Spotify's web API, with proper error handling and no evidence of malicious behavior. All network requests are to Spotify's domains, and there are no signs of secret leakage, credential harvesting, or unauthorized system access. The functionality aligns with its intended purpose as a music player controller.\"\n}\n```"
+}
