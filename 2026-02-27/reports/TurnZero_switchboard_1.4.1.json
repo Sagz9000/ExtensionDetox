@@ -1,0 +1,372 @@
+{
+  "extension_id": "TurnZero.switchboard",
+  "version": "1.4.1",
+  "display_name": "Switchboard",
+  "publisher_name": "TurnZero",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "e71740161bf23790c6eb3bceffe7ee3a78e96cfa8bd0a5414ea1837d88119b99",
+  "install_count": 4,
+  "average_rating": 0.0,
+  "published_date": "2026-02-27T13:02:08.757Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 35,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Buffer.from(e).toString(\"utf8\")}catch(e){return{status:\"failed\",reason:`Bundled AGENTS.md source is missing or unreadable: ${M(e)}`}}const a=`${A}\\n${n.trimEnd()}\\n${E}`,r=`${n.trimEnd()}\\n`;let c=nul",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFile(this.activityLogPath,\"utf8\")).split(\"\\n\").filter(e=>e.trim()).map(e=>{try{return JSON.parse(e)}catch{return null}}).filter(e=>!!e).filter(t=>\"dispatch\"===t.type&&String(t.payload?.dispatchId|",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readdir(this.sessionsDir);for(const s of t)if(s.endsWith(\".json\"))try{const t=await o.promises.readFile(c.join(this.sessionsDir,s),\"utf8\"),i=JSON.parse(t),n=\"string\"==typeof i.sessionId?i.sessionId:\"\"",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"switchboard\").get(\"plans.defaultOpenMode\",\"preview\");try{t.fsPath.toLowerCase().endsWith(\".md\")&&\"preview\"===s?await o.commands.executeCommand(\"markdown.showPreview\",t):awa",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": "readFileSync(a,\"utf8\").trim():null}catch{return null}}function G(e){const t=Number(e);return!Number.isInteger(t)||t<=0?null:t}const H=new Map;async function Y(e,t,r=!1,n=null){const i=`req_${Date.now(",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 1,
+      "code_snippet": "globalRegistry,this.target=e?.target??\"draft-2020-12\",this.unrepresentable=e?.unrepresentable??\"throw\",this.override=e?.override??(()=>{}),this.io=e?.io??\"output\",this.seen=new Map}process(e,t={path:[",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": "globalRegistry=t.core=void 0,t.core=o(r(6601)),a(r(9874),t),a(r(6549),t),a(r(9299),t),a(r(8035),t),a(r(2392),t);const u=r(6601),c=s(r(8208));(0,u.config)((0,c.default)());var d=r(6601);Object.definePr",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "System fingerprinting API call",
+      "file_path": "extension/.agent/scripts/copy.js",
+      "line_number": 12,
+      "code_snippet": "os.platform()",
+      "category": "infostealer_behavior",
+      "pattern_id": "system_fingerprint_combo"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={23(e){\"use strict\";e.exports=require(\"util\")},106(e,t,s){var i=s(140),n=process.cwd,a=null,r=process.env.GRACEFUL_FS_PLATFORM||process.platform;process.cwd=function(){return a||(a=n.call("
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={23(e){\"use strict\";e.exports=require(\"util\")},106(e,t,s){var i=s(140),n=process.cwd,a=null,r=process.env.GRACEFUL_FS_PLATFORM||process.platform;process.cwd=function(){return a||(a=n.call("
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'execSync' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={23(e){\"use strict\";e.exports=require(\"util\")},106(e,t,s){var i=s(140),n=process.cwd,a=null,r=process.env.GRACEFUL_FS_PLATFORM||process.platform;process.cwd=function(){return a||(a=n.call("
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'new Function(' pattern",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={33(e,t,r){\"use strict\";var n=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var i=Object.getOwnPropertyDescriptor(t,r);i&&!(\"get\"in i?!t.__esModule:i.writa"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": "deps: ${r}}`};const a={keyword:\"dependencies\",type:\"object\",schemaType:\"object\",error:t.error,code(e){const[t,r]=function({schema:e}){const t={},r={};for(const n in e)\"__proto__\"!==n&&((Array.isArray("
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": "deps: ${r}}`};const a={keyword:\"dependencies\",type:\"object\",schemaType:\"object\",error:t.error,code(e){const[t,r]=function({schema:e}){const t={},r={};for(const n in e)\"__proto__\"!==n&&((Array.isArray("
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/.agent/scripts/copy.js",
+      "line_number": 7,
+      "code_snippet": "const { spawn } = require('child_process');"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require('child_process')' pattern",
+      "file_path": "extension/.agent/scripts/copy.js",
+      "line_number": 7,
+      "code_snippet": "const { spawn } = require('child_process');"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFile(this.activityLogPath,\"utf8\")).split(\"\\n\").filter(e=>e.trim()).map(e=>{try{return JSON.parse(e)}catch{return null}}).filter(e=>!!e).filter(t=>\"dispatch\"===t.type&&String(t.payload?.dispatchId|",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFile(this.activityLogPath,\"utf8\")).split(\"\\n\").filter(e=>e.trim()).map(e=>{try{return JSON.parse(e)}catch{return null}}).filter(e=>!!e).filter(t=>\"dispatch\"===t.type&&String(t.payload?.dispatchId|",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Request(e.terminalName);break;case\"registerAllTerminals\":await this._registerAllTerminals();break;case\"deregisterAllTerminals\":await this._deregisterAllTerminals();break;case\"createAgentGrid\":await o.",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".postMessage({type:\"loading\",value:!0}),await Promise.all([this._refreshSessionStatus(),this._refreshTerminalStatuses(),this._refreshRunSheets(),this._refreshJulesStatus()]),this._view.webview.postMes",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "execSync(\"",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "terminal_injection",
+      "description": "Stealthy terminal command injection via VS Code API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "sendText(e.trim(),!0),g?.appendLine(`[Extension] Sent startup command for '${s.name}' (${s.role}): ${e.trim()}`))}}}catch(e){g?.appendLine(`[Extension] Startup command execution failed: ${e}`)}P&&P.up",
+      "category": "builtin",
+      "pattern_id": "terminal_injection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": "readFileSync(a,\"utf8\").trim():null}catch{return null}}function G(e){const t=Number(e);return!Number.isInteger(t)||t<=0?null:t}const H=new Map;async function Y(e,t,r=!1,n=null){const i=`req_${Date.now(",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": "readFileSync(a,\"utf8\").trim():null}catch{return null}}function G(e){const t=Number(e);return!Number.isInteger(t)||t<=0?null:t}const H=new Map;async function Y(e,t,r=!1,n=null){const i=`req_${Date.now(",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": "request({method:\"ping\"},i.EmptyResultSchema)}async createMessage(e,t){if((e.tools||e.toolChoice)&&!this._clientCapabilities?.sampling?.tools)throw new Error(\"Client does not support sampling tools cap",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": ".post||function(){},e,\"\",e)};function r(e,i,o,a,s,u,c,d,l,m){if(a&&\"object\"==typeof a&&!Array.isArray(a)){for(var p in i(a,s,u,c,d,l,m),a){var f=a[p];if(Array.isArray(f)){if(p in t.arrayKeywords)for(v",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 7,
+      "code_snippet": ".post;if(r&&i)throw new Error('keyword with \"post\" flag cannot have \"type\"');const{RULES:o}=this;let a=i?o.post:o.rules.find(({type:e})=>e===r);if(a||(a={type:r,rules:[]},o.rules.push(a)),o.keywords[e",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Checking for analysis tools in process list",
+      "file_path": "extension/dist/mcp-server/mcp-server.js",
+      "line_number": 4,
+      "code_snippet": "Get-Process -Id $args[0]).ProcessName\",String(e)],{windowsHide:!0}),r=t.trim().toLowerCase();if(\"pwsh\"===r||\"powershell\"===r||\"cmd\"===r){const{stdout:t}=await c(\"powershell\",[\"-NoProfile\",\"-NonInterac",
+      "category": "persistence_evasion",
+      "pattern_id": "process_list_check"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/.agent/scripts/copy.js",
+      "line_number": 7,
+      "code_snippet": "require('child_process')",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished', 'onCommand:antigravity.getChromeDevtoolsMcpUrl']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'turnzero' does not match GitHub org 'tentacleopera' in repo 'https://github.com/TentacleOpera/switchboard.git'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "8 CRITICAL findings",
+    "23 HIGH findings",
+    "Composite risk 0.69 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T14:40:50.754580+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Usage of `require('child_process')` which allows arbitrary command execution.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 1/5)\",\n      \"line_hint\": \"Line 1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"Secrets & Credential Leakage\",\n      \"description\": \"Reading files using `fs.readFile` which could potentially access sensitive system files.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 1/5)\",\n      \"line_hint\": \"Line 1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"C2 & Tunneling\",\n      \"description\": \"Pattern suggesting data exfiltration via network calls after reading file content.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 1/5)\",\n      \"line_hint\": \"Line 1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension's actual code capabilities (credential access, network exfiltration) are NOT proportional to its advertised function (AI agent orchestration).\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 1/5)\",\n      \"line_hint\": \"N/A\"\n    }\n  ],\n  \"summary\": \"The extension exhibits critical-risk behavior including arbitrary command execution, potential credential harvesting, and data exfiltration. These activities are inconsistent with its stated purpose, indicating potential malicious intent.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.75,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension's code contains file system operations and uid/gid manipulation which are not typical for VS Code extensions, suggesting a potential capability disconnect.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 2/5)\",\n      \"line_hint\": \"Lines 1-30\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The code shows signs of obfuscation and low-level file operations which do not align with standard VS Code extension behaviors.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 2/5)\",\n      \"line_hint\": \"Lines 1-30\"\n    }\n  ],\n  \"summary\": \"The extension's\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNUSUAL_BEHAVIOR\",\n      \"description\": \"The code snippet appears to be part of a Node.js file system module, potentially indicating file system manipulation beyond standard VS Code extension capabilities.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"Lines 1-100\"\n    }\n  ],\n  \"summary\": \"The provided code snippet exhibits file system operations which, while not inherently malicious, may indicate a broader capability set beyond typical VS Code extensions. Further analysis is required to assess the extension's overall behavior and alignment with its intended purpose.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a module system, handling session logging and file operations. No critical, high, or medium-risk indicators were identified. The code is consistent with standard logging and session management practices, with no evidence of malicious behavior.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code contains file system operations that may not be fully aligned with its advertised purpose if it's intended to be a simple theme or formatter.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 5/5)\",\n      \"line_hint\": \"Approximate line 10-20\"\n    }\n  ],\n  \"summary\": \"The code exhibits file system operations and logging behavior that may not be fully proportional to its stated purpose, raising some concerns about potential capability mismatches. However, no critical indicators were found, and the overall risk remains low.\"\n}\n```\n\n=== extension/dist/mcp-server/mcp-server.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.85,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Attempt to read credential or key files detected.\",\n      \"code_reference\": \"line 4\",\n      \"line_hint\": 4\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"info-stealer\",\n      \"description\": \"Pattern suggesting data exfiltration and immediate network transmission detected.\",\n      \"code_reference\": \"line 4\",\n      \"line_hint\": 4\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"anti-analysis\",\n      \"description\": \"Checking for analysis tools in process list detected.\",\n      \"code_reference\": \"line 4\",\n      \"line_hint\": 4\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"command_execution\",\n      \"description\": \"Use of child_process module detected, which can enable arbitrary command execution.\",\n      \"code_reference\": \"line 4\",\n      \"line_hint\": 4\n    }\n  ],\n  \"summary\": \"The code exhibits multiple high-risk patterns including potential credential harvesting, data exfiltration, and anti-analysis techniques. The use of child_process and file reading operations raises concerns about malicious intent. However, without full context or additional code, the exact nature of these activities remains unclear.\"\n}\n```\n\n=== extension/dist/mcp-server/mcp-server.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a data validation library, possibly using Zod for type checking. It defines various validation functions for different data types like emails, GUIDs, URLs, and more. No malicious or suspicious behavior was detected in this snippet. The functions are standard for validation and do not exhibit any signs of secret leakage, credential harvesting, or network exfiltration. The code aligns with typical benign behavior for a VS Code extension focused on data validation or schema checking.\"\n}\n```\n\n=== extension/dist/mcp-server/mcp-server.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a type validation library, possibly using Zod for schema validation. It defines various data types and validation methods without exhibiting any malicious or suspicious behavior. No critical, high-risk, or medium-risk indicators were identified. The code aligns with expected functionality for a validation-related VS Code extension.\"\n}\n```\n\n=== extension/dist/mcp-server/mcp-server.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a type-checking or validation library, likely Zod, used for defining and validating data schemas. No malicious or suspicious patterns were identified. The code is focused on data validation and lacks any indicators of exfiltration, credential harvesting, or unauthorized access.\"\n}\n```\n\n=== extension/dist/mcp-server/mcp-server.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a schema validation library, specifically handling Zod-like types and validation logic. No malicious or suspicious patterns were identified. The code is consistent with standard data validation and type checking functionality, with no evidence of secret leakage, credential harvesting, or network exfiltration. The functions defined are typical for a validation library, focusing on type creation and manipulation.\"\n}\n```"
+}
