@@ -1,0 +1,96 @@
+{
+  "extension_id": "CalDymos.pb-project-files",
+  "version": "0.2.4",
+  "display_name": "PureBasic Project Files",
+  "publisher_name": "CalDymos",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "94407539533eb12d4aaa66de088190c7bc0bc430467631f157bcd0dc6831b5c3",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-27T10:28:16.723Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 0.7999999999999999,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.4875,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 6,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Bulk workspace file discovery and reading",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.findFiles(u,\"**/{node_modules,.git}/**\");this.projects.clear(),this.fileToProject.clear(),this.projectMeta.clear();for(const t of e){const e=await this.tryParseProject(t);if(!e)continue;cons",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_bulk_read"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFile(e.uri),r=Buffer.from(t).toString(\"utf8\");i=(0,c.parsePbpProjectText)(r,e.uri.fsPath)}catch(e){r=e?.message??String(e)}t.webview.html=function(e,t){const r=e?.config?.name?.trim()?e.config.nam",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/out/editors/pbp-editor.js",
+      "line_number": 160,
+      "code_snippet": "const bytes = await vscode.workspace.fs.readFile(document.uri);"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/out/services/project-service.js",
+      "line_number": 369,
+      "code_snippet": "const bytes = await vscode.workspace.fs.readFile(uri);"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T11:04:17.226796+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Bulk workspace file discovery and reading via `workspace.findFiles` which may indicate unexpected file access patterns.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"credential_leakage\",\n      \"description\": \"Potential attempt to read credential or key files via `readFile(e.uri),r=Buffer.from(t).toString(\"utf8\");i=(0,c.parsePbpProjectText)(r,e.uri.fsPath)}catch(` which may indicate unexpected file access patterns.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"1\"\n    }\n  ],\n  \"summary\": \"The extension exhibits file discovery patterns that may indicate potential credential harvesting or unexpected file access. While the extension's stated purpose is to manage PureBasic project files, the observed behavior could be inconsistent with its advertised functionality, raising concerns about potential capability mismatches or behavioral anomalies.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be handling configuration and data parsing in a standard manner. No critical, high-risk, or medium-risk indicators were identified. The code focuses on regular expression parsing and object construction based on extracted data, which aligns with typical extension behavior. No signs of malicious activity or capability mismatches were detected.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a configuration or build system within a VS Code extension. It processes project settings, file paths, and options without exhibiting any malicious or suspicious behavior. No critical, high-risk, or medium-risk indicators were detected. The code aligns with expected functionality for a build or task runner extension.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The analyzed code appears to be part of a VS Code extension focused on parsing configuration files and handling project settings. No critical, high-risk, or medium-risk indicators were identified. The code primarily processes XML data and extracts project-related information, which aligns with typical extension behavior. No signs of malicious activity, secret leakage, or unauthorized network communication were found.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a legitimate VS Code extension focused on handling project configuration and file management. No critical, high, or medium-risk indicators were identified. The code processes strings and handles file paths in a manner consistent with a build or project management tool. No signs of malicious behavior or capability mismatches were detected.\"\n}\n```"
+}
