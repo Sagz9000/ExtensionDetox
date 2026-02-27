@@ -1,0 +1,160 @@
+{
+  "extension_id": "OSQR.osqr-vscode",
+  "version": "0.1.4",
+  "display_name": "OSQR",
+  "publisher_name": "OSQR",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "08deebdbbead9b5234bbcbcf44ee168b7bfd79cb72c4d4d12f1b304e3886c75d",
+  "install_count": 1,
+  "average_rating": 0.0,
+  "published_date": "2026-02-25T13:41:29.68Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5375,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 12,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "btoa(t).replace(/\\+/g,\"-\").replace(/\\//g,\"_\").replace(/=+$/,\"\")}dispose(){this.disposables.forEach(e=>e.dispose()),this._onDidSignIn.dispose(),this._onDidSignOut.dispose(),this._onDidSessionExpire.dis",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading document content and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "document.getText(e)}function W(){let n=m.window.activeTextEditor;if(n)return D(n.document.uri.fsPath)}var E=class{authProvider;constructor(e){this.authProvider=e}async request(e,t={}){let s=await this",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_content_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "context.secrets.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"osqr\");return{apiEndpoint:n.get(\"apiEndpoint\",\"https://app.osqr.app\"),autoSaveConversations:n.get(\"autoSaveConversations\",!0),includeWorkspaceContext:n.get(\"includeWorkspac",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({grant_type:\"authorization_code\",code:e,redirect_uri:f.redirectUri,client_id:f.clientId,code_verifier:t})});if(!s.ok){let ",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".postMessage({type:\"streamContent\",text:b.text});else if(b.type===\"threadId\")this.currentThreadId=b.threadId;else if(b.type===\"tokensUsed\")I.commands.executeCommand(\"osqr.refreshUsage\");else if(b.type",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 303,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "3 HIGH findings",
+    "Composite risk 0.47 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T08:16:17.767067+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.85,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"secrets_leakage\",\n      \"description\": \"Access to VS Code's secret storage API which could expose sensitive user information.\",\n      \"code_reference\": \"context.secrets.get()\",\n      \"line_hint\": \"Line 1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"network_exfiltration\",\n      \"description\": \"Base64 encoding data and making network requests, potentially indicating data exfiltration.\",\n      \"code_reference\": \"btoa(t).replace(...)\",\n      \"line_hint\": \"Line 1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"persistence\",\n      \"description\": \"Setting hidden attributes which may be used to hide files or activities, indicative of potential persistence mechanisms.\",\n      \"code_reference\": \".hidden\",\n      \"line_hint\": \"Line 303\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"extension_reconnaissance\",\n      \"description\": \"Enumerating installed extensions, which could be used for lateral movement or reconnaissance within the system.\",\n      \"code_reference\": \"vscode.extensions.getExtension\",\n      \"line_hint\": \"Line 1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"capability_disconnect\",\n      \"description\": \"VSIX package size (0.1 MB) is disproportionately small for an AI companion with advertised features, suggesting potential misrepresentation of functionality.\",\n      \"code_reference\": null,\n\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code contains authentication and network capabilities not explicitly mentioned in its marketplace listing.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 2/5)\",\n      \"line_hint\": \"1-20\"\n    }\n  ],\n  \"summary\": \"The extension appears to handle OAuth authentication but lacks explicit mention of these capabilities. While not overtly malicious, there's a potential disconnect between its advertised functionality and its actual implementation.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension performs network requests to endpoints that appear to handle OAuth token exchanges and usage tracking, which may not be proportional to its stated purpose if the extension is advertised for a different functionality.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"10-30\"\n\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a legitimate VS Code extension handling authentication and session management. It does not exhibit any malicious behavior, credential harvesting, or unauthorized access to sensitive resources. The functions are aligned with their intended purpose and follow standard security practices for token generation and session handling.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n"
+}
