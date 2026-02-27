@@ -1,0 +1,334 @@
+{
+  "extension_id": "multilith.multilith",
+  "version": "0.2.1",
+  "display_name": "Multilith",
+  "publisher_name": "multilith",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "af1701e0c02d652aaeccac1585aa6ec263a9ca3697dafd2043f59e6a6d8ba186",
+  "install_count": 5,
+  "average_rating": 0.0,
+  "published_date": "2026-02-26T18:56:31.25Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5375,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 30,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Machine ID harvesting",
+      "file_path": "extension/out/extension.js",
+      "line_number": 149,
+      "code_snippet": "machineId",
+      "category": "infostealer_behavior",
+      "pattern_id": "machine_id_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/out/extension.js",
+      "line_number": 149,
+      "code_snippet": "readFileSync(t,\"utf-8\");return JSON.parse(i)}catch(i){return this.logger.appendLine(`[ProjectResolver] Error reading workspace config: ${i}`),null}}async readGlobalConfig(){try{if(!x.existsSync(this.g",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 147,
+      "code_snippet": "onDidOpenTextDocument(e=>{e.uri.scheme===\"file\"&&!e.fileName.includes(\"node_modules\")&&this.trackFile(e.fileName)})}watchTerminals(){b.window.onDidOpenTerminal(e=>{this.logger.appendLine(`[ClaudeCode]",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/out/extension.js",
+      "line_number": 149,
+      "code_snippet": "globalConfigPath=K.join(Ge.homedir(),\".multilith\",\"config.json\")}async resolve(e){let t=this.cache.get(e);if(t)return this.logger.appendLine(`[ProjectResolver] Using cached project: ${t.projectId}`),t",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading from VSCode SecretStorage API",
+      "file_path": "extension/out/extension.js",
+      "line_number": 151,
+      "code_snippet": "secretStorage.get(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "secrets_api_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "workspace.getConfiguration(\"multilith\").get(\"apiBaseUrl\")||\"https://multilith-api-859486388848.us-central1.run.app\",i=`http://localhost:${this.port}/invalidate`;this.logger.appendLine(`[Webhook] Ready",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/out/extension.js",
+      "line_number": 149,
+      "code_snippet": "workspace.getConfiguration(\"multilith\").get(\"enableClaudeCodeIntegration\")??!0;for(let s of i){if((s.id.includes(\"claude\")||s.name===\"claude-code\"||s.toolType===\"claude_code\")&&n){this.logger.appendLi",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/out/extension.js",
+      "line_number": 153,
+      "code_snippet": "workspace.getConfiguration(\"multilith\"),e=c.workspace.workspaceFolders?.[0]?.uri.fsPath,t;if(e){let i=Me.join(e,\".multilith.json\");if(w.existsSync(i))try{let n=JSON.parse(w.readFileSync(i,\"utf-8\"));t=",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/out/extension.js",
+      "line_number": 32,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/out/extension.js",
+      "line_number": 147,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 33,
+      "code_snippet": "`)}},ye={claude_code:{name:\"claude-code\",displayName:\"Claude Code\",toolType:\"claude_code\",customInstructionsPath:\"~/.claude/custom_instructions.md\",terminalPatterns:[\"claude\",\"anthropic\"],useInBluepri"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 33,
+      "code_snippet": "`)}},ye={claude_code:{name:\"claude-code\",displayName:\"Claude Code\",toolType:\"claude_code\",customInstructionsPath:\"~/.claude/custom_instructions.md\",terminalPatterns:[\"claude\",\"anthropic\"],useInBluepri"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 147,
+      "code_snippet": "readFileSync(e.fsPath,\"utf-8\"),i=t.match(/_Project ID:\\s*([0-9a-fA-F-]+)_/);if(!i){this.outputChannel.appendLine(\"[VisionWorkflow] No Project ID found in file \\u2014 skipping\");return}let n=i[1];if(n!",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 149,
+      "code_snippet": "readFileSync(t,\"utf-8\");return JSON.parse(i)}catch(i){return this.logger.appendLine(`[ProjectResolver] Error reading workspace config: ${i}`),null}}async readGlobalConfig(){try{if(!x.existsSync(this.g",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 192,
+      "code_snippet": "readFileSync(e,\"utf-8\");n=JSON.parse(l)}catch{o.appendLine(`[ClaudePermissions] \\u26A0\\uFE0F Could not parse ${i} settings, will recreate`)}if(n.permissions||(n.permissions={}),n.permissions.allow||(n",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 32,
+      "code_snippet": "readFileSync(i,\"utf-8\")).project_id}catch(t){this.log(`\\u26A0\\uFE0F Could not read .multilith.json: ${t}`)}}async getRecentFiles(){return Ce.window.visibleTextEditors.map(t=>t.document.fileName).filte",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 42,
+      "code_snippet": "readFileSync(t,\"utf-8\")).project_id}catch(t){this.logger.appendLine(`[ClaudeCode] \\u26A0\\uFE0F Could not read .multilith.json: ${t}`)}}async injectContext(){let e=Date.now();try{this.logger.appendLine",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 147,
+      "code_snippet": "readFileSync(e.fsPath,\"utf-8\"),i=t.match(/_Project ID:\\s*([0-9a-fA-F-]+)_/);if(!i){this.outputChannel.appendLine(\"[VisionWorkflow] No Project ID found in file \\u2014 skipping\");return}let n=i[1];if(n!",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 149,
+      "code_snippet": "readFileSync(t,\"utf-8\");return JSON.parse(i)}catch(i){return this.logger.appendLine(`[ProjectResolver] Error reading workspace config: ${i}`),null}}async readGlobalConfig(){try{if(!x.existsSync(this.g",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 153,
+      "code_snippet": "readFileSync(i,\"utf-8\"));t=n.projectId||n.project_id,t&&o?.appendLine(`[Extension] Loaded projectId from .multilith.json: ${t}`)}catch(n){o?.appendLine(`[Extension] Failed to parse .multilith.json: ${",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 161,
+      "code_snippet": "readFileSync(g,\"utf-8\"));f=I.project_id||I.projectId,f&&o.appendLine(`[UriHandler] Loaded projectId from .multilith.json: ${f}`)}catch(I){o.appendLine(`[UriHandler] \\u26A0\\uFE0F Could not read .multil",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/out/extension.js",
+      "line_number": 192,
+      "code_snippet": "readFileSync(e,\"utf-8\");n=JSON.parse(l)}catch{o.appendLine(`[ClaudePermissions] \\u26A0\\uFE0F Could not parse ${i} settings, will recreate`)}if(n.permissions||(n.permissions={}),n.permissions.allow||(n",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 149,
+      "code_snippet": "fetch(`${this.apiBaseUrl}/api/projects/by-path?path=${encodeURIComponent(t)}`,{method:\"GET\",headers:{\"Content-Type\":\"application/json\"}});if(!i.ok)return i.status===404?(this.logger.appendLine(\"[Proje",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 155,
+      "code_snippet": "fetch(`${m}/api/context-packages/${a}`,{headers:d});if(v.status===404){if(o.appendLine(`[UriHandler] Package not found, generating: POST ${m}/api/context-packages/generate/${a}`),v=await fetch(`${m}/a",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/out/extension.js",
+      "line_number": 149,
+      "code_snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({name:e})});if(!t.ok)return M.window.showErrorMessage(\"Failed to create project\"),null;let i=await t.json();return M.windo",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/out/extension.js",
+      "line_number": 33,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished', 'onUri']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'multilith' does not match GitHub org 'secoller423' in repo 'https://github.com/secoller423/AgenOS'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "10 CRITICAL findings",
+    "16 HIGH findings",
+    "Composite risk 0.51 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T01:38:22.420377+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"SECRETS_CREDENTIAL_LEAKAGE\",\n      \"description\": \"Multiple attempts to read potentially sensitive files using readFileSync, including attempts to parse project IDs and tokens from file contents.\",\n      \"code_reference\": \"line 147, line 149, line 32, line 42, line 153, line 161, line 192\",\n      \"line_hint\": \"line 147\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"C2_TUNNELING\",\n      \"description\": \"Use of fetch API with potentially suspicious URL patterns and method calls, indicating possible data exfiltration or external communication without clear purpose.\",\n      \"code_reference\": \"line 149, line 155\",\n      \"line_hint\": \"line 149\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs_STAGERS\",\n      \"description\": \"Use of child_process to execute commands, which could potentially be used for arbitrary command execution or malicious activities.\",\n      \"code_reference\": \"line 33\",\n      \"line_hint\": \"line 33\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension's actual code capabilities (credential access, file reading, command execution) are not proportional to its advertised function (AI-native project management).\",\n      \"code_reference\": \"N/A\",\n      \"line_hint\": \"N/A\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The VSIX package size (0.1 MB) is disproportionately small for the stated functionality, and the code exhibits behaviors inconsistent with a simple project management tool.\",\n      \"code_reference\": \"N/A\",\n      \"line_hint\": \"N/A\"\n    }\n  ],\n  \"summary\": \"The extension exhibits multiple critical-risk indicators including credential harvesting attempts, suspicious network activity, and use of system-level commands.\n\n=== extension/out/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a documentation or configuration-focused VS Code extension. It contains utility functions for file reading and string manipulation, which are standard for such extensions. No signs of malicious behavior, secret leakage, or unauthorized access were found. The functionality aligns with its likely purpose of handling project configurations and documentation generation.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension focused on formatting context for AI coding tools. It exhibits standard VS Code API usage, error handling, and file system interactions within expected boundaries. No critical, high-risk, or medium-risk indicators were identified. The operations are proportional to its likely purpose, with no signs of malicious behavior or capability mismatches.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension accesses user-specific directories (~/.claude, ~/.gemini) which may indicate potential access to sensitive files, though the exact usage is unclear.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"line 10-12\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension includes a terminal watcher and file watcher, which could indicate monitoring of user activities beyond its stated purpose of AI tool integration.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"line 20-22\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"\n\n=== extension/out/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension focused on context injection and logging. It does not exhibit any malicious behavior, secrets leakage, or suspicious network activities. The operations are confined to file system interactions within the workspace and context management, which align with expected benign extension behavior.\"\n}\n```"
+}
