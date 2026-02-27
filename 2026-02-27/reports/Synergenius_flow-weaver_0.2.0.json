@@ -1,0 +1,242 @@
+{
+  "extension_id": "Synergenius.flow-weaver",
+  "version": "0.2.0",
+  "display_name": "Flow Weaver",
+  "publisher_name": "Synergenius",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "79954a0d60d3b9ee6217ae2b841cc96c3a00f6bb3e5df9e2090e61588dbd3aec",
+  "install_count": 146,
+  "average_rating": 0.0,
+  "published_date": "2026-02-26T13:58:59.187Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.6,
+  "composite_score": 0.515,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 20,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 60,
+      "code_snippet": "Buffer.from(s).toString(\"utf8\"),r=t||e.path.split(\"/\").pop()?.replace(\".ts\",\"\")||\"workflow\";try{const c=await this.getWorkflow(r);return b.log(`Updating existing cloud workflow: ${c.slug}`),await this",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 60,
+      "code_snippet": "readFile(e),n=Buffer.from(s).toString(\"utf8\"),r=t||e.path.split(\"/\").pop()?.replace(\".ts\",\"\")||\"workflow\";try{const c=await this.getWorkflow(r);return b.log(`Updating existing cloud workflow: ${c.slug",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 44,
+      "code_snippet": "onDidSaveTextDocument(t=>{t.languageId===\"typescript\"&&(this.wsIndex=null)})}getContext(e){const t=e.uri.toString(),s=this.cache.get(t);if(s&&s.version===e.version)return s.context;const n=Kt(e.getTex",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "globalThis.fetch",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "globalThis.fetch(n,{method:e,headers:r,body:s!==void 0?JSON.stringify(s):void 0,signal:c.signal});return u.ok||await this.handleErrorResponse(u),u.status===204?void 0:await u.json()}catch(u){if(u inst",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 44,
+      "code_snippet": "readdirSync(i,{withFileTypes:!0});for(const s of t){const n=P.join(i,s.name);s.isDirectory()&&s.name!==\"node_modules\"&&s.name!==\"dist\"?e.push(...await st(n)):s.isFile()&&s.name.endsWith(\".ts\")&&!s.nam",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 60,
+      "code_snippet": "readdirSync(e,{withFileTypes:!0});for(const n of s){const r=P.join(e,n.name);if(n.isDirectory()&&n.name!==\"node_modules\"&&n.name!==\"dist\"){const c=await this.getTypeScriptFiles(r);t.push(...c)}else n.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 27,
+      "code_snippet": "workspace.getConfiguration(\"flowweaver\").get(\"cloud.baseUrl\",\"https://api.flowweaver.dev\")}/mcp`,M=d.uri.fsPath,x=[];for(const C of w)try{const D=await Ze(C,M,T,m);x.push(D)}catch(D){const _=D instanc",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 98,
+      "code_snippet": "workspace.getConfiguration(\"flowweaver\").get(\"cloud.baseUrl\",\"http",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Sending shell commands via VSCode integrated terminal",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 98,
+      "code_snippet": "terminal.sendText(\"npx flow-weaver mcp-server --stdio\"),this.terminalCloseListener=o.window.onDidCloseTerminal(t=>{t===this.terminal&&(this.terminal=void 0,this.terminalCloseListener?.dispose(),this.t",
+      "category": "vscode_api_abuse",
+      "pattern_id": "terminal_send_text"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 27,
+      "code_snippet": "readFile(o.Uri.file(S));T=Buffer.from(x).toString(\"utf-8\")}catch{o.window.showInformationMessage(`Config file not found: ${w.configPath}`),f.refresh();return}let M;if(w.configPath.endsWith(\".toml\"))M=",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 27,
+      "code_snippet": "readFile(o.Uri.file(S));T=Buffer.from(x).toString(\"utf-8\")}catch{o.window.showInformationMessage(`Config file not found: ${w.configPath}`),f.refresh();return}let M;if(w.configPath.endsWith(\".toml\"))M=",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 55,
+      "code_snippet": "readFile(o.Uri.file(t)),n=Buffer.from(s).toString(\"utf-8\"),r=e.configPath.endsWith(\".toml\")?\"toml\":\"json\",c=e.id===\"copilot\"?\"servers\":\"mcpServers\";return nt(n,r,c,Q)}catch{return!1}}dispose(){this.mo",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 59,
+      "code_snippet": "readFile(o.Uri.file(t)),n=Buffer.from(s).toString(\"utf-8\"),r=e.config",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 60,
+      "code_snippet": "readFile(e),n=Buffer.from(s).toString(\"utf8\"),r=t||e.path.split(\"/\").pop()?.replace(\".ts\",\"\")||\"workflow\";try{const c=await this.getWorkflow(r);return b.log(`Updating existing cloud workflow: ${c.slug",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 60,
+      "code_snippet": ".post(\"/auth/login\",{email:e,password:t});return this.authState={method:\"jwt\",token:s.token,user:s.user},await this.persistAuth(),this._onDidChangeAuth.fire(this.authState),b.log(`Logged in as ${s.use",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "terminal_injection",
+      "description": "Stealthy terminal command injection via VS Code API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 27,
+      "code_snippet": "sendText(p),o.window.showInformationMessage(`Installing Flow Weaver library using ${a}...`)}catch(d){b.error(\"Failed to install library:\",d),o.window.showErrorMessage(`Failed to install library: ${d}`",
+      "category": "builtin",
+      "pattern_id": "terminal_injection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "terminal_injection",
+      "description": "Stealthy terminal command injection via VS Code API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 98,
+      "code_snippet": "sendText(\"npx flow-weaver mcp-server --stdio\"),this.terminalCloseListener=o.window.onDidCloseTerminal(t=>{t===this.terminal&&(this.terminal=void 0,this.terminalCloseListener?.dispose(),this.terminalCl",
+      "category": "builtin",
+      "pattern_id": "terminal_injection"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "10 CRITICAL findings",
+    "8 HIGH findings",
+    "Composite risk 0.46 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T02:46:15.076203+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.85,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"INFostealer_behavior\",\n      \"description\": \"Reading file content and immediately sending over network, indicating potential data exfiltration.\",\n      \"code_reference\": \"line 60\",\n      \"line_hint\": 60\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"C2_TUNNELING\",\n      \"description\": \"Network calls to potentially suspicious endpoints using globalThis.fetch, which could indicate command-and-control communication.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CREDENTIAL_HARVESTING\",\n      \"description\": \"Multiple attempts to read files using\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension's runtime module. It includes standard module system initializations, logging utilities, and TypeScript file handling functions. No critical-risk, high-risk, or medium-risk indicators were identified. The code aligns with typical VS Code extension behavior, focusing on logging and file operations without evidence of malicious intent or unauthorized access.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a standard HTTP request handling mechanism in a VS Code extension. It defines methods for making GET, POST, PUT, and DELETE requests, including streaming functionality. No suspicious or malicious behavior was detected. The code aligns with expected patterns for network communication in extensions.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"SECRET_HANDLING\",\n      \"description\": \"Potential exposure of API keys through configuration files and inline storage.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 4/5)\",\n      \"line_hint\": \"Lines 10-25\"\n    }\n  ],\n  \"summary\": \"The code exhibits potential security risks in handling API keys and configuration files. While no direct malicious activities are found, the way secrets are managed could expose sensitive information if misconfigured or mishandled.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code contains functionality that may not be fully described in its marketplace listing, particularly the handling of API keys and configuration files.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 5/5)\",\n      \"line_hint\": \"Approximate line 10-20\"\n    }\n  ],\n  \"summary\": \"The extension appears to handle API keys and configuration files, which could indicate functionality not fully disclosed. While no critical indicators are present, there are signs of potential behavioral mismatches that warrant further investigation.\"\n}\n```"
+}
