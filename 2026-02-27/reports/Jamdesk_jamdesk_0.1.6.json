@@ -1,0 +1,97 @@
+{
+  "extension_id": "Jamdesk.jamdesk",
+  "version": "0.1.6",
+  "display_name": "Jamdesk",
+  "publisher_name": "Jamdesk",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "1ab3f74799545d2a6e2e43306e2ca9097dcc19f2c52a275f0dca6bb0424b7784",
+  "install_count": 3,
+  "average_rating": 5.0,
+  "published_date": "2026-02-26T20:29:24.593Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 0.7999999999999999,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.7,
+  "composite_score": 0.48,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 6,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"jamdesk\"),r=t.get(\"port\",3e3),o=t.get(\"verbose\",!1),m=t.get(\"clean\",!1),c=[\"dev\",\"--port\",String(r)];o&&c.push(\"--verbose\"),m&&c.push(\"--clean\"),this.outputChannel.appendLi",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "\"use strict\";var x=Object.create;var g=Object.defineProperty;var E=Object.getOwnPropertyDescriptor;var J=Object.getOwnPropertyNames;var L=Object.getPrototypeOf,R=Object.prototype.hasOwnProperty;var $="
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "\"use strict\";var x=Object.create;var g=Object.defineProperty;var E=Object.getOwnPropertyDescriptor;var J=Object.getOwnPropertyNames;var L=Object.getPrototypeOf,R=Object.prototype.hasOwnProperty;var $="
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T00:02:43.431216+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/4) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Use of `child_process.spawn()` to execute arbitrary commands, which could potentially be misused for command injection or execution of external tools.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"VSIX package size is listed as 0.0 MB, which is unusually small for an extension with this functionality and could indicate a potential disconnect in the package metadata.\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits legitimate functionality for its advertised purpose but raises concerns due to the use of `child_process.spawn()`, which could pose risks if misused. The VSIX package size discrepancy also warrants attention.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/4) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"The extension executes the 'jamdesk' CLI tool, which could potentially be used for malicious purposes if the CLI is compromised or misused.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 2/4)\",\n      \"line_hint\": \"line 10-20\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's use of process management and server handling does not appear to be proportional to its stated purpose if it's advertised as a simple theme or utility extension.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 2/4)\",\n      \"line_hint\": \"line 10-20\"\n    }\n  ],\n  \"summary\": \"The extension exhibits process management behavior that may not align with its advertised functionality. While not overtly malicious, there are signs of potentially suspicious activity that warrant closer inspection.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/4) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension exhibits process management capabilities (starting, stopping, restarting) which may not be proportional to its stated purpose if it's advertised for a different function, such as a theme or formatter.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"Lines 1-20\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The function `U` uses `process.kill` with a signal code of 0, which may indicate process detection or management beyond standard extension functionality.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"Lines 24-26\"\n    }\n  ],\n  \"summary\": \"The extension demonstrates process management capabilities that may not align with its advertised purpose. While not overtly malicious, these behaviors could indicate a disconnect between the extension's stated functionality and its actual capabilities, warranting further\n\n=== extension/dist/extension.js (chunk 4/4) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension for managing a development server. It contains standard VS Code API usage for creating status bar items, handling server processes, and managing output channels. No suspicious or malicious behavior was detected.\"\n}\n```"
+}
