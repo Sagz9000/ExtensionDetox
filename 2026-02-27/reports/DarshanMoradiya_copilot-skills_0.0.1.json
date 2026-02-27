@@ -1,0 +1,322 @@
+{
+  "extension_id": "DarshanMoradiya.copilot-skills",
+  "version": "0.0.1",
+  "display_name": "Copilot Skills Manager",
+  "publisher_name": "DarshanMoradiya",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "baf12cab819220a29874da0c53dddf42da75ee89cce3e90f521b3bbb8e28b98a",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-27T10:57:55.51Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 28,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Mass serialization of all environment variables",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Object.keys(process.env)",
+      "category": "credential_harvesting",
+      "pattern_id": "env_mass_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Browser cookie exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 9,
+      "code_snippet": "document.cookie=r.join(\"; \")},read(e){if(typeof document>\"u\")return null;let a=document.cookie.match(new RegExp(\"(?:^|; )\"+e+\"=([^;]*)\"));return a?decodeURIComponent(a[1]):null},remove(e){this.write(e",
+      "category": "infostealer_behavior",
+      "pattern_id": "browser_cookie_theft"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 9,
+      "code_snippet": "Buffer.from(n.auth,\"utf8\").toString(\"base64\");e.headers[\"Proxy-Authorization\"]=\"Basic \"+o}e.headers.host=e.hostname+(e.port?\":\"+e.port:\"\");let t=n.hostname||n.host;e.hostname=t,e.host=t,e.port=n.port,",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "globalplatform.card-content-mgt\":{source:\"iana\"},\"application/vnd.globalplatform.card-content-mgt-response\":{source:\"iana\"},\"application/vnd.gmx\":{source:\"iana\",extensions:[\"gmx\"]},\"application/vnd.go",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 6,
+      "code_snippet": "globalThis<\"u\"?globalThis:typeof self<\"u\"?self:typeof window<\"u\"?window:global,Sn=e=>!Ie(e)&&e!==Ee;function ai(){let{caseless:e,skipUndefined:a}=Sn(this)&&this||{},i={},n=(t,s)=>{if(s===\"__proto__\"||",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 9,
+      "code_snippet": "global),{ReadableStream:Ns,TextEncoder:zs}=c.global,Ds=(e,...a)=>{try{return!!e(...a)}catch{return!1}},su=e=>{e=c.merge.call({skipUndefined:!0},ou,e);let{fetch:a,Request:i,Response:n}=e,t=a?Va(a):type",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 13,
+      "code_snippet": "workspace.getConfiguration(\"copilotSkills\").get(\"githubToken\");try{S.window.withProgress({location:S.ProgressLocation.Notification,title:\"Loading skills from repository...\",cancellable:!1},async l=>{i",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 13,
+      "code_snippet": "readFile(e,\"utf8\");return JSON.parse(a)}catch(a){return console.error(\"Failed to read installed skills database:\",a),[]}}async function Xs(e){let a=await Ys();a&&await Ya.writeFile(a,JSON.stringify(e,",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".post-it-notes\":{source:\"iana\",extensions:[\"pwn\"]},\"application/vnd.accpac.simply.aso\":{source:\"iana\",extensions:[\"aso\"]},\"application/vnd.accpac.simply.imp\":{source:\"iana\",extensions:[\"imp\"]},\"applic",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"post\"};return typeof e==\"string\"?(e=Rp(e),n=yi({port:e.port,path:e.pathname,host:e.hostname,protocol:e.protocol},t)):(n=yi(e,t),n.port||(n.port=n.protocol===\"https:\"?443:80)),n.headers=this.ge",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 6,
+      "code_snippet": ".postMessage(i,\"*\")}))(`axios@${Math.random()}`,[]):i=>setTimeout(i))(typeof setImmediate==\"function\",K(Ee.postMessage)),Wr=typeof queueMicrotask<\"u\"?queueMicrotask.bind(Ee):typeof process<\"u\"&&proces",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 9,
+      "code_snippet": "method:\"POST\",get duplex(){return m=!0,\"half\"}}).headers.has(\"Content-Type\");return m&&!v}),p=o&&r&&Ds(()=>c.isReadableStream(new n(\"\").body)),u={stream:p&&(m=>m.body)};t&&[\"text\",\"arrayBuffer\",\"blob\"",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "webview_phishing",
+      "description": "WebView panel combined with external HTTP (potential phishing overlay)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 13,
+      "code_snippet": "fetch description for ${u.name}:`,h),u.description=\"Failed to load description\"}else u.description=\"No SKILL.md found\"}return Array.from(l.values())}var Pe=F(require(\"vscode\")),qe=F(require(\"path\")),w",
+      "category": "builtin",
+      "pattern_id": "webview_phishing"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Known miner executable reference",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "claymore",
+      "category": "crypto_mining",
+      "pattern_id": "xmrig_ref"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "vbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Virtual machine detection strings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "virtualbox",
+      "category": "persistence_evasion",
+      "pattern_id": "vm_detection"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "7 CRITICAL findings",
+    "19 HIGH findings",
+    "Composite risk 0.59 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-27T11:42:22.944869+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Code attempts to read environment variables which could expose sensitive information like API keys.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Browser cookie exfiltration detected with document.cookie and matching patterns.\",\n      \"code_reference\": \"line 9\",\n      \"line_hint\": 9\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"data_exfiltration\",\n      \"description\": \"Base64 encoding data for network transmission, potentially indicating data exfiltration activities.\",\n      \"code_reference\": \"line 9\",\n      \"line_hint\": 9\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"anti_vm_detection\",\n      \"description\": \"Virtual machine detection strings (virtualbox) found in the code, potentially indicating sandbox evasion techniques.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"capability_disconnect\",\n      \"description\": \"Extension's actual capabilities (credential access, data exfiltration) are far beyond its advertised function of managing Copilot skills.\",\n      \"code_reference\": \"DISCONNECT_CHECK\",\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits multiple critical security risks including credential harvesting, data exfiltration, and anti-VM detection. Its actual capabilities significantly exceed its advertised purpose, raising concerns about malicious intent. The code's behavior is highly suspicious and inconsistent with a legitimate VS Code extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.15,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The code appears to handle data streams with size constraints, which may not\n\n=== extension/dist/extension.js (chunk 3/5) ===\n\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be a standard list of MIME type definitions, with no evidence of malicious behavior, secret leakage, or inappropriate functionality. The code aligns with expected benign behavior for a VS Code extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet contains a series of MIME type definitions, which is a standard and legitimate practice for handling content types. No malicious or suspicious behavior was detected in this snippet.\"\n}\n```"
+}
