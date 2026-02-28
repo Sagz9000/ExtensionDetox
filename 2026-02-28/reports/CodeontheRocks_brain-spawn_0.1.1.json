@@ -1,0 +1,127 @@
+{
+  "extension_id": "CodeontheRocks.brain-spawn",
+  "version": "0.1.1",
+  "display_name": "Brain Spawn",
+  "publisher_name": "CodeontheRocks",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "13e790462b254a7f8b0932b29f74b91a0ae6db1f9ab0c8bd7d52d12a475e3a22",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-28T14:08:39.453Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.15,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.24899999999999997,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 9,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "Global)}async saveAll(e){let n=e.groups.filter(t=>t.source===\"workspace\"),o=e.groups.filter(t=>t.source===\"user\"),i=s.workspace.workspaceFolders?.[0];if(i)if(n.length>0)await this.saveToFile({version:",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "workspace.getConfiguration(\"brainSpawn\").update(\"groups\",n.length>0?n:void 0,s.ConfigurationTarget.Global)}async saveAll(e){let n=e.groups.filter(t=>t.source===\"workspace\"),o=e.groups.filter(t=>t.sour",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "readFile(n),i=JSON.parse(Buffer.from(o).toString(\"utf-8\"));return h(i)}catch(o){if(o instanceof Error&&(o.message.includes(\"does not exist\")||o.message.includes(\"ENOENT\")||o.name===\"EntryNotFound\"))re",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "readFile(n),i=JSON.parse(Buffer.from(o).toString(\"utf-8\"));return h(i)}catch(o){if(o instanceof Error&&(o.message.includes(\"does not exist\")||o.message.includes(\"ENOENT\")||o.name===\"EntryNotFound\"))re",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "terminal_injection",
+      "description": "Stealthy terminal command injection via VS Code API",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "sendText(v(i.command)),i.focus&&(n=t)}(n??e.getGroupTerminals(r.name).at(-1))?.show()}function F(r,e,n){let o=W(r);n.track(e,o),r.command&&o.sendText(v(r.command)),o.show()}function W(r){let e={name:r",
+      "category": "builtin",
+      "pattern_id": "terminal_injection"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['workspaceContains:.vscode/brain-spawn.json', 'onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'codeontherocks' does not match GitHub org 'jtmuller5' in repo 'https://github.com/jtmuller5/brain-spawn'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "3 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-28T14:31:27.248807+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.15,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The code contains a function that reads files using fs.readFile, which could potentially access sensitive paths if not properly controlled.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 1/5)\",\n      \"line_hint\": \"2\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The code attempts to harvest VSCode configuration and send it over the network, which is inconsistent with the extension's advertised purpose of managing terminal groups.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 1/5)\",\n      \"line_hint\": \"2\"\n    }\n  ],\n  \"summary\": \"The extension exhibits some concerning patterns, such as potential unauthorized file reading and network activity, which do not align with its stated purpose of managing terminal groups. While not overtly malicious, these behaviors raise suspicions about its true intentions.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension handling terminal configurations. It loads and watches configuration files, validates settings, and notifies listeners on changes. No signs of malicious behavior, secrets, or unauthorized operations were detected. The functionality aligns with expected behavior for a configuration management extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be a standard VS Code extension handling configuration files and settings. It performs file operations within the expected workspace and settings scopes without any signs of malicious behavior, secrets leakage, or unauthorized access to sensitive resources. The operations are proportional to its likely function of managing configuration groups.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a legitimate VS Code extension focused on managing terminal groups. No critical, high, or medium-risk indicators were found. The functions are within the expected behavior for a terminal management extension, with no signs of malicious activities or capability mismatches.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension for terminal group management. It contains standard VS Code API usage, configuration management, and user interaction prompts. No critical-risk, high-risk, or medium-risk indicators were identified. The functionality aligns with the expected behavior of a terminal management extension.\"\n}\n```"
+}
