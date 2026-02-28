@@ -1,0 +1,162 @@
+{
+  "extension_id": "Adaptech.engenai",
+  "version": "0.1.0",
+  "display_name": "EnGenAI - AI Development Platform",
+  "publisher_name": "Adaptech",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "9c8d6a04db6fe7f748a94736e8a4d1763d94ff43d62b9b540a4479d64afbb476",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-02-28T16:34:16.297Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 12,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Accessing VSCode authentication session (GitHub/Azure tokens)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "authentication.getSession(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "auth_session_access"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "workspace.getConfiguration(\"engenai\");this.baseUrl=e.get(\"serverUrl\",\"https://dev.engenai.app\"),R.workspace.onDidChangeConfiguration(t=>{t.affectsConfiguration(\"engenai.serverUrl\")&&(this.baseUrl=R.wo",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/webview/assets/index.js",
+      "line_number": 40,
+      "code_snippet": "GLOBAL_HOOK__<\"u\"){var Al=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(!Al.isDisabled&&Al.supportsFiber)try{Li=Al.inject(Lh),Un=Al}catch{}}return dn.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=zh,dn.creat",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/dist/webview/assets/index.js",
+      "line_number": 37,
+      "code_snippet": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0}),Gs=vn(wd),Sd=x({},Ur,{touches:0,targetTouches:0,changedTouches:0,altKey:0,metaKey:0,ctrlKey:0,shift",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/dist/webview/assets/index.js",
+      "line_number": 40,
+      "code_snippet": "display=\"none\"):(w=j.stateNode,C=j.memoizedProps.style,h=C!=null&&C.hasOwnProperty(\"display\")?C.display:null,w.style.display=Cn(\"display\",h))}catch(G){Be(e,e.return,G)}}}else if(j.tag===6){if(D===null",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": "method:\"POST\",body:JSON.stringify({client_id:\"engenai-vscode\",scope:\"read write agents\"})})).json()}async pollDeviceToken(e){let t=await this.fetchRaw(\"/api/v1/auth/device/token\",{method:\"POST\",body:J",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 2,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/webview/assets/index.js",
+      "line_number": 40,
+      "code_snippet": ".postMessage(t)}const Er=$h((t,i)=>({connectionState:\"disconnected\",user:null,projects:[],selectedProjectId:null,messages:[],streamingContent:{},signIn:()=>It({type:\"signIn\"}),signInWithBrowser:()=>It",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "WASM-based mining (high CPU usage)",
+      "file_path": "extension/dist/webview/assets/index.js",
+      "line_number": 40,
+      "code_snippet": ".wasMultiple;s._wrapperState.wasMultiple=!!a.multiple;var q=a.value;q!=null?lt(s,!!a.multiple,q,!1):O!==!!a.multiple&&(a.defaultValue!=null?lt(s,!!a.multiple,a.defaultValue,!0):lt(s,!!a.multiple,a.mul",
+      "category": "crypto_mining",
+      "pattern_id": "wasm_mining"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Sandbox environment detection",
+      "file_path": "extension/dist/webview/assets/index.js",
+      "line_number": 40,
+      "code_snippet": "sandbox",
+      "category": "persistence_evasion",
+      "pattern_id": "sandbox_detection"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "5 CRITICAL findings",
+    "5 HIGH findings",
+    "Composite risk 0.59 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-28T17:07:22.630331+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Accessing VSCode authentication session (GitHub / Azure tokens)\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Harvesting VSCode configuration and sending over network\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"network_activity\",\n      \"description\": \"Pattern suggesting data exfiltration with POST request to server\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"persistence_evasion\",\n      \"description\": \"Setting file hidden attribute\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"BEHAVIORAL_MISMATCH\",\n      \"category\": \"activation_scope\",\n      \"description\": \"Activation event onFileSystem:engenai appears inappropriate for stated functionality\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    },\n    {\n      \"severity\": \"BEHAVIORAL_MISMATCH\",\n      \"category\": \"size_anomaly\",\n      \"description\": \"VSIX package size (0.1 MB) is disproportionately small for stated AI development capabilities\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits critical security risks including unauthorized access to VSCode authentication tokens and configuration data, potential data exfiltration, and suspicious file system activity. The VSIX package size and activation events are inconsistent with its stated functionality, raising concerns about its true purpose. These findings strongly suggest malicious intent.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code implements a standard event source fetch mechanism, which is a common and legitimate pattern for handling real-time data streams. No malicious or suspicious activities were detected in the code.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a legitimate VS Code extension for interacting with an AI service. It contains standard API calls, token management, and configuration handling without evidence of malicious behavior. No critical-risk indicators were found, and the code aligns with expected functionality for its category.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension appears to handle API keys and secrets, but there's no clear indication of how these are managed or stored securely. The use of `vscode.secrets` is appropriate, but the overall handling of authentication and token storage could be improved.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"line 35-45\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code suggests it handles user authentication and API interactions, but without additional context, it's unclear if this\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code contains authentication and session management capabilities that may not be fully disclosed in its marketplace listing.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 5/5)\",\n      \"line_hint\": \"1-20\"\n    }\n  ],\n  \"summary\": \"The extension appears to handle authentication and session management, potentially indicating capabilities not fully disclosed. While no critical vulnerabilities are present, there are signs of behavioral mismatch that warrant closer examination.\"\n}\n```\n\n=== extension/dist/webview/assets/index.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Hidden zero-pixel iframe potentially used for tracking or C2 beacon.\",\n      \"code_reference\": \"line 40\",\n      \"line_hint\": 40\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Directory traversal paired with network send, indicating potential exfiltration.\",\n      \"code_reference\": \"line 40\",\n      \"line_hint\": 40\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"crypto_mining\",\n      \"description\": \"WASM-based mining detected, potentially high CPU usage.\",\n      \"code_reference\": \"line 40\",\n      \"line_hint\": 40\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"persistence_evasion\",\n      \"description\": \"Sandbox environment detection code found, possibly avoiding analysis environments.\",\n      \"code_reference\": \"line 40\",\n      \"line_hint\": 40\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"network_activity\",\n      \"description\": \"Pattern suggesting data exfiltration via network calls.\",\n      \"code_reference\": \"line 40\",\n      \"line_hint\": 40\n    }\n  ],\n  \"summary\": \"The code exhibits multiple suspicious patterns, including potential crypto mining, sandbox detection, and hidden iframe usage. These indicators suggest a high risk of malicious or deceptive behavior, though the exact nature and intent remain unclear. The findings are based on static analysis flags and code patterns indicative of such risks.\"\n}\n```\n\n=== extension/dist/webview/assets/index.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a React-based implementation within a VS Code extension's webview. It contains standard React component definitions and utility functions, with no evidence of malicious behavior, secret leakage, or unauthorized functionality. All observed patterns align with typical webview asset behavior in VS Code extensions.\"\n}\n```\n\n=== extension/dist/webview/assets/index.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a React-based component, handling children rendering and asynchronous operations. No critical, high-risk, or medium-risk indicators were identified. The code aligns with expected behavior for a VS Code extension component, and no signs of malicious activity were detected.\"\n}\n```\n\n=== extension/dist/webview/assets/index.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a React-like library or framework, with functions related to component creation and state management. No critical-risk, high-risk, or medium-risk indicators were identified. The code does not exhibit signs of malicious behavior, credential leakage, or unauthorized system access. The functionality appears to align with typical web-based extension components, focusing on rendering and state handling.\"\n}\n```\n\n=== extension/dist/webview/assets/index.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"HEAVY_OBFUSCATION\",\n      \"description\": \"The code appears to be heavily obfuscated and minified, which is common in production code but may indicate attempts to hide malicious behavior.\",\n      \"code_reference\": \"extension/dist/webview/assets/index.js\",\n      \"line_hint\": \"1-100\"\n    }\n  ],\n  \"summary\": \"The code appears to be a minified React-based webview implementation. While it contains some obfuscation typical of production code, there are no clear indicators of malicious behavior. The code's functionality appears to align with standard webview implementations in VS Code extensions.\"\n}\n```"
+}
