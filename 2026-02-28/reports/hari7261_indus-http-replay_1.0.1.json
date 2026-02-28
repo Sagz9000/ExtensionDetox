@@ -1,0 +1,348 @@
+{
+  "extension_id": "hari7261.indus-http-replay",
+  "version": "1.0.1",
+  "display_name": "Indus HTTP Replay",
+  "publisher_name": "hari7261",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "0e03e087048119f9a1a93586022dc904d92529308df79e3769b3040c88ac9391",
+  "install_count": 1,
+  "average_rating": 0.0,
+  "published_date": "2026-02-28T17:02:59.747Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.9,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.6775,
+  "verdict": "SUSPICIOUS",
+  "confidence": 0.6,
+  "total_findings": 31,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Buffer.from(n[l]).toString(\"base64\");a.authorization=`Basic ${e}`}}else\"--url\"===e?(l++,l<n.length&&(o=n[l])):e.startsWith(\"-\")?[\"-o\",\"--output\",\"--max-time\",\"--connect-timeout\",\"--proxy\",\"-x\",\"--cert",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "onDidChangeTextDocument(e=>{\"indus-http\"===e.document.languageId&&w?.refresh()})),e.subscriptions.push(i.commands.registerCommand(\"indus.replayHttpRequest\",async()=>{await async function(e){const t=i.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Reading document content and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "document.getText(n.isEmpty?void 0:n);if(!r.trim())return void i.window.showWarningMessage(\"Indus: Select text containing an HTTP request or curl command.\");if(t.document.fileName.endsWith(\".har\")||\"js",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_content_harvest"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Streaming document changes with serialization (real-time code theft)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "onDidChangeTextDocument(e=>{\"indus-http\"===e.document.languageId&&w?.refresh()})),e.subscriptions.push(i.commands.registerCommand(\"indus.replayHttpRequest\",async()=>{await async function(e){const t=i.",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_change_stream"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Global),i.window.showInformationMessage(`Indus: ${n.length} target(s) configured.`),l()};const i=a(n(398)),d=\"indusHttpReplay\";function l(){return i.workspace.getConfiguration(d).get(\"targets\",[\"http:",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Hidden zero-pixel iframe (tracking/C2 beacon)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "display: none !important; }\\n\\n  /* Loading */\\n  .loading-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: var(--vscode-descript",
+      "category": "vscode_api_abuse",
+      "pattern_id": "zero_pixel_iframe"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(d).get(\"ignoreDiffPaths\",[\"$.timestamp\",\"$.traceId\",\"$.meta.requestId\"])},t.getAllowInsecureTls=f,t.buildWorkerOptions=function(){return{timeoutMs:u(),followRedirects:p(),al",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Browser cookie exfiltration",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "Cookies:U,getSetCookies:L,setCookie:T}=t(2596);A.exports.deleteCookie=M,A.exports.getCookies=U,A.exports.getSetCookies=L,A.exports.setCookie=T;const{parseMIMEType:Y,serializeAMimeType:G}=t(2899);A.exp",
+      "category": "infostealer_behavior",
+      "pattern_id": "browser_cookie_theft"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "AkIANwMgDOACC0EAIQAC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "AKIAoQChgILIAQgAUEBa",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "AKiABQQFqIQFBzwAhAwy",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "AkIANwMAIAIgACAGQQFq",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "akIANwMAIABBIGpCADcD",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "akIANwMAIABB3QE2AhwL",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "AkIANwIQIAFBAnRBvNIA",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "AkIANwMgDOACC0EAIQAC",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "AKIAoQChgILIAQgAUEBa",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "AKiABQQFqIQFBzwAhAwy",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "leaked_secrets",
+      "description": "AWS Access Key ID",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "AkIANwMAIAIgACAGQQFq",
+      "category": "leaked_secrets",
+      "pattern_id": "aws_access_key"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "global__\",message:`Uncaught: ${A.message}`})});class c{limit;running=0;queue=[];constructor(A){this.limit=A}run(A){return new Promise((e,t)=>{const r=async()=>{this.running++;try{e(await A())}catch(A)",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{\"use strict\";var e={272(e,t,n){var r,s=this&&this.__createBinding||(Object.create?function(e,t,n,r){void 0===r&&(r=n);var s=Object.getOwnPropertyDescriptor(t,n);s&&!(\"get\"in s?!t.__esModule:s.wr"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{\"use strict\";var e={272(e,t,n){var r,s=this&&this.__createBinding||(Object.create?function(e,t,n,r){void 0===r&&(r=n);var s=Object.getOwnPropertyDescriptor(t,n);s&&!(\"get\"in s?!t.__esModule:s.wr"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".postData;return i&&(a=i.text||void 0,!a&&Array.isArray(i.params)&&i.params.length>0&&(a=i.params.map(e=>`${encodeURIComponent(e.name)}=${encodeURIComponent(e.value??\"\")}`).join(\"&\")),a&&!o[\"content-t",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "persistence_evasion",
+      "description": "Setting file hidden attribute",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".hidden",
+      "category": "persistence_evasion",
+      "pattern_id": "hidden_file_attrib"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "Request(A,o,t)}}else if(A[y]>0&&\"UND_ERR_INFO\"!==t.code){const e=A[R][A[S]];A[R][A[S]++]=null,s.errorRequest(A,e,t)}A[N]=A[S],r(0===A[y]),A.emit(\"disconnect\",A[l],[A],t),A[P]()});let n=!1;return e.on(",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": ".POST=3]=\"POST\",A[A.PUT=4]=\"PUT\",A[A.CONNECT=5]=\"CONNECT\",A[A.OPTIONS=6]=\"OPTIONS\",A[A.TRACE=7]=\"TRACE\",A[A.COPY=8]=\"COPY\",A[A.LOCK=9]=\"LOCK\",A[A.MKCOL=10]=\"MKCOL\",A[A.MOVE=11]=\"MOVE\",A[A.PROPFIND=12]",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "Mining algorithm reference",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "etHash",
+      "category": "crypto_mining",
+      "pattern_id": "cryptonight_algo"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "crypto_mining",
+      "description": "WASM-based mining (high CPU usage)",
+      "file_path": "extension/dist/replayWorker.js",
+      "line_number": 2,
+      "code_snippet": "WebAssembly.instantiate(e,{env:{wasm_on_url:(A,e,t)=>0,wasm_on_status:(A,e,t)=>{r(tA.ptr===A);const s=e-oA+rA.byteOffset;return tA.onStatus(new X(rA.buffer,s,t))||0},wasm_on_message_begin:A=>(r(tA.ptr",
+      "category": "crypto_mining",
+      "pattern_id": "wasm_mining"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "20 CRITICAL findings",
+    "9 HIGH findings",
+    "Composite risk 0.62 >= 0.4",
+    "AI verdict: MALICIOUS"
+  ],
+  "report_timestamp": "2026-02-28T18:38:37.333948+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Usage of `require('child_process')` which can enable arbitrary command execution.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Pattern suggesting VSCode configuration harvesting and network exfiltration.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"base64_decoding\",\n      \"description\": \"Base64 decoding followed by potential network transmission, indicative of data exfiltration.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"persistence_evasion\",\n      \"description\": \"Setting file hidden attribute, potentially for hiding malicious files or activities.\",\n      \"code_reference\": \"line 1\",\n      \"line_hint\": 1\n    }\n  ],\n  \"summary\": \"The extension exhibits several suspicious patterns, including direct command execution capabilities, potential data exfiltration\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension that handles HTTP requests and provides code lenses for replay functionality. No critical, high-risk, or medium-risk indicators were identified. The code uses standard VS Code APIs and does not exhibit any suspicious or malicious behavior. There is no evidence of secret leakage, credential harvesting, or exfiltration patterns. The functionality aligns with its apparent purpose, and no behavioral disconnects were observed.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a VS Code extension for configuring HTTP request replay targets. It contains standard configuration handling, user prompts for URLs, and validation. No malicious or suspicious patterns were detected. The functionality aligns with its apparent purpose, and there are no signs of credential harvesting, exfiltration, or unauthorized access.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a diffing algorithm, comparing objects and arrays to track changes. There are no signs of malicious behavior, such as secret leakage, credential harvesting, or network exfiltration. The code is focused on data comparison and does not exhibit any suspicious patterns or activities.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a diff utility or comparison tool within a VS Code extension. It contains functions for calculating differences between sets of data and updating UI elements based on those differences. No suspicious or malicious patterns were identified, and the code aligns with expected behavior for such an extension. The risk score is low due to the lack of any critical-risk indicators and the benign nature of the operations performed.\"\n}\n```\n\n=== extension/dist/replayWorker.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.95,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"leaked_secrets\",\n      \"description\": \"Multiple AWS Access Key IDs found in the code, which can be used for unauthorized access.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Pattern suggesting browser cookie exfiltration, which could lead to stealing sensitive user information.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"crypto_mining\",\n      \"description\": \"References to WebAssembly and mining algorithms indicate potential crypto-mining activities, which can overload system resources.\",\n      \"code_reference\": \"line 2\",\n      \"line_hint\": 2\n    }\n  ],\n  \"summary\": \"The code contains critical indicators of potential malicious activity, including hardcoded AWS secrets, browser cookie exfiltration, and signs of crypto-mining. These findings suggest the extension may be designed for unauthorized access and data theft.\"\n}\n```\n\n=== extension/dist/replayWorker.js (chunk 2/5) ===\n\n\n=== extension/dist/replayWorker.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to handle HTTP response processing, including decompression of content and logging. No critical, high-risk, or medium-risk indicators were identified. The code aligns with standard network request handling and does not exhibit suspicious or malicious behavior.\"\n}\n```\n\n=== extension/dist/replayWorker.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a session replay or debugging worker in a VS Code extension. It contains standard error handling, task queuing with concurrency limits, and promise management. No critical, high-risk, or medium-risk indicators were identified. The\n\n=== extension/dist/replayWorker.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The analyzed code appears to be part of a standard HTTP client implementation, with no evidence of malicious behavior, secret leakage, or unauthorized access. The functions and modules used are typical for handling network requests, and there are no signs of obfuscation or hidden functionality.\"\n}\n```"
+}
