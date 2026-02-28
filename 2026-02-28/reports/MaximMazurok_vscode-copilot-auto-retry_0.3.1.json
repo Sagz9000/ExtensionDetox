@@ -1,0 +1,110 @@
+{
+  "extension_id": "MaximMazurok.vscode-copilot-auto-retry",
+  "version": "0.3.1",
+  "display_name": "Copilot Auto-Retry",
+  "publisher_name": "MaximMazurok",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "7c1da0b8188d70ce057c791a87211a5936f409b70c7ad944778b5b6b00615a53",
+  "install_count": 2,
+  "average_rating": 5.0,
+  "published_date": "2026-02-27T17:53:24.803Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.8,
+  "static_analysis_score": 0.7999999999999999,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.7,
+  "composite_score": 0.585,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 8,
+  "critical_findings": [],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/activeSessionResolver.js",
+      "line_number": 38,
+      "code_snippet": "const child_process_1 = require(\"child_process\");"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/out/activeSessionResolver.js",
+      "line_number": 38,
+      "code_snippet": "const child_process_1 = require(\"child_process\");"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/out/activeSessionResolver.js",
+      "line_number": 145,
+      "code_snippet": "(0, child_process_1.execFile)(\"sqlite3\", [\"-readonly\", databaseFilePath, query], { timeout: SQLITE_QUERY_TIMEOUT_MS }, (error, stdout) => {"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/out/activeSessionResolver.js",
+      "line_number": 38,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'readFile' pattern",
+      "file_path": "extension/out/sessionWatcher.js",
+      "line_number": 226,
+      "code_snippet": "const rawBytes = await vscode.workspace.fs.readFile(fileUri);"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "4 HIGH findings",
+    "Composite risk 0.46 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-28T15:44:48.684809+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/activeSessionResolver.js (chunk 1/3) ===\n```json\n{\n  \"risk_score\": 0.7,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension uses `child_process` which is inappropriate for its stated purpose of retrying Copilot failures.\",\n      \"code_reference\": \"extension/out/activeSessionResolver.js (chunk 1/3)\",\n      \"line_hint\": 38\n    }\n  ],\n  \"summary\": \"The extension uses `child_process` to execute shell commands, which is unnecessary and introduces a high-risk vector for potential command injection or arbitrary execution. While the immediate functionality appears benign, this usage is inconsistent with the extension's stated purpose and raises concerns about potential misuse.\"\n}\n```\n\n=== extension/out/activeSessionResolver.js (chunk 2/3) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears\n\n=== extension/out/activeSessionResolver.js (chunk 3/3) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CREDENTIAL_HARVESTING\",\n      \"description\": \"Use of `child_process.execFile` to execute system commands, which can lead to arbitrary command execution and potential credential harvesting.\",\n      \"code_reference\": \"extension/out/activeSessionResolver.js\",\n      \"line_hint\": \"2-5\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"INFO STEALER\",\n      \"description\": \"Potential SQL injection vulnerability due to direct insertion of user-provided `key` into a SQL query, risking unauthorized database access.\",\n      \"code_reference\": \"extension/out/activeSessionResolver.js\",\n      \"line_hint\": \"3\"\n    }\n  ],\n  \"summary\": \"The code exhibits high-risk behavior by executing system commands and potentially allowing SQL injection, which could lead to unauthorized access or data exfiltration. These activities are inconsistent with typical VS Code extension functionality and raise suspicions of malicious intent.\"\n}\n```"
+}
