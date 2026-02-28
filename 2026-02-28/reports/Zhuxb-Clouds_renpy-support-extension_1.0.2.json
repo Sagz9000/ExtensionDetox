@@ -1,0 +1,246 @@
+{
+  "extension_id": "Zhuxb-Clouds.renpy-support-extension",
+  "version": "1.0.2",
+  "display_name": "Ren'Py Language Support",
+  "publisher_name": "Zhuxb-Clouds",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "db6465a3ed36ab123e56d67b18b58afad0ec5b48e78423e7c0add662de547ac1",
+  "install_count": 2,
+  "average_rating": 0.0,
+  "published_date": "2026-02-28T12:40:30.623Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 1.0,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5375,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 21,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "credential_harvesting",
+      "description": "Mass serialization of all environment variables",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Object.keys(process.env)",
+      "category": "credential_harvesting",
+      "pattern_id": "env_mass_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Base64 encoding data then sending over network (data exfil)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Buffer.from(e,t)}toString(e,t){return e instanceof Buffer?e.toString(t):new i.TextDecoder(t).decode(e)}asNative(e,t){return void 0===t?e instanceof Buffer?e:Buffer.from(e):e instanceof Buffer?e.slice(",
+      "category": "infostealer_behavior",
+      "pattern_id": "base64_encode_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Reading file content and immediately sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(e,t);return i=s(i),JSON.parse(i,t.reviver)}catch(t){if(r)throw t.message=`${e}: ${t.message}`,t;return null}},writeFile:c,writeFileSync:function(e,t,n={}){const r=n.fs||i,s=o(t,n);return ",
+      "category": "infostealer_behavior",
+      "pattern_id": "file_content_to_network"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "VSCode document event listener paired with network exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "onDidOpenTextDocument,r.DidOpenTextDocumentNotification.type,()=>e.middleware.didOpen,t=>e.code2ProtocolConverter.asOpenTextDocumentParams(t),e=>e,o.TextDocumentEventFeature.textDocumentFilter),this._",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_open_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Streaming document changes with serialization (real-time code theft)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "onDidChangeTextDocument(this.callback,this)),this._changeData.set(e.id,{syncKind:e.registerOptions.syncKind,documentSelector:this._client.protocol2CodeConverter.asDocumentSelector(e.registerOptions.do",
+      "category": "vscode_api_abuse",
+      "pattern_id": "doc_change_stream"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Bulk workspace file discovery and reading",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.findFiles(\"**/*.{rpy,rpym}\",\"**/node_modules/**\");if(0===e.length)return void t.window.showInformationMessage(\"No .rpy/.rpym files found in workspace.\");const n=t.workspace.getConfiguration(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_bulk_read"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Broad glob pattern used to enumerate all workspace files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.findFiles(\"**",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_glob_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Directory traversal paired with network send",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readdir(e)}catch{return s.mkdirs(e)}return Promise.all(t.map(t=>a.remove(o.join(e,t))))});function u(e){let t;try{t=r.readdirSync(e)}catch{return s.mkdirsSync(e)}t.forEach(t=>{t=o.join(e,t),a.removeSy",
+      "category": "vscode_api_abuse",
+      "pattern_id": "fs_walk_with_send"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(t).get(n,!1):c.workspace.getConfiguration(t);i&&this._client.needsStart()?this._client.start().catch(e=>this._client.error(\"Start failed after configuration change\",e,\"force",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_api_abuse",
+      "description": "Enumerating installed extensions (reconnaissance)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "extensions.getExtension",
+      "category": "vscode_api_abuse",
+      "pattern_id": "extension_api_enumerate"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={193:(e,t,n)=>{\"use strict\";Object.defineProperty(t,\"__esModule\",{value:!0}),t.WorkspaceSymbolRequest=t.CodeActionResolveRequest=t.CodeActionRequest=t.DocumentSymbolRequest=t.DocumentHighl"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={193:(e,t,n)=>{\"use strict\";Object.defineProperty(t,\"__esModule\",{value:!0}),t.WorkspaceSymbolRequest=t.CodeActionResolveRequest=t.CodeActionRequest=t.DocumentSymbolRequest=t.DocumentHighl"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'spawnSync' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{var e={193:(e,t,n)=>{\"use strict\";Object.defineProperty(t,\"__esModule\",{value:!0}),t.WorkspaceSymbolRequest=t.CodeActionResolveRequest=t.CodeActionRequest=t.DocumentSymbolRequest=t.DocumentHighl"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(e,t);return i=s(i),JSON.parse(i,t.reviver)}catch(t){if(r)throw t.message=`${e}: ${t.message}`,t;return null}},writeFile:c,writeFileSync:function(e,t,n={}){const r=n.fs||i,s=o(t,n);return ",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "credential_access",
+      "description": "Attempt to read credential / key files",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "readFileSync(e,t);return i=s(i),JSON.parse(i,t.reviver)}catch(t){if(r)throw t.message=`${e}: ${t.message}`,t;return null}},writeFile:c,writeFileSync:function(e,t,n={}){const r=n.fs||i,s=o(t,n);return ",
+      "category": "builtin",
+      "pattern_id": "credential_access"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "Request(e)?function(e){if(ee())return;function t(t,i,r){const s={jsonrpc:E,id:e.id};t instanceof o.ResponseError?s.error=t.toJson():s.result=void 0===t?null:t,se(s,i,r),n.write(s).catch(()=>D.error(\"S",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".post,a=r.split(\",\");a[a.length-1]+=\"{\"+o+\"}\";var c=d(s);return s.length&&(a[a.length-1]+=c.shift(),a.push.apply(a,c)),t.push.apply(t,a),t}function p(e){return\"{\"+e+\"}\"}function h(e){return/^-?0\\d/.te",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "11 CRITICAL findings",
+    "8 HIGH findings",
+    "Composite risk 0.50 >= 0.4",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-02-28T15:40:01.690153+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.9,\n  \"confidence\": 0.85,\n  \"verdict\": \"MALICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"credential_harvesting\",\n      \"description\": \"Code attempts to read environment variables and serialize them, potentially exfiltrating sensitive information.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"infostealer_behavior\",\n      \"description\": \"Base64 encoding data and sending over network, indicating potential data exfiltration activities.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Broad glob pattern used to enumerate all workspace files, potentially accessing sensitive files outside the project scope.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Directory traversal paired with network send, indicating potential file access and exfiltration.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Harvesting VSCode configuration and sending over network, potentially exfiltrating user settings and credentials.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"lolbins_and_stagers\",\n      \"description\": \"Use of `child_process` for potential arbitrary command execution, indicating possible malicious activity.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"network_activity\",\n      \"description\": \"WebSocket connections to unknown endpoints, potentially indicating command-and-control communication.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"dependency_anomaly\",\n      \"description\": \"Use of `ffi-napi` which is inconsistent with the extension's stated purpose of providing language support for Ren'Py files.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1\"\n    },\n    {\n      \"severity\": \"BEHAVIORAL_MISMATCH\",\n      \"category\": \"capability_disconnect\",\n      \"description\": \"Extension's actual capabilities (credential harvesting, network exfiltration) are completely disconnected from its advertised function as a Ren'Py LSP.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1\"\n    }\n  ],\n  \"summary\": \"The extension exhibits multiple critical indicators\n\n=== extension/dist/extension.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a standard ES module setup, marking the module as an ES module. No malicious or suspicious behavior was identified in this snippet.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be a standard TypeScript module defining various VS Code Language Server Protocol (LSP) request and notification types. There are no signs of malicious behavior, secret leakage, or unauthorized functionality. The code aligns with expected behavior for a benign VS Code extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet does not exhibit any malicious or suspicious behavior. It appears to be part of the extension's initialization, assigning variables related to VS Code's notebook and diagnostic features, which is consistent with expected benign behavior.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a language server or similar VS Code extension, defining various requests and notifications. No critical, high-risk, or medium-risk indicators were identified. The code aligns with expected behavior for such extensions, handling standard VS Code API interactions without evidence of malicious activity.\"\n}\n```"
+}
