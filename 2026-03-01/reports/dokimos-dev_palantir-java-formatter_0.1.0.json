@@ -1,0 +1,88 @@
+{
+  "extension_id": "dokimos-dev.palantir-java-formatter",
+  "version": "0.1.0",
+  "display_name": "Palantir Java Formatter",
+  "publisher_name": "dokimos-dev",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "92dd83943718dfa5a05a7f7b3060a696fc5b0cb9a1d7e2644b47aeb6dc9e3cf2",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-03-01T19:04:55.927Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 0.7999999999999999,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.4875,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 6,
+  "critical_findings": [],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 96,
+      "code_snippet": "var cp = __toESM(require(\"child_process\"));"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'require(\"child_process\")' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 96,
+      "code_snippet": "var cp = __toESM(require(\"child_process\"));"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "HIGH_ENTROPY_BLOB",
+      "description": "File 'extension/lib/formatter-daemon.jar' has high entropy (7.90/8.0) \u2014 possible encrypted shellcode or packed payload (8025230 bytes)",
+      "file_path": "extension/lib/formatter-daemon.jar"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "command_execution",
+      "description": "Direct command / shell execution",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 96,
+      "code_snippet": "require(\"child_process\")",
+      "category": "builtin",
+      "pattern_id": "command_execution"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": false,
+  "escalation_reasons": [],
+  "report_timestamp": "2026-03-01T19:15:59.575417+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/6) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The extension appears to be a legitimate Java formatting tool. The code retrieves configuration settings and uses child_process to execute the Java formatter, which aligns with its intended purpose. No critical or high-risk indicators were found, and the extension's capabilities are proportional to its advertised function.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/6) ===\n```json\n{\n  \"risk_score\": 0.6,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"ARBITRARY_COMMAND_EXECUTION\",\n      \"description\": \"Use of `child_process` module which can lead to arbitrary command execution if not properly sanitized.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"Line 2\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\n\n=== extension/dist/extension.js (chunk 3/6) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension appears to execute a Java-based daemon, which is unusual for typical VS Code extensions. This could indicate unexpected functionality not disclosed in the extension's description.\",\n      \"code_reference\": \"src/daemon.ts\",\n      \"line_hint\": \"15-30\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's use of Java and daemon processes suggests capabilities beyond standard VS Code functionality, potentially misaligned with its advertised purpose.\",\n      \"code_reference\": \"src/daemon.ts\",\n      \"line_hint\": \"15-30\"\n    }\n  ],\n  \"summary\": \"The extension exhibits unusual behavior by executing a Java-based daemon, which may indicate capabilities not aligned with its stated purpose. While no overtly malicious code is present, the functionality appears suspicious and could be a red flag for potential misuse.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/6) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Use of `child_process.spawn()` to execute an external process, which could potentially be used for arbitrary command execution or to run malicious binaries.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"around line 10\"\n    }\n  ],\n  \"summary\": \"The code uses `child_process.spawn()` to execute a Java process, which could pose a risk if not properly sanitized. This might indicate potential for arbitrary command execution or malicious activity, though the context suggests it might be legitimate for the extension's purpose.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/6) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension for Java formatting. It exhibits standard behavior for a formatting extension, including document formatting, status bar updates, and communication with a daemon. No suspicious or malicious patterns were detected. The code aligns with its intended functionality, and there are no indications of supply-chain attack vectors or unauthorized capabilities.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 6/6) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The extension appears to be a standard VS Code formatting tool for Java code. It does not exhibit any signs of malicious behavior, with all functionality aligning to its stated purpose. No critical, high, or medium-risk indicators were detected. The code is well-aligned with expected behavior for a formatting extension.\"\n}\n```"
+}
