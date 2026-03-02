@@ -1,0 +1,104 @@
+{
+  "extension_id": "Traberg-Larsen.blizdb-mcp",
+  "version": "0.1.0",
+  "display_name": "BlizDB MCP",
+  "publisher_name": "Traberg-Larsen",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "a43d5e44551e18a0d0bc6d0051fb75249b9dc0e358ff677972bb21f6df574c4e",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-03-02T20:45:50.277Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 0.7999999999999999,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.4875,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 7,
+  "critical_findings": [],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "method:\"POST\",body:{username:e,password:s},noAuth:!0})}async loginWithApiKey(e){return this.token=e,await this.fetch(\"/api/auth/me\")}async me(){return this.fetch(\"/api/auth/me\")}async listDatabaseEntr",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "REPO_MISMATCH",
+      "description": "Publisher 'traberg-larsen' does not match GitHub org 'antigravity' in repo 'https://github.com/antigravity/blizdb-vscode'",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "webview_phishing",
+      "description": "WebView panel combined with external HTTP (potential phishing overlay)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 585,
+      "code_snippet": "webview.html=this.renderHtml(null,\"Not connected\");return}try{let s=await e.metrics();this.view.webview.html=this.renderHtml(s,null)}catch(s){this.view.webview.html=this.renderHtml(null,s.message??\"Fa",
+      "category": "builtin",
+      "pattern_id": "webview_phishing"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 10,
+      "code_snippet": "workspace.getConfiguration(\"blizdb\").get(\"autoRefreshInterval\",30);e>0&&(this.refreshTimer=setInterval(()=>this.refresh(),e*1e3))}getTreeItem(e){return e}async getChildren(e){if(!e){let s=this.connMgr",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "vscode_api_abuse",
+      "description": "Programmatic tampering with workspace configuration settings",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"blizdb\").get(\"connections\",[])}async saveProfiles(e){await $.workspace.getConfiguration(\"blizdb\").update(",
+      "category": "vscode_api_abuse",
+      "pattern_id": "workspace_config_tampering"
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": false,
+  "escalation_reasons": [],
+  "report_timestamp": "2026-03-02T20:58:01.459079+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/7) ===\n\n\n=== extension/dist/extension.js (chunk 2/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension appears to handle database operations, authentication, and API keys, which could be a disconnect if the extension's advertised purpose does not include database management or authentication features.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 2/7)\",\n      \"line_hint\": \"1-20\"\n    }\n  ],\n  \"summary\": \"The code exhibits functionality that may not align with the extension's stated purpose, particularly if it's advertised for a different purpose than database management or authentication. While not overt\n\n=== extension/dist/extension.js (chunk 3/7) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension contains a custom protocol (MCP) with JSON-RPC calls, which may indicate potential remote control capabilities. This functionality was not explicitly mentioned in the provided description, raising concerns about capability disconnect.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 3/7)\",\n      \"line_hint\": \"Lines 25-44\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"DISCONNECT_CHECK\",\n      \"description\": \"The presence of a custom protocol (MCP) and JSON-RPC calls suggests potential hidden capabilities not described in the marketplace listing, indicating a possible capability disconnect.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 3/7)\",\n      \"line_hint\": \"Lines 25-44\"\n    }\n  ],\n  \"summary\": \"The extension exhibits signs of a custom protocol implementation (MCP) with JSON-RPC capabilities, which may indicate potential hidden or malicious functionality. While not explicitly malicious, the presence of such features without clear documentation raises concerns about capability alignment and potential misuse.\"\n}\n\n\n=== extension/dist/extension.js (chunk 4/7) ===\n\n\n=== extension/dist/extension.js (chunk 5/7) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension handling database connections. It does not exhibit any malicious behavior, secret leakage, or inappropriate functionality. The operations are confined to expected tree item management and database connection handling.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 6/7) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of a VS Code extension that handles database connections and displays metadata about tables, rows, and columns. No suspicious or malicious behavior was detected. The code focuses on building tree items for the VS Code interface and formatting metadata for display. There are no signs of secret leakage, credential harvesting, or malicious network activity. The functionality appears to align with its likely purpose as a database management extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 7/7) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be part of a VS Code extension that defines tree view items for database-related structures. It does not exhibit any signs of malicious behavior, secrets leakage, or unauthorized access. The code is focused on creating UI elements and does not perform any network operations, file access outside expected paths, or use of eval/child_process. The functionality aligns with typical database management tooling behavior.\"\n}\n```"
+}
