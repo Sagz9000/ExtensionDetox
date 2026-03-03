@@ -1,0 +1,103 @@
+{
+  "extension_id": "mcsets.mcsets-theme-ide",
+  "version": "0.1.0",
+  "display_name": "MCsets Theme IDE",
+  "publisher_name": "mcsets",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "7b1a52bee22d94eafa1c8845d3625ccf0b6452242152d94cb6da2f0e25731940",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-03-03T23:40:07.58Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 0.7999999999999999,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.4875,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 7,
+  "critical_findings": [],
+  "high_findings": [],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/src/preview.ts",
+      "line_number": 43,
+      "code_snippet": "this.panel = vscode.window.createWebviewPanel("
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 64,
+      "code_snippet": "workspace.getConfiguration(\"mcsets\").get(\"apiBaseUrl\") || \"http",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1001,
+      "code_snippet": "workspace.getConfiguration(\"mcsets\").get(\"apiBaseUrl\") || \"http",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/src/auth.ts",
+      "line_number": 32,
+      "code_snippet": "workspace.getConfiguration('mcsets').get<string>('apiBaseUrl') || 'http",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/src/extension.ts",
+      "line_number": 69,
+      "code_snippet": "workspace.getConfiguration('mcsets').get<string>('apiBaseUrl') || 'http",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": false,
+  "escalation_reasons": [],
+  "report_timestamp": "2026-03-03T23:54:19.437301+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/7) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The VSIX package size of 0.0 MB is disproportionately small for an extension claiming to provide live preview and hot reload features, which typically require more resources.\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension's code suggests network communication and configuration storage, which may not be fully aligned with its stated purpose of theme editing.\",\n      \"code_reference\": null,\n      \"line_hint\": null\n    }\n  ],\n  \"summary\": \"The extension exhibits potential behavioral mismatches and capability disconnects, particularly concerning its package size and network activities. While no critical indicators are present, these factors raise suspicions about its true functionality.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code contains network communication to a hardcoded API base URL ('https://app.mcsets.com/api'), which may indicate a centralized service dependency. This could pose a risk if the service is not vetted or if it's used for unintended purposes.\",\n      \"code_reference\": \"src/api.ts:16\",\n      \"line_hint\": 16\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension's code includes functionality to read and write files, as well as interact with a remote API, which may not be fully aligned with its advertised purpose if it's intended to be a simple theme or settings manager. This could indicate a disconnect in capability.\",\n      \"code_reference\": \"src/api.ts:22-43\",\n      \"line_hint\": 22\n    }\n  ],\n  \"summary\": \"The extension exhibits moderate-risk patterns, particularly in its network communication and potential capability disconnect. While not immediately malicious, further investigation into its API interactions and purpose\n\n=== extension/dist/extension.js (chunk 3/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to handle Server-Sent Events (SSE) connections and file system operations in a standard manner. No critical, high-risk, or medium-risk indicators were identified. The code does not exhibit signs of malicious behavior, secret leakage, or unauthorized access to sensitive resources. The file system operations are confined to the expected functionality of a file provider extension, and there are no indications of behavioral disconnects or disproportionate capabilities.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/7) ===\n```json\n{\n  \"risk_score\": 0.0,\n  \"confidence\": 1.0,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a custom file system implementation for a VS Code extension. It handles file reading, writing, and deletion operations using a cache. No malicious or suspicious behavior was detected. The operations are confined to file system interactions and do not exhibit any signs of secret leakage, credential harvesting, or network exfiltration. The code aligns with expected behavior for a file provider extension.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code contains file system operations and external change notifications which may not be fully aligned with its advertised purpose if it's intended for a different functionality like theming or formatting.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"1-100\"\n    }\n  ],\n  \"summary\": \"The code exhibits file management and caching behavior which might not align with certain types of extensions, raising suspicions about its true purpose\n\n=== extension/dist/extension.js (chunk 6/7) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension's code includes a preview panel with webview functionality, which may indicate hidden capabilities not disclosed in the marketplace listing.\",\n      \"code_reference\": \"src/preview.ts\",\n      \"line_hint\": 15\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension implements token refresh functionality, which may not be proportional to its stated purpose if it's intended to be a simple file explorer or theme.\",\n      \"code_reference\": \"src/preview.ts\",\n      \"line_hint\": 25\n    }\n  ],\n  \"summary\": \"The extension exhibits potential capability disconnect and behavioral mismatch indicators. The inclusion of a webview panel and token refresh mechanisms suggests functionality beyond basic file exploration, which may not be aligned with its advertised purpose. While no overt malicious behavior is detected, further investigation is recommended to assess the true nature of the extension's capabilities.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 7/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a web-based preview pane implementation within a VS Code extension. It handles token refresh, updates the preview iframe, and includes basic UI elements. No critical, high-risk, or medium-risk indicators were identified. The operations are confined to the extension's expected functionality, with no signs of malicious behavior or unauthorized access.\"\n}\n```"
+}
