@@ -1,0 +1,92 @@
+{
+  "extension_id": "Technofreakcritic.lizard",
+  "version": "0.0.2",
+  "display_name": "Lizard",
+  "publisher_name": "Technofreakcritic",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "b0aba3623e6bb1e132723c65968c5e33ba9645ab9c3569cf5c9531c545a6a2e7",
+  "install_count": 1,
+  "average_rating": 0.0,
+  "published_date": "2026-03-03T17:04:11.667Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.8,
+  "static_analysis_score": 0.7999999999999999,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5925,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 6,
+  "critical_findings": [],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'child_process' pattern",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "(()=>{\"use strict\";var e={265(e,n,t){var a,r=this&&this.__createBinding||(Object.create?function(e,n,t,a){void 0===a&&(a=t);var r=Object.getOwnPropertyDescriptor(n,t);r&&!(\"get\"in r?!n.__esModule:r.wr"
+    },
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".postMessage({ type: 'playResult', requestId: message.requestId, ok: true });\\n        } catch (_error) {\\n          const errorMessage = _error && _error.message ? _error.message : String(_error);\\n ",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onStartupFinished', 'onCommand:lizard.helloWorld']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"lizard\");if(!n.get(\"enabled\",!0))return;const t=Math.max(0,n.get(\"debounceMs\",150)),a=Date.now();if(a-S<t)return;S=a;const r=K(n.get(\"volume\",1),0,1),o=n.get(\"preferWebview",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": false,
+  "escalation_reasons": [],
+  "report_timestamp": "2026-03-03T18:13:27.520296+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/7) ===\n```json\n{\n  \"risk_score\": 0.15,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code contains network communication patterns that are not explicitly detailed in the README or marketplace description.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 1/7)\",\n      \"line_hint\": \"line 1\"\n    }\n  ],\n  \"summary\": \"The extension exhibits moderate suspicion due to potential network communication not fully aligned with its advertised functionality. While no critical indicators are present, further dynamic analysis is recommended to confirm its behavior.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 2/7) ===\n```json\n{\n  \"risk_score\": 0.7,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"COMMAND_EXECUTION\",\n      \"description\": \"The code uses `child_process` to execute shell commands via `curl`, which can lead to arbitrary command execution.\",\n      \"code_reference\": \"chunk 2/7, lines around 10-15\",\n      \"line_hint\": 12\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CLIPBOARD_ACCESS\",\n      \"description\": \"The extension accesses the clipboard and combines it with network activity, which could indicate potential data exfiltration.\",\n      \"code_reference\": \"chunk 2/7, lines around 20-25\",\n      \"line_hint\": 22\n    }\n  ],\n  \"summary\": \"The extension exhibits high-risk behavior by executing shell commands via `curl`, which could be exploited for arbitrary command execution. Additionally, clipboard access combined with network activity raises concerns about potential data exfiltration. While the extension's purpose appears to be related to integrating with an AI service, the use of `child_process` for executing shell commands is a significant security risk.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 3/7) ===\n```json\n{\n  \"risk_score\": 0.8,\n  \"confidence\": 0.9,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Use of PowerShell for executing commands, which could be a vector for malicious code execution.\",\n      \"code_reference\": \"chunk 3/7, lines where powershell.exe is called\",\n      \"line_hint\": \"approximate line 30-40\"\n    }\n  ],\n  \"summary\": \"The code exhibits suspicious behavior by using PowerShell for executing commands, which is a common technique in malicious activities. While the immediate function appears benign, the potential for abuse is significant.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to be part of an audio playback functionality within a VS Code extension. It checks for media file existence, handles audio playback, and creates a webview panel for audio control. No malicious or suspicious patterns were identified in the code snippet provided.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 5/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to be part of a webview-based audio playback feature in a VS Code extension. It establishes communication between the main process and the webview, handles audio playback, and manages errors. No critical-risk, high-risk, or medium-risk indicators were identified. The functionality is proportional to the extension's apparent purpose, and no behavioral mismatches were detected.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 6/7) ===\n```json\n{\n  \"risk_score\": 0.7,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"LOLBINs & Stagers\",\n      \"description\": \"Use of `child_process.spawn` which can execute arbitrary commands, potentially leading to command injection if not properly sanitized.\",\n      \"code_reference\": \"chunk 6/7, line with `(0, d.spawn)(e.command, e.args)\",\n      \"line_hint\": \"around line 10\"\n    },\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"CAPABILITY_DISCONNECT\",\n      \"description\": \"The extension sets up a server using `u.createServer`, which is inconsistent with typical VS Code extension functionality, suggesting potential unauthorized network\n\n=== extension/dist/extension.js (chunk 7/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension appears to set up a TCP server on localhost, which may indicate unexpected functionality not disclosed in the marketplace listing.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 7/7)\",\n      \"line_hint\": \"approximate line 20-30\"\n    }\n  ],\n  \"summary\": \"The code establishes a TCP server on localhost, which could indicate hidden functionality. While not overtly malicious, this behavior may not be aligned with the extension's advertised purpose, raising suspicions about its true capabilities.\"\n}\n```"
+}
