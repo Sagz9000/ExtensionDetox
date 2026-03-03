@@ -1,0 +1,110 @@
+{
+  "extension_id": "JamesMartinez.lemonade-dashboard",
+  "version": "0.0.1",
+  "display_name": "Lemonade Dashboard",
+  "publisher_name": "JamesMartinez",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "0d905eb7deed698a6deb4f473a18ad4db37dfe2055481888d3e8ef0fbc9ca78f",
+  "install_count": 0,
+  "average_rating": 0.0,
+  "published_date": "2026-03-03T17:18:31.477Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 0.7999999999999999,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.4875,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 7,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "addEventListener('keydown', (e) => {\\n                        if (e.key === 'Enter' && !e.shiftKey) {\\n                            e.preventDefault();\\n                            sendChat();\\n       ",
+      "category": "infostealer_behavior",
+      "pattern_id": "keylogger_listener"
+    }
+  ],
+  "high_findings": [
+    {
+      "severity": "HIGH",
+      "check_name": "data_exfiltration",
+      "description": "Pattern suggesting data exfiltration",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": ".postMessage({type:\"renderDashboard\",defaultTab:a,sysInfo:c,models:m.data||[],loadedModel:p.model_loaded||null,healthStatus:p.status||\"unknown\",serverVersion:p.version||null,websocketPort:p.websocket_",
+      "category": "builtin",
+      "pattern_id": "data_exfiltration"
+    }
+  ],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "hardcoded_ip",
+      "description": "Hardcoded IP address (potential C2)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "\"http://127.0.0.1:8000\"",
+      "category": "builtin",
+      "pattern_id": "hardcoded_ip"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "webview_phishing",
+      "description": "WebView panel combined with external HTTP (potential phishing overlay)",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "webview.html=this._getHtmlForWebview(),e.webview.onDidReceiveMessage(async n=>{const{rawUrl:t,apiUrl:s,headers:o,defaultTab:a}=c();switch(n.type){case\"openSettings\":d.commands.executeCommand(\"workbenc",
+      "category": "builtin",
+      "pattern_id": "webview_phishing"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "vscode_api_abuse",
+      "description": "Harvesting VSCode configuration and sending over network",
+      "file_path": "extension/dist/extension.js",
+      "line_number": 1,
+      "code_snippet": "workspace.getConfiguration(\"lemonade\");let n=e.get(\"serverUrl\")||\"http://127.0.0.1:8000\";const t=e.get(\"apiToken\")||\"\",s=e.get(\"defaultTab\")||\"main\";n=n.trim().replace(/\\/+$/,\"\"),n.startsWith(\"http://",
+      "category": "vscode_api_abuse",
+      "pattern_id": "config_harvest_exfil"
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-03-03T18:07:26.860467+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/dist/extension.js (chunk 1/7) ===\n\n\n=== extension/dist/extension.js (chunk 2/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension enables scripts in the webview, which may allow for potentially dangerous code execution within\n\n=== extension/dist/extension.js (chunk 3/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension makes network calls to external domains (api.github.com) which may not be proportional to its stated purpose if it's primarily for model management. This could indicate a capability disconnect.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 3/7)\",\n      \"line_hint\": \"line 15-20\"\n    }\n  ],\n  \"summary\": \"The code contains network calls to external domains which may not align with the extension's primary functionality, raising concerns about potential hidden capabilities or behavioral mismatches. However, no critical or high-risk indicators were found, and the overall behavior appears somewhat aligned with expected model management tasks.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 4/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"HIGH\",\n      \"category\": \"NETWORK_CALLS\",\n      \"description\": \"Multiple network calls to unknown endpoints with POST requests and JSON payloads. Potential for unauthorized data transmission or command execution.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"Lines 1-20\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"SECRET_USAGE\",\n      \"description\": \"Headers object 'o' used in fetch calls may contain sensitive information. Need to verify if headers are properly sanitized and not exposing credentials.\",\n      \"code_reference\": \"extension/dist/extension.js\",\n      \"line_hint\": \"Lines 10-15\"\n    }\n\n\n=== extension/dist/extension.js (chunk 5/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code appears to handle chat request processing, including making HTTP requests to a chat completions endpoint and streaming responses. No malicious or suspicious patterns were identified in the code snippet provided. The functionality aligns with typical chat request handling and does not exhibit any signs of secret leakage, credential harvesting, info-stealing, or network exfiltration. The code uses standard JavaScript/TypeScript APIs and does not show any signs of obfuscation or malicious behavior.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 6/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"WEAK_OBFUSCATION\",\n      \"description\": \"The code contains minimal obfuscation techniques, such as hex-encoded strings and variable renaming, which could potentially hide malicious activities.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 6/7)\",\n      \"line_hint\": \"Approximate line 10-20\"\n    }\n  ],\n  \"summary\": \"The code appears to be part of a webview-based VS Code extension, serving HTML and CSS. While no critical indicators were found, minimal obfuscation and potential behavioral mismatches raise some concerns. The risk is low, but further dynamic analysis is recommended.\"\n}\n```\n\n=== extension/dist/extension.js (chunk 7/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"LOW\",\n      \"category\": \"UI/UX\",\n      \"description\": \"The provided code snippet appears to be part of a web-based UI component, possibly a chat interface or dashboard, with no immediate malicious indicators but with some anomalies.\",\n      \"code_reference\": \"extension/dist/extension.js (chunk 7/7)\",\n      \"line_hint\": \"1-20\"\n    }\n  ],\n  \"summary\": \"The code snippet contains UI/UX elements that don't align with typical VS Code extension functionality, raising some suspicion but without clear malicious indicators.\"\n}\n```"
+}
