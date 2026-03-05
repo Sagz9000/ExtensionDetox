@@ -1,0 +1,115 @@
+{
+  "extension_id": "Khamit.masterlock",
+  "version": "1.0.11",
+  "display_name": "MasterLock",
+  "publisher_name": "Khamit",
+  "publisher_verified": false,
+  "vsix_hash_sha256": "41e91597aa1290aeec53b0666c67b47d8aa20a709ea0a0f96844864119572019",
+  "install_count": 2,
+  "average_rating": 0.0,
+  "published_date": "2026-03-05T07:32:25.753Z",
+  "is_blocklisted": false,
+  "blocklist_type": "",
+  "ai_vibe_score": 0.5,
+  "static_analysis_score": 0.9,
+  "behavioral_score": 0.0,
+  "trust_signal_score": 0.75,
+  "composite_score": 0.5125,
+  "verdict": "INFORMATIONAL",
+  "confidence": 0.6,
+  "total_findings": 8,
+  "critical_findings": [
+    {
+      "severity": "CRITICAL",
+      "check_name": "vscode_token_theft",
+      "description": "VS Code authentication token / credential theft",
+      "file_path": "extension/out/masterLock.js",
+      "line_number": 64,
+      "code_snippet": "keytar.getPassword",
+      "category": "builtin",
+      "pattern_id": "vscode_token_theft"
+    },
+    {
+      "severity": "CRITICAL",
+      "check_name": "infostealer_behavior",
+      "description": "System fingerprinting API call",
+      "file_path": "extension/out/masterLock.js",
+      "line_number": 54,
+      "code_snippet": "os.userInfo()",
+      "category": "infostealer_behavior",
+      "pattern_id": "system_fingerprint_combo"
+    }
+  ],
+  "high_findings": [],
+  "medium_findings": [
+    {
+      "severity": "MEDIUM",
+      "check_name": "ACTIVATION_WILDCARD",
+      "description": "Extension uses wildcard/startup activation: ['onCommand:masterlock.toggleSelection', 'onCommand:masterlock.showLogo', 'onStartupFinished']",
+      "file_path": "package.json",
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "RISKY_API_CALL",
+      "description": "Found 'vscode.window.createWebviewPanel' pattern",
+      "file_path": "extension/out/extension.js",
+      "line_number": 123,
+      "code_snippet": "const panel = vscode.window.createWebviewPanel('masterlockLogo', 'MasterLock Logo', vscode.ViewColumn.One, { enableScripts: true });"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "UNVERIFIED_PUBLISHER",
+      "description": "Publisher domain is NOT verified by Microsoft",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "network_reconnaissance",
+      "description": "Network/system reconnaissance patterns",
+      "file_path": "extension/out/masterLock.js",
+      "line_number": 54,
+      "code_snippet": "os.userInfo",
+      "category": "builtin",
+      "pattern_id": "network_reconnaissance"
+    },
+    {
+      "severity": "MEDIUM",
+      "check_name": "vscode_api_abuse",
+      "description": "Webview panel with scripts enabled (potential C2 channel)",
+      "file_path": "extension/out/extension.js",
+      "line_number": 123,
+      "code_snippet": "createWebviewPanel('masterlockLogo', 'MasterLock Logo', vscode.ViewColumn.One, { enableScripts: true",
+      "category": "vscode_api_abuse",
+      "pattern_id": "hidden_webview"
+    }
+  ],
+  "info_findings": [
+    {
+      "severity": "LOW",
+      "check_name": "MISSING_DOMAIN",
+      "description": "No domain associated with publisher profile",
+      "file_path": null,
+      "line_number": null,
+      "code_snippet": null
+    }
+  ],
+  "iocs": [],
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "campaign_score": 0.0,
+  "vt_detection_count": 0,
+  "vt_total_engines": 0,
+  "vt_known_malicious": false,
+  "escalated_to_chamber": true,
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "report_timestamp": "2026-03-05T15:32:34.672003+00:00",
+  "analysis_duration_seconds": 0.0,
+  "raw_ai_response": "=== extension/out/masterLock.js (chunk 1/5) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.7,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension claims to protect sensitive data but uses `keytar` and system info which could indicate credential harvesting.\",\n      \"code_reference\": \"extension/out/masterLock.js (chunk 1/5)\",\n      \"line_hint\": 54\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"INFostealer\",\n      \"description\": \"Uses `os.userInfo()` for system fingerprinting, which could be part of info-stealing behavior.\",\n      \"code_reference\": \"extension/out/masterLock.js (chunk 1/5)\",\n      \"line_hint\": 54\n    },\n    {\n      \"severity\": \"CRITICAL\",\n      \"category\": \"CREDENTIALS\",\n      \"description\": \"Calls `keytar.getPassword()` which could be used to harvest stored credentials.\",\n      \"code_reference\": \"extension/out/masterLock.js (chunk 1/5)\",\n      \"line_hint\": 64\n    }\n  ],\n  \"summary\": \"The MasterLock extension exhibits critical-risk patterns including potential credential harvesting and system fingerprinting. While its declared purpose is encryption, the use of `keytar` and system info collection raises concerns about info-stealing behavior. Further dynamic analysis is recommended.\"\n}\n```\n\n=== extension/out/masterLock.js (chunk 2/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's use of keytar for password storage and encryption suggests it handles sensitive data, which may not be explicitly stated in its marketplace listing.\",\n      \"code_reference\": \"extension/out/masterLock.js\",\n      \"line_hint\": \"Lines 1-20\"\n    }\n  ],\n  \"summary\": \"The extension appears to handle encryption and password storage, which could indicate a capability not fully disclosed, raising a medium concern for capability alignment. No critical or high-risk indicators were found\n\n=== extension/out/masterLock.js (chunk 3/5) ===\n```json\n{\n  \"risk_score\": 0.2,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"CLIPBOARD_ACCESS\",\n      \"description\": \"The extension accesses the clipboard using `vscode.env.clipboard.readText()`, which could be used for data exfiltration.\",\n      \"code_reference\": \"extension/out/masterLock.js (chunk 3/5)\",\n      \"line_hint\": \"line 1020\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"PASSWORD_HANDLING\",\n      \"description\": \"User is prompted for a password using `vscode.window.showInputBox()` with a password mask. While not inherently malicious, improper handling could expose credentials.\",\n      \"code_reference\": \"extension/out/masterLock.js (chunk 3/5)\",\n      \"line_hint\": \"line 1033\"\n    }\n  ],\n  \"summary\": \"The extension exhibits moderate-risk behavior by accessing the clipboard and handling passwords. While not overtly malicious, these actions could pose risks if not properly secured. The code's functionality aligns with its apparent purpose of encryption/decryption, but there are areas for improved security hygiene.\"\n}\n```\n\n=== extension/out/masterLock.js (chunk 4/5) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The code appears to handle file parsing, encryption/decryption, and user interactions in a manner consistent with a legitimate VS Code extension focused on file encryption or decryption. No critical, high, or medium-risk indicators were identified. The operations are within the expected boundaries for such an extension.\"\n}\n```\n\n=== extension/out/masterLock.js (chunk 5/5) ===\n```json\n{\n  \"risk_score\": 0.4,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"INFO-STEALER PATTERNS\",\n      \"description\": \"Error handling code constructs a URL with potentially sensitive error details, which could expose internal error messages and stack traces to external services.\",\n      \"code_reference\": \"extension/out/masterLock.js\",\n      \"line_hint\": 75\n    }\n  ],\n  \"summary\": \"The code exhibits a potential security risk in error handling where sensitive information might be exposed. While not overtly malicious, it could lead to unintended data leakage.\"\n}\n```\n\n=== extension/out/extension.js (chunk 1/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"vscode_api_abuse\",\n      \"description\": \"Webview panel created with scripts enabled, potential C2 channel.\",\n      \"code_reference\": \"line 123\",\n      \"line_hint\": 123\n    }\n  ],\n  \"summary\": \"The extension creates a webview panel with scripts enabled, which could potentially be used for malicious code execution. No other critical indicators were found, but this behavior warrants further investigation.\"\n}\n```\n\n=== extension/out/extension.js (chunk 2/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code contains localization (i18n) and encryption/decryption logic, which might not be fully disclosed in its marketplace listing.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"10-20\"\n    }\n  ],\n  \"summary\": \"The extension exhibits signs of potential behavioral mismatch due to localization and encryption features that may not be fully advertised. No critical or high-risk indicators were found, but the presence of these features raises some concerns about capability alignment.\"\n}\n```\n\n=== extension/out/extension.js (chunk 3/7) ===\n```json\n{\n  \"risk_score\": 0.15,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code shows signs of periodic checking and state management that may indicate persistence or unauthorized access patterns, which could be disproportionate to its stated purpose of file locking.\",\n      \"code_reference\": \"extension/out/extension.js\",\n      \"line_hint\": \"Lines 15-45\"\n    }\n  ],\n  \"summary\": \"The extension exhibits file locking and state management behaviors, which could potentially be misused for unauthorized access or persistence. While not overtly malicious, the code patterns raise some red flags that warrant closer scrutiny, particularly regarding its actual functionality and stated purpose.\"\n}\n```\n\n=== extension/out/extension.js (chunk 4/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"TIMER_DELAYED_EXECUTION\",\n      \"description\": \"Use of setTimeout with potentially suspicious delayed execution logic, particularly around auto-unlocking files after a period.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 4/7)\",\n      \"line_hint\": \"approximate line 20-40\"\n    },\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"UNEXPECTED_GLOBAL_STATE_ACCESS\",\n      \"description\": \"Access to `vscode.globalState` which could potentially store sensitive information or extend functionality beyond the advertised purpose.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 4/7)\",\n      \"line_hint\": \"approximate line 35-40\"\n    }\n  ],\n  \"summary\": \"The code exhibits moderate signs of potential concern, primarily around the use of delayed execution and global state manipulation. While not overtly malicious, these patterns could indicate more insidious behavior. The confidence level is moderate due to the code's alignment with its stated purpose but with some red flags worth monitoring.\"\n}\n```\n\n=== extension/out/extension.js (chunk 5/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.85,\n  \"verdict\": \"SUSPICIOUS\",\n  \"findings\": [\n    {\n      \"severity\": \"MEDIUM\",\n      \"category\": \"BEHAVIORAL_MISMATCH\",\n      \"description\": \"The extension's code references file locking and unlocking, which may not be explicitly mentioned in the marketplace listing.\",\n      \"code_reference\": \"extension/out/extension.js (chunk 5/7)\",\n      \"line_hint\": \"1-20\"\n    }\n  ],\n  \"summary\": \"The extension appears to handle file locking and unlocking,\n\n=== extension/out/extension.js (chunk 6/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.8,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code is a static HTML file used as part of a VS Code extension's user interface. It contains no malicious or suspicious behavior, consisting solely of styling and content presentation. No critical, high-risk, or medium-risk indicators were identified. The code appears to be benign and aligned with its intended purpose of displaying information to the user.\"\n}\n```\n\n=== extension/out/extension.js (chunk 7/7) ===\n```json\n{\n  \"risk_score\": 0.1,\n  \"confidence\": 0.9,\n  \"verdict\": \"CLEAN\",\n  \"findings\": [],\n  \"summary\": \"The provided code snippet appears to be generating a simple HTML string with a version number and a GitHub issue link. No critical-risk, high-risk, or medium-risk indicators were identified. The code does not exhibit any signs of malicious behavior, secret leakage, or unauthorized access. The functionality appears to be benign and proportional to its stated purpose.\"\n}\n```"
+}
