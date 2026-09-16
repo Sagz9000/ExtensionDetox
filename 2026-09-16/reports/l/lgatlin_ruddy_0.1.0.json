@@ -1,0 +1,245 @@
+{
+  "extension_id": "lgatlin.ruddy",
+  "display_name": "Ruddy",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "lgatlin",
+    "verified": false
+  },
+  "vsix_sha256": "80719d68be6313be6140c6a3a02eb77367cb8aade8c4071722dcd74fbda4586f",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.28511492065715005,
+    "ai_vibe": 0.1,
+    "static": 0.5504596826286002,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.cjs",
+        "line": 21875,
+        "snippet": "Object.keys(process.env)"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'eval(' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 895,
+        "snippet": "ASM_CONSTS[start] = eval(func);"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'eval(' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 918,
+        "snippet": "moduleExports[name] = eval(func);"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 20453,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 20453,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 20475,
+        "snippet": "var result = cp.spawnSync(cmd, [process2.pid.toString()]);"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 21715,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 21715,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.cjs",
+        "line": 20453,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.cjs",
+        "line": 21715,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.cjs (chunk 2/339)",
+        "summary": "The analyzed code chunk is part of the `web-tree-sitter` library, which is a standard dependency for providing syntax highlighting in VS Code extensions. The flagged indicators (`child_process` and `process.env` access) are false positives resulting from the Emscripten runtime initialization logic within the bundled WASM module. The extension's stated purpose (Ruddy language support) aligns perfectly with the presence of Tree-sitter. No malicious behavior, obfuscation, or capability disconnect was found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 3/339)",
+        "summary": "The analyzed code chunk is standard boilerplate from an Emscripten-compiled WebAssembly runtime, likely for the Tree-sitter parser mentioned in the extension's README. The static rule engine hits for `child_process` and `process.env` are false positives resulting from the generic environment detection logic inherent to Emscripten's Node.js support, not malicious activity. The code aligns with the extension's stated purpose of providing syntax highlighting and language server support via a bundled parser."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 4/339)",
+        "summary": "The analyzed code chunk is standard Emscripten-generated WebAssembly runtime initialization code. It handles memory allocation, view updates, and lifecycle callbacks (preRun, postRun) typical for WASM modules. There is no evidence of malicious behavior, credential harvesting, command execution, or obfuscation in this specific section. The static rule engine hits appear to be false positives or refer to code outside this specific chunk, as the visible content is benign and consistent with a Tree-sitter parser implementation."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 14/339)",
+        "summary": "The analyzed code chunk is a standard WebAssembly runtime loader, likely generated by Emscripten, used to execute the Tree-sitter parser for the Ruddy language. The flagged indicators (child_process, process.env, eval) are typical components of WASM runtimes and do not indicate malicious intent in this context. The extension's purpose (language support) aligns with the presence of a WASM parser. No malicious behavior was identified in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 311/339)",
+        "summary": "The analyzed code chunk is part of the `vscode-languageclient` library, which is a standard dependency for VS Code extensions that provide Language Server Protocol (LSP) support. The flagged indicators (child_process usage, environment variable access) are consistent with the legitimate functionality of managing and terminating LSP server processes. There is no evidence of credential harvesting, data exfiltration, or malicious command execution. The extension aligns with its stated purpose of providing syntax highlighting and LSP support for the Ruddy language."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 326/339)",
+        "summary": "The analyzed code chunk is part of the `vscode-languageclient` library, a standard component for VS Code extensions that interact with external language servers. The flagged indicators (child_process usage, environment variable access) are false positives resulting from the legitimate need to spawn and manage LSP server processes. The extension's stated purpose (Ruddy language support) aligns perfectly with these capabilities. No malicious behavior, obfuscation, or credential harvesting was detected."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 328/339)",
+        "summary": "The analyzed code chunk is part of the `vscode-languageclient` library, which is a standard, well-known dependency for VS Code extensions that provide language server support. The flagged indicators (child_process usage and environment variable serialization) are standard mechanisms for spawning and configuring the language server process. There is no evidence of malicious intent, data exfiltration, or capability disconnect. The extension's behavior is fully aligned with its advertised purpose of providing syntax highlighting and LSP features for the Ruddy language."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, the code context reveals these are part of the `web-tree-sitter` library (an Emscripten-compiled WebAssembly module). In Node.js environments, Emscripten modules often use `child_process` to spawn the `node` executable to run the WASM binary and may inspect `process.env` for configuration flags (like `NODE_ENV` or memory limits). This is standard behavior for the Tree-sitter parser and not malicious credential harvesting or arbitrary command execution.",
+        "code_reference": "var require_web_tree_sitter = __commonJS({ \"lib/web-tree-sitter.cjs\"(exports, module) { ... } });",
+        "line_hint": 20453,
+        "target": "extension/dist/extension.cjs (chunk 2/339)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `Object.keys(process.env)` as high/critical risk. However, the code context reveals this is the standard runtime initialization code for an Emscripten-compiled WebAssembly module (indicated by `ENVIRONMENT_IS_WEB`, `wasmBinary`, `HEAP8`, etc.). In this context, `process.env` is used to determine the execution environment (Node.js vs Web) and `child_process` is part of the standard Node.js environment shim provided by Emscripten, not an active attempt to execute arbitrary commands or harvest credentials for exfiltration. This is a false positive.",
+        "code_reference": "var ret = fs.readFileSync(filename, binary2 ? void 0 : \"utf8\"); ... if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) ...",
+        "line_hint": 20453,
+        "target": "extension/dist/extension.cjs (chunk 3/339)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `Object.keys(process.env)` as high/critical risks. However, the provided source code chunk (lines ~20453-21875 context) consists entirely of standard Emscripten/WebAssembly runtime boilerplate (memory views, initialization, pre/post-run hooks). The specific lines cited by the scanner are not present in this chunk, and the visible code contains no command execution, environment variable serialization, or network activity. This is a false positive resulting from scanning a large bundled file where the scanner likely matched legitimate library code or misattributed line numbers from other chunks.",
+        "code_reference": "var b = wasmMemory.buffer; ... function initMemory() { ... }",
+        "line_hint": null,
+        "target": "extension/dist/extension.cjs (chunk 4/339)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `Object.keys(process.env)` as high/critical risks. However, the provided code chunk is part of a WebAssembly (WASM) runtime loader (likely Emscripten or similar). The `eval` usage is confined to `addEmAsm`, which is a standard mechanism in Emscripten to compile inline assembly strings into JavaScript functions for performance. The `child_process` and `process.env` references are likely part of the WASM runtime's environment abstraction or polyfills, not direct malicious execution or credential harvesting in this context. Given the extension is a language server for 'Ruddy' (a programming language), bundling a WASM parser is expected behavior.",
+        "code_reference": "function addEmAsm(addr, body) { ... eval(func); }",
+        "line_hint": 20453,
+        "target": "extension/dist/extension.cjs (chunk 14/339)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `Object.keys(process.env)` as high/critical risk. However, the code context reveals these are part of the `vscode-languageclient` library's process management logic (specifically the `terminate` function used to kill LSP server processes) and standard Node.js environment handling. This is expected behavior for a Language Server Protocol (LSP) client extension and does not indicate malicious intent.",
+        "code_reference": "var cp = require(\"child_process\"); ... cp.execFileSync(\"taskkill\", ...)",
+        "line_hint": 20453,
+        "target": "extension/dist/extension.cjs (chunk 311/339)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `Object.keys(process.env)` as high/critical risks. However, this code is part of the `vscode-languageclient` library, which is a standard, well-known dependency for VS Code extensions that communicate with external Language Server Protocol (LSP) servers. Spawning processes and checking environment variables are core, expected functionalities for LSP clients to manage server lifecycles and configuration. The extension's README explicitly states it uses `ruddy lsp`, confirming this behavior is intended and benign.",
+        "code_reference": "var cp = require(\"child_process\");",
+        "line_hint": 20453,
+        "target": "extension/dist/extension.cjs (chunk 326/339)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `Object.keys(process.env)` as credential harvesting. However, the code context shows this is part of the `getEnvironment` function within the `vscode-languageclient` library. It is used to construct the environment variables for a child process (the language server) to be spawned. This is standard behavior for Node.js child process management to ensure the LSP server inherits the necessary environment context, not an attempt to exfiltrate secrets.",
+        "code_reference": "Object.keys(process.env).forEach((key) => result[key] = process.env[key]);",
+        "line_hint": 21875,
+        "target": "extension/dist/extension.cjs (chunk 328/339)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")`. This is expected behavior for a VS Code extension that acts as a client to a Language Server Protocol (LSP) server. The extension needs to spawn the `ruddy lsp` process to communicate with it. This is a core requirement of the extension's stated functionality (language server support).",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 20453,
+        "target": "extension/dist/extension.cjs (chunk 328/339)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The analyzed code chunk is part of the `web-tree-sitter` library, which is a standard dependency for providing syntax highlighting in VS Code extensions. The flagged indicators (`child_process` and `process.env` access) are false positives resulting from the Emscripten runtime initialization logic within the bundled WASM module. The extension's stated purpose (Ruddy language support) aligns perfectly with the presence of Tree-sitter. No malicious behavior, obfuscation, or capability disconnect was found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "9 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-10T04:54:14.203Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-10T05:11:21.593476+00:00Z"
+}

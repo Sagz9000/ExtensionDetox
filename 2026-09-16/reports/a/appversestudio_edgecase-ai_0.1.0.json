@@ -1,0 +1,121 @@
+{
+  "extension_id": "appversestudio.edgecase-ai",
+  "display_name": "EdgeCase AI: Adversarial Mock & Test Generator",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "appversestudio",
+    "verified": false
+  },
+  "vsix_sha256": "54406ad27a3cb32ecb8de7686e4871458b1ff1d6bfc145660b94e84e8cc367d7",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.24125,
+    "ai_vibe": 0.1,
+    "static": 0.375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/config/secrets.js",
+        "line": 4,
+        "snippet": "SECRET = 'edgecase.geminiApiKey'"
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/config/secrets.js",
+        "line": 5,
+        "snippet": "SECRET = 'edgecase.openaiApiKey'"
+      }
+    ],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "theappversestudio.com",
+      "source_file": "extension/package.json",
+      "line": 9,
+      "context": "\"homepage\": \"https://theappversestudio.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js",
+        "summary": "The extension 'EdgeCase AI' is a benign utility that generates adversarial test fixtures and unit tests using AI models (Google Gemini or local Ollama). The code logic is straightforward: it reads the active editor's selection, constructs a prompt, sends it to the configured AI provider via `fetch`, and writes the response to a new file or tab. It uses standard VS Code APIs for UI, file system access (within the workspace), and secure secret storage. There are no signs of credential harvesting, command execution, obfuscation, or unauthorized data exfiltration. The network calls are directed to legitimate AI service endpoints. The only minor concern is the `onStartupFinished` activation event, which is unnecessary but not malicious."
+      },
+      {
+        "target": "extension/out/config/secrets.js",
+        "summary": "The code implements a standard SecretsManager class for handling API keys using the VS Code SecretStorage API. The static scanner flagged 'edgecase.geminiApiKey' and 'edgecase.openaiApiKey' as hardcoded secrets, but these are clearly configuration keys (identifiers) used to retrieve actual secrets from the secure storage, not the secrets themselves. This is a false positive. The extension's behavior is fully aligned with its stated purpose of generating test fixtures using AI providers (Gemini/OpenAI), requiring these API keys for functionality. No malicious patterns, obfuscation, or capability disconnects were found."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `onStartupFinished` as an activation event. While not inherently malicious, this is an aggressive activation strategy for a utility extension that primarily relies on user-triggered commands. It causes the extension to load immediately upon VS Code startup, potentially impacting startup performance slightly, though the code itself is lightweight.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/dist/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "STATIC_RULE_FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration` combined with network activity. This is a false positive. The code reads configuration settings (provider, model, endpoint) to determine how to connect to the AI service (Gemini or Ollama). It does not exfiltrate sensitive user data or secrets via this mechanism. API keys are stored securely using `vscode.SecretStorage` and sent only to the official Google Gemini API endpoint or a local Ollama instance.",
+        "code_reference": "function S() { let o = U.workspace.getConfiguration(\"edgecase\"); ... }",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'EdgeCase AI' is a benign utility that generates adversarial test fixtures and unit tests using AI models (Google Gemini or local Ollama). The code logic is straightforward: it reads the active editor's selection, constructs a prompt, sends it to the configured AI provider via `fetch`, and writes the response to a new file or tab. It uses standard VS Code APIs for UI, file system access (within the workspace), and secure secret storage. There are no signs of credential harvesting, command execution, obfuscation, or unauthorized data exfiltration. The network calls are directed to legitimate AI service endpoints. The only minor concern is the `onStartupFinished` activation event, which is unnecessary but not malicious.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-15T12:13:11.213Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T12:40:50.525964+00:00Z"
+}

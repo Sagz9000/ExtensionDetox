@@ -1,0 +1,448 @@
+{
+  "extension_id": "BadginLNN.badgerposts",
+  "display_name": "BadgerPosts",
+  "version": "1.0.1",
+  "publisher": {
+    "name": "BadginLNN",
+    "verified": false
+  },
+  "vsix_sha256": "e4fbbf76d02b42ac3d63d18825c082899b2b9a71cbd114ba893b59f3f3545803",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 1.0,
+    "static": 0.9481203125901445,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Dense obfuscator.io-style hex identifiers (generated string array)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "_0x4891a6=_0x1e1e;(function(_0x8c30d9,_0xeeda09){const _0x4506fd=_0x1e1e,_0x58d399=_0x8c30d9();while(!![]){try{const _0x3ac7ef=-parseInt(_0x4506fd(0x16d))/0x1+parseInt(_0x4506fd(0x175))/0x2+-parseInt("
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x58d399['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x58d399['shift']())"
+      }
+    ],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'boardflow' has 'preinstall': node install.js",
+        "file": "extension/node_modules/boardflow/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 656,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 896,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 17
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 2,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/src/patt.js",
+        "summary": "This extension is malicious. It masquerades as a simple local kanban board but contains code designed to silently execute an external script (`boardflow/install.js`) using `child_process.spawn` with stealth flags (`detached`, `stdio: ignore`). Static analysis of the package reveals this script references an unknown domain (`lnterstudios.org`) and a Windows batch file (`7f82614a.bat`), indicating a likely payload delivery mechanism. The combination of capability disconnect (local tool executing remote/external installers), stealth execution techniques, and suspicious network/file indicators confirms this is a supply-chain attack."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 1/27)",
+        "summary": "This extension is malicious. Despite being marketed as a simple, local-first kanban board, it contains critical red flags: it imports `child_process` and `https`, executes an unexplained module (`patt`) on activation, and includes a dependency (`boardflow`) that downloads and executes a batch file from a suspicious domain (`lnterstudios.org`). The 'local-first' claim is a lie, as the code is clearly designed to facilitate remote code execution and data exfiltration. The presence of `child_process` in a UI extension is a major capability disconnect and a strong indicator of malware."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/27)",
+        "summary": "This extension is malicious. It presents itself as a benign, local-first planning tool ('BadgerPosts') but contains a dependency (`boardflow`) that downloads and executes a Windows batch file from an unknown domain (`lnterstudios.org`). The presence of `child_process` and file hiding mechanisms further supports the conclusion that this is a supply-chain attack designed to execute arbitrary code on the user's machine, violating the 'local-first' and 'no account' promises made in the README."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/27)",
+        "summary": "This extension is malicious. Despite being marketed as a benign, local-first planning tool ('BadgerPosts'), it contains a dependency ('boardflow') that includes a remote domain reference and a Windows batch file, indicating a supply-chain attack. The use of 'child_process' and file hiding attributes further supports the conclusion that this extension is designed to execute arbitrary code and hide its malicious activities, directly contradicting its 'local-first' and 'no fuss' claims."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 4/27)",
+        "summary": "This extension is malicious. It presents itself as a local-first planning tool but contains a dependency with an install script that references an unknown domain and a Windows batch file, indicating a likely payload delivery mechanism. Additionally, it imports 'child_process' for command execution and uses file hiding techniques, which are inconsistent with a benign UI extension and strongly suggest malicious intent."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 5/27)",
+        "summary": "The extension 'BadgerPosts' presents a significant security risk. Despite being marketed as a 'local-first' planning tool, it contains a dependency ('boardflow') with an install script that references a suspicious domain ('lnterstudios.org') and a Windows batch file ('7f82614a.bat'). This indicates a major disconnect between the advertised functionality and the actual code capabilities, suggesting potential malicious intent such as data exfiltration or payload execution. The use of 'child_process' and attempts to hide files further increase the risk. This extension should be considered malicious and avoided."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 7/27)",
+        "summary": "This extension is malicious. Although the provided code chunk consists of CSS for a Kanban board UI, the static analysis evidence reveals a critical disconnect: the 'boardflow' dependency executes a Windows batch file and connects to an unknown domain. Combined with the use of 'child_process' in the main extension file, this indicates a supply-chain attack where the extension acts as a dropper for a payload, contradicting its 'local-first' and 'no fuss' marketing claims."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 11/27)",
+        "summary": "The extension 'BadgerPosts' presents a severe supply-chain attack risk. While the visible code in this chunk is benign CSS for a UI, the static analysis of the package reveals a critical disconnect: a 'local-first' extension containing a dependency ('boardflow') that references an unknown external domain and a Windows batch file. This pattern strongly suggests the extension is a trojanized package designed to execute malicious commands or download payloads, directly contradicting its advertised 'local-first' and 'no account' features. The presence of 'child_process' usage (flagged by the scanner) further supports the likelihood of arbitrary command execution. This should be treated as malicious."
+      },
+      {
+        "target": "extension/node_modules/boardflow/install.js",
+        "summary": "This VS Code extension is malicious. Despite being advertised as a harmless, local-first kanban board ('BadgerPosts'), the code contains a heavily obfuscated dropper that downloads and executes a remote batch file from an unknown domain (lnterstudios.org). The sandbox execution confirmed that the extension attempts to download '846385d443.bat' via curl and execute it. This behavior is a severe capability disconnect from the extension's stated purpose and indicates a supply-chain attack intended to compromise the user's system."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'local-first' kanban board with no external dependencies or network activity. However, the code explicitly executes an external installation script (`node_modules/boardflow/install.js`) using `child_process.spawn`. This behavior is completely inconsistent with the stated purpose and indicates a supply-chain attack vector.",
+        "code_reference": "const child = spawn(nodeBinary, [installScript], ...)",
+        "line_hint": 36,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "Static analysis of the package reveals that the executed script `install.js` contains references to the domain `lnterstudios.org` and a file named `7f82614a.bat`. The presence of a `.bat` file in a Node.js context strongly suggests a Windows payload delivery mechanism, likely for downloading and executing further malicious code.",
+        "code_reference": "domain: lnterstudios.org, filename: 7f82614a.bat",
+        "line_hint": null,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_EXECUTION",
+        "description": "The code uses `detached: true`, `stdio: 'ignore'`, and `windowsHide: true` when spawning the child process. These flags are specifically used to hide the execution of the script from the user and the system, preventing the user from seeing what is being run or interacting with it. This is a classic anti-forensic technique.",
+        "code_reference": "spawn(nodeBinary, [installScript], { ... detached: true, stdio: 'ignore', windowsHide: true ... })",
+        "line_hint": 34,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ERROR_SUPPRESSION",
+        "description": "The code wraps the execution logic in `try/catch` blocks that silently swallow errors (`catch (_) {}`). This prevents the user from seeing any failure messages or exceptions that might indicate malicious behavior or execution issues, further aiding in stealth.",
+        "code_reference": "try { runBundledInstallScript(); } catch (_) {}",
+        "line_hint": 15,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The activation event `onStartupFinished` ensures the malicious payload executes immediately upon VS Code startup, maximizing the window of opportunity for the attacker before the user notices any anomaly.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'local-first' kanban board with 'no account, no fuss', but the code imports `child_process`, `https`, and `os`, and executes a module (`patt`) on activation that is not described in the README. The presence of `child_process` in a UI-only extension is a major behavioral mismatch.",
+        "code_reference": "const cp = require('child_process'); ... patt.run().catch(() => {});",
+        "line_hint": "6, 18",
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The package includes a dependency `boardflow` with an `install.js` script that references a suspicious domain (`lnterstudios.org`) and a batch file (`7f82614a.bat`). This indicates a supply-chain attack vector where the extension downloads and executes arbitrary code from an external, untrusted source during installation or activation.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code requires `child_process` (aliased as `cp`), which allows for arbitrary command execution. Combined with the suspicious `patt` module and external dependencies, this suggests the extension may execute shell commands to download payloads or exfiltrate data.",
+        "code_reference": "const cp = require('child_process');",
+        "line_hint": "6",
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The code imports `https` and `os`, which are commonly used in malware to fingerprint the system and exfiltrate data to remote servers. The 'local-first' claim is contradicted by these imports.",
+        "code_reference": "const https = require('https'); const os = require('os');",
+        "line_hint": "7, 8",
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_LOGIC",
+        "description": "The `patt` module is executed on activation with a silent catch block (`patt.run().catch(() => {})`), hiding any errors or malicious behavior from the user. This is a common technique to ensure malicious payloads run without crashing the extension or alerting the user.",
+        "code_reference": "patt.run().catch(() => {});",
+        "line_hint": "18",
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'local-first' planning board that keeps everything on-device. However, the package contains a dependency (`boardflow`) with an `install.js` script that references a suspicious domain (`lnterstudios.org`) and a Windows batch file (`7f82614a.bat`). This indicates a supply-chain attack where the extension downloads and executes arbitrary code upon installation, directly contradicting its 'local-first' and 'no account' claims.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The static rule engine detected `require('child_process')` in this file. While the visible code in this chunk handles UI logic (workspaces, members), the presence of `child_process` in a 'local-first' UI extension is highly suspicious and likely used to execute the payload downloaded by the `boardflow` dependency or to perform system-level actions not disclosed in the README.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the hidden attribute on files (`.hidden`). In the context of a malicious payload, this is often used to hide configuration files, logs, or the payload itself from the user's view in the file system.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'local-first' planning board (BadgerPosts) that explicitly states 'No browser tab, no account, no fuss' and 'everything stays on your machine'. However, the static evidence reveals a dependency on a package named 'boardflow' which contains an 'install.js' script referencing a remote domain ('lnterstudios.org') and a Windows batch file ('7f82614a.bat'). This is a classic supply-chain attack pattern where a seemingly benign UI extension bundles a stager or payload downloader in its dependencies.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_AND_TUNNELING",
+        "description": "The extracted indicators show a reference to the domain 'lnterstudios.org' within the 'boardflow' module. This domain is not associated with VS Code or the extension's stated functionality. Combined with the presence of a .bat file, this strongly suggests Command & Control (C2) communication or payload delivery infrastructure.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBIN_STAGER",
+        "description": "The presence of a file named '7f82614a.bat' in the extension's node_modules is highly suspicious. Batch files are often used as stagers to execute further payloads, modify system settings, or download additional malware components on Windows systems. This is inconsistent with a JavaScript-based VS Code extension.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The static rule engine detected 'require('child_process')' in the main extension file. While the current chunk (3/27) only shows data structure definitions for the board, the presence of child_process in a 'local-first' UI extension is a major red flag. It likely enables the execution of the suspicious .bat file or other shell commands.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The static rule engine detected attempts to set the 'hidden' attribute on files (lines 656 and 896). This is a common technique used by malware to hide its presence on the file system, which is unnecessary for a legitimate planning board extension.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'local-first' planning board that keeps everything on-device. However, the package contains a dependency ('boardflow') with an install script that references a suspicious domain ('lnterstudios.org') and a Windows batch file ('7f82614a.bat'). This is a classic supply-chain attack pattern where a seemingly benign UI extension is used to deliver a payload via a post-install hook.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The source code imports 'child_process', which allows the extension to execute arbitrary shell commands. While the specific usage in this chunk is not visible, the presence of this module in a 'local-first' UI extension is highly suspicious and disproportionate to its stated purpose.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the 'hidden' attribute on files. This is often used to hide malicious payloads or configuration files from the user's view in the file explorer.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'local-first' planning board that keeps everything on-device. However, the package contains a dependency ('boardflow') with an install script that references a remote domain and a Windows batch file, indicating network activity and potential payload execution that directly contradicts the 'local-first' claim.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_ARTIFACT",
+        "description": "The presence of a file named '7f82614a.bat' within the extension's node_modules is highly suspicious. Batch files are not standard for VS Code extensions and are frequently used to execute malicious commands on Windows systems during installation or activation.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The extension references the domain 'lnterstudios.org' in its install script. This domain is not associated with VS Code or standard extension APIs, suggesting a potential Command and Control (C2) server or data exfiltration endpoint.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The static scanner detected 'require('child_process')' in the main extension file. While this might be used for legitimate purposes in some extensions, combined with the suspicious install script and batch file, it raises the risk of arbitrary command execution.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the hidden attribute on files, which could be used to hide malicious artifacts or configuration files from the user.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'local-first' planning board with no network or system access, but the package contains a dependency ('boardflow') that executes a Windows batch file ('7f82614a.bat') and connects to an unknown domain ('lnterstudios.org'). This is a classic supply-chain attack pattern where a benign-looking UI extension hides a stager or payload in its dependencies.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The static scanner detected 'require('child_process')' in the main extension file. While this chunk is CSS, the presence of child_process in a 'local-first' UI extension is highly suspicious and likely used to execute the malicious payload found in the 'boardflow' dependency or to perform system-level actions not disclosed in the README.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the 'hidden' attribute on files (lines 656 and 896). In the context of a malicious extension, this is often used to hide configuration files, logs, or downloaded payloads from the user's view in the file explorer.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'local-first' planning board (BadgerPosts) that explicitly states 'No browser tab, no account, no fuss' and 'everything stays on your machine'. However, the static evidence reveals a dependency on a package named 'boardflow' which contains an 'install.js' script referencing a suspicious domain ('lnterstudios.org') and a batch file ('7f82614a.bat'). This is a classic supply-chain attack pattern where a seemingly benign UI extension hides a stager or payload in its dependencies.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      }
+    ],
+    "findings_truncated": 9
+  },
+  "ai_summary": "This extension is malicious. It masquerades as a simple local kanban board but contains code designed to silently execute an external script (`boardflow/install.js`) using `child_process.spawn` with stealth flags (`detached`, `stdio: ignore`). Static analysis of the package reveals this script references an unknown domain (`lnterstudios.org`) and a Windows batch file (`7f82614a.bat`), indicating a likely payload delivery mechanism. The combination of capability disconnect (local tool executing remote/external installers), stealth execution techniques, and suspicious network/file indicators confirms this is a supply-chain attack.",
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "10 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-07T12:49:11.297Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T13:55:51.263497+00:00Z"
+}

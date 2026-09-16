@@ -1,0 +1,260 @@
+{
+  "extension_id": "Knworks.sdd-issue-board",
+  "display_name": "SDD Issue Board",
+  "version": "0.9.0",
+  "publisher": {
+    "name": "Knworks",
+    "verified": false
+  },
+  "vsix_sha256": "",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.21269501953688402,
+    "ai_vibe": 0.05,
+    "static": 0.3307800781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/webview/main.js",
+        "line": 1,
+        "snippet": "addEventListener(\"keydown\",r=>{r.key===\"Escape\"&&(r.preventDefault?.(),o.value=\"\",w(\"\"))})),n&&n.addEventListener(\"click\",()=>{if(m=!m,_(n,m),!m){f.clear();return}u=!1,U()}),xe(e,t,p);let j=r=>{if(!qe"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/webview/main.js",
+        "line": 1,
+        "snippet": ".postMessage({type:\"openIssue\",filePath:r.filePath})},p=(r,d)=>{c&&c.postMessage({type:\"updateIssueStatus\",filePath:r,nextStatus:d})},I=[],E=o?.value??\"\",i=null,B=null,g=null,y=null,A=null,m=!1,h=!1,u"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 11,
+    "blocks_seen": 11,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/6)",
+        "summary": "The code is a standard, benign implementation of a Kanban board for markdown files. It uses standard VS Code APIs to read configuration, watch for file changes, and parse YAML frontmatter. The static scanner hits regarding network exfiltration and credential harvesting are false positives; the code only interacts with local workspace files and VS Code configuration. The obfuscation is minimal (standard bundler output), and the logic aligns perfectly with the advertised functionality of visualizing issue status."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/6)",
+        "summary": "The code is a benign implementation of a Kanban board for SDD issue files. It parses YAML frontmatter from markdown files, validates status fields, and manages issue state in memory. The static rule engine hits regarding 'bulk workspace file discovery' and 'directory traversal' are false positives; the code uses standard VS Code APIs (`workspace.findFiles`, `workspace.fs.readFile`) to read files within the user-configured issue folder, which is the core documented functionality of the extension. There is no network exfiltration, credential harvesting, obfuscation, or suspicious command execution. The behavior is fully aligned with the extension's stated purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/6)",
+        "summary": "The code is a standard implementation of a VS Code extension that watches markdown files in the workspace to update a Kanban-style Webview. It uses `vscode.workspace.findFiles` and `createFileSystemWatcher` to track changes to issue files, parses their YAML frontmatter, and updates an in-memory store. The static rule engine hits are false positives resulting from the legitimate use of workspace file APIs for the extension's stated purpose. There are no indicators of malicious behavior, credential harvesting, obfuscation, or unauthorized network activity in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/6)",
+        "summary": "This code chunk implements the core logic for a VS Code extension that visualizes markdown-based issue files in a Kanban board. It uses standard VS Code APIs (`workspace.findFiles`, `createFileSystemWatcher`, `createWebviewPanel`) to monitor files within the user's workspace and display them in a local webview. The static scanner hits are false positives resulting from the extension's legitimate need to scan and watch workspace files. There is no evidence of malicious behavior, credential harvesting, network exfiltration, or obfuscated payloads. The behavior is fully aligned with the extension's stated purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/6)",
+        "summary": "The code is a standard implementation of a VS Code Webview extension for a Kanban board. It correctly uses `vscode.workspace.fs.readFile` to read local markdown files, constructs a secure Content Security Policy (CSP) for the webview, and handles user interactions to update file statuses. The static rule engine hits regarding 'network send' and 'configuration harvesting' are false positives; the code only reads local configuration to determine file paths and does not contain any network exfiltration logic, credential access, or obfuscated payloads. The behavior is fully aligned with the extension's stated purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/6)",
+        "summary": "The provided code chunk is benign and consistent with the extension's stated purpose of visualizing SDD issue files in a Kanban board. It handles file writing, error reporting, and UI management (opening markdown previews, closing tabs) using standard VS Code APIs. The static rule engine hits regarding 'workspace file discovery' and 'configuration harvesting' are false positives in this context: the code reads configuration to determine the issue folder path (a documented feature) and writes to specific issue files to update their status, which is the core function of the extension. There is no evidence of network exfiltration, credential theft, obfuscation, or malicious command execution."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 1/5)",
+        "summary": "The code is a standard VS Code Webview implementation for a Kanban-style issue board. It handles UI state, sorting, and communication with the extension host via `postMessage`. The static scanner hits are false positives resulting from standard Webview API usage and UI event handling. There are no indicators of malicious behavior, credential harvesting, or unauthorized network activity."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 2/5)",
+        "summary": "The code is a standard implementation of a VS Code Webview UI for a Kanban board. It handles DOM manipulation, audio notification playback (using Web Audio API), and message passing between the extension host and the webview. The static analysis hits are false positives resulting from generic pattern matching on `postMessage` and `keydown` events. There are no indicators of malicious intent, credential theft, or unauthorized network activity."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 3/5)",
+        "summary": "The code is a standard, benign implementation of a Kanban board UI within a VS Code Webview. It handles DOM manipulation for rendering issue cards, filtering by status/search, and managing UI state (notifications, sounds). The static scanner hits are false positives resulting from generic pattern matching on `postMessage` (standard webview IPC) and `keydown` (standard UI interaction for clearing inputs). There are no indicators of malicious intent, credential harvesting, or unauthorized network activity."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 4/5)",
+        "summary": "The code is a standard implementation of a Kanban board UI within a VS Code Webview. It handles drag-and-drop logic for moving issues between status lanes (Todo, Inprogress, etc.) and manages DOM updates. The flagged patterns are false positives resulting from standard Webview communication (`postMessage`) and UI keyboard handling (Escape key). There are no indicators of malicious behavior, data exfiltration, or capability disconnects relative to the extension's stated purpose."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 5/5)",
+        "summary": "The code is a standard Webview UI component for a Kanban board extension. It handles DOM manipulation for rendering issue cards, accessibility attributes (ARIA), and drag-and-drop events. The flagged patterns are false positives resulting from standard Webview communication (`postMessage`) and accessibility keyboard handling (`keydown` for Enter key). There is no evidence of malicious intent, credential harvesting, or unauthorized network activity."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Directory traversal paired with network send' and 'Harvesting VSCode configuration and sending over network'. Analysis of the code reveals that the configuration read (`workspace.getConfiguration`) is used to determine the local file path for markdown issues, and the file reading (`workspace.findFiles`) is local. There is no network transmission logic in this chunk. The 'network send' signal is a false positive likely caused by the scanner misinterpreting the webview message passing or simply the presence of the `vscode` module import in a minified context.",
+        "code_reference": "function M(e) { ... workspace.getConfiguration ... }",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 1/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. While this is slightly aggressive for a utility that is primarily command-driven, it is a common pattern for extensions that need to set up status bar items or watchers immediately upon VS Code launch to ensure the UI is ready. It does not indicate malicious intent, but rather a design choice for immediate availability.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Bulk workspace file discovery and reading' and 'Directory traversal paired with network send'. Upon analysis, the code uses `vscode.workspace.findFiles` and `createFileSystemWatcher` to monitor markdown files within the user's workspace (specifically `docs/issues` or a configured folder). This is the core functionality of the extension (a Kanban board for issue files). There is no network exfiltration; the data is processed locally and displayed in a Webview. The 'network send' flag is a false positive likely triggered by the presence of Webview URI variables or generic API patterns, but no actual HTTP requests or data transmission to external endpoints are present in this chunk.",
+        "code_reference": "function V(e) { ... let p = await v.workspace.findFiles(I) ... }",
+        "line_hint": "4",
+        "target": "extension/dist/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Harvesting VSCode configuration and sending over network'. The code reads the `sddIssueBoard.issueFolder` configuration to determine which files to watch. This is standard VS Code extension behavior for user-configurable paths. The configuration value is used locally to construct a `RelativePattern` for the file watcher. It is not sent over the network.",
+        "code_reference": "workspace.getConfiguration(Z),s=M(e.get(\"issueFolder\"));return{issueFolder:s,issueGlob:R(s)}",
+        "line_hint": "4",
+        "target": "extension/dist/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Bulk workspace file discovery' and 'Directory traversal paired with network send'. Upon review, the code uses `workspace.findFiles` and `createFileSystemWatcher` to monitor markdown files within the user's workspace (specifically `docs/issues` or a configured folder). This is the core functionality of the extension (Kanban board for SDD issues) and does not involve network exfiltration or sensitive path traversal outside the workspace.",
+        "code_reference": "workspace.findFiles(I),g=[];for(let E of p)try{let U=await a(E);g.push(P(E.fsPath,U))}catch(U){w(U,``",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Harvesting VSCode configuration and sending over network'. The code reads `sddIssueBoard.issueFolder` from `workspace.getConfiguration` to determine which files to watch. This is a standard configuration read for a user-facing setting and is not sent over the network.",
+        "code_reference": "workspace.getConfiguration(Z),s=M(e.get(\"issueFolder\"));return{issueFolder:s,issueGlob:R(s)}}functio",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'data exfiltration' pattern due to `postMessage` calls. However, the code uses `acquireVsCodeApi().postMessage` to communicate with the extension host (main process), which is the standard and secure mechanism for VS Code Webviews to send data to the extension. The data being sent (`openIssue`, `updateIssueStatus`) is consistent with the extension's purpose of managing a Kanban board.",
+        "code_reference": "c && c.postMessage({ type: \"openIssue\", filePath: r.filePath })",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a `keydown` listener. The code listens specifically for the `Escape` key to clear the search input field (`o.value = \"\"`). This is a standard UI interaction pattern for clearing search boxes and does not involve buffering or exfiltrating keystrokes.",
+        "code_reference": "addEventListener(\"keydown\",r=>{r.key===\"Escape\"&&(r.preventDefault?.(),o.value=\"\",w(\"\")}))",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown listener. However, the code explicitly checks for the 'Escape' key to clear an input field (`o.value = \"\"`). This is standard UI behavior for canceling input, not credential harvesting or keylogging.",
+        "code_reference": "o.addEventListener(\"keydown\", r => { r.key === \"Escape\" && (r.preventDefault?.(), o.value = \"\", w(\"\")) })",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' based on `postMessage`. The code uses `postMessage` to communicate between the VS Code extension host and the Webview UI (sending issue data to the board). This is the standard and secure mechanism for VS Code Webviews, not exfiltration to an external server.",
+        "code_reference": "c&&c.postMessage({type:\"updateIssueS...",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'data exfiltration' pattern due to the presence of `postMessage`. However, the code `postMessage({type:\"openIssue\",filePath:r.filePath})` is standard VS Code Webview communication used to send a file path from the webview UI back to the extension host to open the file. This is not network exfiltration.",
+        "code_reference": "postMessage({type:\"openIssue\",filePath:r.filePath})",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a `keydown` listener. The code `addEventListener(\"keydown\",r=>{r.key===\"Escape\"&&(r.preventDefault?.(),o.value=\"\",w(\"\")}))` listens specifically for the 'Escape' key to clear a search input field. It does not buffer keystrokes or send them over the network.",
+        "code_reference": "addEventListener(\"keydown\",r=>{r.key===\"Escape\"...})",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'data exfiltration' pattern due to the use of `postMessage`. However, in the context of a VS Code Webview, `postMessage` is the standard and secure mechanism for communicating between the Webview UI and the Extension Host. The data being sent (`openIssue`, `updateIssueStatus`) is local UI state related to the Kanban board, not sensitive user data or credentials.",
+        "code_reference": "c&&c.postMessage({type:\"openIssue\",filePath:r.filePath})",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a `keydown` event listener. The code explicitly checks for the `Escape` key (`r.key==='Escape'`) to clear a search input or close a modal. This is a standard UI interaction pattern and does not involve buffering or transmitting keystrokes to an external endpoint.",
+        "code_reference": "addEventListener(\"keydown\",r=>{r.key===\"Escape\"&&(r.preventDefault?.(),o.value=\"\",w(\"\"))})",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to `addEventListener(\"keydown\", ...)`. However, the code explicitly checks for `n.key === \"Enter\"` and calls `o(t)` (a callback to open the issue), which is standard accessibility behavior for making DOM elements keyboard-navigable. It does not buffer keystrokes or send them to a network endpoint.",
+        "code_reference": "e.addEventListener(\"keydown\", n => { n.key === \"Enter\" && (n.preventDefault?.(), o(t)) })",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' due to `postMessage`. In the context of a VS Code Webview, `postMessage` is the standard, secure mechanism for communicating between the Webview UI and the Extension Host. The data being sent (`openIssue`, `updateIssue`) is local UI state, not sensitive system data.",
+        "code_reference": "c&&c.postMessage({type:\"openIssue\",filePath:r.filePath})",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 5/5)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard, benign implementation of a Kanban board for markdown files. It uses standard VS Code APIs to read configuration, watch for file changes, and parse YAML frontmatter. The static scanner hits regarding network exfiltration and credential harvesting are false positives; the code only interacts with local workspace files and VS Code configuration. The obfuscation is minimal (standard bundler output), and the logic aligns perfectly with the advertised functionality of visualizing issue status.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 55,
+    "published_date": "2026-01-18T12:08:55.02+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T22:52:10.211119+00:00Z"
+}

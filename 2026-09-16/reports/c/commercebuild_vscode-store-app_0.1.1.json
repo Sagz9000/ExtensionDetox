@@ -1,0 +1,126 @@
+{
+  "extension_id": "commercebuild.vscode-store-app",
+  "display_name": "Commercebuild Apps",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "commercebuild",
+    "verified": false
+  },
+  "vsix_sha256": "38e371f2f245763ae5335f3787a2918a0c27b3760db97fe096dbb70a3b52f842",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2490625,
+    "ai_vibe": 0.1,
+    "static": 0.40625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.js",
+        "line": 351,
+        "snippet": "Object.entries(process.env)"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 37,
+        "snippet": "var import_node_child_process = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 379,
+        "snippet": "child = (0, import_node_child_process.spawn)(executable, npxArgs(args), {"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "bitbucket.org",
+      "source_file": "extension/package.json",
+      "line": 12,
+      "context": "\"url\": \"https://bitbucket.org/xmdevint/cb-store-tools\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js",
+        "summary": "The extension is a legitimate utility for opening Commercebuild apps. It uses `child_process.spawn` to execute `npx commercebuild-cli`, which aligns perfectly with its advertised purpose. The code implements robust input validation (regex checks for App IDs and Store URLs) and sanitization before passing arguments to the shell, mitigating command injection risks. The use of `process.env` is for environment inheritance to the child process, not for harvesting secrets. No malicious patterns, obfuscation, or capability disconnects were found."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `Object.entries(process.env)` as credential harvesting. However, the code explicitly filters out VS Code/Electron specific environment variables (`ELECTRON_`, `VSCODE_`) and passes the remaining standard environment variables to the child process (`npx`). This is a standard pattern for ensuring the spawned CLI tool has access to necessary system paths (like `PATH`) without inheriting potentially conflicting editor-specific variables. It does not exfiltrate this data.",
+        "code_reference": "function childEnv() { ... for (const [key, value] of Object.entries(process.env)) { if (key.startsWith(\"ELECTRON_\") || key.startsWith(\"VSCODE_\")) continue; env2[key] = value; } ... }",
+        "line_hint": "351",
+        "target": "extension/dist/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration(...).update(...)` as API abuse. This is used to persist the user's chosen 'Apps Root' folder path in the global settings (`commercebuild.appsRoot`). This is a standard and expected behavior for extensions that need to remember user preferences across sessions.",
+        "code_reference": "await vscode.workspace.getConfiguration(CONFIG_SECTION).update(CONFIG_APPS_ROOT, root, vscode.ConfigurationTarget.Global);",
+        "line_hint": "345",
+        "target": "extension/dist/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is a legitimate utility for opening Commercebuild apps. It uses `child_process.spawn` to execute `npx commercebuild-cli`, which aligns perfectly with its advertised purpose. The code implements robust input validation (regex checks for App IDs and Store URLs) and sanitization before passing arguments to the shell, mitigating command injection risks. The use of `process.env` is for environment inheritance to the child process, not for harvesting secrets. No malicious patterns, obfuscation, or capability disconnects were found.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-13T21:33:04.587Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-13T22:05:03.781378+00:00Z"
+}

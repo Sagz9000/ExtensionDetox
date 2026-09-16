@@ -1,0 +1,192 @@
+{
+  "extension_id": "harrilab.pybasic-vn",
+  "display_name": "PyBasic VN",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "harrilab",
+    "verified": false
+  },
+  "vsix_sha256": "31e1a6714fbb6046a7e233d078fda98c2124c634d4df6d674d8c04c5c49eff5d",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2665625,
+    "ai_vibe": 0.15,
+    "static": 0.40625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 395,
+        "snippet": "os.cpus()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "huggingface.co",
+      "source_file": "extension/extension.js",
+      "line": 20,
+      "context": "const MODEL_URL = 'https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF/resolve/main/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf?download=true';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "hash",
+      "value": "cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046",
+      "source_file": "extension/extension.js",
+      "line": 21,
+      "context": "const MODEL_SHA256 = 'cc324af070c2ecbfd324a30884d2f951a7ff756aba85cb811a6ec436933bb046';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/2)",
+        "summary": "The extension 'Python Solver VN' is a legitimate educational tool that provides offline Python problem solving using rule-based logic and an optional local LLM (Qwen2.5-Coder-1.5B) via llama.cpp. The code is clean, well-structured, and aligns perfectly with its advertised functionality. The static rule engine hits for `child_process`, `os.cpus()`, and configuration updates are all false positives in this context, as they are used for legitimate local AI inference and user preference management. The extension includes proper security measures such as SHA-256 verification of the downloaded model and explicit user consent for large downloads. No malicious behavior, data exfiltration, or deceptive patterns were found."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/2)",
+        "summary": "The code is consistent with the extension's stated purpose of providing offline Python problem solving using a local LLM. The flagged indicators (child_process, os.cpus, config update) are standard components for running and configuring a local AI engine. There are no signs of credential harvesting, data exfiltration, or malicious command execution. The network activity is limited to downloading the AI model from a reputable source (Hugging Face) upon user request. The extension appears benign."
+      },
+      {
+        "target": "extension/solverRules.js",
+        "summary": "The code is a benign, rule-based Python code generator for educational purposes. It parses Vietnamese text to detect problem types (e.g., dictionary lookup, weighted average, money calculation) and generates corresponding Python source code strings. There are no network calls, file system operations, process execution, or access to sensitive data in this file. The logic is transparent, and the generated code is standard Python. No malicious or suspicious behavior was detected."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process.spawn` is legitimate and necessary for the extension's advertised 'AI Offline' feature. It is used to execute `llama-server.exe` (a local LLM inference engine) and `tar.exe`/`powershell.exe` for extracting the downloaded runtime. The commands are not obfuscated and target specific, known binaries within the extension's storage directory.",
+        "code_reference": "const { spawn } = require('child_process'); ... this.process = spawn(this.serverPath, args, ...)",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The call to `os.cpus()` is used to determine the number of CPU threads to allocate to the local LLM inference process (`llama-server`). This is a standard optimization for local AI workloads and does not constitute system fingerprinting for exfiltration purposes.",
+        "code_reference": "const threads = Math.max(2, (os.cpus()?.length || 4) - 1);",
+        "line_hint": 395,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `workspace.getConfiguration().update()` is used to persist the user's selected solving engine (Auto, AI Offline, or Rules) to the global VS Code configuration. This is standard behavior for saving user preferences and does not tamper with security settings or other extensions.",
+        "code_reference": "await vscode.workspace.getConfiguration('pythonSolver').update('engine', msg.engine, vscode.ConfigurationTarget.Global);",
+        "line_hint": 523,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension downloads and executes a large binary (`llama-server.exe`) and a ~1.1GB model file. While this is a significant capability, it is explicitly documented in the README ('AI Offline') and requires explicit user consent via a modal dialog before proceeding. The SHA-256 hash of the model is verified against a hardcoded constant, which is a good security practice. The VSIX size is small (0.0 MB) because the large assets are downloaded on demand, which is consistent with the 'AI Offline' feature description.",
+        "code_reference": "const MODEL_URL = 'https://huggingface.co/...'; const MODEL_SHA256 = '...';",
+        "line_hint": 20,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `os.cpus()`. In the context of this extension, `child_process` is used to execute the downloaded `llama.cpp` binary for local AI inference, and `os.cpus()` is likely used to determine thread count for optimal performance. These are standard practices for running local LLMs and do not indicate malicious command execution or info-stealing.",
+        "code_reference": "require('child_process'), os.cpus()",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration('pythonSolver').update`. This is a standard VS Code API usage to persist user preferences (e.g., AI model settings) within the extension's own configuration namespace. It does not tamper with global or sensitive workspace settings.",
+        "code_reference": "workspace.getConfiguration('pythonSolver').update",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ACTIVITY",
+        "description": "The extension downloads `llama.cpp` and a model from `huggingface.co`. This is a legitimate source for open-source AI models and binaries. The download is user-initiated via the 'C\u00e0i AI Offline' command, not automatic on activation. The presence of a SHA256 hash suggests integrity verification is implemented.",
+        "code_reference": "huggingface.co",
+        "line_hint": 20,
+        "target": "extension/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'Python Solver VN' is a legitimate educational tool that provides offline Python problem solving using rule-based logic and an optional local LLM (Qwen2.5-Coder-1.5B) via llama.cpp. The code is clean, well-structured, and aligns perfectly with its advertised functionality. The static rule engine hits for `child_process`, `os.cpus()`, and configuration updates are all false positives in this context, as they are used for legitimate local AI inference and user preference management. The extension includes proper security measures such as SHA-256 verification of the downloaded model and explicit user consent for large downloads. No malicious behavior, data exfiltration, or deceptive patterns were found.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-16T01:23:18.06Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-16T01:42:22.842908+00:00Z"
+}

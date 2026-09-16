@@ -1,0 +1,353 @@
+{
+  "extension_id": "Nexusync.nexusync",
+  "display_name": "Nexusync - Spec-Driven Development",
+  "version": "1.0.3",
+  "publisher": {
+    "name": "Nexusync",
+    "verified": false
+  },
+  "vsix_sha256": "6c707d9e17cacf781500452c512229f19b732c83165780cda2126df70b81ec9a",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.28351503907376807,
+    "ai_vibe": 0.15,
+    "static": 0.47406015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Browser Local Storage / IndexedDB access",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "IndexedDB"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "method:\"POST\",headers:{Authorization:`Bearer ${t}`,\"Content-Type\":\"application/json\"},body:JSON.stringify({name:\"nexus_get_my_projects\",arguments:{}}),signal:n.signal});if(clearTimeout(o),i.ok){const "
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Checking for analysis tools in process list",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "tasklist\",issue:\"bug\",vulnerability:\"shield\"}[t.type]??\"circle\"),this.panel.webview.html=this.buildHtml(t),this.panel.webview.onDidReceiveMessage(e=>this.handleMessage(e),null,this.disposables),this.p"
+      }
+    ],
+    "total": 16
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "nexusync.io",
+      "source_file": "extension/package.json",
+      "line": 13,
+      "context": "\"homepage\": \"https://nexusync.io\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "mcp.nexusync.io",
+      "source_file": "extension/package.json",
+      "line": 299,
+      "context": "\"default\": \"https://mcp.nexusync.io\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "app.nexusync.io",
+      "source_file": "extension/dist/extension.js",
+      "line": 1739,
+      "context": "\"Generate Token\" === t && await r.env.openExternal(r.Uri.parse(\"https://app.nexusync.io/profile\"));",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.nexusync.io",
+      "source_file": "extension/dist/extension.js",
+      "line": 1962,
+      "context": "}, t.PAT_PREFIX = \"nxs_\", t.DEFAULT_SERVER_URL = \"https://mcp.nexusync.io\", t.DEFAULT_BACKEND_URL = \"https://api.nexusync.io\", t.MCP_TOOL_PREFIX = \"nexusync\", t.SECRET_KEY_PAT = \"nexusync.pat\", t.CONT",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/10)",
+        "summary": "The code is a legitimate VS Code extension for project planning and work management ('Nexusync'). It implements chat commands for managing plans, tasks, and stories, with local storage and optional remote sync to the vendor's API (nexusync.io). The static scanner hits for 'IndexedDB', 'tasklist', and 'data exfiltration' are false positives resulting from minified code where UI labels, icon mappings, and standard API calls (POST to own domain with Bearer token) were misinterpreted as malicious patterns. There is no evidence of credential harvesting, arbitrary code execution, or obfuscated payloads. The network calls are directed to the extension's own documented backend."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/10)",
+        "summary": "The code is a legitimate VS Code extension for AI-assisted project planning ('Nexusync'). It uses standard VS Code APIs to read workspace context, generate plans via AI models, and manage work items. The static scanner hits for 'IndexedDB' and 'tasklist' are false positives resulting from string literals in UI configuration objects. Network calls are directed to the extension's own domains (nexusync.io) for cloud sync and AI services, which is proportional to its advertised features. No malicious indicators such as credential harvesting, obfuscated payloads, or unauthorized system access were found."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/10)",
+        "summary": "The code is a legitimate implementation of a spec-driven development and work management extension. It handles plan generation, status updates, and AI agent integration. All static scanner hits are false positives caused by string literals used for UI icons or standard VS Code API usage for file enumeration with appropriate exclusions. Network calls are directed to the extension's own documented domains (nexusync.io) for cloud sync functionality, which is proportional to its advertised features. No malicious behavior, credential harvesting, or obfuscated payloads were detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/10)",
+        "summary": "The extension 'Nexusync' appears to be a legitimate project management and planning tool. The code implements standard VS Code extension patterns: it registers commands, tree providers, and uses the `vscode.secrets` API for secure token storage. Network activity is directed exclusively to the extension's own domains (`nexusync.io`, `mcp.nexusync.io`, `api.nexusync.io`) for cloud synchronization features, which aligns with the README's description of 'Connected mode'. The static analysis hits are false positives caused by keyword matching in minified code (e.g., 'tasklist' as an icon name, 'IndexedDB' likely from internal library references or variable names, and standard HTTP headers for API communication). No malicious behavior, credential harvesting from external sources, or unauthorized data exfiltration was detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/10)",
+        "summary": "The provided code chunk is part of the 'Nexusync' extension, which is a legitimate project management and AI-assisted planning tool. The code primarily consists of large template strings used to prompt an LLM (Large Language Model) for generating project plans, epics, stories, and tasks. It also contains logic for parsing these LLM responses and storing them locally using the extension's storage engine. The static analysis hits (IndexedDB, tasklist, findFiles, getConfiguration) are false positives triggered by keywords appearing in benign contexts (prompt instructions, data structures, and standard API usage). There is no evidence of malicious intent, credential harvesting, C2 communication, or unauthorized system access. The behavior is fully aligned with the extension's advertised purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/10)",
+        "summary": "The provided code chunk is part of a legitimate project management extension ('Nexusync'). It contains logic for building data structures for Epics, Stories, Tasks, Issues, and Vulnerabilities, as well as a LocalStorageService for persisting these plans to the file system. The code defines AI personas for code generation assistance. The static analysis hits (IndexedDB, tasklist, getConfiguration) are false positives resulting from keyword matching in benign contexts (data types, configuration keys). There is no evidence of credential theft, command execution, network exfiltration of sensitive data, or malicious obfuscation. The behavior is consistent with the advertised functionality of a spec-driven development tool."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 9/10)",
+        "summary": "The provided code chunk is part of the 'Nexusync' extension, which appears to be a legitimate project management and planning tool. The code implements standard VS Code UI components, including TreeView providers for displaying project hierarchies (Themes, Epics, Stories, Tasks) and Webview panels for rendering detailed views and EARS breakdowns. The static analysis hits regarding 'tasklist' and 'IndexedDB' are false positives; 'tasklist' is a UI icon name, and no suspicious data harvesting or exfiltration logic is present in this chunk. The code interacts with the extension's own configuration and storage mechanisms appropriately."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'IndexedDB' as credential harvesting. Context analysis reveals this is a UI icon mapping (e.g., `issue: 'bug', vulnerability: 'shield'`) or a reference to local storage abstraction, not access to browser credential stores.",
+        "code_reference": "issue:\"bug\",vulnerability:\"shield\"... IndexedDB",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'tasklist' as persistence evasion/analysis tool detection. Context shows this is likely a UI label or icon mapping for task management features, not a system process enumeration for anti-forensics.",
+        "code_reference": "tasklist\",issue:\"bug\"...",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While common for productivity tools that need to be ready immediately, it is slightly aggressive for a planning tool that could activate on demand (e.g., 'onCommand'). However, this is not malicious, just a design choice.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'IndexedDB' as credential harvesting. Context analysis reveals this is a string literal within a UI icon mapping object (`vulnerability:\"shield\"`), likely used for status icons in the webview, not actual browser storage access.",
+        "code_reference": "tasklist\",issue:\"bug\",vulnerability:\"shield\"}[t.type]??",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'tasklist' as persistence evasion/analysis tool detection. Context analysis shows this is part of a UI icon mapping object (likely mapping task status to icons), not a system command execution or process list check.",
+        "code_reference": "tasklist\",issue:\"bug\",vulnerability:\"shield\"}[t.type]??",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension reads workspace files (package.json, tsconfig, etc.) and instruction files (.cursorrules, CLAUDE.md) to provide context to the AI model. This is consistent with its stated purpose of 'Spec-Driven Development' and 'AI agent integration'. The data is sent to the extension's own API (nexusync.io) or used locally for prompt generation, which is expected for an AI planning tool.",
+        "code_reference": "workspace.findFiles(\"**/*\", te, 40)",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'IndexedDB' as credential harvesting. Context analysis reveals this is a string literal used in a UI icon mapping (likely for a 'database' or 'storage' icon), not an API call to access browser storage.",
+        "code_reference": "match=`IndexedDB`",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'tasklist' as persistence evasion/analysis tool detection. Context analysis reveals this is a string literal used in a UI icon mapping (likely for a 'process' or 'system' icon), not a command execution or process enumeration.",
+        "code_reference": "match=`tasklist`",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'workspace.findFiles' as broad glob enumeration. The code uses a specific exclusion glob pattern `te` to ignore standard build/dependency directories (.git, node_modules, dist, etc.), which is standard practice for code analysis extensions to avoid performance issues and irrelevant files.",
+        "code_reference": "const te = \"{**/.git/**,**/.nexusync/**,**/node_modules/**,...}\"",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged network POST with Authorization header as data exfiltration. The code is sending plan status updates to the extension's own backend (nexusync.io) using a user-provided API key/token. This is consistent with the extension's stated purpose of cloud synchronization for work management.",
+        "code_reference": "method:\"POST\",headers:{Authorization:`Bearer ${t}`",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'credential_harvesting' for IndexedDB access. However, the code does not directly access browser IndexedDB. The match likely stems from obfuscated variable names or internal library structures (e.g., `IndexedDB` appearing in comments or unrelated minified chunks). The actual credential handling uses `vscode.secrets` (`e.secrets.delete`, `f.setToken`), which is the secure, recommended VS Code API for storing tokens.",
+        "code_reference": "match=`IndexedDB`",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'persistence_evasion' for checking analysis tools. The match `tasklist` is part of a constant object mapping work item types to icons (`t.WORK_ITEM_ICONS = { ... task: \"tasklist\", ... }`). It is not a call to the `tasklist` command or process enumeration.",
+        "code_reference": "match=`tasklist\",issue:\"bug\",vulnerability:\"shield\"}",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' for POST requests with Authorization headers. The code sends plan data to `mcp.nexusync.io` and `api.nexusync.io` using a user-provided Personal Access Token (PAT). This is consistent with the extension's stated purpose of cloud synchronization ('Connected mode'). The token is stored securely via `vscode.secrets` and only sent to the extension's own backend domains.",
+        "code_reference": "match=`method:\"POST\",headers:{Authorization:`Bearer ${t}`,\"Content-Type\":\"application/json\"},body:JSON.stri`",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'vscode_api_abuse' for reading configuration. The extension reads its own configuration (`workspace.getConfiguration(\"nexusync\")`) to determine mode (local vs connected), server URL, and storage paths. This is standard behavior for a configurable extension.",
+        "code_reference": "match=`workspace.getConfiguration(\"nexusync\")",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged 'IndexedDB' as credential harvesting. However, the context in the code is within a prompt string instructing an AI agent to use client-side storage (localStorage, IndexedDB) for frontend-only projects. This is a standard web development pattern, not malicious data theft.",
+        "code_reference": "If data persistence is needed, prefer client-side storage (localStorage, IndexedDB) or mock APIs unless the user specifies otherwise.",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged 'tasklist' as process enumeration for evasion. The string 'tasklist' appears in the context of generating work items (issues/vulnerabilities) for a project management tool, likely as part of a template or example for issue types, not as a command execution to check for security tools.",
+        "code_reference": "tasklist\",issue:\"bug\",vulnerability:\"shield\"}",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged 'workspace.findFiles' and 'readDirectory' as directory traversal for exfiltration. These are standard VS Code API calls used by the extension to analyze the user's codebase context for AI planning purposes, consistent with the extension's stated purpose of 'Spec-Driven Development'.",
+        "code_reference": "workspace.findFiles(\"**\")",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged 'getConfiguration' as harvesting secrets. The code reads specific configuration keys like 'uiQualityLevel', 'mode', and 'localStoragePath' to configure the extension's behavior. It does not attempt to read generic secrets or environment variables for exfiltration.",
+        "code_reference": "workspace.getConfiguration(\"nexusync\").get(\"uiQualityLevel\",\"standard\")",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'IndexedDB' as credential harvesting. In this context, it appears to be part of a generic module loader or polyfill pattern (common in bundled JS) or potentially related to VS Code's internal storage mechanisms, but the code itself is primarily managing local JSON files for project plans. No actual browser credential store access (e.g., Chrome Login Data) is observed.",
+        "code_reference": "const s = n(646), ... IndexedDB ...",
+        "line_hint": "Module 835/387 area",
+        "target": "extension/dist/extension.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'tasklist' as analysis tool detection. The string 'tasklist' appears in the context of `issue_type ?? \"bug\"` and `vulnerability_type ?? \"software\"` within data structure definitions for work items (Tasks, Issues, Vulnerabilities). It is not executing a system command to check for running processes.",
+        "code_reference": "issue_type: e.issue_type ?? \"bug\", ... vulnerability_type: e.vulnerability_type ?? \"software\"",
+        "line_hint": "buildIssue/buildVulnerability functions",
+        "target": "extension/dist/extension.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'workspace.getConfiguration' as harvesting secrets. The code reads configuration values like `localStoragePath`, `mode`, and `uiQualityLevel` to determine where to store local plan data and how to behave. These are standard extension settings, not sensitive credentials.",
+        "code_reference": "r.workspace.getConfiguration(\"nexusync\").get(\"localStoragePath\")",
+        "line_hint": "LocalStorageService.initialize",
+        "target": "extension/dist/extension.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'tasklist' as a potential process list check for analysis tools. However, in this context, 'tasklist' is used as a string value for a VS Code ThemeIcon identifier (e.g., `new r.ThemeIcon('tasklist')`) to display an icon for 'Task' items in the UI tree. It is not executing system commands.",
+        "code_reference": "this.panel.iconPath = new r.ThemeIcon({ ... task: \"tasklist\", ... } [t.type] ?? \"circle\")",
+        "line_hint": "approx line 450",
+        "target": "extension/dist/extension.js (chunk 9/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'IndexedDB' as credential harvesting. The provided code snippet does not contain any direct IndexedDB access or browser storage manipulation. This is likely a false positive from the scanner or a reference in a different chunk not shown here. The visible code handles standard VS Code TreeView and Webview rendering.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 9/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'workspace.findFiles' and 'getConfiguration' as data exfiltration. The code uses `vscode.workspace.getConfiguration('nexusync')` to read user preferences for the extension's own settings (e.g., `mode`, `serverUrl`). This is standard behavior for a configuration-driven extension. No data is sent to external servers in this specific chunk; it is used for local UI state and logic.",
+        "code_reference": "this.configManager.serverUrl",
+        "line_hint": "approx line 200",
+        "target": "extension/dist/extension.js (chunk 9/10)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate VS Code extension for project planning and work management ('Nexusync'). It implements chat commands for managing plans, tasks, and stories, with local storage and optional remote sync to the vendor's API (nexusync.io). The static scanner hits for 'IndexedDB', 'tasklist', and 'data exfiltration' are false positives resulting from minified code where UI labels, icon mappings, and standard API calls (POST to own domain with Bearer token) were misinterpreted as malicious patterns. There is no evidence of credential harvesting, arbitrary code execution, or obfuscated payloads. The network calls are directed to the extension's own documented backend.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 11,
+    "published_date": "2026-03-30T19:11:45.61+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T06:20:37.472162+00:00Z"
+}

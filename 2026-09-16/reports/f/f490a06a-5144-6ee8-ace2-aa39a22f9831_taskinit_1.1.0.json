@@ -1,0 +1,173 @@
+{
+  "extension_id": "f490a06a-5144-6ee8-ace2-aa39a22f9831.taskinit",
+  "display_name": "TaskInit",
+  "version": "1.1.0",
+  "publisher": {
+    "name": "f490a06a-5144-6ee8-ace2-aa39a22f9831",
+    "verified": false
+  },
+  "vsix_sha256": "102f83b7a57ac99244fec26e42b0544c030b355922ef50aec7e6a54185007348",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2978125,
+    "ai_vibe": 0.15,
+    "static": 0.53125,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/extension.js",
+        "line": 10,
+        "snippet": "vscode.authentication.getSession"
+      },
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/extension.js",
+        "line": 10,
+        "snippet": "vscode.authentication.getSession('github', ['repo', 'user', 'read:user'], { createIfNone: true"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 2,
+        "snippet": "const { exec } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 2,
+        "snippet": "const { exec } = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 2,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 9
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/3)",
+        "summary": "The code is a standard VS Code extension for GitHub task management. It uses the VS Code authentication API to access GitHub tokens and `child_process` to read Git configuration, both of which are appropriate for its advertised functionality. There are no signs of data exfiltration, malicious command execution, or obfuscation. The static scanner hits are false positives resulting from legitimate use of VS Code and Git APIs."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/3)",
+        "summary": "The code is benign and aligns with the extension's advertised functionality. It uses the VS Code authentication API to access GitHub tokens for fetching issues and uses child_process to execute standard git commands for committing and pushing changes. The static scanner hits are false positives resulting from the legitimate use of these APIs for the extension's core purpose."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/3)",
+        "summary": "The code in this chunk is benign and consistent with the extension's advertised functionality. It implements a simple timer for tracking work time on a GitHub issue and handles the deactivation of the extension. The flagged indicators (authentication access and child_process usage) are false positives in this context, as they are necessary for the extension's core features of syncing with GitHub and performing git operations. No malicious behavior, obfuscation, or capability disconnects were observed."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `vscode.authentication.getSession` to retrieve a GitHub token is consistent with the extension's stated purpose of interacting with the GitHub API (fetching issues, pushing code). The scopes requested (`repo`, `user`, `read:user`) are standard for this functionality and do not indicate credential theft or exfiltration to third-party servers.",
+        "code_reference": "async function getGitHubToken() { ... }",
+        "line_hint": 10,
+        "target": "extension/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process.exec` is limited to running `git config --get remote.origin.url` to parse the local repository's remote URL. This is a standard and necessary operation for a Git-integrated extension and does not involve arbitrary command execution or shell injection risks in this context.",
+        "code_reference": "function getGitRemoteInfo(workspacePath) { ... }",
+        "line_hint": 63,
+        "target": "extension/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.authentication.getSession` as credential theft. However, the code uses this API to retrieve a GitHub token specifically to interact with the GitHub API for fetching assigned issues, which aligns with the extension's documented purpose of a 'Remote-synced GitHub task selector'. This is a legitimate use of the VS Code authentication API.",
+        "code_reference": "vscode.authentication.getSession('github', ...)",
+        "line_hint": 10,
+        "target": "extension/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `exec` calls. The code uses `exec` to run standard git commands (`git status`, `git add`, `git commit`, `git push`) within the user's workspace. This is consistent with the extension's stated feature of 'automated git push'. No arbitrary or suspicious commands are executed.",
+        "code_reference": "exec('git status --porcelain', ...)",
+        "line_hint": 2,
+        "target": "extension/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.authentication.getSession` as credential theft. However, the extension's stated purpose is a 'Remote-synced GitHub task selector'. Using the GitHub authentication session to interact with the GitHub API (fetching issues, pushing code) is the standard and expected behavior for this type of extension. The scopes requested (`repo`, `user`, `read:user`) are consistent with the functionality described (reading issues, pushing commits).",
+        "code_reference": "vscode.authentication.getSession('github', ...)",
+        "line_hint": 10,
+        "target": "extension/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')`. Given the extension's description includes 'automated git push', executing git commands via `child_process` is a legitimate and common implementation pattern for VS Code extensions that interact with the local git repository. There is no evidence in this chunk of arbitrary command execution or payload staging.",
+        "code_reference": "require('child_process')",
+        "line_hint": 2,
+        "target": "extension/extension.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension for GitHub task management. It uses the VS Code authentication API to access GitHub tokens and `child_process` to read Git configuration, both of which are appropriate for its advertised functionality. There are no signs of data exfiltration, malicious command execution, or obfuscation. The static scanner hits are false positives resulting from legitimate use of VS Code and Git APIs.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-07T11:02:19.077Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T16:21:52.473679+00:00Z"
+}

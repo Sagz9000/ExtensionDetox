@@ -1,0 +1,212 @@
+{
+  "extension_id": "tkt989.piste",
+  "display_name": "Daily Memo",
+  "version": "0.0.13",
+  "publisher": {
+    "name": "tkt989",
+    "verified": false
+  },
+  "vsix_sha256": "269e1a51ce990526757365e0bfbdea3fe742fe8308e68ab5251d48c50309f4c6",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.24312499999999998,
+    "ai_vibe": 0.15,
+    "static": 0.3125,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "HIDDEN_EXECUTABLE",
+        "severity": "CRITICAL",
+        "description": "File 'extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg' has extension '' but contains ELF binary",
+        "file": "extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/ripgrep-content-search.js",
+        "line": 37,
+        "snippet": "const node_child_process_1 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/ripgrep-content-search.js",
+        "line": 43,
+        "snippet": "const process = (0, node_child_process_1.spawn)(ripgrep_1.rgPath, ["
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/3)",
+        "summary": "The code chunk shows standard TypeScript-compiled JavaScript for a VS Code extension. It initializes services for directory resolution, file management, and search. The use of `ripgrep` aligns with the 'full-text search' feature described in the README. No obfuscation, network calls, or suspicious file system access is visible in this chunk. The 'hidden executable' finding is a false positive given the context of using ripgrep for search."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/3)",
+        "summary": "This chunk of the 'Daily Memo' extension source code exhibits standard, benign behavior consistent with its advertised purpose. It registers VS Code commands for opening memos by date and searching results, utilizing standard APIs like `vscode.window.showInputBox` and `vscode.workspace.openTextDocument`. There are no signs of obfuscation, arbitrary command execution, or network exfiltration in this segment. The capabilities are proportional to the extension's function."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/3)",
+        "summary": "This chunk contains the tail end of the extension logic, specifically a date comparison function and the standard `deactivate` lifecycle hook. The code is plain JavaScript with no obfuscation. The only static finding is the presence of the ripgrep binary, which is a legitimate dependency for the extension's search feature. The activation events are command-based, which is appropriate for a utility extension. No suspicious network calls, credential harvesting, or arbitrary code execution patterns are visible in this chunk."
+      },
+      {
+        "target": "extension/out/memo-directory-resolver.js",
+        "summary": "The source file `memo-directory-resolver.js` is a small, well-structured utility class responsible for resolving the storage directory for the 'Daily Memo' extension. It reads a user-configured path from VS Code settings, expands the home directory shorthand (`~`), and validates that the path is absolute. The code uses standard Node.js modules (`os`, `path`) and the VS Code API (`workspace`, `window`, `commands`, `l10n`). There are no network calls, no child process execution, no obfuscation, and no access to sensitive system files beyond the user's configured memo directory. The behavior is perfectly aligned with the extension's stated purpose of managing daily markdown notes."
+      },
+      {
+        "target": "extension/out/memo-file-service.js",
+        "summary": "The source code for `memo-file-service.js` is a straightforward implementation of file management logic using standard VS Code APIs (`vscode.workspace.fs`). It creates directories and writes Markdown files with sanitized filenames. There are no network calls, no `child_process` usage, no obfuscation, and no access to sensitive system paths outside the user-configured memo directory. The behavior is perfectly proportional to the extension's stated purpose of managing daily notes."
+      },
+      {
+        "target": "extension/out/memo-search-quick-pick.js (chunk 1/2)",
+        "summary": "This chunk of the 'Daily Memo' extension source code appears benign and well-structured. It implements a quick pick interface for searching memo contents, utilizing standard VS Code APIs (`createQuickPick`, `l10n`) and managing a search process with debouncing. The only static finding was a native ripgrep binary, which is a legitimate dependency for the extension's search feature. The code logic is proportional to the extension's advertised purpose of providing fast full-text search."
+      },
+      {
+        "target": "extension/out/memo-search-quick-pick.js (chunk 2/2)",
+        "summary": "This code chunk implements the UI logic for a quick pick search interface, handling debounced input, result rendering, and item selection. It relies on standard VS Code APIs (`vscode.commands`, `vscode.l10n`) and local state management without direct network calls, file system access, or process spawning in this specific file. The presence of the ripgrep binary is a legitimate dependency for the search functionality described in the README. No obfuscation or suspicious behavioral patterns were detected."
+      },
+      {
+        "target": "extension/out/memo-search-results-provider.js (chunk 1/2)",
+        "summary": "This file defines a `TreeDataProvider` for displaying search results in the VS Code sidebar. It uses standard VS Code APIs (`EventEmitter`, `TreeItem`, `l10n`) and contains no network calls, file system access, or child process execution. The code is clean, unobfuscated, and proportional to the extension's stated purpose of searching daily memos."
+      },
+      {
+        "target": "extension/out/memo-search-results-provider.js (chunk 2/2)",
+        "summary": "This file contains the tail end of the `MemoSearchResultsProvider` class and a helper function `findHighlights`. The code performs standard string manipulation (lowercasing, indexOf) to determine highlight ranges for search results. There are no network calls, file system accesses, or child process executions in this specific chunk. The logic is consistent with a search results provider for a memo extension."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analyzer flagged the ripgrep binary as a hidden executable. However, the extension uses `@vscode/ripgrep` for full-text search, which is a standard and expected dependency for a search-focused extension. The binary is platform-specific (linux-arm64) and likely included for cross-platform support or bundled by the dependency.",
+        "code_reference": "require(\"./ripgrep-content-search\")",
+        "line_hint": 42,
+        "target": "extension/out/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analyzer flagged a hidden executable (ELF binary) in `node_modules/@vscode/ripgrep-linux-arm64/bin/rg`. This is a standard dependency for full-text search in VS Code extensions and is expected for a memo search tool. It is not a stager or LOLBIN.",
+        "code_reference": "extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged the ripgrep binary as a hidden executable. However, ripgrep is a standard, well-known text search utility often bundled with VS Code extensions to provide fast full-text search capabilities, which aligns with the extension's stated purpose of 'fast full-text search'.",
+        "code_reference": "extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analyzer flagged a hidden executable (ELF binary) in `node_modules/@vscode/ripgrep-linux-arm64/bin/rg`. This is a standard native dependency for the `@vscode/ripgrep` package, which is commonly used for fast file searching in VS Code extensions. It is not a hidden payload.",
+        "code_reference": "extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg",
+        "line_hint": null,
+        "target": "extension/out/memo-directory-resolver.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analyzer flagged a hidden executable (ELF binary) in `node_modules/@vscode/ripgrep-linux-arm64/bin/rg`. This is a standard native dependency for full-text search (ripgrep), which aligns with the extension's advertised 'fast full-text search' capability. It is not a stager or malicious payload.",
+        "code_reference": "extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg",
+        "line_hint": null,
+        "target": "extension/out/memo-file-service.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analyzer flagged a hidden executable (ELF binary) at 'extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg'. This is a standard native binary dependency for the `@vscode/ripgrep` package, which is commonly used for fast file content searching in VS Code extensions. Given the extension's purpose is 'full-text search', this is expected behavior, not a hidden payload.",
+        "code_reference": "extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg",
+        "line_hint": null,
+        "target": "extension/out/memo-search-quick-pick.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code chunk shows standard usage of `vscode.window.createQuickPick` and `vscode.l10n` for UI and localization. The logic involves debouncing search inputs and managing a search process, which aligns perfectly with the 'Daily Memo' search functionality described in the README. No obfuscation or suspicious network calls were observed in this chunk.",
+        "code_reference": "class MemoSearchQuickPick",
+        "line_hint": 48,
+        "target": "extension/out/memo-search-quick-pick.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "HIDDEN_EXECUTABLE",
+        "description": "The package includes a native ELF binary for ripgrep (`@vscode/ripgrep-linux-arm64/bin/rg`). While flagged as a hidden executable, this is a standard dependency for full-text search in VS Code extensions and is expected given the extension's purpose.",
+        "code_reference": "extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg",
+        "line_hint": null,
+        "target": "extension/out/memo-search-quick-pick.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analyzer flagged a hidden executable (ELF binary) in `node_modules/@vscode/ripgrep-linux-arm64/bin/rg`. This is a standard dependency for full-text search in VS Code extensions and is expected for a memo search tool.",
+        "code_reference": "extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg",
+        "line_hint": null,
+        "target": "extension/out/memo-search-results-provider.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a hidden executable (ELF binary) in node_modules/@vscode/ripgrep-linux-arm64/bin/rg. This is a standard dependency for full-text search functionality, which aligns with the extension's purpose of searching memos. It is not a stager or LOLBIN.",
+        "code_reference": "extension/node_modules/@vscode/ripgrep-linux-arm64/bin/rg",
+        "line_hint": null,
+        "target": "extension/out/memo-search-results-provider.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code chunk shows standard TypeScript-compiled JavaScript for a VS Code extension. It initializes services for directory resolution, file management, and search. The use of `ripgrep` aligns with the 'full-text search' feature described in the README. No obfuscation, network calls, or suspicious file system access is visible in this chunk. The 'hidden executable' finding is a false positive given the context of using ripgrep for search.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 9,
+    "published_date": "2026-09-02T17:47:51.863Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-02T18:53:57.312523+00:00Z"
+}

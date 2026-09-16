@@ -1,0 +1,119 @@
+{
+  "extension_id": "TanCuongLuong.copilot-credit-meter",
+  "display_name": "Copilot Credit Meter",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "TanCuongLuong",
+    "verified": false
+  },
+  "vsix_sha256": "7c52cd0f4aee7b10b005b2a12b0b2559b5aa630001210fef1f25cfdf6d776e8b",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.1925,
+    "ai_vibe": 0.05,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/usageApi.js",
+        "line": 64,
+        "snippet": "vscode.authentication.getSession"
+      }
+    ],
+    "high": [],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
+    "summaries": [
+      {
+        "target": "extension/out/usageApi.js (chunk 1/2)",
+        "summary": "The code is benign and aligns with the extension's advertised functionality. It uses standard VS Code APIs to authenticate with GitHub and fetches usage statistics from the official GitHub API. There are no signs of data exfiltration, obfuscation, or malicious behavior. The static scanner hits are false positives resulting from the legitimate use of the authentication API."
+      },
+      {
+        "target": "extension/out/usageApi.js (chunk 2/2)",
+        "summary": "The code is a benign implementation of a GitHub Copilot usage meter. It correctly uses the VS Code authentication API to obtain a GitHub token and makes network requests to GitHub's API to fetch usage statistics. The static rule hits regarding credential theft are false positives, as the access to the session is required for the extension's stated purpose and the token is not exfiltrated to unauthorized endpoints. No malicious behavior, obfuscation, or suspicious network activity was detected."
+      },
+      {
+        "target": "extension/out/calendar.js",
+        "summary": "The provided source code (`calendar.js`) contains only pure utility functions for date and time calculations (calculating monthly resets, remaining calendar days, and workdays). It does not contain any network calls, file system access, process execution, or access to sensitive user data. The code is fully consistent with the extension's advertised purpose of displaying a usage meter and calculating reset times. No malicious or suspicious behavior was detected."
+      },
+      {
+        "target": "extension/out/logParser.js (chunk 1/3)",
+        "summary": "The provided code chunk is a standard TypeScript-compiled module for parsing log files. It imports 'fs' and 'path' to handle file operations, which is consistent with the extension's stated purpose of reading Copilot debug logs. The logic focuses on data normalization, type checking, and numeric parsing. There are no indicators of malicious behavior such as network exfiltration, credential harvesting, obfuscation, or arbitrary command execution. The code aligns perfectly with the 'Copilot Credit Meter' functionality described in the README."
+      },
+      {
+        "target": "extension/out/logParser.js (chunk 2/3)",
+        "summary": "The code is a benign log parser for GitHub Copilot usage metrics. It reads local debug log files, parses JSON lines, and calculates usage totals. It includes robust path traversal protection (safeChildPath) and cycle detection (seenFiles) to prevent infinite recursion or unauthorized file access. No malicious indicators, network exfiltration, or credential harvesting were found."
+      },
+      {
+        "target": "extension/out/logParser.js (chunk 3/3)",
+        "summary": "The provided code snippet is a benign utility module responsible for parsing and converting usage metrics (AIC to NanoAIU). It contains no network activity, file system access, process execution, or obfuscation. The logic is purely mathematical and aligns with the extension's stated purpose of calculating Copilot credit usage."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.authentication.getSession` as credential theft. However, the code explicitly requests the 'github' provider with the 'user:email' scope and uses the token to call the official GitHub API endpoint (`api.github.com`) to fetch usage data. This is the standard and intended mechanism for a VS Code extension to interact with GitHub services on behalf of the user, aligning perfectly with the extension's stated purpose of displaying Copilot usage.",
+        "code_reference": "vscode.authentication.getSession('github', ['user:email'], ...)",
+        "line_hint": 64,
+        "target": "extension/out/usageApi.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.authentication.getSession` as credential theft. However, in the context of a 'Copilot Credit Meter' extension, this API is the standard and necessary method to retrieve a GitHub OAuth token to authenticate against the GitHub API for fetching usage data. The code does not exfiltrate the token to a third-party server; it uses it to make a legitimate request to GitHub's own endpoints. This is a false positive.",
+        "code_reference": "vscode.authentication.getSession",
+        "line_hint": 64,
+        "target": "extension/out/usageApi.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is benign and aligns with the extension's advertised functionality. It uses standard VS Code APIs to authenticate with GitHub and fetches usage statistics from the official GitHub API. There are no signs of data exfiltration, obfuscation, or malicious behavior. The static scanner hits are false positives resulting from the legitimate use of the authentication API.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 4,
+    "published_date": "2026-08-27T14:58:13.89Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T03:20:59.135411+00:00Z"
+}

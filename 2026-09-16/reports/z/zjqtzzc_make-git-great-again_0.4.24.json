@@ -1,0 +1,204 @@
+{
+  "extension_id": "zjqtzzc.make-git-great-again",
+  "display_name": "Make Git Great Again",
+  "version": "0.4.24",
+  "publisher": {
+    "name": "zjqtzzc",
+    "verified": false
+  },
+  "vsix_sha256": "96299a24e39c0dbce7eae76641418df4ee4255f668a66230f7fd93f5fa7c6134",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.24312499999999998,
+    "ai_vibe": 0.15,
+    "static": 0.3125,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/extension.js",
+        "line": 59,
+        "snippet": "readFile(m,\"utf-8\"),{baseContent:x,modifiedContent:$}=Ps(v,h),M=d.Uri.parse(`${k}:/shelved/${o}/${h}?ref=base`),N=d.Uri.parse(`${k}:/shelved/${o}/${h}?ref=modified`);return be.set(M.toString(),x),be.s"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "\"use strict\";var jt=Object.create;var se=Object.defineProperty;var _t=Object.getOwnPropertyDescriptor;var qt=Object.getOwnPropertyNames;var Vt=Object.getPrototypeOf,Jt=Object.prototype.hasOwnProperty;"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 59,
+        "snippet": "fetch(),e.broadcastEvent(\"gitStateChanged\",{}),{success:!0})):g),e.handle(\"cherryPick\",async i=>{if(!r)return g;let o=i.hash;return R(e,async()=>(await r.cherryPick(o),e.broadcastEvent(\"gitStateChange"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 5,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 11/29)",
+        "summary": "This chunk of code appears to be a standard implementation of Git command execution and status parsing for a Git visualization extension. The 'IntelliJ Git Graph' extension is a fork of a known project, and the code aligns with its purpose of providing Git GUI features like commit, cherry-pick, and status checking. The static rule hits are likely false positives resulting from minified code patterns where `fetch` and `readFile` are used in contexts typical for VS Code extensions (e.g., reading workspace files for diffing, internal API calls) rather than direct exfiltration to unknown endpoints. No hardcoded secrets, suspicious domains, or obfuscated payloads were found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 14/29)",
+        "summary": "This chunk of code appears to be standard boilerplate for a VS Code extension implementing a Git visualization tool (JetBrains Git Graph style). It defines Webview panels for commit history and conflict resolution, uses standard VS Code APIs (`createWebviewPanel`, `EventEmitter`), and handles local resource loading. The static rule hits are likely false positives resulting from the minified nature of the code, where unrelated network and file operations appear adjacent. No hardcoded secrets, suspicious child_process calls, or obfuscated payloads were identified in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 16/29)",
+        "summary": "This chunk of the extension source code appears to be part of a Git visualization tool ('IntelliJ Git Graph'). The code primarily handles UI rendering for Git diffs, merge editors, and push panels using standard VS Code Webview APIs. The static rule engine hits for 'exfiltration' and 'infostealer' behavior are likely false positives resulting from the combination of file reading (for diff content) and network fetching (likely for Git data or assets) within a complex, minified bundle. The logic aligns with the extension's stated purpose of providing a Git graph and merge editor, with no obvious signs of credential harvesting, obfuscated payloads, or suspicious external endpoints in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 17/29)",
+        "summary": "This chunk of the extension source code appears to be from a legitimate Git visualization extension ('IntelliJ Git Graph'). The code primarily handles UI panel creation (Webviews for push/rollback), file system watching for Git metadata changes (HEAD, refs), and custom file system providers to expose Git internals. The static rule engine hits for 'exfiltration' and 'infostealer' are likely false positives resulting from minified code where `fetch` (likely for local git operations or API calls to a local git server) and `readFile` (for Git metadata) appear close together. There are no obvious hardcoded secrets, suspicious external domains, or LOLBINs in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 20/29)",
+        "summary": "This chunk of the extension source code appears to be standard logic for a Git visualization tool. It handles commands for editing source files, opening merge/diff editors, and fetching Git graph data (branches, logs, diffs). The file operations are scoped to the workspace and Git-specific virtual file systems. The static rule hits are likely false positives triggered by generic patterns (`fetch`, `readFile`) without context of the destination or scope. No hardcoded secrets, obfuscated payloads, or suspicious external network endpoints were identified in this specific chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `fetch()` and `readFile` in the minified code. However, the code context indicates standard Git operations (cherry-pick, commit) and file system access for Git status/diff handling. The `fetch` is likely part of a VS Code API call or internal promise handling, not necessarily an external network exfiltration in this specific chunk. The `readFile` is used to read file contents for diffing/shelving, which is core to a Git GUI.",
+        "code_reference": "fetch(),e.broadcastEvent(\"gitStateChanged\",{}),{success:!0})):g),e.handle(\"cherryPick\",async i=>{if(",
+        "line_hint": 59,
+        "target": "extension/dist/extension.js (chunk 11/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `execFile` (promisified) to run `git` commands is standard for a Git extension. The environment variables `LC_ALL` and `GIT_TERMINAL_PROMPT` are set to ensure consistent output and prevent hanging on credential prompts, which is a common and safe pattern for Git integrations.",
+        "code_reference": "Bt = (0, Nt.promisify)(Lt.execFile)",
+        "line_hint": 65,
+        "target": "extension/dist/extension.js (chunk 11/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'infostealer_behavior' due to the proximity of `fetch()` and `readFile()` calls in the minified code. However, the `readFile` operation targets a local virtual URI (`shelved/...`) for conflict resolution, and the `fetch` is likely part of a local message routing or state update pattern typical in VS Code webviews. The code structure suggests standard Git conflict handling logic rather than network exfiltration.",
+        "code_reference": "readFile(m,\"utf-8\")... fetch(),e.broadcastEvent",
+        "line_hint": 59,
+        "target": "extension/dist/extension.js (chunk 14/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'vscode_api_abuse' hit regarding directory traversal is likely a false positive from the minified `readDirectory` method returning an empty array or handling local resource roots, which is standard for webview configuration.",
+        "code_reference": "readDirectory(){return Promise.resolve([])}",
+        "line_hint": 58,
+        "target": "extension/dist/extension.js (chunk 14/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'infostealer_behavior' due to `fetch()` and `readFile` calls. However, the code context shows `readFile` is used to retrieve file contents for a Git diff view (comparing base vs modified content), and `fetch` is likely part of the Git service communication or local resource loading within the extension's webview. The data flow is local to the Git visualization logic, not necessarily external exfiltration.",
+        "code_reference": "readFile(m,\"utf-8\"),{baseContent:x,modifiedContent:$}=Ps(v,h)",
+        "line_hint": 59,
+        "target": "extension/dist/extension.js (chunk 16/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'vscode_api_abuse' for directory traversal. The code shows standard Webview API usage (`createWebviewPanel`, `localResourceRoots`) to load local HTML/JS assets for the Git graph UI. The `readDirectory` returning an empty array is likely a stub or specific to a virtual file system context within the webview, not a malicious traversal of the user's home directory.",
+        "code_reference": "readDirectory(){return Promise.resolve([])}",
+        "line_hint": 58,
+        "target": "extension/dist/extension.js (chunk 16/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `fetch()` and `readFile` in the minified code. However, the context shows `fetch` is used for local Git operations (cherry-pick, state change) and `readFile` is part of a custom FileSystemProvider for Git internals (shelved changes), not necessarily sending data to an external C2 server. The code structure is consistent with a Git visualization tool.",
+        "code_reference": "fetch(),e.broadcastEvent(\"gitStateChanged\",{}),{success:!0})):g),e.handle(\"cherryPick\",async i=>{if(",
+        "line_hint": 59,
+        "target": "extension/dist/extension.js (chunk 17/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Flagged for 'vscode_api_abuse' regarding directory traversal. The code implements a custom `FileSystemProvider` (indicated by `readDirectory`, `createDirectory`, `readFile` methods) to expose Git internal files (like `.git/refs`) to the VS Code UI. This is a standard pattern for Git extensions to allow users to view or interact with Git metadata directly.",
+        "code_reference": "readDirectory(){return Promise.resolve([])}createDirectory(){}async readFile(e){let s=new URLSearchP",
+        "line_hint": 58,
+        "target": "extension/dist/extension.js (chunk 17/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension creates WebviewPanels for 'Push' and 'Rollback' operations. This is proportional to a Git visualization tool that offers advanced features like cherry-picking and merging, which often require custom UIs beyond standard VS Code dialogs.",
+        "code_reference": "this.panel = V.window.createWebviewPanel(\"git-brains.rollbackPanel\", \"Rollback Changes\", ...",
+        "line_hint": 25,
+        "target": "extension/dist/extension.js (chunk 17/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `fetch()` and `readFile` in the code. However, the `fetch` call is part of a standard VS Code extension API pattern (likely `vscode.env.asExternalUri` or similar internal handling) or a local IPC call, and the `readFile` operations are scoped to the workspace or specific Git metadata paths (e.g., `shelved` changes) to support the Git graph visualization. There is no direct HTTP POST to an external hardcoded IP or suspicious domain in this chunk.",
+        "code_reference": "fetch(),e.broadcastEvent(\"gitStateChanged\",{}),{success:!0})):g),e.handle(\"cherryPick\",async i=>{if(",
+        "line_hint": 59,
+        "target": "extension/dist/extension.js (chunk 20/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'Directory traversal paired with network send' flag is likely a false positive. The code uses `d.workspace.fs.stat` and `d.workspace.openTextDocument` which are standard VS Code APIs for accessing files within the workspace context. The paths are derived from Git URIs (`git-brains` scheme) or relative paths within the repository, not arbitrary system paths like `~/.ssh`.",
+        "code_reference": "readDirectory(){return Promise.resolve([])}createDirectory(){}async readFile(e){let s=new URLSearchP",
+        "line_hint": 58,
+        "target": "extension/dist/extension.js (chunk 20/29)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of code appears to be a standard implementation of Git command execution and status parsing for a Git visualization extension. The 'IntelliJ Git Graph' extension is a fork of a known project, and the code aligns with its purpose of providing Git GUI features like commit, cherry-pick, and status checking. The static rule hits are likely false positives resulting from minified code patterns where `fetch` and `readFile` are used in contexts typical for VS Code extensions (e.g., reading workspace files for diffing, internal API calls) rather than direct exfiltration to unknown endpoints. No hardcoded secrets, suspicious domains, or obfuscated payloads were found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 8,
+    "published_date": "2026-09-11T09:04:46.25Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T09:40:49.847008+00:00Z"
+}

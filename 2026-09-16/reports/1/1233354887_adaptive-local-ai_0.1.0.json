@@ -1,0 +1,127 @@
+{
+  "extension_id": "1233354887.adaptive-local-ai",
+  "display_name": "Adaptive Local AI",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "1233354887",
+    "verified": false
+  },
+  "vsix_sha256": "d9bf7167df98b1f528ff8a5600566ff8e2e44ff9401769209346c7b20ad72a85",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.24394501953688402,
+    "ai_vibe": 0.05,
+    "static": 0.4557800781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/src/config.js",
+        "line": 39,
+        "snippet": "SECRET = \"adaptiveLocalAI.gateway.apiKey\""
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/src/config.js",
+        "line": 40,
+        "snippet": "SECRET = \"adaptiveLocalAI.deep.apiKey\""
+      }
+    ],
+    "high": [],
+    "total": 10
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/out/src/config.js (chunk 1/2)",
+        "summary": "The code is a configuration service for a local AI model router extension. It uses standard VS Code APIs to manage settings and secrets. The flagged items are false positives: the 'secrets' are storage keys, not values, and the IP address is the standard localhost for Ollama. The code aligns perfectly with the extension's stated purpose of routing requests to local AI models. No malicious behavior, obfuscation, or suspicious network activity was detected."
+      },
+      {
+        "target": "extension/out/src/config.js (chunk 2/2)",
+        "summary": "The code is a configuration service for a VS Code extension that acts as a local AI model router. It reads settings from VS Code's configuration API and manages API keys using the secure secrets API. The static scanner hits are false positives: the 'secrets' are just keys for the secure storage, and the IP address is localhost for a local service. The code aligns perfectly with the extension's stated purpose of routing requests to local AI models like Ollama. There are no malicious indicators."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'adaptiveLocalAI.gateway.apiKey' and 'adaptiveLocalAI.deep.apiKey' as hardcoded secrets. These are actually string identifiers (keys) used to access the VS Code SecretStorage API, not the secret values themselves. This is standard practice for extensions storing sensitive data securely.",
+        "code_reference": "const GATEWAY_KEY_SECRET = \"adaptiveLocalAI.gateway.apiKey\";",
+        "line_hint": 39,
+        "target": "extension/out/src/config.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'http://127.0.0.1:11434/' as a potential C2 hardcoded IP. This is the default localhost address for Ollama, a local AI model server. Given the extension's purpose is to route requests to local models, this is expected and benign behavior.",
+        "code_reference": "configuration.get(\"ollama.baseUrl\", \"http://127.0.0.1:11434/v1\")",
+        "line_hint": 88,
+        "target": "extension/out/src/config.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'adaptiveLocalAI.gateway.apiKey' and 'adaptiveLocalAI.deep.apiKey' as hardcoded secrets. These are actually string keys used to reference values stored in VS Code's secure storage API (context.secrets). They are not the secrets themselves, but identifiers for where the secrets are stored. This is standard and secure practice for VS Code extensions.",
+        "code_reference": "const GATEWAY_KEY_SECRET = \"adaptiveLocalAI.gateway.apiKey\"; const DEEP_KEY_SECRET = \"adaptiveLocalAI.deep.apiKey\";",
+        "line_hint": 39,
+        "target": "extension/out/src/config.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'http://127.0.0.1:11434/' as a potential C2 hardcoded IP. This is the default localhost address for Ollama, a local LLM runtime. The extension is designed to proxy requests to local models, so connecting to localhost is its primary function and not malicious.",
+        "code_reference": "const ollamaBaseUrl = configuration.get(\"models.ollamaBaseUrl\", \"http://127.0.0.1:11434/\");",
+        "line_hint": 88,
+        "target": "extension/out/src/config.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a configuration service for a local AI model router extension. It uses standard VS Code APIs to manage settings and secrets. The flagged items are false positives: the 'secrets' are storage keys, not values, and the IP address is the standard localhost for Ollama. The code aligns perfectly with the extension's stated purpose of routing requests to local AI models. No malicious behavior, obfuscation, or suspicious network activity was detected.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-11T13:48:39.45Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T14:04:44.430076+00:00Z"
+}

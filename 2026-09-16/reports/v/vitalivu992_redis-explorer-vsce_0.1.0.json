@@ -1,0 +1,337 @@
+{
+  "extension_id": "vitalivu992.redis-explorer-vsce",
+  "display_name": "Redis Data Explorer",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "vitalivu992",
+    "verified": false
+  },
+  "vsix_sha256": "d61ff4cd6779d87e0afd86a189831f542e270243c2692a9f7c0f73e0c3e94ab0",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.23988251953688403,
+    "ai_vibe": 0.15,
+    "static": 0.2995300781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "Object.keys(process.env)"
+      }
+    ],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/extension.js",
+        "line": 257,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "iterm.app",
+      "source_file": "extension/dist/extension.js",
+      "line": 2786,
+      "context": "case \"iTerm.app\":",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "linhvu.net",
+      "source_file": "extension/dist/extension.js",
+      "line": 8390,
+      "context": "t === \"Upgrade License\" && w.env.openExternal(w.Uri.parse(\"https://linhvu.net/pricing\"))",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "ko-fi.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 8447,
+      "context": "i === \"Buy Pro License\" ? w.env.openExternal(w.Uri.parse(\"https://linhvu.net/pricing\")) : i === \"Donate\" && w.env.openExternal(w.Uri.parse(\"https://ko-fi.com/vitalivu992\"));",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "www.gnu.org",
+      "source_file": "extension/dist/extension.js",
+      "line": 8744,
+      "context": "* along with this program.  If not, see <https://www.gnu.org/licenses/>.",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 22/95)",
+        "summary": "This chunk of the extension source code consists almost entirely of bundled third-party libraries, specifically the `debug` logging package and its dependency `supports-color`. The code handles terminal color detection, CI environment checks, and debug namespace configuration. While the static scanner flagged environment variable access, it is limited to `debug_*` prefixed variables for library configuration. There is no evidence of malicious logic, credential harvesting, or network exfiltration in this specific chunk. The behavior is fully consistent with a standard VS Code extension bundling common Node.js utilities."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 82/95)",
+        "summary": "This chunk of the Redis Explorer extension primarily consists of CSS styles and HTML templates for a Webview-based UI, along with some standard VS Code API usage for configuration. The static rule engine hits appear to be false positives or low-risk patterns typical for database connection tools (e.g., reading env vars for connection strings, using CSS classes for UI state). There is no evidence of obfuscation, arbitrary code execution, or suspicious network exfiltration in this specific segment. The extension's capabilities align well with its stated purpose of browsing Redis databases."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 89/95)",
+        "summary": "This chunk of the Redis Explorer extension contains license verification logic. It parses a signed license key (JWT-like structure), verifies the RSA-SHA256 signature against a hardcoded public key, and checks for expiration and product match. The code is clean, uses standard Node.js crypto APIs, and handles errors gracefully. The scanner's 'CRITICAL' hit for credential harvesting is likely a false positive for this specific chunk or refers to a minor config read elsewhere. The extension appears to be a legitimate, well-structured tool with a commercial license model."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 90/95)",
+        "summary": "This chunk of the Redis Explorer extension source code focuses on license management for a 'Pro' tier. It handles validating license keys, storing them, and displaying status messages. The logic appears standard for a commercial extension: it checks a cached result, allows users to activate/deactivate licenses via input boxes, and links to a pricing page. The static rule hits for 'credential harvesting' and 'persistence evasion' appear to be false positives or refer to code outside this specific visible snippet, as the visible logic is tightly coupled to UI interactions and local storage of the license key. No obvious exfiltration or arbitrary code execution is present in this segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 91/95)",
+        "summary": "This chunk of the Redis Explorer extension primarily handles UI logic for license management, upgrade nags, and configuration retrieval. The code uses standard VS Code APIs (`workspace.getConfiguration`, `globalState`, `env.openExternal`) appropriately. The domains `linhvu.net` and `ko-fi.com` are consistent with the extension's freemium business model (pricing and donations). The static rule hits for credential harvesting and persistence evasion do not appear in this specific chunk and are likely false positives or located in other parts of the bundle without malicious context. The behavior is proportional to a Redis database browser extension."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 94/95)",
+        "summary": "This chunk of the Redis Explorer extension appears to be standard UI and configuration logic. It handles user input for connection tags and colors, and defines license storage/verification structures. The static rule engine hits are largely false positives or low-severity standard API usages. The use of `SecretStorage` for license keys is a good security practice. No obvious malicious patterns like obfuscated evals, unexpected network calls, or credential harvesting are present in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 95/95)",
+        "summary": "This chunk (95/95) of the Redis Explorer extension source code is predominantly composed of license headers (AGPL-3.0) and comments describing a 'License Manager' and 'Nag Controller'. The static rule engine hits are largely false positives or low-severity indicators typical of bundled/minified code where context is lost. The extension's purpose (Redis browsing) aligns with the use of `globalState` and `secrets` for connection management. The low obfuscation score (0.00) and the presence of standard open-source license headers suggest a legitimate, albeit potentially complex, open-source project. No critical indicators like hardcoded secrets, child_process execution, or suspicious network endpoints were found in this specific chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'credential_harvesting' due to `Object.keys(process.env)`. However, the code filters these keys with `/^debug_/i` to configure the `debug` logging library's options (colors, namespaces, etc.). This is standard behavior for the `debug` npm package and does not exfiltrate secrets.",
+        "code_reference": "R.inspectOpts = Object.keys(process.env).filter(r => /^debug_/i.test(r))...",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 22/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The code contains logic to detect terminal color support (iTerm, Apple Terminal, CI environments). This is part of the bundled `supports-color` or `debug` library, not custom fingerprinting logic.",
+        "code_reference": "if (\"CI\" in T) return [\"TRAVIS\", \"CIRCLECI\"...]",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 22/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'credential_harvesting' due to `Object.keys(process.env)`. However, this specific chunk (82/95) contains primarily CSS and HTML template strings for a Webview UI. The actual code execution logic is likely in other chunks. In the context of a Redis Explorer, reading environment variables is often done to resolve connection strings (e.g., REDIS_URL) or configuration defaults, which is a common and generally acceptable pattern for database tools, though it should be verified in the full context.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 82/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The rule 'persistence_evasion' flagged `.hidden` on line 257. Looking at the source, this is a CSS class definition (`.right-pane.hidden { display: none; }`) used for UI toggling in the Webview, not a file system attribute setting.",
+        "code_reference": ".right-pane.hidden",
+        "line_hint": 257,
+        "target": "extension/dist/extension.js (chunk 82/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The rule 'vscode_api_abuse' flagged `workspace.getConfiguration` on line 735. This is standard usage for reading extension-specific settings (timeout, defaultLimit) from the VS Code settings UI, which is expected behavior for a configurable tool.",
+        "code_reference": "workspace.getConfiguration(\"redisExplorer\")",
+        "line_hint": 735,
+        "target": "extension/dist/extension.js (chunk 82/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_DOMAIN",
+        "description": "Domains `ko-fi.com` and `linhvu.net` were detected in the package. These are likely used for 'Buy me a coffee' donation links or the developer's personal website, which is common for open-source extensions. `iterm.app` and `www.gnu.org` are likely references in documentation or license text. None appear to be C2 servers or exfiltration endpoints based on reputation and context.",
+        "code_reference": "ko-fi.com, linhvu.net",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 82/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'credential_harvesting' due to `Object.keys(process.env)`, but this specific chunk (89/95) contains license verification logic (RSA-SHA256 signature checking, JWT-like parsing). The environment variable access likely occurs in a different chunk or is part of a broader context not fully visible here, but within this chunk, the logic is standard license validation. The presence of `process.env` in a Redis explorer is not inherently malicious if used for configuration, though it warrants a look at the full file. However, given the chunk content is purely license verification, this is likely a false positive for this specific slice or a minor config read.",
+        "code_reference": "Object.keys(process.env) (referenced in scanner, not explicitly in this snippet's visible lines but implied by context)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 89/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is a 'Redis Explorer' (a database browser). The code in this chunk implements a robust license verification system using RSA signatures and expiration checks. While common for paid extensions, a free/open-source inspired tool (like pg-explorer) having a strict license gate with 'linhvu.net' renewal links suggests a commercial model. This is a business model choice rather than a security flaw, but it adds a dependency on an external domain for trust (the public key is hardcoded, which is good).",
+        "code_reference": "Ae(r, e = ir) function and license error messages referencing linhvu.net",
+        "line_hint": 10,
+        "target": "extension/dist/extension.js (chunk 89/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "References to external domains `linhvu.net` (license renewal), `ko-fi.com` (donations), and `iterm.app` (likely a link or integration) are present in the full package. These are typical for indie extensions. `www.gnu.org` is likely a license text reference. None appear to be C2 or exfiltration endpoints based on context.",
+        "code_reference": "Domain indicators from static scan",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 89/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'credential_harvesting' due to `Object.keys(process.env)`. However, this specific chunk (90/95) contains License Management logic (checking Pro license validity, activating/deactivating keys). The `process.env` reference is likely in a different part of the bundled file or a false positive from the scanner's line mapping. The visible code in this chunk deals with `this.storage` and `w.window` (VS Code API), not direct env serialization for exfiltration.",
+        "code_reference": "this.cachedResult = Ae(e)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 90/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'persistence_evasion' for `.hidden`. In the context of a VS Code extension, this likely refers to checking if a file is hidden or setting a UI element's visibility, not the Windows file attribute for persistence. The visible code is UI-centric (showing messages, input boxes).",
+        "code_reference": null,
+        "line_hint": 257,
+        "target": "extension/dist/extension.js (chunk 90/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code shows standard license verification logic. It uses `w.env.openExternal` to open `https://linhvu.net/pricing`. This is a known domain (likely the developer's site) and is consistent with a 'Pro' feature gate. The license key is stored in `this.storage` (likely VS Code SecretStorage or globalState), which is appropriate for a license key.",
+        "code_reference": "w.env.openExternal(w.Uri.parse(\"https://linhvu.net/pricing\"))",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 90/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'credential_harvesting' due to `Object.keys(process.env)`, but this specific chunk (91/95) does not contain that string. It is likely present in an earlier chunk for environment-based configuration or telemetry, which is common in VS Code extensions. Without evidence of exfiltration in this chunk, it remains a low-risk potential false positive or benign usage.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 91/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'persistence_evasion' for `.hidden` attribute setting. This chunk contains UI logic for license nags and configuration reading. The `.hidden` reference is likely in a different chunk (possibly related to file system operations for cache or temp files) or is a false positive from a minified variable name. In the context of a Redis explorer, hiding temporary files or cache directories is benign.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 91/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code shows standard VS Code API usage: `workspace.getConfiguration` for reading settings, `globalState` for persisting nag timestamps, and `env.openExternal` for opening browser links to the developer's site (linhvu.net) and donation page (ko-fi.com). These are consistent with a freemium extension model.",
+        "code_reference": "m.workspace.getConfiguration(\"redisExplorer\")",
+        "line_hint": 735,
+        "target": "extension/dist/extension.js (chunk 91/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'credential_harvesting' due to `Object.keys(process.env)`. However, this specific chunk (94/95) contains UI logic for connection editing (tags, colors) and license storage comments. The actual `process.env` access is likely in a different chunk or part of a standard environment check not visible here. Given the context of a Redis explorer, reading env vars for default connection strings is common and not necessarily malicious without exfiltration evidence in this chunk.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 94/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'persistence_evasion' for `.hidden`. In the context of VS Code extensions, `.hidden` is often used to filter out hidden files in file trees or check file attributes, which is standard behavior for a file browser/explorer extension.",
+        "code_reference": ".hidden",
+        "line_hint": 257,
+        "target": "extension/dist/extension.js (chunk 94/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for `workspace.getConfiguration`. The code snippet shows `workspace.getConfiguration(\"redisExplorer\")` being used to read timeout and limit settings. This is the standard way to read extension-specific settings and is proportional to the extension's purpose.",
+        "code_reference": "workspace.getConfiguration(\"redisExplorer\")",
+        "line_hint": 735,
+        "target": "extension/dist/extension.js (chunk 94/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code uses `SecretStorage` for license keys, which is a secure and appropriate VS Code API for storing sensitive data. The license verification uses RSA-2048 with Node's built-in crypto, which is a reasonable implementation for a commercial license check in an AGPL extension.",
+        "code_reference": "SecretStorage wrapper",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 94/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'credential_harvesting' due to `Object.keys(process.env)`. However, this chunk (95/95) consists primarily of license headers and comments for the 'License Manager' and 'Nag Controller'. The actual code execution is likely in previous chunks. Given the extension is a Redis browser, reading env vars is likely for configuration (e.g., REDIS_HOST) rather than mass exfiltration, especially with an obfuscation score of 0.00.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 95/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The rule 'persistence_evasion' flagged `.hidden` attribute setting. In the context of a VS Code extension, this likely refers to UI visibility or file system attributes for temporary files, not necessarily hiding a persistence mechanism from the OS. Without evidence of writing to startup folders or registry, this is likely benign.",
+        "code_reference": ".hidden",
+        "line_hint": 257,
+        "target": "extension/dist/extension.js (chunk 95/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The rule 'vscode_api_abuse' flagged directory traversal and network send. The code snippet shows standard VS Code `globalState` and `secrets` access patterns (`globalState=e;this.secrets=t`). This is typical for extensions storing connection strings or API keys securely. The 'network send' is likely a false positive from the scanner matching generic patterns in the minified/bundled code structure.",
+        "code_reference": "globalState=e;this.secrets=t",
+        "line_hint": 159,
+        "target": "extension/dist/extension.js (chunk 95/95)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The rule 'vscode_api_abuse' flagged programmatic tampering with workspace configuration. The code `workspace.getConfiguration(\"redisExplorer\")` is a standard read operation to retrieve user-defined settings for the extension (timeout, default limit). It does not appear to be writing/tampering unless explicitly shown in other chunks.",
+        "code_reference": "workspace.getConfiguration(\"redisExplorer\")",
+        "line_hint": 735,
+        "target": "extension/dist/extension.js (chunk 95/95)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the extension source code consists almost entirely of bundled third-party libraries, specifically the `debug` logging package and its dependency `supports-color`. The code handles terminal color detection, CI environment checks, and debug namespace configuration. While the static scanner flagged environment variable access, it is limited to `debug_*` prefixed variables for library configuration. There is no evidence of malicious logic, credential harvesting, or network exfiltration in this specific chunk. The behavior is fully consistent with a standard VS Code extension bundling common Node.js utilities.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-04T03:25:44.133Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-04T04:13:30.290508+00:00Z"
+}

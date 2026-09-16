@@ -1,0 +1,308 @@
+{
+  "extension_id": "VishnuDeviprasadShetty.beatsql",
+  "display_name": "BeatSQL \u2014 Zero-Trust Database Engine",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "VishnuDeviprasadShetty",
+    "verified": false
+  },
+  "vsix_sha256": "907769dcd8ff5ab80954e34b0900fe384625a4bdd74621b61148f030d4603371",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6475,
+    "ai_vibe": 0.85,
+    "static": 0.95,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/cli/BeatCLI.js",
+        "line": 56,
+        "snippet": "const child_process = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/cli/BeatCLI.js",
+        "line": 56,
+        "snippet": "const child_process = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/cli/BeatCLI.js",
+        "line": 200,
+        "snippet": "const child = child_process.spawn(process.execPath, [serverScript], {"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/cli/BeatCLI.js",
+        "line": 214,
+        "snippet": "child_process.exec(openCmd, (err) => {"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/cli/BeatCLI.js",
+        "line": 56,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/studio/public/academy.js",
+        "line": 645,
+        "snippet": "sandbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/studio/public/academy.js",
+        "line": 817,
+        "snippet": "sandbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/studio/public/academy.js",
+        "line": 1016,
+        "snippet": "sandbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/studio/public/academy.js",
+        "line": 1957,
+        "snippet": "sandbox"
+      }
+    ],
+    "total": 18
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "beatsql.io",
+      "source_file": "extension/package.json",
+      "line": 9,
+      "context": "\"homepage\": \"https://beatsql.io\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "hash",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000",
+      "source_file": "extension/dist/crypto/MerkleLedger.js",
+      "line": 13,
+      "context": "this.genesisHash = '0000000000000000000000000000000000000000000000000000000000000000';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/studio/StudioServer.js (chunk 1/4)",
+        "summary": "The extension 'BeatSQL' exhibits strong indicators of malicious intent or severe incompetence masquerading as advanced security. The most critical finding is the hardcoded encryption passphrase ('EnterpriseSecretPassphrase2026!'), which renders the claimed 'AES-256-GCM' encryption useless and exposes all data to anyone with read access to the source or the local database file. The 'Zero-Trust' branding is a major red flag, as true zero-trust architectures do not rely on hardcoded secrets in client-side code. The combination of deceptive marketing (claiming advanced cryptographic features) with a broken security implementation (hardcoded keys, local HTTP server) suggests this is either a scam, a data-harvesting tool disguised as a database, or a poorly written extension that poses a significant risk to user data integrity and confidentiality. The local HTTP server adds an additional attack vector. I recommend treating this extension as malicious and avoiding installation."
+      },
+      {
+        "target": "extension/dist/studio/StudioServer.js (chunk 2/4)",
+        "summary": "The code implements a local HTTP server for a database studio interface. It binds strictly to 127.0.0.1, preventing external network access. The 'hardcoded IP' alerts are false positives related to local loopback usage. The logic for handling requests, CORS, and body size limits is standard and secure. No malicious behavior, data exfiltration, or suspicious system calls were detected in this chunk."
+      },
+      {
+        "target": "extension/dist/studio/StudioServer.js (chunk 3/4)",
+        "summary": "The code implements a local HTTP server for a database extension, providing API endpoints for schema inspection, Merkle ledger verification, and static file serving. The flagged IP addresses are loopback addresses (127.0.0.1), which are benign and standard for local services. The 'tamper' endpoint is explicitly for educational demonstration of integrity checks, aligning with the extension's stated purpose as an 'Interactive Academy'. No malicious behavior, data exfiltration, or suspicious network activity was detected."
+      },
+      {
+        "target": "extension/dist/studio/StudioServer.js (chunk 4/4)",
+        "summary": "The code implements a local HTTP server (StudioServer) for serving static assets and JSON data, likely for a local UI or debugging interface. The use of 127.0.0.1 is benign and expected for local services. No malicious patterns, credential harvesting, or external exfiltration were found in this chunk."
+      },
+      {
+        "target": "extension/dist/server/BeatServer.js (chunk 1/3)",
+        "summary": "The code implements a local HTTP server for the BeatSQL database engine. It binds strictly to 127.0.0.1 (localhost), which is a secure configuration that prevents network exposure. The use of hardcoded IPs is a false positive for C2 activity. The logic for API key generation and CORS handling is standard for a local development tool. No malicious behavior, data exfiltration, or suspicious network calls were detected in this chunk."
+      },
+      {
+        "target": "extension/dist/server/BeatServer.js (chunk 2/3)",
+        "summary": "The code implements a local HTTP server for an embedded database engine (BeatSQL). It handles authentication via API keys, enforces role-based access control, and processes SQL queries locally. The hardcoded IPs are loopback addresses (127.0.0.1), confirming local-only operation. There are no signs of data exfiltration, credential harvesting, or malicious network activity. The behavior aligns with the extension's stated purpose of providing a local database engine."
+      },
+      {
+        "target": "extension/dist/server/BeatServer.js (chunk 3/3)",
+        "summary": "The code implements a local HTTP server for an embedded database engine ('BeatSQL'). It exposes standard RESTful endpoints for database inspection, Merkle tree integrity verification, and health checks. The use of 127.0.0.1 confirms it is a local-only service, aligning with the 'embedded database' description. There are no signs of data exfiltration, credential harvesting, remote code execution, or obfuscation. The static rule hits regarding hardcoded IPs are false positives in the context of a local server implementation."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "HARDCODED_CREDENTIALS",
+        "description": "The code initializes the database with a hardcoded, high-entropy passphrase ('EnterpriseSecretPassphrase2026!') used for encryption. This is a critical security flaw that allows any user with access to the source or the local file system to decrypt all 'encrypted' data, completely negating the 'Zero-Trust' and 'AES-256-GCM' claims. It suggests the encryption is either fake or trivially bypassable.",
+        "code_reference": "this.db = new Database_1.Database('bsql_enterprise_vault', 'EnterpriseSecretPassphrase2026!');",
+        "line_hint": 102,
+        "target": "extension/dist/studio/StudioServer.js (chunk 1/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises itself as a 'Zero-Trust Embedded Database Engine' with advanced cryptographic features (Blind Indexes, Homomorphic Arithmetic). However, the implementation relies on a local HTTP server bound to 127.0.0.1 and a hardcoded secret. The 'Zero-Trust' claim is deceptive; the security model is fundamentally broken by the hardcoded key. Furthermore, the 'StudioServer' implies a web-based UI, which is not clearly documented as a primary feature in the README's 'Quick Navigation' (which focuses on CLI/REPL), suggesting hidden or misleading capabilities.",
+        "code_reference": "class StudioServer { ... this.db = new Database_1.Database(...); ... }",
+        "line_hint": 98,
+        "target": "extension/dist/studio/StudioServer.js (chunk 1/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXPOSURE",
+        "description": "The extension starts a local HTTP server on port 8080. While bound to localhost, this increases the attack surface. If the server implementation (in other chunks) does not properly sanitize inputs or enforce authentication, it could be vulnerable to local privilege escalation or data exfiltration if another local process can access the port. The hardcoded IP 127.0.0.1 is benign in isolation but part of a suspicious pattern given the hardcoded secrets.",
+        "code_reference": "const http = __importStar(require(\"http\")); ... this.port = port; ...",
+        "line_hint": 90,
+        "target": "extension/dist/studio/StudioServer.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "DECEPTIVE_MARKETING",
+        "description": "The README and package description make grandiose claims about 'O(1) search', 'partially homomorphic arithmetic', and 'Merkle state ledger'. The presence of a simple local HTTP server and hardcoded keys suggests these features are either not implemented as described, are simulated, or are significantly weaker than advertised. This is a common tactic in supply-chain attacks to gain trust and adoption.",
+        "code_reference": "README: 'Zero-Trust Embedded Database Engine & Interactive Academy'",
+        "line_hint": null,
+        "target": "extension/dist/studio/StudioServer.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 127.0.0.1 are used for local server binding and CORS configuration. This is standard practice for a local development server and does not indicate C2 or external exfiltration.",
+        "code_reference": "this.server.listen(this.port, '127.0.0.1', ...)",
+        "line_hint": "106",
+        "target": "extension/dist/studio/StudioServer.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The domain beatsql.io is listed in package.json but no network calls to this domain are present in this code chunk. The code strictly binds to localhost.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/studio/StudioServer.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 127.0.0.1 and 127.0.0.1:8080 are loopback addresses used for local development or internal service binding, not Command and Control (C2) infrastructure.",
+        "code_reference": "'http://127.0.0.1'",
+        "line_hint": 106,
+        "target": "extension/dist/studio/StudioServer.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'simulateAdversarialTamper' endpoint is a legitimate feature for an educational/interactive database engine to demonstrate Merkle tree integrity verification, not malicious tampering.",
+        "code_reference": "this.db.merkleLedger.simulateAdversarialTamper",
+        "line_hint": 85,
+        "target": "extension/dist/studio/StudioServer.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 127.0.0.1 and 127.0.0.1:8080 are used for local loopback communication, which is standard for a local development server or studio interface. This is not a C2 channel.",
+        "code_reference": "http://127.0.0.1:8080",
+        "line_hint": 110,
+        "target": "extension/dist/studio/StudioServer.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 127.0.0.1 are used for localhost binding and CORS configuration. This is standard practice for local development servers and does not indicate C2 or external exfiltration.",
+        "code_reference": "this.server.listen(this.port, '127.0.0.1', ...)",
+        "line_hint": 67,
+        "target": "extension/dist/server/BeatServer.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "INFO",
+        "description": "The server binds to localhost (12.0.0.1) by default, which is a secure default that prevents remote access unless explicitly configured otherwise. The API key is generated via crypto.randomUUID() if not provided, which is acceptable for a local tool.",
+        "code_reference": "this.adminApiKey = apiKey || process.env.BEATSQL_API_KEY || crypto.randomUUID();",
+        "line_hint": 55,
+        "target": "extension/dist/server/BeatServer.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 127.0.0.1 are used for local server binding and URL parsing. This is standard behavior for a local embedded database server and does not indicate C2 or external exfiltration.",
+        "code_reference": "const host = req.headers.host || `localhost:${this.port}`;",
+        "line_hint": "67",
+        "target": "extension/dist/server/BeatServer.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The zero-hash indicator is likely a placeholder or initialization value for the Merkle Ledger, not a malicious hash. The code implements a local database engine as described in the README.",
+        "code_reference": "hash: 000000000000000000000000000000000000000000000000000000000000000",
+        "line_hint": null,
+        "target": "extension/dist/server/BeatServer.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 127.0.0.1 and 127.0.0.1:7432 are loopback addresses used for local server binding. This is standard behavior for a local embedded database server and does not indicate C2 or external exfiltration.",
+        "code_reference": "'http://127.0.0.1:7432'",
+        "line_hint": 71,
+        "target": "extension/dist/server/BeatServer.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The zero-hash indicator (000...000) in MerkleLedger.js is a standard cryptographic null value or placeholder, not a malicious hash.",
+        "code_reference": "hash: 000000000000000000000000000000000000000000000000000000000000000",
+        "line_hint": null,
+        "target": "extension/dist/server/BeatServer.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'BeatSQL' exhibits strong indicators of malicious intent or severe incompetence masquerading as advanced security. The most critical finding is the hardcoded encryption passphrase ('EnterpriseSecretPassphrase2026!'), which renders the claimed 'AES-256-GCM' encryption useless and exposes all data to anyone with read access to the source or the local database file. The 'Zero-Trust' branding is a major red flag, as true zero-trust architectures do not rely on hardcoded secrets in client-side code. The combination of deceptive marketing (claiming advanced cryptographic features) with a broken security implementation (hardcoded keys, local HTTP server) suggests this is either a scam, a data-harvesting tool disguised as a database, or a poorly written extension that poses a significant risk to user data integrity and confidentiality. The local HTTP server adds an additional attack vector. I recommend treating this extension as malicious and avoiding installation.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-18T19:54:53.087Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-18T20:25:49.357602+00:00Z"
+}

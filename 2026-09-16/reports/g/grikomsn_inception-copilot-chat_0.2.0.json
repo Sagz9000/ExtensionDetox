@@ -1,0 +1,119 @@
+{
+  "extension_id": "grikomsn.inception-copilot-chat",
+  "display_name": "Inception for GitHub Copilot Chat",
+  "version": "0.2.0",
+  "publisher": {
+    "name": "grikomsn",
+    "verified": false
+  },
+  "vsix_sha256": "cac399bc493884e603bee163e27c32c30ac60a6c07edb753c92f9a4a12b95c65",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.169375,
+    "ai_vibe": 0.05,
+    "static": 0.1875,
+    "behavioral": 0.0,
+    "trust_signal": 0.7,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/auth/auth.js",
+        "line": 6,
+        "snippet": "SECRET = \"inceptionCopilot.apiKey\""
+      }
+    ],
+    "high": [],
+    "total": 4
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.inceptionlabs.ai",
+      "source_file": "extension/out/transport/protocol.js",
+      "line": 8,
+      "context": "exports.API_BASE = \"https://api.inceptionlabs.ai/v1\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api-feedback.inceptionlabs.ai",
+      "source_file": "extension/out/transport/protocol.js",
+      "line": 9,
+      "context": "exports.FEEDBACK_URL = \"https://api-feedback.inceptionlabs.ai/feedback\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "platform.inceptionlabs.ai",
+      "source_file": "extension/out/commands/commands.js",
+      "line": 57,
+      "context": "const API_KEYS_URL = \"https://platform.inceptionlabs.ai/dashboard/api-keys\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/out/auth/auth.js",
+        "summary": "The code is a standard authentication module for a VS Code extension that integrates with the Inception API. It correctly uses the VS Code SecretStorage API to securely store and retrieve user-provided API keys, avoiding hardcoding sensitive credentials. The 'leaked_secrets' alert is a false positive caused by the scanner misidentifying the storage key name as a secret value. The extension's capabilities are proportional to its advertised function (AI chat integration), and no malicious behavior or capability disconnects were detected."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'inceptionCopilot.apiKey' as a hardcoded secret. This is a false positive; the string is a key identifier used to access the VS Code SecretStorage API, not the secret value itself.",
+        "code_reference": "exports.API_KEY_SECRET = \"inceptionCopilot.apiKey\";",
+        "line_hint": 6,
+        "target": "extension/out/auth/auth.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard authentication module for a VS Code extension that integrates with the Inception API. It correctly uses the VS Code SecretStorage API to securely store and retrieve user-provided API keys, avoiding hardcoding sensitive credentials. The 'leaked_secrets' alert is a false positive caused by the scanner misidentifying the storage key name as a secret value. The extension's capabilities are proportional to its advertised function (AI chat integration), and no malicious behavior or capability disconnects were detected.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-05T06:28:04.277Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T12:47:21.338465+00:00Z"
+}

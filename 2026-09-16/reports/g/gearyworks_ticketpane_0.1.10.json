@@ -1,0 +1,207 @@
+{
+  "extension_id": "gearyworks.ticketpane",
+  "display_name": "Ticketpane \u2014 Jira for VS Code",
+  "version": "0.1.10",
+  "publisher": {
+    "name": "gearyworks",
+    "verified": false
+  },
+  "vsix_sha256": "bae0adeb668303cb7d651c197e0b27fb79576a8acbb968f004af961a10a8631c",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.28146008277819157,
+    "ai_vibe": 0.15,
+    "static": 0.4658403311127662,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "toString(\"base64\")}`}get baseUrl(){return this.creds.cloudId?`https://api.atlassian.com/ex/jira/${encodeURIComponent(this.creds.cloudId)}`:`https://${this.creds.site}`}async request(e,i){let n=`${this"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "method:\"POST\",body:JSON.stringify({jql:e})}))?.count;return typeof n==\"number\"&&Number.isFinite(n)&&n>=0?Math.floor(n):void 0}catch{return}}async issue(e){let i=await this.getSprintFieldId(),n=[\"summa"
+      }
+    ],
+    "total": 14
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "ticketpane.com",
+      "source_file": "extension/package.json",
+      "line": 9,
+      "context": "\"homepage\": \"https://ticketpane.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "id.atlassian.com",
+      "source_file": "extension/package.json",
+      "line": 69,
+      "context": "\"contents\": \"Sign in to your Jira Cloud site to see the issues assigned to you.\\n[Sign in to Jira](command:ticketpane.signIn)\\nYou will need an [Atlassian API token](https://id.atlassian.com/manage-pr",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "biomejs.dev",
+      "source_file": "extension/biome.json",
+      "line": 2,
+      "context": "\"$schema\": \"https://biomejs.dev/schemas/2.5.11/schema.json\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.atlassian.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 417,
+      "context": "return this.creds.cloudId ? `https://api.atlassian.com/ex/jira/${encodeURIComponent(this.creds.cloudId)}` : `https://${this.creds.site}`",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.polar.sh",
+      "source_file": "extension/dist/extension.js",
+      "line": 690,
+      "context": "Ot = \"https://api.polar.sh\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "acme.atlassian.net",
+      "source_file": "extension/dist/extension.js",
+      "line": 925,
+      "context": "if (!e) throw new y('Enter your Jira site, for example \"acme\" or \"acme.atlassian.net\".');",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 146,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/2)",
+        "summary": "The extension is a legitimate Jira Cloud client for VS Code. The code implements standard API communication with Atlassian's Jira REST API using Basic Authentication (Base64 encoded credentials), which triggered a false positive for exfiltration. It includes standard telemetry via Sentry with explicit privacy redactions (removing user/device info and sanitizing site names), which triggered a false positive for harvesting. It interacts with the built-in Git extension for branch creation, which triggered a false positive for reconnaissance. No malicious patterns, credential theft, C2 communication, or capability disconnects were found. The behavior is fully proportional to the advertised functionality of a Jira issue tracker integration."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/2)",
+        "summary": "The extension 'Ticketpane' is a legitimate Jira integration for VS Code. The code implements standard features: authentication via Atlassian API tokens, fetching issues via Jira REST API, rendering issues in WebViews, and license verification via Polar. The static analysis hits are false positives triggered by standard security practices (CSP nonces, telemetry configuration checks, and WebView rendering). There is no evidence of credential harvesting, C2 communication, or malicious payload execution. The network traffic is confined to official Atlassian and Polar domains."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Base64 encoding data then sending over network' as potential exfiltration. This is a false positive. The code uses `Buffer.from(...).toString('base64')` to construct the standard HTTP Basic Authentication header (`Authorization: Basic <base64(email:token)>`) required by the Atlassian Jira Cloud REST API. This is standard, secure practice for API authentication, not data exfiltration.",
+        "code_reference": "get authHeader() { return `Basic ${Buffer.from(`${this.creds.email}:${this.creds.token}`).toString(\"base64\")}` }",
+        "line_hint": "approx. line 417",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Harvesting VSCode configuration and sending over network'. This is a false positive. The code reads the `ticketpane.errorReports` configuration setting to determine if the user has opted-in to error reporting. If enabled, it initializes Sentry with a specific DSN. The `beforeSend` hook explicitly redacts sensitive data (user, server_name, request, device contexts) and sanitizes messages using regexes to remove Atlassian site names and long tokens. This is standard privacy-preserving telemetry, not malicious harvesting.",
+        "code_reference": "let e = z.workspace.getConfiguration(\"ticketpane\").get(\"errorReports\", !1); ... beforeSend(n) { delete n.user ... }",
+        "line_hint": "approx. line 1",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Directory traversal paired with network send'. This is a false positive. The code uses `vscode.extensions.getExtension('vscode.git')` to interact with the built-in Git extension for creating branches. It does not perform directory traversal or send file system data over the network.",
+        "code_reference": "let t = K.extensions.getExtension(\"vscode.git\");",
+        "line_hint": "approx. line 1",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'WebView panel combined with external HTTP'. This is a false positive. The extension creates a WebView to render Jira issue details (HTML generated from Jira's Atlassian Document Format). The `enableScripts: false` setting is explicitly set, preventing arbitrary script execution in the webview, which is a security best practice. The HTTP calls are to the official Atlassian API endpoints defined in the class.",
+        "code_reference": "a.window.createWebviewPanel(..., { enableScripts: !1, ... })",
+        "line_hint": "approx. line 44",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Base64 encoding data then sending over network' as CRITICAL. Analysis shows this is a false positive. The code uses `toString(\"base64\")` in the context of generating a random nonce for Content Security Policy (CSP) in WebViews (`Ie()` function) or potentially for internal state serialization, not for exfiltrating sensitive user data to an external C2. The network calls are directed to `api.atlassian.com` (official Jira API) and `api.polar.sh` (license verification), which aligns with the extension's purpose.",
+        "code_reference": "function Ie() { return (0, Qe.randomBytes)(16).toString(\"hex\") }",
+        "line_hint": "approx line 180",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Harvesting VSCode configuration and sending over network'. The code reads `ticketpane.errorReports` configuration to determine if telemetry/error reporting is enabled. If enabled, it sends error data to Sentry (via `@sentry/node` dependency, visible in extracted indicators). This is standard, disclosed telemetry behavior, not malicious harvesting.",
+        "code_reference": "a.workspace.getConfiguration(\"ticketpane\").get(\"errorReports\", !1) && a.env.isTelemetryEnabled ? ue(e) : H()",
+        "line_hint": "approx line 260",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'WebView panel combined with external HTTP'. The extension creates WebViews to render Jira issue details. The HTML is generated locally using a template (`Ze` function) and sanitized inputs. It does not load remote content directly into the WebView (no `iframe` with remote src, no `vscode.env.openExternal` inside the webview context without user interaction). The CSP headers are strictly defined.",
+        "code_reference": "t.webview.html = Ze({ issue: i.issue, comments: i.comments, ... })",
+        "line_hint": "approx line 380",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is a legitimate Jira Cloud client for VS Code. The code implements standard API communication with Atlassian's Jira REST API using Basic Authentication (Base64 encoded credentials), which triggered a false positive for exfiltration. It includes standard telemetry via Sentry with explicit privacy redactions (removing user/device info and sanitizing site names), which triggered a false positive for harvesting. It interacts with the built-in Git extension for branch creation, which triggered a false positive for reconnaissance. No malicious patterns, credential theft, C2 communication, or capability disconnects were found. The behavior is fully proportional to the advertised functionality of a Jira issue tracker integration.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 5,
+    "published_date": "2026-09-10T23:52:44.41+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T04:21:17.114382+00:00Z"
+}

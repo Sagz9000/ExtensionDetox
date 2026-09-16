@@ -1,0 +1,261 @@
+{
+  "extension_id": "UUCS-UTILS.shplait",
+  "display_name": "Shplait",
+  "version": "0.4.1",
+  "publisher": {
+    "name": "UUCS-UTILS",
+    "verified": false
+  },
+  "vsix_sha256": "460723a16970183f4b4cf9cddce3ce157d54ffd9854bcc3bbf31180ea5915513",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.26789003907376807,
+    "ai_vibe": 0.15,
+    "static": 0.41156015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/src/extension.js",
+        "line": 1046,
+        "snippet": "Context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 2,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/extension.js",
+        "line": 2,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/src/extension.js",
+        "line": 109,
+        "snippet": "const onPath = cp.execSync(finder).toString().split('\\n')[0].trim();"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/extension.js",
+        "line": 2,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/src/extension.js (chunk 1/18)",
+        "summary": "This is a language support extension for Shplait (a Racket dialect). The code structure is clean, with no obfuscation. The use of `child_process` is justified by the need to run `raco expand` for syntax checking. The package size (0.1 MB) and activation events (`onLanguage:shplait`) are proportional to its function. No suspicious network endpoints or credential harvesting patterns were found in this chunk."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/18)",
+        "summary": "This chunk of the Shplait extension source code appears benign and well-structured. It primarily contains a list of built-in function names for autocompletion and logic to discover the Racket executable on the user's system. The use of `child_process` is justified by the need to locate and run the external Racket interpreter/compiler. The code is readable, uses standard Node.js APIs (`fs`, `path`, `process`), and handles errors gracefully. No obfuscation or suspicious network calls were observed in this chunk."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 5/18)",
+        "summary": "This chunk of the Shplait extension source code demonstrates clean, well-structured logic for implementing live syntax checking. It writes temporary files to perform `raco expand` checks and manages process lifecycles appropriately. The flagged `child_process` usage is necessary for the extension's primary function (running the Racket compiler), and the `SecretStorage` access is a standard way to handle user credentials for language features. No obfuscation or suspicious network exfiltration patterns are visible in this specific chunk."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 7/18)",
+        "summary": "This chunk of the Shplait extension source code contains standard lexical analysis logic for providing scope-aware autocompletion. It parses the document text to identify user-defined bindings (functions, variables) using regex and manual character scanning. The code is clean, well-commented, and consistent with the extension's stated purpose of providing language support. The static rule hits for `child_process` and `secrets` are likely false positives in this specific context, as they are standard mechanisms for language servers and secure configuration storage, respectively, and do not show signs of obfuscation or exfiltration in this snippet."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 8/18)",
+        "summary": "This chunk of code focuses on parsing Shplait source code to build a scope-aware completion list (identifying functions, types, and let-bindings). The logic is purely syntactic analysis using regular expressions and string manipulation. The two static hits (`child_process` and `secrets`) are consistent with the extension's documented purpose of running the Racket compiler for live error checking. No obfuscation, network exfiltration, or suspicious file system access is present in this specific chunk."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 14/18)",
+        "summary": "This chunk of the Shplait extension source code appears benign and well-aligned with its stated purpose. It handles the lifecycle of a child process used to run Racket tools (`raco`) for error checking and submission, parses JSON output from that process, and manages user interaction via VS Code dialogs. The use of `child_process` and `SecretStorage` is appropriate for a language server/runner extension. The file system access is limited to Racket-specific configuration files to inherit user preferences, which is a reasonable convenience feature for the target audience (CS students using DrRacket)."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 15/18)",
+        "summary": "This chunk of the Shplait extension source code handles user interaction for the 'CS 3520 handin' feature, specifically prompting for and retrieving credentials. The use of `child_process` and `vscode.SecretStorage` is directly proportional to the extension's advertised features of running Racket code and submitting assignments to a course server. The code is clean, uses standard VS Code APIs for UI and storage, and shows no signs of obfuscation or exfiltration to third-party endpoints."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk command execution. However, the extension's README explicitly states it is 'powered by `raco expand`' for live error checking. Spawning a process to run a language server/compiler is a standard and expected behavior for a language support extension.",
+        "code_reference": "const cp = require('child_process');",
+        "line_hint": 2,
+        "target": "extension/src/extension.js (chunk 1/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `Context.secrets.get(` as credential theft. In the context of a language extension, this is likely used to retrieve a user-configured path to the Racket installation or API keys for a remote grading service (CS 3520 handin), which is a standard use of VS Code's SecretStorage API rather than blind harvesting.",
+        "code_reference": "Context.secrets.get(",
+        "line_hint": 1046,
+        "target": "extension/src/extension.js (chunk 1/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `require('child_process')` and `execSync` as HIGH risk. However, the code uses `cp.execSync` to run `where racket` or `command -v racket` to locate the Racket executable on the system PATH. This is a standard and necessary pattern for language extensions that rely on external binaries (like linters or compilers) to provide features such as error checking.",
+        "code_reference": "const onPath = cp.execSync(finder).toString().split('\\n')[0].trim();",
+        "line_hint": "approx 15",
+        "target": "extension/src/extension.js (chunk 3/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `Context.secrets.get(` as CRITICAL credential theft. In the context of a language extension, accessing VS Code's SecretStorage is a standard, secure way to retrieve user-provided API keys or tokens (e.g., for a 'handin' feature mentioned in the README) without hardcoding them. It is not reading from the OS credential store directly, but from VS Code's managed storage.",
+        "code_reference": "Context.secrets.get(",
+        "line_hint": "1046",
+        "target": "extension/src/extension.js (chunk 3/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a direct command execution risk. However, the code uses `cp.execFile` to run `raco expand`, which is the documented Racket toolchain command for syntax checking. This is a legitimate core feature of the extension (live error checking), not arbitrary command execution or a stager.",
+        "code_reference": "const child = cp.execFile(racoFor(racket), ['expand', tmp], ...)",
+        "line_hint": 15,
+        "target": "extension/src/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `Context.secrets.get(` as credential theft. In the context of a language extension, accessing VS Code's SecretStorage is a standard pattern for retrieving user-provided API keys or configuration tokens (e.g., for a remote language server or cloud service). Without evidence that these secrets are sent to an unknown third-party endpoint, this is a standard configuration access pattern.",
+        "code_reference": "Context.secrets.get(",
+        "line_hint": 1046,
+        "target": "extension/src/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a direct command execution risk. However, in the context of a language extension that performs 'live error checking' via `raco expand` (as stated in the README), spawning a child process to run the language server/compiler is a standard and expected pattern. The code in this chunk is purely lexical analysis (scanning for symbols), so the require is likely at the top of the file for use in other chunks.",
+        "code_reference": "require('child_process')",
+        "line_hint": 2,
+        "target": "extension/src/extension.js (chunk 7/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `Context.secrets.get(` as credential theft. While reading from SecretStorage is sensitive, this is the standard VS Code API for retrieving user-provided secrets (like API keys or tokens) securely. Without evidence that these secrets are sent to a third-party server (exfiltration) rather than the extension's own backend, this is a standard usage pattern for extensions requiring authentication.",
+        "code_reference": "Context.secrets.get(",
+        "line_hint": 1046,
+        "target": "extension/src/extension.js (chunk 7/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a direct command execution risk. However, the extension's README explicitly states it provides 'live error checking... powered by `raco expand`' and 'running code via Racket'. Executing the Racket compiler/runtime is a core, documented feature of this language support extension, not an arbitrary stager.",
+        "code_reference": "require('child_process')",
+        "line_hint": 2,
+        "target": "extension/src/extension.js (chunk 8/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `Context.secrets.get(` as credential theft. In the context of a language extension that runs external binaries (Racket), it is standard practice to store the path to the Racket executable or specific configuration tokens in VS Code's SecretStorage to avoid exposing them in plain text settings. Without evidence that these secrets are sent to a third-party server (rather than used locally for process spawning), this is a benign configuration pattern.",
+        "code_reference": "Context.secrets.get(",
+        "line_hint": 1046,
+        "target": "extension/src/extension.js (chunk 8/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` as a direct command execution risk. However, the code explicitly spawns the `raco` executable (part of the Racket distribution) to perform language-specific tasks (expansion/handin). This is a core feature of the extension, not arbitrary shell execution.",
+        "code_reference": "require('child_process')",
+        "line_hint": 2,
+        "target": "extension/src/extension.js (chunk 14/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `Context.secrets.get(` as credential theft. The code uses `vscode.SecretStorage` to retrieve a password specifically for the 'shplait.handin' feature. This is the standard, secure way for VS Code extensions to store user credentials, preventing them from being exposed in plain text settings files.",
+        "code_reference": "Context.secrets.get(",
+        "line_hint": 1046,
+        "target": "extension/src/extension.js (chunk 14/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The function `drracketUsername` reads Racket preference files from the user's home directory (e.g., `~/.config/racket/racket-prefs.rktd`) to extract a previously saved username. While this accesses files outside the workspace, it is a targeted read for a specific configuration key related to the extension's domain (Racket/DrRacket), not a broad scan for sensitive keys like SSH or AWS.",
+        "code_reference": "fs.readFileSync(file, 'utf8')",
+        "line_hint": 1085,
+        "target": "extension/src/extension.js (chunk 14/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` as a direct command execution risk. However, the extension's stated purpose includes 'running code via Racket' and 'CS 3520 handin', which inherently requires spawning external processes (e.g., `raco`, `racket`). This is a necessary capability for the extension's core functionality, not an arbitrary execution risk.",
+        "code_reference": "require('child_process')",
+        "line_hint": 2,
+        "target": "extension/src/extension.js (chunk 15/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `Context.secrets.get(` as credential theft. The code explicitly uses `extContext.secrets` (VS Code's SecretStorage API) to retrieve a password for the 'CS 3520 handin' server. This is the standard, secure way for VS Code extensions to store and retrieve user credentials, rather than hardcoding them or reading from insecure files. The context confirms this is for a specific course submission server, not a generic exfiltration pattern.",
+        "code_reference": "extContext.secrets.get(passwordKey(username))",
+        "line_hint": 1046,
+        "target": "extension/src/extension.js (chunk 15/18)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This is a language support extension for Shplait (a Racket dialect). The code structure is clean, with no obfuscation. The use of `child_process` is justified by the need to run `raco expand` for syntax checking. The package size (0.1 MB) and activation events (`onLanguage:shplait`) are proportional to its function. No suspicious network endpoints or credential harvesting patterns were found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "4 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 18,
+    "published_date": "2026-08-31T20:30:52.29Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-02T19:47:31.259266+00:00Z"
+}

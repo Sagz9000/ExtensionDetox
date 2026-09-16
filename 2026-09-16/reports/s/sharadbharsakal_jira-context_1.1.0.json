@@ -1,0 +1,136 @@
+{
+  "extension_id": "sharadbharsakal.jira-context",
+  "display_name": "Jira Context",
+  "version": "1.1.0",
+  "publisher": {
+    "name": "sharadbharsakal",
+    "verified": false
+  },
+  "vsix_sha256": "62135d4673eb50498825db0d94354b4182749149d4cccf35e129601188a13189",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.194375,
+    "ai_vibe": 0.1,
+    "static": 0.1875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/auth/secretStorage.js",
+        "line": 42,
+        "snippet": "TOKEN = 'jiraContext.credentials.apiToken'"
+      }
+    ],
+    "high": [],
+    "total": 20
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "your-company.atlassian.net",
+      "source_file": "extension/out/utils/jiraBaseUrl.js",
+      "line": 5,
+      "context": "* Cloud example:  https://your-company.atlassian.net",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "jira.company.com",
+      "source_file": "extension/out/utils/jiraBaseUrl.js",
+      "line": 6,
+      "context": "* Server example: https://jira.company.com  or  https://jira.company.com/jira",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "atlassian.net",
+      "source_file": "extension/out/utils/jiraBaseUrl.js",
+      "line": 19,
+      "context": "return host.endsWith('.atlassian.net') && host !== 'atlassian.net';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "id.atlassian.com",
+      "source_file": "extension/out/auth/secretStorage.js",
+      "line": 149,
+      "context": "'Atlassian API Token (https://id.atlassian.com/manage-profile/security/api-tokens)' :",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 36,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/out/auth/secretStorage.js",
+        "summary": "The code implements a standard credential management service for a Jira integration extension. It correctly utilizes the VS Code `SecretStorage` API to store and retrieve sensitive data (Base URL, Email, API Token) securely, avoiding insecure storage in settings.json or workspace files. The prompts for credentials are standard UI interactions. There is no evidence of credential harvesting, exfiltration, or malicious behavior. The static scanner's 'leaked_secrets' alert is a false positive triggered by the variable name containing the word 'token'."
+      },
+      {
+        "target": "extension/out/logging/outputChannel.js",
+        "summary": "The provided source code is a standard, benign logging utility module for a VS Code extension. It implements functions to create, write to, and dispose of a VS Code Output Channel using the official `vscode` API. The code contains no network calls, file system operations, credential harvesting, command execution, or obfuscation. It aligns perfectly with the stated purpose of the 'Jira Context' extension by providing necessary logging infrastructure. No malicious or suspicious behavior was detected."
+      },
+      {
+        "target": "extension/out/utils/jiraBaseUrl.js",
+        "summary": "The provided source code is a utility module for validating and normalizing Jira base URLs. It contains standard string manipulation and URL parsing logic using the native `URL` class. There are no network calls, file system operations, child process executions, or obfuscation techniques present. The domains identified in the static evidence (e.g., `atlassian.net`, `jira.company.com`) are used strictly as examples in comments or for validation logic, which is consistent with the extension's stated purpose of connecting to Jira instances. No malicious behavior or capability disconnects were detected."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked_secrets' hit on line 42 (`const KEY_API_TOKEN = 'jiraContext.credentials.apiToken';`). This is a false positive. The string is a configuration key name used to retrieve credentials from VS Code's secure `SecretStorage` API, not a hardcoded credential value itself. The actual credentials are stored securely via `this.secrets.store()` and retrieved via `this.secrets.get()`, which is the recommended best practice for VS Code extensions.",
+        "code_reference": "const KEY_API_TOKEN = 'jiraContext.credentials.apiToken';",
+        "line_hint": "42",
+        "target": "extension/out/auth/secretStorage.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code implements a standard credential management service for a Jira integration extension. It correctly utilizes the VS Code `SecretStorage` API to store and retrieve sensitive data (Base URL, Email, API Token) securely, avoiding insecure storage in settings.json or workspace files. The prompts for credentials are standard UI interactions. There is no evidence of credential harvesting, exfiltration, or malicious behavior. The static scanner's 'leaked_secrets' alert is a false positive triggered by the variable name containing the word 'token'.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 36,
+    "published_date": "2026-07-16T13:22:49.527+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T05:55:19.011738+00:00Z"
+}

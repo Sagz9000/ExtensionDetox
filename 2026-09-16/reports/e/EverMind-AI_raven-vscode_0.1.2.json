@@ -1,0 +1,153 @@
+{
+  "extension_id": "EverMind-AI.raven-vscode",
+  "display_name": "Raven Agent",
+  "version": "0.1.2",
+  "publisher": {
+    "name": "EverMind-AI",
+    "verified": false
+  },
+  "vsix_sha256": "0419da197fbbd9a41b16e66eeb7514a19f054b8bb63b520d781c695891689a75",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.22726503907376805,
+    "ai_vibe": 0.1,
+    "static": 0.34906015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.7,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.js",
+        "line": 25,
+        "snippet": "Object.entries(process.env)"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "const node_child_process_1 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 21,
+        "snippet": "const result = (0, node_child_process_1.spawnSync)(command, args, { encoding, timeout });"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 21,
+        "snippet": "const result = (0, node_child_process_1.spawnSync)(command, args, { encoding, timeout });"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js",
+        "summary": "The extension code is benign and aligns perfectly with its advertised functionality. It is a simple wrapper that locates the `raven` executable and launches it in a VS Code integrated terminal. The use of `child_process.spawnSync` is limited to probing for the executable's path (e.g., `which`, `where`) and is not used for arbitrary command execution. The handling of environment variables is standard for passing shell context to the child process. No malicious indicators, obfuscation, or capability disconnects were found."
+      },
+      {
+        "target": "extension/dist/api.js",
+        "summary": "The code is a clean, minimal adapter for the VS Code API. It strictly limits itself to creating terminals, reading workspace configuration, and registering commands, which is fully proportional to the extension's advertised purpose of launching the 'Raven' TUI. There are no network calls, file system access to sensitive paths, process execution outside of the VS Code terminal API, or obfuscation. The behavioral alignment is perfect: the activation event is specific, the size is negligible, and the capabilities match the description."
+      },
+      {
+        "target": "extension/dist/pathProbe.js (chunk 1/2)",
+        "summary": "The code is a utility module designed to locate the `raven` executable and capture the user's login shell environment variables. It uses standard shell commands (`which`, `where`, `bash -lic`, `powershell -Command`) to achieve this. The behavior is fully consistent with the extension's stated purpose of launching a TUI that requires the user's shell environment (for proxy settings and API keys). There are no signs of obfuscation, data exfiltration, credential harvesting from sensitive files (like ~/.ssh), or malicious command execution. The use of `child_process` (implied by the `runner` injection) is appropriate for a tool that launches external binaries. The risk is low, primarily due to the inherent sensitivity of capturing full environment variables, which is a documented feature rather than a hidden one."
+      },
+      {
+        "target": "extension/dist/pathProbe.js (chunk 2/2)",
+        "summary": "This code snippet is a fragment of a path resolution and environment variable probing utility. It checks the status of a command execution and parses the standard output to extract environment variables. This behavior is fully aligned with the extension's documented purpose of launching the 'Raven' TUI with the correct login shell environment. There are no indicators of malicious activity, data exfiltration, or capability disconnects in this specific chunk."
+      },
+      {
+        "target": "extension/dist/ravenBin.js",
+        "summary": "The code is a pure utility function designed to resolve the file path for the 'raven' executable. It performs no network requests, does not read sensitive files (like ~/.ssh or credentials), does not execute arbitrary commands directly (it only returns a command object for the caller to execute), and contains no obfuscation. The logic is transparent, well-documented, and strictly aligned with the extension's stated purpose of launching a TUI tool. No malicious or suspicious behavior was detected."
+      },
+      {
+        "target": "extension/dist/terminal.js",
+        "summary": "The code is a clean, minimal implementation of a VS Code terminal manager. It strictly uses the `vscode.window.createTerminal` API to launch a specific executable (`raven`) in an editor-area tab. There are no network calls, no file system access outside the workspace, no credential harvesting, and no obfuscation. The behavior is fully aligned with the extension's stated purpose of launching a TUI tool."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'credential_harvesting' due to `Object.entries(process.env)`. Upon review, this code is part of `cleanProcessEnv()`, which filters out undefined values from the environment variables. This is a standard and necessary practice when launching child processes to ensure a clean environment, not an attempt to exfiltrate secrets. The resulting environment is passed to the `raven` executable, which is the documented purpose of the extension.",
+        "code_reference": "function cleanProcessEnv() { return Object.fromEntries(Object.entries(process.env).filter((entry) => entry[1] !== undefined)); }",
+        "line_hint": 25,
+        "target": "extension/dist/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "INFORMATION_DISCLOSURE",
+        "description": "The function `probePosixEnv` executes `env` inside a login shell and parses the output. This captures all environment variables, which may include sensitive data such as API keys, tokens, or proxy credentials. While this is explicitly documented in the README as a feature to pass shell configuration to the `raven` process, it represents a potential vector for credential leakage if the `raven` binary itself is compromised or if the environment is exfiltrated elsewhere in the codebase (not visible in this chunk).",
+        "code_reference": "const result = runner(shell, ['-lic', 'env'], { ... });",
+        "line_hint": 88,
+        "target": "extension/dist/pathProbe.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "ENVIRONMENT_PROBE",
+        "description": "The code parses environment variables from shell output. While this is consistent with the extension's stated goal of merging login shell environments (to pass proxy settings/API keys to the `raven` binary), it does involve reading environment variables which could potentially contain secrets. However, given the context of launching a CLI tool that requires these variables, this is a standard and expected behavior for this type of extension, not an exfiltration attempt.",
+        "code_reference": "const env = parseEnvLines(result.stdout);",
+        "line_hint": 5,
+        "target": "extension/dist/pathProbe.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension code is benign and aligns perfectly with its advertised functionality. It is a simple wrapper that locates the `raven` executable and launches it in a VS Code integrated terminal. The use of `child_process.spawnSync` is limited to probing for the executable's path (e.g., `which`, `where`) and is not used for arbitrary command execution. The handling of environment variables is standard for passing shell context to the child process. No malicious indicators, obfuscation, or capability disconnects were found.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-28T20:38:24.517Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T06:26:17.495710+00:00Z"
+}

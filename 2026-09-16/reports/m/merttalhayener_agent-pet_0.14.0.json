@@ -1,0 +1,172 @@
+{
+  "extension_id": "merttalhayener.agent-pet",
+  "display_name": "Agent Pet",
+  "version": "0.14.0",
+  "publisher": {
+    "name": "merttalhayener",
+    "verified": false
+  },
+  "vsix_sha256": "434741163019638a0b019cf76a444e6e401eb2696bee2ef568cd0f1a9af6a0c3",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25157756324130753,
+    "ai_vibe": 0.1,
+    "static": 0.41631025296523005,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Spawning a detached, output-suppressed background process",
+        "file": "extension/desktop.cjs",
+        "line": 87,
+        "snippet": "spawn(this.executable, ['--state-dir', this.directory], { detached: true, stdio: 'ignore'"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/activity.cjs",
+        "line": 3,
+        "snippet": "const { execFile } = require('node:child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/desktop.cjs",
+        "line": 3,
+        "snippet": "const { spawn, execFile } = require('node:child_process');"
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/extension.cjs",
+        "summary": "The extension appears to be a legitimate utility for monitoring AI coding agents (Codex, Claude) with a visual desktop companion. The code logic aligns with the advertised functionality: it monitors file system activity in specific agent directories (~/.codex, ~/.claude), manages a native macOS app via a bridge, and provides UI elements within VS Code. There are no signs of credential harvesting, data exfiltration, or malicious command execution. The activation on startup is aggressive but necessary for the background monitoring feature."
+      },
+      {
+        "target": "extension/agent-activity.cjs",
+        "summary": "The provided source code implements an `AgentActivityMonitor` class that periodically checks the status of AI coding agents (Codex and Claude) by reading local JSON files (`tracked-threads.json`) and delegating to other monitor classes. The code uses standard Node.js modules (`fs/promises`, `path`) and VS Code extension patterns. There are no network requests, no execution of child processes, no access to sensitive system paths (like SSH keys or browser data), and no obfuscation. The behavior is strictly aligned with the extension's advertised purpose of tracking chat activity for a desktop companion."
+      },
+      {
+        "target": "extension/update-reload.cjs",
+        "summary": "The provided source code (`update-reload.cjs`) implements a safe, standard auto-reload mechanism for the extension. It checks for new versions, verifies that the user is idle (no dirty files, no active tasks/debug sessions), and then triggers a standard VS Code window reload command (`workbench.action.reloadWindow`). There are no signs of credential harvesting, network exfiltration, arbitrary code execution, or obfuscation. The code relies on standard Node.js `fs` and `path` modules and VS Code APIs. The logic is transparent and aligns with the advertised functionality of managing updates for a chat-tracking companion. The only minor note is the aggressive activation event (`onStartupFinished`), which is common for extensions that need to maintain persistent state or UI overlays but is not a security risk in this context."
+      },
+      {
+        "target": "extension/marketplace-migration.cjs",
+        "summary": "The provided source code implements a migration routine for a VS Code extension named 'Agent Pet'. Its primary function is to detect if a legacy version ('local.codex-pet-panel') is installed, prompt the user to replace it, uninstall the legacy version via the VS Code API, and migrate specific configuration files (tracked-threads.json) from the legacy storage path to the new extension's global storage path. The code interacts with the file system only within the extension's designated storage directories and the extension's own installation path (to locate the native helper executable). There are no network calls, no execution of arbitrary shell commands, no credential harvesting, and no obfuscation. The use of `vscode.extensions.getExtension` is limited to checking for a specific known legacy ID, which is a standard and safe practice for extension updates. The activation events mentioned in the metadata are slightly aggressive but consistent with the need to manage a background native helper process. No malicious indicators were found."
+      },
+      {
+        "target": "extension/marketplace-updater.cjs",
+        "summary": "The code implements a standard update-checking mechanism for a VS Code extension. It reads local extension metadata to determine the installed version and periodically triggers the native VS Code extension search command to prompt the user for updates if a newer version is available. The file deletion operation is a local cleanup of a state flag within the extension's private storage. There are no network calls, credential harvesting, or arbitrary code execution patterns. The behavior is proportional to the stated purpose of managing updates for a desktop companion extension."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is an aggressive activation event. While justified by the need to monitor background agent activity (Codex/Claude) and maintain a persistent desktop companion, it causes the extension to load immediately upon VS Code startup, potentially impacting startup performance.",
+        "code_reference": "Activation Events: onStartupFinished, onUri",
+        "line_hint": null,
+        "target": "extension/extension.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension bundles a native macOS application ('Agent Pet.app') and communicates with it via a bridge ('DesktopBridge'). While consistent with the 'floating desktop companion' description, this increases the attack surface compared to pure JS extensions. The code correctly restricts this to 'darwin' (macOS) platforms.",
+        "code_reference": "if (process.platform === 'darwin') { desktop = new DesktopBridge(..., path.join(context.extensionPath, 'bin', 'Agent Pet.app', ...))",
+        "line_hint": 68,
+        "target": "extension/extension.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension's activation events include 'onStartupFinished'. While not inherently malicious, this is an aggressive activation strategy for a UI companion extension. It ensures the extension runs immediately upon VS Code startup, which is typical for persistent background services or agents but slightly disproportionate for a simple 'floating desktop companion' unless it needs to monitor global state immediately. However, given the 'Agent Pet' description implies monitoring chat states across workspaces, early activation is functionally justified.",
+        "code_reference": "package.json metadata (provided in prompt)",
+        "line_hint": null,
+        "target": "extension/update-reload.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished' and 'onUri'. While the README describes a floating desktop companion (which might justify early activation for UI persistence), 'onStartupFinished' is generally considered aggressive for extensions that don't strictly require immediate global state initialization. However, given the context of managing a native helper process ('Agent Pet.app'), this activation strategy is plausible for ensuring the companion is ready immediately. It is not inherently malicious but is a minor deviation from best practices for simple UI extensions.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/marketplace-migration.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The code uses `vscode.extensions.getExtension(LEGACY_ID)` to check for the presence of a legacy extension ID ('local.codex-pet-panel'). This is a standard pattern for handling migration from a preview/legacy version to a new marketplace version. It is not used for broad reconnaissance of all installed extensions, but rather a specific check for conflict resolution. The static scanner flagged this as 'Enumerating installed extensions', but in this specific context, it is a benign migration check.",
+        "code_reference": "if (vscode.extensions.getExtension(LEGACY_ID)) {",
+        "line_hint": "9",
+        "target": "extension/marketplace-migration.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `setInterval` to periodically trigger the VS Code command `workbench.extensions.search`. While this is a legitimate way to prompt the user to update via the UI, it runs every 2 seconds. This is slightly aggressive for a background check but does not constitute malicious behavior or data exfiltration.",
+        "code_reference": "timer = setInterval(async () => { ... await check(); ... }, 2000);",
+        "line_hint": "34",
+        "target": "extension/marketplace-updater.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Directory traversal paired with network send' due to the use of `globalStorageUri.fsPath` and `fs.unlink`. However, the code only deletes a local file (`check-update-request`) within the extension's own storage directory to manage state. There is no network transmission of this path or file content.",
+        "code_reference": "await fs.unlink(path.join(context.globalStorageUri.fsPath, 'desktop', 'check-update-request'));",
+        "line_hint": "34",
+        "target": "extension/marketplace-updater.cjs"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension appears to be a legitimate utility for monitoring AI coding agents (Codex, Claude) with a visual desktop companion. The code logic aligns with the advertised functionality: it monitors file system activity in specific agent directories (~/.codex, ~/.claude), manages a native macOS app via a bridge, and provides UI elements within VS Code. There are no signs of credential harvesting, data exfiltration, or malicious command execution. The activation on startup is aggressive but necessary for the background monitoring feature.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-14T09:26:42.19Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-14T13:16:07.378095+00:00Z"
+}

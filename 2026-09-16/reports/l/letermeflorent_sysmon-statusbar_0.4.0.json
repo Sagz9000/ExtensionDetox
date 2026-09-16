@@ -1,0 +1,284 @@
+{
+  "extension_id": "letermeflorent.sysmon-statusbar",
+  "display_name": "System Monitor Status Bar",
+  "version": "0.4.0",
+  "publisher": {
+    "name": "letermeflorent",
+    "verified": false
+  },
+  "vsix_sha256": "2df4c705ae6b1b6eed4bbd788802ac76f7eb6e1d8a4bf1aac50bdf33e65ff8e7",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2926550781475361,
+    "ai_vibe": 0.15,
+    "static": 0.5106203125901445,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/metrics.js",
+        "line": 13,
+        "snippet": "os.cpus()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/metrics.js",
+        "line": 93,
+        "snippet": "os.cpus()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 7,
+        "snippet": "os.platform()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/linux.js",
+        "line": 3,
+        "snippet": "const cp = require('node:child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/probe.js",
+        "line": 1,
+        "snippet": "const cp = require('node:child_process');"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 11,
+    "blocks_seen": 11,
+    "summaries": [
+      {
+        "target": "extension/metrics.js (chunk 1/2)",
+        "summary": "This file contains pure utility functions for calculating CPU, RAM, and disk metrics and formatting them for display in the VS Code status bar. The code is clean, well-commented (in French), and uses standard Node.js `os` module APIs (`os.cpus`, `os.totalmem`, `os.freemem`) which are exactly what a system monitor extension should use. The 'CRITICAL' scanner hits for `os.cpus()` are false positives given the extension's stated purpose. No network calls, child processes, or sensitive file reads are present in this chunk."
+      },
+      {
+        "target": "extension/metrics.js (chunk 2/2)",
+        "summary": "This file contains utility functions for formatting and retrieving system metrics (CPU, RAM, Disk). The code is plain, unobfuscated, and logically consistent with the extension's stated purpose of displaying system resource usage in the status bar. The `os.cpus()` call is a false positive for infostealer behavior given the context. No network calls, child processes, or sensitive file reads are present in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 1/4)",
+        "summary": "This chunk of the 'System Monitor Status Bar' extension appears benign. It imports standard Node.js and VS Code modules, defines configuration helpers, and sets up the logic for displaying CPU, GPU, disk, and RAM metrics in the status bar. The use of `os.platform()` is justified by the need to select the correct OS-specific probe. No network calls, child process executions, or sensitive file reads are present in this chunk. The code structure is clean and consistent with the extension's advertised purpose."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/4)",
+        "summary": "This chunk of code is responsible for rendering the status bar items and generating Markdown content for the command palette output. It uses standard VS Code APIs (`vscode.MarkdownString`) and local helper functions to format CPU, RAM, GPU, and disk metrics. The logic is consistent with the extension's stated purpose of displaying system resource usage. The only flagged item, `os.platform()`, is a benign platform check required for cross-platform compatibility. No network calls, child process executions, or sensitive file reads are present in this specific chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/4)",
+        "summary": "This chunk of code implements the core rendering and lifecycle logic for a VS Code status bar extension that displays system metrics (CPU, GPU, Disk, RAM). The code uses standard VS Code APIs (`createStatusBarItem`, `registerCommand`, `showQuickPick`) and manages timers for periodic updates. The logic is straightforward: it reads configuration, calculates values, and updates UI elements. There are no network calls, no file system access to sensitive directories, no child process execution, and no obfuscation. The behavior is perfectly aligned with the extension's stated purpose of monitoring system resources."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/4)",
+        "summary": "This chunk (4/4) contains the tail end of the `activate` function and the `deactivate` function. It handles VS Code configuration changes (specifically for disk device selection and alignment), manages the lifecycle of timers and probes (clearing intervals, stopping probes), and registers the standard module exports. The logic is consistent with a status bar extension that needs to react to user settings and clean up resources upon deactivation. No network calls, child process executions, or sensitive file reads are present in this specific chunk. The code appears benign and well-structured."
+      },
+      {
+        "target": "extension/probe.js (chunk 1/2)",
+        "summary": "This chunk of code appears to be a well-structured utility for parsing Windows Performance Counter (PDH) CSV output. It handles localization (French/English counter names) and parses GPU and Disk usage. The use of `child_process` is justified by the need to query system performance counters which are not natively available in Node.js without external native modules. No obfuscation, network calls, or sensitive file access is observed in this chunk. The code is clean and proportional to the 'System Monitor' description."
+      },
+      {
+        "target": "extension/probe.js (chunk 2/2)",
+        "summary": "This file implements a probe class that monitors system performance metrics (CPU, GPU, disk) by spawning the Windows 'typeperf' command and parsing its stdout. The logic is straightforward: it manages the lifecycle of the child process, buffers incoming data, parses headers and values, and maintains a state of the latest metrics. There are no network calls, no access to sensitive user files (like ~/.ssh or browser data), no obfuscation, and no credential harvesting. The use of child_process is proportional to the extension's advertised purpose of displaying system resource usage. The code appears clean and well-structured for its specific function."
+      },
+      {
+        "target": "extension/linux.js (chunk 1/3)",
+        "summary": "This chunk of the 'System Monitor Status Bar' extension appears benign and well-aligned with its advertised purpose. It reads standard Linux procfs/sysfs files (`/proc/diskstats`, `/sys/class/drm`) to calculate disk and GPU usage. The use of `child_process` is limited to a specific, documented check for `nvidia-smi` availability, which is a reasonable implementation detail for a system monitor. The code is clean, well-commented (in French), and lacks obfuscation or suspicious network calls in this section."
+      },
+      {
+        "target": "extension/linux.js (chunk 2/3)",
+        "summary": "This chunk of the `sysmon-statusbar` extension implements the Linux-specific probing logic. It reads disk I/O statistics from `/proc/diskstats` and GPU utilization either via sysfs or by executing `nvidia-smi`. The code is clean, well-structured, and uses standard Node.js APIs (`child_process`, `fs` implied by helper functions) appropriate for a system monitor. There are no signs of obfuscation, network exfiltration, or access to sensitive user directories like `~/.ssh` or `~/.aws`. The use of `execFile` is a reasonable choice for querying GPU stats without shell injection risks."
+      },
+      {
+        "target": "extension/linux.js (chunk 3/3)",
+        "summary": "This file is a standard module export definition for a Linux-specific system monitoring extension. It exposes functions for parsing disk statistics, finding GPU sysfs paths, and querying NVIDIA SMI, all of which are expected for an extension that displays hardware usage metrics. There are no signs of obfuscation, network calls, or sensitive file access in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.cpus()` as 'infostealer_behavior' (system fingerprinting). However, in the context of a 'System Monitor' extension, calling `os.cpus()` to calculate CPU usage percentages is the standard and expected implementation. There is no network exfiltration or combination with other fingerprinting APIs (like hostname/userInfo) in this chunk to suggest identity theft.",
+        "code_reference": "os.cpus()",
+        "line_hint": 13,
+        "target": "extension/metrics.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. While appropriate for a status bar item that needs to be visible immediately, it is a broader activation scope than strictly necessary if it could be triggered by a command. However, for a system monitor, this is standard practice to ensure the bar is populated before the user notices its absence. Not a significant risk.",
+        "code_reference": "activationEvents",
+        "line_hint": null,
+        "target": "extension/metrics.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.cpus()` as 'System fingerprinting' (infostealer behavior). However, in the context of a 'System Monitor' extension, calling `os.cpus()` to retrieve the CPU model name and core count for display is a standard and expected operation. There is no network exfiltration or combination with other sensitive data (like hostname or user info) in this chunk to suggest fingerprinting for tracking purposes.",
+        "code_reference": "function cpuInfo() { const c = os.cpus(); ... }",
+        "line_hint": 93,
+        "target": "extension/metrics.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.platform()` as 'infostealer_behavior' (system fingerprinting). However, in the context of a system monitor extension, checking the platform is necessary to determine which OS-specific probe (Windows vs. Linux) to instantiate. It is not combined with network exfiltration in this chunk.",
+        "code_reference": "const IS_WINDOWS = os.platform() === 'win32';",
+        "line_hint": 10,
+        "target": "extension/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension activates on `onStartupFinished`. While this is broader than necessary for a status bar item (which could activate on demand), it is common for extensions that need to display persistent UI elements immediately upon VS Code launch. It is not a critical disconnect.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `os.platform()` as a system fingerprinting API call. In the context of a system monitor extension, this is a standard and necessary call to determine the OS (Windows vs. Linux/macOS) in order to select the correct data sources (e.g., `typeperf` vs. `/proc/diskstats`). It is not combined with network exfiltration or other fingerprinting APIs in this chunk.",
+        "code_reference": "os.platform()",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `os.platform()` as a system fingerprinting API call. However, in the context of a 'System Monitor' extension, checking the platform is necessary to determine which specific system metrics (CPU, GPU, Disk, RAM) are available and how to query them. This is a standard and expected behavior for this type of extension, not an info-stealer pattern.",
+        "code_reference": "os.platform()",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.platform()` as system fingerprinting. However, in the context of a 'System Monitor' extension, checking the OS platform is a standard and necessary operation to determine which system commands (e.g., `psutil` vs `top` vs `wmic`) or APIs to use for retrieving CPU/memory stats. It is not combined with network exfiltration in this chunk.",
+        "code_reference": "os.platform()",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension uses `node:child_process` to execute `typeperf` (Windows Performance Counters). While this is a standard and efficient way to get GPU/Disk metrics on Windows, it is a 'heavy' dependency for a simple status bar extension. However, given the specific need for GPU utilization which is not easily accessible via standard Node.js APIs without native bindings, this is a reasonable architectural choice rather than a malicious one.",
+        "code_reference": "const cp = require('node:child_process');",
+        "line_hint": 1,
+        "target": "extension/probe.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. For a status bar item that updates periodically, this is appropriate to ensure the UI is ready, though `onStartup` or lazy activation might be slightly more efficient. It is not a red flag.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/probe.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "COMMAND_EXECUTION",
+        "description": "Uses child_process.spawn to execute 'typeperf', a standard Windows performance counter utility. This is expected for a system monitor extension on Windows and the arguments appear to be static counters defined in the COUNTERS constant (not visible in this chunk but implied).",
+        "code_reference": "cp.spawn('typeperf', COUNTERS.concat(['-si', String(this.interval)]), ...)",
+        "line_hint": 24,
+        "target": "extension/probe.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While appropriate for a status bar item that needs to be visible immediately, this is a broader activation scope than strictly necessary for a passive display tool, though common for this category.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/linux.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension uses `child_process.execFileSync` to check for `nvidia-smi`. While this is a standard way to detect GPU capabilities on Linux, it is a heavier dependency than pure file system reads, which might be unexpected for a simple 'status bar' extension, but is justified by the need for accurate GPU metrics.",
+        "code_reference": "hasNvidiaSmi",
+        "line_hint": 82,
+        "target": "extension/linux.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "COMMAND_EXECUTION",
+        "description": "Uses `child_process.execFile` to run `nvidia-smi` for GPU utilization. While `execFile` is safer than `exec` (no shell interpolation), it still spawns a native process. This is expected for a system monitor extension on Linux.",
+        "code_reference": "cp.execFile('nvidia-smi', ...)",
+        "line_hint": 14,
+        "target": "extension/linux.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "Reads from `/proc/diskstats` and GPU sysfs paths (e.g., `/sys/class/drm/...`). These are standard Linux locations for hardware metrics and are appropriate for a system monitor.",
+        "code_reference": "readDiskStats(), findGpuSysfsPaths()",
+        "line_hint": 35,
+        "target": "extension/linux.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code exports a set of utility functions for reading Linux system metrics (disk stats, GPU sysfs paths, NVIDIA SMI queries). This aligns perfectly with the extension's stated purpose of displaying CPU, GPU, disk, and memory usage in the status bar. No unexpected capabilities like network exfiltration or credential harvesting are present in this module.",
+        "code_reference": "module.exports = { isWholeDisk, parseDiskStats, ... }",
+        "line_hint": 1,
+        "target": "extension/linux.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This file contains pure utility functions for calculating CPU, RAM, and disk metrics and formatting them for display in the VS Code status bar. The code is clean, well-commented (in French), and uses standard Node.js `os` module APIs (`os.cpus`, `os.totalmem`, `os.freemem`) which are exactly what a system monitor extension should use. The 'CRITICAL' scanner hits for `os.cpus()` are false positives given the extension's stated purpose. No network calls, child processes, or sensitive file reads are present in this chunk.",
+  "escalation_reasons": [
+    "3 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-09-03T09:19:05.26Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-04T08:23:20.816242+00:00Z"
+}

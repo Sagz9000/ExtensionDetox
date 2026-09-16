@@ -1,0 +1,162 @@
+{
+  "extension_id": "VertexIT.vrxt-interactive-terminal",
+  "display_name": "Interactive Terminal for Cursor",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "VertexIT",
+    "verified": false
+  },
+  "vsix_sha256": "d9694036f4bd83a49d48d3d6184c59f43e4afcfde7371aa9583f0c362221e14f",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25687499999999996,
+    "ai_vibe": 0.1,
+    "static": 0.4375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/terminal.cjs",
+        "line": 70,
+        "snippet": "os.hostname()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/terminal.cjs",
+        "line": 102,
+        "snippet": "os.hostname()"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/src/relay.cjs",
+        "line": 17,
+        "snippet": "method: 'POST', headers: { Authorization: `Bearer ${token"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "vrxt.de",
+      "source_file": "extension/package.json",
+      "line": 45,
+      "context": "\"url\": \"https://vrxt.de/?lang=en\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 4,
+    "blocks_seen": 4,
+    "summaries": [
+      {
+        "target": "extension/src/extension.cjs",
+        "summary": "The code is a legitimate implementation of an MCP (Model Context Protocol) server for VS Code/Cursor. It creates a local HTTP server to bridge terminal interactions for AI agents, which aligns perfectly with the extension's advertised purpose ('Interactive Terminal for Cursor'). The use of `process.execPath` and `ELECTRON_RUN_AS_NODE` is a standard pattern for launching Node.js scripts within the Electron environment of VS Code/Cursor. The connection to `127.0.0.1` is local and secure. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious command execution. The single dependency and small package size are proportional to the functionality."
+      },
+      {
+        "target": "extension/src/terminal.cjs",
+        "summary": "The code is a legitimate implementation of an interactive terminal manager for a VS Code/Cursor extension. It manages terminal sessions, handles input/output via PTY (pseudo-terminal) interfaces, and integrates with the VS Code window API. The flagged `os.hostname()` calls are used for session metadata (identifying the host machine) and are not part of an exfiltration chain. The use of `child_process` via `node-pty` is expected for this functionality. No malicious patterns, credential harvesting, or unauthorized network exfiltration were detected."
+      },
+      {
+        "target": "extension/src/protocol.cjs",
+        "summary": "The code is a clean implementation of an MCP (Model Context Protocol) server for managing interactive terminals in VS Code/Cursor. It defines standard JSON-RPC handlers for listing, creating, reading, sending input to, and closing terminals. The logic is transparent, lacks obfuscation, and does not contain any suspicious network calls, credential harvesting, or arbitrary command execution beyond the intended terminal functionality. The capabilities are proportional to the advertised purpose of providing interactive terminal access to the AI agent."
+      },
+      {
+        "target": "extension/src/server.cjs",
+        "summary": "The provided source code implements a local HTTP server bound to 127.0.0.1 (localhost) to facilitate communication between the VS Code extension and the Cursor AI agent via an MCP (Model Context Protocol) interface. The code uses standard Node.js `http` and `crypto` modules. It implements robust security measures including: 1) Binding only to localhost, preventing external network access. 2) Generating a random 32-byte token for authentication. 3) Using `timingSafeEqual` to prevent timing attacks during token verification. 4) Enforcing POST-only requests for the RPC endpoint. 5) Limiting request body size to ~128KB to prevent DoS. 6) Checking for the absence of an 'Origin' header to mitigate CSRF attacks. The behavior is entirely consistent with the extension's stated purpose of providing interactive terminal access to the AI agent. There are no signs of credential theft, remote code execution, or data exfiltration. The domain `vrxt.de` in the metadata is associated with the publisher VertexIT and is not used in the code for network calls. The code is clean."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this is necessary for the extension to register MCP tools before the user interacts with the agent, it is a broader activation scope than strictly required for a command-triggered tool. However, given the nature of MCP integration which often requires early registration, this is acceptable and not indicative of malicious intent.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/src/extension.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname()` as a potential info-stealer pattern. However, in this context, `os.hostname()` is used within the `list()` and `create()` methods of the `TerminalManager` class to return metadata about the terminal session (specifically, which host the terminal is running on). This is standard behavior for remote development extensions (like VS Code Remote) to distinguish between local and remote terminals. There is no evidence of this data being exfiltrated to an external server; it is returned to the calling agent/API consumer within the extension's internal logic.",
+        "code_reference": "list() { return { host: os.hostname(), ... }; }",
+        "line_hint": "70, 102",
+        "target": "extension/src/terminal.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `child_process` (via `node-pty` bundled dependency) to spawn shell processes. This is consistent with the extension's stated purpose of providing 'Interactive Terminal' access to an AI agent. The use of `node-pty` and `@xterm/headless` is appropriate for creating headless terminal emulators. The activation event `onStartupFinished` is acceptable for an extension that needs to register global terminal listeners immediately.",
+        "code_reference": "const native = this.deps.pty || bundled('node-pty', v.env.appRoot); ... proc = native.spawn(shell, ...)",
+        "line_hint": "145",
+        "target": "extension/src/terminal.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this is common for extensions that need to register MCP tools or background services, it is slightly broader than necessary for a terminal management tool that could activate on command usage or specific terminal events. However, given the need to register MCP tools automatically in trusted workspaces, this is a reasonable design choice and not malicious.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/src/protocol.cjs"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is aggressive for a utility extension that likely only needs to activate when a command is invoked or an MCP tool is requested. However, this is a common pattern for extensions that need to initialize background services (like the local HTTP server seen here) early to ensure availability for the AI agent. It is not inherently malicious but is a minor deviation from best practices for lightweight extensions.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/server.cjs"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate implementation of an MCP (Model Context Protocol) server for VS Code/Cursor. It creates a local HTTP server to bridge terminal interactions for AI agents, which aligns perfectly with the extension's advertised purpose ('Interactive Terminal for Cursor'). The use of `process.execPath` and `ELECTRON_RUN_AS_NODE` is a standard pattern for launching Node.js scripts within the Electron environment of VS Code/Cursor. The connection to `127.0.0.1` is local and secure. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious command execution. The single dependency and small package size are proportional to the functionality.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-13T14:10:59.013Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-13T14:36:28.266206+00:00Z"
+}

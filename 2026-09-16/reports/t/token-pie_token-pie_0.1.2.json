@@ -1,0 +1,295 @@
+{
+  "extension_id": "token-pie.token-pie",
+  "display_name": "Token Pie",
+  "version": "0.1.2",
+  "publisher": {
+    "name": "token-pie",
+    "verified": false
+  },
+  "vsix_sha256": "b938ff736337243ecfcc279d718d4af82b5148a5e52872ba6ecd8c5d767b1411",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.23531249999999998,
+    "ai_vibe": 0.15,
+    "static": 0.28125,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/quota.js",
+        "line": 67,
+        "snippet": "vscode.authentication.getSession"
+      }
+    ],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 16,
+    "blocks_seen": 16,
+    "summaries": [
+      {
+        "target": "extension/out/quota.js (chunk 1/2)",
+        "summary": "This chunk of the 'Token Pie' extension appears to be a legitimate implementation of a quota checker. It defines a `QuotaError` class and a function to fetch user entitlements from GitHub's internal API using the user's existing GitHub authentication token. The code is clean, well-commented, and uses standard TypeScript/JavaScript patterns. The primary risk is the reliance on an internal GitHub endpoint and the access to the user's GitHub token, which are both justified by the extension's stated purpose of reading Copilot telemetry. No obfuscation, child process execution, or suspicious file system access is observed in this chunk. The 'local only' claim needs verification in the second chunk to ensure the token isn't sent elsewhere, but based on this file, the behavior is proportional to the advertised function."
+      },
+      {
+        "target": "extension/out/quota.js (chunk 2/2)",
+        "summary": "This code chunk is part of the `quota.js` module responsible for retrieving GitHub Copilot quota information. It uses the standard VS Code authentication API to obtain a GitHub token and makes a direct HTTP request to a GitHub endpoint (`USER_ENDPOINT`) to fetch entitlement data. The logic is straightforward, includes timeout handling, and parses the JSON response into a structured object. The use of `vscode.authentication.getSession` is a false positive for 'theft' given the extension's purpose is to read Copilot telemetry/quota from GitHub. The network call is to the primary service provider (GitHub), not an unknown third party. No obfuscation, child process execution, or sensitive file system access is observed in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 1/12)",
+        "summary": "This chunk of the 'Token Pie' extension source code appears benign and consistent with its stated purpose. It imports standard Node.js and VS Code modules, defines configuration keys related to GitHub Copilot's OpenTelemetry settings, and sets up basic state variables for a local telemetry dashboard. The code structure suggests a well-organized TypeScript compilation. The only minor note is the activation event 'onStartupFinished', which is slightly broad but acceptable for a tool that needs to be ready to display status. No hardcoded secrets, obfuscation, or suspicious network calls are visible in this initial chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/12)",
+        "summary": "This chunk of the 'Token Pie' extension source code appears benign and consistent with its stated purpose of analyzing local GitHub Copilot telemetry. It sets up status bar items, registers commands, and handles initial configuration checks. The primary logic involves reading local storage and checking for the presence of Copilot trace databases. The flagged `extensions.getExtension` call is a low-risk reconnaissance pattern that is justified here by the need to detect the Copilot extension. There are no signs of obfuscation, arbitrary code execution, or network exfiltration in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/12)",
+        "summary": "This chunk of the 'Token Pie' extension source code appears benign and consistent with its advertised purpose. The code focuses on configuring the local OpenTelemetry exporter for GitHub Copilot to ensure telemetry is written to a local database rather than sent over the network. It explicitly checks for and warns against settings that would cause network exfiltration (`OTEL_ENABLED_SETTING`). The use of `setInterval` for refreshing data is standard for a dashboard/visualization tool. The static hit for `extensions.getExtension` is a false positive for malicious reconnaissance in this context, as the extension must interact with the Copilot extension to function. No hardcoded secrets, obfuscation, or suspicious network calls were found in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/12)",
+        "summary": "This chunk of the 'Token Pie' extension source code appears benign and consistent with its stated purpose of analyzing local Copilot telemetry. The code handles data ingestion, purging of old data, and UI updates (status bar, webview). The logic is well-commented and follows standard patterns for local data processing (SQLite operations, progress reporting). The only flagged item is the enumeration of extensions, which is low-risk in this context as it likely serves to detect the Copilot extension's presence. No network calls, child process executions, or sensitive file reads outside the expected scope are visible in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/12)",
+        "summary": "This chunk of the 'Token Pie' extension source code is primarily concerned with UI state management for the VS Code status bar. It defines constants for status bar icons and labels, and implements the `updateStatusBar` function to reflect the extension's current phase (busy, failed, or ready). The logic is straightforward, using standard VS Code APIs (`vscode.ThemeColor`, `statusBar` properties) to update text, tooltips, and background colors. The code is heavily commented with design rationale, indicating a focus on user experience rather than hidden logic. The only potential indicator of risk is the enumeration of extensions, which is justified by the need to locate the Copilot extension's data. No network calls, child processes, or sensitive file reads are present in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 8/12)",
+        "summary": "This chunk of the 'Token Pie' extension source code appears benign and consistent with its stated purpose of analyzing local Copilot telemetry. The code handles UI reporting via a Webview (with scripts disabled for safety) and provides a manual purge function for local database cleanup. The `checkQuota` function initiates a network call to fetch entitlements, which is expected for a tool that checks billing quotas, though the specific endpoint is defined in the imported `quota_1` module. The static hit for `extensions.getExtension` is likely for dependency checking rather than malicious reconnaissance. No obfuscation, credential harvesting, or suspicious child process execution is observed in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 10/12)",
+        "summary": "The analyzed code chunk is part of a diagnostic ('doctor') and quota reporting feature for the 'Token Pie' extension. It reads local configuration settings, checks for the presence of the Copilot Chat extension, and formats output for the user. There are no network calls, no file system access to sensitive paths, no obfuscation, and no malicious indicators. The behavior is fully consistent with the extension's stated purpose of providing local visibility into Copilot usage."
+      },
+      {
+        "target": "extension/out/entitlement.js (chunk 1/2)",
+        "summary": "The provided code chunk is a pure utility module for parsing and interpreting GitHub Copilot entitlement data. It contains no network calls, file system access, child process execution, or obfuscation. The logic is strictly local data transformation, aligning perfectly with the extension's advertised purpose of providing local visibility into Copilot usage. No malicious or suspicious behavior was detected."
+      },
+      {
+        "target": "extension/out/entitlement.js (chunk 2/2)",
+        "summary": "The provided code chunk is a pure utility module containing logic for calculating quota exhaustion and reset dates. It performs local data manipulation (sorting, date parsing, type checking) without any network activity, file system access, process execution, or access to sensitive user data. The code aligns perfectly with the extension's stated purpose of visualizing local Copilot telemetry, and no malicious or suspicious patterns were detected."
+      },
+      {
+        "target": "extension/out/locate.js (chunk 1/2)",
+        "summary": "The code is a standard utility module for locating GitHub Copilot's local trace database files. It uses standard Node.js APIs (os, path, fs) to scan known VS Code user directories for the 'agent-traces.db' file. There are no network calls, no credential harvesting, no obfuscation, and no suspicious system interactions. The behavior is fully aligned with the extension's stated purpose of reading local telemetry data for visualization. The activation event is slightly broad but not malicious."
+      },
+      {
+        "target": "extension/out/locate.js (chunk 2/2)",
+        "summary": "This code chunk is a utility module for locating local VS Code storage directories and specific telemetry databases (agent-traces.db). It uses standard Node.js `fs` and `path` modules to traverse the file system in a read-only manner. There are no network calls, no execution of arbitrary code, no access to sensitive credential files, and no obfuscation. The behavior is fully aligned with the extension's advertised functionality of providing local visibility into Copilot token spend."
+      },
+      {
+        "target": "extension/out/ingest.js (chunk 1/3)",
+        "summary": "The code snippet is a standard data ingestion module for a local telemetry analysis tool. It reads local database files (likely SQLite trace databases) and processes them to calculate token usage and costs. There are no network calls, no execution of arbitrary code, no access to sensitive credential stores (like ~/.ssh or browser cookies), and no obfuscation. The logic is transparent, well-commented, and aligns perfectly with the extension's stated purpose of analyzing local Copilot telemetry. The 'Nothing leaves the machine' claim is consistent with the visible code, which only performs local file I/O and data processing."
+      },
+      {
+        "target": "extension/out/ingest.js (chunk 2/3)",
+        "summary": "The code is a data ingestion module that reads local SQLite databases to extract Copilot telemetry data (token counts, costs, models). It uses standard SQL queries and local file system access. There are no network calls, no credential harvesting, no obfuscation, and no suspicious system commands. The behavior aligns perfectly with the extension's description of a local-only telemetry analyzer."
+      },
+      {
+        "target": "extension/out/ingest.js (chunk 3/3)",
+        "summary": "The code is a benign data ingestion module for the 'Token Pie' extension. It processes local telemetry data (token counts, model names, costs) from a local database and aggregates it into a store for visualization. There are no network calls, no access to sensitive system files (like ~/.ssh or credentials), no obfuscation, and no execution of arbitrary code. The behavior is fully consistent with the extension's stated purpose of analyzing local Copilot usage."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "category": "CREDENTIAL_ACCESS",
+        "description": "The code accesses the VS Code authentication session (`vscode.authentication.getSession`), which typically retrieves the GitHub OAuth token. While this is necessary to call the GitHub API endpoint defined in the file (`https://api.github.com/copilot_internal/user`), it represents a potential credential exposure point if the token is not handled securely or if the 'local only' claim is violated in subsequent chunks. The static scanner flagged this as CRITICAL, but in the context of a tool that explicitly reads Copilot telemetry via GitHub APIs, this is a functional requirement rather than an anomaly, provided the token is not exfiltrated to a third-party server.",
+        "code_reference": "vscode.authentication.getSession",
+        "line_hint": 67,
+        "target": "extension/out/quota.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_CALL",
+        "description": "The code makes a network request to `https://api.github.com/copilot_internal/user`. This is an internal, unversioned GitHub endpoint. While it is the same endpoint used by the official Copilot extension, it is not a public, documented API. This creates a dependency on GitHub's internal implementation details, which could break or change without notice, but it is not inherently malicious.",
+        "code_reference": "const USER_ENDPOINT = 'https://api.github.com/copilot_internal/user';",
+        "line_hint": 62,
+        "target": "extension/out/quota.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CREDENTIAL_ACCESS",
+        "description": "The extension accesses the GitHub authentication session via `vscode.authentication.getSession('github', ...)`. While this grants access to a token with `read:user` scope, it is a standard and necessary pattern for extensions that need to query GitHub APIs on behalf of the user. The token is used locally to fetch quota data, which aligns with the extension's stated purpose.",
+        "code_reference": "const session = await vscode.authentication.getSession('github', ['read:user'], ...)",
+        "line_hint": 67,
+        "target": "extension/out/quota.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension makes a network request to `USER_ENDPOINT` (likely a GitHub API endpoint) using the retrieved token. The README claims 'Nothing leaves the machine', which is technically inaccurate as it communicates with GitHub's servers. However, this is a direct API call to the service provider, not a third-party exfiltration endpoint, and is consistent with the 'local visibility' claim (i.e., no proprietary backend).",
+        "code_reference": "const response = await fetch(USER_ENDPOINT, { ... Authorization: `token ${token}` ... })",
+        "line_hint": 78,
+        "target": "extension/out/quota.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a visualization tool that primarily reads local telemetry. While not malicious, it implies the extension runs immediately upon VS Code startup to monitor or initialize state, which is slightly aggressive for a passive dashboard but common for status-bar extensions.",
+        "code_reference": "package.json activationEvents (implied by context)",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "VSCode_API_Abuse",
+        "description": "The code references `extensions.getExtension` (line 648 in full file, likely in later chunks or referenced logic). This is used to locate the GitHub Copilot extension to read its telemetry settings or paths. This is a standard pattern for extensions that depend on or integrate with other extensions, not necessarily reconnaissance.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": 648,
+        "target": "extension/out/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The code enumerates installed extensions via `vscode.extensions.getExtension`. In the context of a tool that reads GitHub Copilot telemetry, this is likely used to detect the presence of the Copilot extension to determine if trace data is available. While extension enumeration can be used for reconnaissance, it is a standard pattern for extensions that integrate with or depend on other extensions.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": 648,
+        "target": "extension/out/extension.js (chunk 2/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIGURATION_ACCESS",
+        "description": "The code reads and writes VS Code configuration settings (`vscode.workspace.getConfiguration`). It specifically checks and potentially modifies settings related to `tokenPie` and `DB_EXPORTER_SETTING`. This is expected behavior for an extension that requires user configuration to function.",
+        "code_reference": "vscode.workspace.getConfiguration",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 2/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "VSCode_API_Abuse",
+        "description": "The code calls `vscode.extensions.getExtension` (referenced in static hits, likely in surrounding context or implied by the setup logic interacting with Copilot). While this is technically reconnaissance, it is necessary to verify the presence and version of the GitHub Copilot extension, which is the primary data source for this tool. Given the extension's purpose is to read Copilot telemetry, this is a proportional capability.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": 648,
+        "target": "extension/out/extension.js (chunk 3/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "Settings_Modification",
+        "description": "The `setup()` function programmatically updates global VS Code settings (`DB_EXPORTER_SETTING`, `MAX_ATTR_SETTING`) to configure the Copilot telemetry exporter. While modifying user settings can be intrusive, the code explicitly targets the specific settings required for its local database export functionality and warns the user about conflicts. This aligns with the 'local-only' claim as it configures the local exporter rather than sending data to a remote server.",
+        "code_reference": "root.update(DB_EXPORTER_SETTING, true, vscode.ConfigurationTarget.Global)",
+        "line_hint": 10,
+        "target": "extension/out/extension.js (chunk 3/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "VSCode_API_Abuse",
+        "description": "The code enumerates installed extensions via `vscode.extensions.getExtension`. While this can be used for reconnaissance, in the context of a tool that reads Copilot telemetry, it is likely checking for the presence of the Copilot extension to determine if data sources are available. This is a standard pattern for extensions that depend on or integrate with other extensions.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": 648,
+        "target": "extension/out/extension.js (chunk 4/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The code enumerates installed extensions via `extensions.getExtension`. Given the extension's purpose is to read telemetry written by the GitHub Copilot extension, this is a necessary dependency check rather than malicious reconnaissance.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": 648,
+        "target": "extension/out/extension.js (chunk 5/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "VSCode_API_Abuse",
+        "description": "The code calls `vscode.extensions.getExtension` (referenced in static hits, likely in surrounding context or imported modules). While this can be used for reconnaissance, in the context of a tool that reads Copilot telemetry, it is likely used to detect the presence/version of the Copilot extension to ensure compatibility. Without evidence of data exfiltration tied to this call, it is low risk.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": 648,
+        "target": "extension/out/extension.js (chunk 8/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "Webview_Configuration",
+        "description": "The `showReport` function creates a Webview panel with `enableScripts: false`. This is a good security practice as it prevents arbitrary script execution within the report view, mitigating XSS risks from the generated HTML.",
+        "code_reference": "vscode.window.createWebviewPanel",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 8/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.extensions.getExtension` as reconnaissance. In this context, the code is checking for the existence and version of the `github.copilot-chat` extension to validate the environment for the 'doctor' diagnostic command. This is a standard and benign pattern for extensions that depend on or interact with other specific extensions.",
+        "code_reference": "vscode.extensions.getExtension('github.copilot-chat')?.packageJSON.version",
+        "line_hint": 648,
+        "target": "extension/out/extension.js (chunk 10/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a tool that only needs to run when explicitly invoked or when Copilot is active. However, this is a common pattern for extensions that need to be ready for commands or status bar updates, and does not indicate malicious intent.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/locate.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The code enumerates VS Code user directories and profiles to locate specific SQLite database files (`agent-traces.db`). While this involves reading files outside the extension's workspace, it is consistent with the extension's stated purpose of analyzing local Copilot telemetry. The paths are specific to VS Code's internal structure and do not target sensitive credential stores (e.g., ~/.ssh, ~/.aws).",
+        "code_reference": "function profileStorageDirs(userDir) { ... }",
+        "line_hint": 10,
+        "target": "extension/out/locate.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension activates on 'onStartupFinished'. While this is common for productivity tools that need to be ready immediately, it is slightly aggressive for a visualization tool that could potentially activate on demand (e.g., when the user opens the panel). However, given the need to read local telemetry files which might be large, pre-loading or background processing on startup is a reasonable design choice, not necessarily malicious.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/ingest.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "DATA_ACCESS",
+        "description": "The code reads local SQLite databases (likely Copilot telemetry) to extract token usage and cost data. This is consistent with the extension's stated purpose of analyzing local telemetry without sending data to external servers.",
+        "code_reference": "db = (0, schema_1.openReadOnly)(traceDb.path);",
+        "line_hint": 3,
+        "target": "extension/out/ingest.js (chunk 2/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the 'Token Pie' extension appears to be a legitimate implementation of a quota checker. It defines a `QuotaError` class and a function to fetch user entitlements from GitHub's internal API using the user's existing GitHub authentication token. The code is clean, well-commented, and uses standard TypeScript/JavaScript patterns. The primary risk is the reliance on an internal GitHub endpoint and the access to the user's GitHub token, which are both justified by the extension's stated purpose of reading Copilot telemetry. No obfuscation, child process execution, or suspicious file system access is observed in this chunk. The 'local only' claim needs verification in the second chunk to ensure the token isn't sent elsewhere, but based on this file, the behavior is proportional to the advertised function.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-08-26T21:28:20.073Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T01:35:52.487708+00:00Z"
+}

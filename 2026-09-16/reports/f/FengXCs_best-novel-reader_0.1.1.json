@@ -1,0 +1,436 @@
+{
+  "extension_id": "FengXCs.best-novel-reader",
+  "display_name": "Best Novel Reader",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "FengXCs",
+    "verified": false
+  },
+  "vsix_sha256": "8dfd6106a40481af44279b245b55fe7e5ceafedbf7fcd8a3be836ef5bb6c0981",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.9,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/view.js",
+        "line": 791,
+        "snippet": "addEventListener('keydown', event => { if (event.key === 'Escape' && !event.repeat) { const now = Date.now(); event.preventDefault(); event.stopPropagation(); if (now - lastEscapeAt <= ESCAPE_DOUBLE_P"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/extension.js",
+        "line": 892,
+        "snippet": "addEventListener('keydown', event => { if (event.key === 'Escape' && !event.repeat) { const now = Date.now(); event.preventDefault(); event.stopPropagation(); if (now - lastEscapeAt <= ESCAPE_DOUBLE_P"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/view.js",
+        "line": 791,
+        "snippet": ".postMessage({ command: 'focusTerminal' }); } else { lastEscapeAt = now; if (escapeResetTimer) window.clearTimeout(escapeResetTimer); escapeResetTimer = window.setTimeout(() => { lastEscapeAt = 0; esc"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/view.js",
+        "line": 442,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "readFileSync(e),r=c.detect(t).encoding.toLowerCase();return\"utf-8\"===r||\"ascii\"===r?a.readFileSync(e,\"utf8\"):d.encodingExists(r)?d.decode(t,r):d.decode(t,\"utf-8\")}catch(t){console.error(`Error detecti"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "readFileSync(e),r=c.detect(t).encoding.toLowerCase();return\"utf-8\"===r||\"ascii\"===r?a.readFileSync(e,\"utf8\"):d.encodingExists(r)?d.decode(t,r):d.decode(t,\"utf-8\")}catch(t){console.error(`Error detecti"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 892,
+        "snippet": ".postMessage({ command: 'focusTerminal' }); } else { lastEscapeAt = now; if (escapeResetTimer) window.clearTimeout(escapeResetTimer); escapeResetTimer = window.setTimeout(() => { lastEscapeAt = 0; esc"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/extension.js",
+        "line": 543,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.9,
+    "confidence": 0.85,
+    "blocks_parsed": 14,
+    "blocks_seen": 14,
+    "summaries": [
+      {
+        "target": "extension/dist/view.js (chunk 1/17)",
+        "summary": "The extension exhibits potentially suspicious behavior including keylogging and data exfiltration patterns. While its primary function appears to be a novel reader, the presence of these indicators raises concerns about potential malicious intent or unintended functionality."
+      },
+      {
+        "target": "extension/dist/view.js (chunk 2/17)",
+        "summary": "The extension exhibits potentially suspicious behavior including a keyboard event listener and file attribute manipulation. While these could be legitimate for a novel reader, they raise concerns about keylogging and hidden functionality. The extension's stated purpose does not fully align with these observed behaviors, suggesting a possible capability disconnect."
+      },
+      {
+        "target": "extension/dist/view.js (chunk 3/17)",
+        "summary": "The extension exhibits keylogging behavior through keyboard event listeners, which is inconsistent with its stated purpose as a novel reader. This indicates potential malicious intent or significant behavioral disconnect."
+      },
+      {
+        "target": "extension/dist/view.js (chunk 4/17)",
+        "summary": "The extension exhibits suspicious behavior including potential keylogging and file hiding mechanisms. However, these activities may be legitimate given the extension's purpose as a novel reader, though they raise concerns about information security practices."
+      },
+      {
+        "target": "extension/dist/view.js (chunk 5/17)",
+        "summary": "The extension exhibits suspicious behavior with a keylogger pattern and file hiding mechanisms. While the keylogger may be part of the novel reading functionality, it raises concerns about potential data exfiltration. The file hiding could indicate attempts to remain undetected. Overall, the findings suggest a higher risk than typical for a novel reader extension."
+      },
+      {
+        "target": "extension/dist/view.js (chunk 6/17)",
+        "summary": "The extension exhibits suspicious patterns including potential keylogging and data exfiltration. While the extension's stated purpose is legitimate, the detected patterns raise concerns about possible unauthorized data collection or transmission. The keylogger detection is particularly concerning, though it could be a legitimate feature for navigation control. Overall, the extension requires closer scrutiny to rule out malicious intent."
+      },
+      {
+        "target": "extension/dist/view.js (chunk 16/17)",
+        "summary": "The extension exhibits keylogging behavior through its keyboard event listener, which is inconsistent with its stated purpose of providing a novel reading interface. This indicates potential malicious intent or severe capability mismatch."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 1/242)",
+        "summary": "The extension exhibits several concerning patterns including potential keylogging, credential access, and data exfiltration. While these could be part of legitimate functionality, they are inconsistent with the extension's stated purpose as a novel reader, raising suspicions of malicious intent or significant design flaws."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/242)",
+        "summary": "The extension exhibits several suspicious patterns including potential keylogging, file access, and data exfiltration. While these could be part of legitimate functionality, they raise concerns given the extension's stated purpose as a novel reader. The low obfuscation score suggests the code may not be hiding malicious activities, but further dynamic analysis would be needed to confirm benign behavior."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 165/242)",
+        "summary": "The extension exhibits potential signs of malicious behavior, including credential access and keylogging patterns. However, the provided code snippet does not explicitly show malicious functionality, and the findings may be false positives. The extension's stated purpose as a novel reader does not align with these findings, raising concerns about its true intent."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 166/242)",
+        "summary": "The extension exhibits some concerning patterns, including potential credential access and keylogging behavior. However, these could be false positives given the extension's stated purpose as a novel reader. The lack of heavy obfuscation and alignment with its declared functionality suggests possible benign intent, but further dynamic analysis would be needed to confirm."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 206/242)",
+        "summary": "The extension exhibits some concerning patterns including potential credential access, keylogging, and file hiding. However, these may be legitimate due to the extension's purpose as a novel reader. Further dynamic analysis is recommended to confirm the nature of these findings."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 222/242)",
+        "summary": "The extension exhibits some suspicious patterns such as potential credential access and keylogging, but these appear to be either false positives or within the expected behavior for a novel reader extension. No critical malicious activities were detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 232/242)",
+        "summary": "The extension exhibits suspicious patterns including potential keylogging and credential access, though these may be false positives given the extension's stated purpose as a novel reader. The keylogger detection is particularly concerning, but could be a legitimate input handling mechanism. Overall, the extension's capabilities appear to align with its stated functionality, but the flagged behaviors warrant further investigation."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "INFostealer",
+        "description": "Presence of keyboard event listener which could indicate keylogging behavior.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 1/17)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "Pattern suggesting data exfiltration via postMessage to another frame.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 1/17)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "UI_MODIFICATION",
+        "description": "Setting file hidden attribute which could be used to hide malicious components.",
+        "code_reference": "line 442",
+        "line_hint": 442,
+        "target": "extension/dist/view.js (chunk 1/17)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "info-stealer_patterns",
+        "description": "Suspicious keyboard event listener potentially indicating keylogging behavior.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 2/17)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "persistence_evasion",
+        "description": "Setting file hidden attribute detected, potentially for hiding files or components.",
+        "code_reference": "line 442",
+        "line_hint": 442,
+        "target": "extension/dist/view.js (chunk 2/17)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "info-stealer_patterns",
+        "description": "Presence of keyboard event listener with buffer/send pattern indicative of keylogging behavior.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 3/17)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "disconnect_check",
+        "description": "Extension's stated purpose as a novel reader does not align with observed keylogging and potential data exfiltration behavior.",
+        "code_reference": "N/A",
+        "line_hint": null,
+        "target": "extension/dist/view.js (chunk 3/17)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "info-stealer_patterns",
+        "description": "Keyboard event listener detected which could indicate potential keylogging activity.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 4/17)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "persistence_evasion",
+        "description": "Setting file hidden attribute detected which could be used for hiding files or persistence.",
+        "code_reference": "line 442",
+        "line_hint": 442,
+        "target": "extension/dist/view.js (chunk 4/17)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "info-stealer_patterns",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger) detected.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 5/17)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "persistence_evasion",
+        "description": "Setting file hidden attribute detected.",
+        "code_reference": "line 442",
+        "line_hint": 442,
+        "target": "extension/dist/view.js (chunk 5/17)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "info-stealer_patterns",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger) detected.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 6/17)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Pattern suggesting data exfiltration via postMessage detected.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 6/17)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "info-stealer_patterns",
+        "description": "Detected keyboard event listener with buffer/send pattern indicative of keylogging behavior.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 16/17)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Pattern suggesting data exfiltration via postMessage command.",
+        "code_reference": "line 791",
+        "line_hint": 791,
+        "target": "extension/dist/view.js (chunk 16/17)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "keylogging",
+        "description": "Presence of keyboard event listener which may indicate keylogging behavior.",
+        "code_reference": "line 892",
+        "line_hint": 892,
+        "target": "extension/dist/extension.js (chunk 1/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "credential_access",
+        "description": "Attempt to read files which may contain sensitive information or credentials.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Pattern suggesting potential data exfiltration via postMessage command.",
+        "code_reference": "line 892",
+        "line_hint": 892,
+        "target": "extension/dist/extension.js (chunk 1/242)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "persistence",
+        "description": "Setting file hidden attribute which may be used for persistence or hiding files.",
+        "code_reference": "line 543",
+        "line_hint": 543,
+        "target": "extension/dist/extension.js (chunk 1/242)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "keylogging",
+        "description": "Presence of keyboard event listener which could indicate keylogging behavior.",
+        "code_reference": "line 892",
+        "line_hint": 892,
+        "target": "extension/dist/extension.js (chunk 2/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "credential_access",
+        "description": "Attempt to read files which could potentially access sensitive information.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 2/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Pattern suggesting data exfiltration via postMessage.",
+        "code_reference": "line 892",
+        "line_hint": 892,
+        "target": "extension/dist/extension.js (chunk 2/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "persistence_evasion",
+        "description": "Setting file hidden attribute which could be used for persistence or evasion.",
+        "code_reference": "line 543",
+        "line_hint": 543,
+        "target": "extension/dist/extension.js (chunk 2/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "credential_leakage",
+        "description": "Static analysis detected potential attempts to read credential or key files.",
+        "code_reference": null,
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 165/242)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "info-stealer",
+        "description": "Static analysis detected potential keyboard event listener with buffer/send pattern indicative of keylogging behavior.",
+        "code_reference": null,
+        "line_hint": 892,
+        "target": "extension/dist/extension.js (chunk 165/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "persistence_evasion",
+        "description": "Static analysis detected potential setting of file hidden attribute, which could be used for persistence or evasion.",
+        "code_reference": null,
+        "line_hint": 543,
+        "target": "extension/dist/extension.js (chunk 165/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "credential_leakage",
+        "description": "Potential attempt to read credential files detected in the code.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 166/242)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "keylogger",
+        "description": "Pattern suggesting keyboard event listener with buffer/send pattern (keylogger) detected.",
+        "code_reference": "line 892",
+        "line_hint": 892,
+        "target": "extension/dist/extension.js (chunk 166/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "persistence_evasion",
+        "description": "Setting file hidden attribute detected, potentially for persistence or evasion.",
+        "code_reference": "line 543",
+        "line_hint": 543,
+        "target": "extension/dist/extension.js (chunk 166/242)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "credential_leakage",
+        "description": "Potential attempt to read credential or key files detected in the code.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 206/242)"
+      }
+    ],
+    "findings_truncated": 9
+  },
+  "ai_summary": "The extension exhibits potentially suspicious behavior including keylogging and data exfiltration patterns. While its primary function appears to be a novel reader, the presence of these indicators raises concerns about potential malicious intent or unintended functionality.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "6 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 9,
+    "published_date": "2026-08-13T06:06:49.46Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:50.452077+00:00Z"
+}

@@ -1,0 +1,411 @@
+{
+  "extension_id": "pavlyshyn.factum-orm",
+  "display_name": "Factum \u2014 Object-Role Modeling (ORM 2)",
+  "version": "0.3.0",
+  "publisher": {
+    "name": "pavlyshyn",
+    "verified": false
+  },
+  "vsix_sha256": "af2048502edacfdf2f1e464de355fb26132e926d59521704c176ca25664c5b43",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.274375,
+    "ai_vibe": 0.15,
+    "static": 0.4375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/out/webview.js",
+        "line": 37,
+        "snippet": "addEventListener(\"keydown\",e=>{e.key===\"Enter\"?(e.preventDefault(),nn()):e.key===\"Escape\"&&(e.preventDefault(),ht()),e.stopPropagation()});q.addEventListener(\"blur\",nn);function vs(e,t){let n=l.model,"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Screenshot being sent over network",
+        "file": "extension/out/webview.js",
+        "line": 37,
+        "snippet": "toDataURL(\"image/png\").split(\",\")[1]??\"\")},r.onerror=()=>n(new Error(\"could not rasterize the diagram\")),r.src=`data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(e)))}`})}window.addEventLis"
+      }
+    ],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 173,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "json-schema.org",
+      "source_file": "extension/schema/orm-model-2.schema.json",
+      "line": 2,
+      "context": "\"$schema\": \"https://json-schema.org/draft/2020-12/schema\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "schemas.neumont.edu",
+      "source_file": "extension/out/extension.js",
+      "line": 9265,
+      "context": "_super`,RolePlayer:{\"@ref\":p.supertypeId}}}})),d={\"?xml\":{\"@version\":\"1.0\",\"@encoding\":\"utf-8\"},\"ormRoot:ORM2\":{\"@xmlns:ormRoot\":\"http://schemas.neumont.edu/ORM/2006-04/ORMRoot\",\"@xmlns:orm\":\"http://s",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 14,
+    "blocks_seen": 14,
+    "summaries": [
+      {
+        "target": "extension/out/webview.js (chunk 1/46)",
+        "summary": "The code chunk is from a webview component of an ORM modeling extension. It contains standard data structure initialization (Maps for object types, fact types, roles) and utility functions for reading model data. The 'critical' scanner hits are false positives: the keydown listener is for UI navigation (Enter/Escape), and the image data URL is for diagram rendering. The code is minified but not heavily obfuscated, and the logic aligns with the extension's stated purpose of visualizing and managing ORM schemas."
+      },
+      {
+        "target": "extension/out/webview.js (chunk 2/46)",
+        "summary": "This chunk of the extension source code appears to be part of the diagram rendering and state management logic for the 'Factum' ORM extension. It handles the deletion of model elements (object types, fact types) and calculates layout dimensions for diagram shapes. The 'critical' findings from the static scanner are likely false positives: the keydown listener is for standard UI navigation (Enter/Escape), and the image data URL conversion is for diagram rasterization, both consistent with a visual modeling tool. No obvious obfuscation or suspicious network calls are present in this specific chunk."
+      },
+      {
+        "target": "extension/out/webview.js (chunk 3/46)",
+        "summary": "This chunk of the `webview.js` file contains standard geometric and physics calculations for a force-directed graph layout, which is consistent with the extension's purpose of visualizing ORM diagrams. The critical findings from the static scanner are likely false positives: the `keydown` listener handles standard UI keys (Enter/Escape), and the `toDataURL` call is typical for canvas-based diagram rendering/export. No obfuscation, system access, or network exfiltration patterns are evident in this specific code segment."
+      },
+      {
+        "target": "extension/out/webview.js (chunk 4/46)",
+        "summary": "This chunk of the `webview.js` file contains the core layout and physics engine for the ORM diagram editor. It handles node positioning, collision detection, and force-directed layout adjustments. The code is largely mathematical and state-manipulation focused, with no direct network calls, file system access, or child process spawning visible in this segment. The static rule hits for 'keylogger' and 'screenshot exfiltration' appear to be false positives resulting from standard UI event handling and image rasterization utilities typical for a diagramming tool. The behavior is proportional to the extension's advertised functionality."
+      },
+      {
+        "target": "extension/out/webview.js (chunk 5/46)",
+        "summary": "This chunk of code is primarily responsible for rendering SVG elements for an ORM diagram editor. It creates SVG groups, shapes (rectangles, text), and connectors based on the model data. The logic is consistent with a visual diagramming tool. The 'critical' findings from the static scanner appear to be false positives resulting from generic pattern matching on `keydown` and `toDataURL` without considering the UI context. No obvious network calls, credential access, or obfuscation are present in this specific chunk."
+      },
+      {
+        "target": "extension/out/webview.js (chunk 31/46)",
+        "summary": "This chunk of the 'Factum' extension (an ORM modeling tool) contains standard UI rendering logic using a virtual DOM library (likely Preact or similar). The code handles subtype relations, verbalization of facts, and relational/graph schema mapping. The 'critical' static hits are false positives: the keydown listener is for UI navigation (Enter/Escape), and the image data URL is for diagram rasterization. No obfuscation, child_process, or sensitive file access is present in this chunk."
+      },
+      {
+        "target": "extension/out/webview.js (chunk 45/46)",
+        "summary": "This chunk of code implements standard UI logic for an ORM diagram editor. It handles keyboard shortcuts for tool selection and undo/redo, and includes a utility function to rasterize SVG diagrams to PNG. The 'critical' scanner hits are false positives resulting from generic pattern matching on `keydown` and `toDataURL` without considering the specific context of a visual editor. No obfuscation, network calls, or sensitive file access are present in this segment."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 1/124)",
+        "summary": "The analyzed chunk appears to be part of a bundled ORM/NORMA modeling extension, containing utility code for name validation, XML-like parsing/validation, and prototype-pollution guards. The advertised purpose, package size, dependency count, and VS Code contributions are proportional to an editor/visualization extension. The static hits are likely false positives given the visible code and extension purpose. No credential access, command execution, network exfiltration, obfuscation, persistence, or remote-access behavior is evident in this chunk. Confidence is moderate because only 6% of the file was provided."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 36/124)",
+        "summary": "The analyzed chunk appears to be bundled YAML library schema/tag handling code plus ORM extension document listeners. It contains no child_process execution, eval, network exfiltration, credential harvesting, persistence, or remote access behavior. The static rule hits are consistent with benign VS Code document/configuration handling and YAML binary tag support, so the chunk is assessed as clean with low residual risk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 79/124)",
+        "summary": "The analyzed chunk implements ordinary VS Code extension behavior for an ORM diagram editor: applying workspace edits, exporting diagrams through a user-selected save dialog, generating a local webview with CSP and nonce, and reading extension-specific configuration. There is no evidence of credential harvesting, network exfiltration, command execution, obfuscation, persistence, or capability mismatch with the advertised ORM modeling purpose. The reported static hits are either benign or not corroborated by the visible code, so the chunk is assessed as clean."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 107/124)",
+        "summary": "The analyzed chunk implements ORM2 model serialization into XML using an XML builder and standard VS Code extension patterns. It aligns with the advertised Object-Role Modeling functionality and contains no visible credential access, command execution, network exfiltration, obfuscated payload staging, persistence mechanisms, or remote monitoring tool usage. The static rule hits appear to be false positives caused by benign property names, document refresh listeners, and configuration reads. Given that only a small chunk of the full bundle was provided, confidence is moderate, but the visible code is benign."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 114/124)",
+        "summary": "The analyzed code chunk is part of a legitimate VS Code extension for Object-Role Modeling (ORM). It contains logic for serializing ORM constraints, notes, synonyms, and diagram shapes into a structured format (likely XML or JSON for export/import). The static scanner hits are false positives resulting from standard VS Code API usage for UI updates and configuration reading. There are no indicators of malicious behavior, credential harvesting, or data exfiltration in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 122/124)",
+        "summary": "The analyzed code chunk is part of a VS Code extension for Object-Role Modeling (ORM). It implements standard file import/export functionality, allowing users to save, open, and convert ORM models between different formats (JSON, NORMA, FBM, YAML). The code uses standard VS Code APIs for file dialogs, file system operations, and command execution. The static scanner hits are false positives resulting from legitimate file handling and configuration reading. There are no indicators of malicious behavior, credential theft, or unauthorized network activity in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 123/124)",
+        "summary": "The analyzed code chunk is part of a legitimate VS Code extension for Object-Role Modeling (ORM). It handles exporting models to files, generating SQL DDL, and generating graph schemas (Cypher). All flagged indicators are false positives resulting from standard VS Code API usage for file I/O, configuration reading, and document event listening. There is no evidence of malicious intent, data exfiltration, or unauthorized system access."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged a 'keylogger' pattern due to a keydown listener. However, the code `e.key==='Enter'?(e.preventDefault(),nn()):e.key==='Escape'&&(e.preven...` indicates standard UI interaction handling (submitting on Enter, canceling on Escape) within a webview, not credential harvesting.",
+        "code_reference": "addEventListener(\"keydown\",e=>{e.key===\"Enter\"?(e.preventDefault(),nn()):e.key===\"Escape\"&&(e.preven",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 1/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'screenshot exfiltration'. The code `toDataURL(\"image/png\")` is used in the context of rasterizing a diagram (`could not rasterize the diagra...`), which is consistent with the extension's purpose of drawing ORM diagrams. No immediate network send is visible in this snippet.",
+        "code_reference": "toDataURL(\"image/png\").split(\",\")[1]???\"\"},r.onerror=()=>n(new Error(\"could not rasterize the diagra",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 1/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX package size is reported as 0.1 MB, which is extremely small for an extension with 46 chunks of code and 7 dependencies. This likely indicates a reporting error or that the bulk of the code is in the `out` folder which might be compressed heavily, but it warrants a minor note on size anomaly.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/webview.js (chunk 1/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown listener. However, the code `e.key==='Enter'?(e.preventDefault(),nn()):e.key==='Escape'&&(e.preven...` indicates standard UI interaction handling (submitting a form or closing a modal) within a webview, not credential harvesting.",
+        "code_reference": "addEventListener(\"keydown\",e=>{e.key===\"Enter\"?(e.preventDefault(),nn()):e.key===\"Escape\"&&(e.preven",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 2/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'screenshot exfiltration'. The code `toDataURL(\"image/png\")` is used in the context of rasterizing a diagram (`could not rasterize the diagra...`), which is consistent with the extension's purpose of drawing ORM diagrams. It is likely used for export or preview, not necessarily immediate network exfiltration in this specific chunk.",
+        "code_reference": "toDataURL(\"image/png\").split(\",\")[1]??\"\"},r.onerror=()=>n(new Error(\"could not rasterize the diagra",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 2/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code contains logic for managing object types, fact types, and diagram shapes (coordinates, widths, heights), which aligns perfectly with the 'Factum \u2014 Object-Role Modeling' extension description.",
+        "code_reference": "function It(e, t) { if (e.objectTypes.find(r => r.id === t)) ...",
+        "line_hint": 5,
+        "target": "extension/out/webview.js (chunk 2/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a `keydown` listener. However, the code `e.key==='Enter'?(e.preventDefault(),nn()):e.key==='Escape'&&(e.preven...` indicates standard UI interaction handling (submitting a form or closing a modal) within a webview, not credential harvesting. The context is a diagram editor, where Enter/Escape are standard navigation keys.",
+        "code_reference": "addEventListener(\"keydown\",e=>{e.key===\"Enter\"?(e.preventDefault(),nn()):e.key===\"Escape\"&&(e.preven",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 3/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'screenshot exfiltration' due to `toDataURL(\"image/png\")`. In the context of a diagram editor (Factum ORM), this is likely used to render the diagram to an image for export, preview, or drag-and-drop functionality. Without an immediate network POST in the same scope (which is not visible in this chunk), it is a standard canvas operation.",
+        "code_reference": "toDataURL(\"image/png\").split(\",\")[1]???\"\"}",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 3/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code chunk contains pure mathematical logic for a force-directed graph layout (calculating centers, distances, and repulsion forces). This aligns perfectly with the extension's purpose of drawing conceptual schemas (ORM diagrams). No suspicious system calls or network requests are present in this chunk.",
+        "code_reference": "function Mt(e) { ... let s = 26e3; for (let r = 0; r < 400; r += 1) { ... }",
+        "line_hint": null,
+        "target": "extension/out/webview.js (chunk 3/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a `keydown` listener. However, the code `e.key==='Enter'?(e.preventDefault(),nn()):e.key==='Escape'&&(e.preventDefault(),...)` is standard UI interaction logic for a diagram editor (confirming/canceling actions), not credential harvesting. The buffer/send pattern is absent in this context.",
+        "code_reference": "addEventListener(\"keydown\",e=>{e.key===\"Enter\"?(e.preventDefault(),nn()):e.key===\"Escape\"&&(e.preven",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 4/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'screenshot exfiltration' due to `toDataURL`. The code `toDataURL(\"image/png\").split(\",\")[1]??\"\"` is part of a rasterization function (`r.onerror=()=>n(new Error(\"could not rasterize the diagra...`)) likely used for rendering the ORM diagram to an image for display or export within the webview, not necessarily immediate network exfiltration in this specific chunk.",
+        "code_reference": "toDataURL(\"image/png\").split(\",\")[1]??\"\"}",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 4/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code in this chunk consists of physics simulation logic (velocity, position updates) and layout algorithms (collision avoidance, centering) for the diagram editor. This is highly consistent with the extension's stated purpose of providing a visual ORM diagram editor.",
+        "code_reference": "p.vx += v, p.vy += H... Math.hypot(h, b)...",
+        "line_hint": null,
+        "target": "extension/out/webview.js (chunk 4/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown listener. However, the code context (SVG diagram rendering) indicates this is likely part of a larger UI component handling keyboard navigation (Enter/Escape) for the diagram editor, not a global keylogger exfiltrating secrets. The specific match `e.key==='Enter'` suggests standard UI interaction.",
+        "code_reference": "addEventListener(\"keydown\",e=>{e.key===\"Enter\"?(e.preventDefault(),nn()):e.key===\"Escape\"&&(e.preven",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 5/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'screenshot exfiltration' due to `toDataURL`. In the context of an SVG diagram editor, this is standard behavior for exporting the diagram to a PNG image for preview or saving. It is not necessarily sending data to a remote server in this specific snippet.",
+        "code_reference": "toDataURL(\"image/png\").split(\",\")[1]??\"\"}",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 5/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a `keydown` listener. However, the code explicitly checks for `Enter` and `Escape` keys to trigger UI actions (submit/cancel) rather than buffering arbitrary keystrokes for exfiltration. This is standard UI interaction logic.",
+        "code_reference": "addEventListener(\"keydown\",e=>{e.key===\"Enter\"?(e.preventDefault(),nn()):e.key===\"Escape\"&&(e.preven",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 31/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'screenshot sent over network'. The code uses `toDataURL` to rasterize a diagram for display or export purposes within the webview. While `toDataURL` creates a base64 string, there is no immediate network transmission visible in this chunk, and it is a common pattern for rendering SVG/Canvas content in VS Code webviews.",
+        "code_reference": "toDataURL(\"image/png\").split(\",\")[1]??\"\"",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 31/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_NETWORK",
+        "description": "References to `json-schema.org` and `schemas.neumont.edu` are standard for JSON schema validation and ORM documentation links, not C2 channels.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/webview.js (chunk 31/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to `addEventListener('keydown')`. However, the code explicitly ignores events from input fields (`INPUT`, `TEXTAREA`, `SELECT`) and maps specific keys (Z, Delete, Escape, V, E, T, 1-3, S, C, F) to UI actions like undo/redo, delete, and tool selection. This is standard keyboard shortcut handling for a diagram editor, not credential harvesting.",
+        "code_reference": "window.addEventListener(\"keydown\", e => { ... })",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 45/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Screenshot being sent over network'. The code uses `canvas.toDataURL('image/png')` to convert an SVG diagram to a PNG string. This is part of the `Rs` function which resolves a Promise with the base64 string, likely for local export or display within the webview, not direct network exfiltration in this context.",
+        "code_reference": "t(o.toDataURL(\"image/png\").split(\",\")[1] ?? \"\")",
+        "line_hint": 37,
+        "target": "extension/out/webview.js (chunk 45/46)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a possible file hidden-attribute operation via '.hidden', but no file-system attribute manipulation is visible in the analyzed chunk. In this context it is likely a benign property name, configuration key, or scanner false positive.",
+        "code_reference": ".hidden",
+        "line_hint": "173",
+        "target": "extension/out/extension.js (chunk 1/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The document-change listener and workspace configuration access are consistent with an ORM editor refreshing validation/verbalization when documents change. No network transmission, serialization to remote endpoints, or credential harvesting is visible in the provided code.",
+        "code_reference": "onDidChangeTextDocument(...); workspace.getConfiguration(\"orm\")",
+        "line_hint": "179,184",
+        "target": "extension/out/extension.js (chunk 1/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "EXTERNAL_REFERENCE",
+        "description": "The package references json-schema.org and schemas.neumont.edu. These are plausibly used for schema validation or NORMA import support, but their reputation is unknown and should be verified if network access is present elsewhere in the package.",
+        "code_reference": "json-schema.org; schemas.neumont.edu",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged '.hidden' as persistence/evasion, but the provided chunk contains no file attribute manipulation, registry modification, startup persistence, or hidden-file logic. The match is likely a benign property or minified identifier.",
+        "code_reference": ".hidden",
+        "line_hint": "173",
+        "target": "extension/out/extension.js (chunk 36/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The onDidChangeTextDocument listener refreshes documents for live ORM verbalization. No network transmission, credential access, or exfiltration is present in the snippet.",
+        "code_reference": "onDidChangeTextDocument(i=>{tn(i.document)&&e.refresh(i.document)})",
+        "line_hint": "179",
+        "target": "extension/out/extension.js (chunk 36/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "getConfiguration(\"orm\") reads extension settings for verbalization mode. This is normal VS Code configuration access and no network send or secret harvesting is shown.",
+        "code_reference": "workspace.getConfiguration(\"orm\").get(\"verbalization.mode\",\"forml\")",
+        "line_hint": "184",
+        "target": "extension/out/extension.js (chunk 36/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_LIBRARY",
+        "description": "Base64 decoding via Buffer.from(t,\"base64\") or atob is standard YAML binary tag handling, not payload staging or credential theft.",
+        "code_reference": "Buffer.from(t, \"base64\")",
+        "line_hint": "~100",
+        "target": "extension/out/extension.js (chunk 36/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "OBSERVED_INDICATOR",
+        "description": "Extracted domains json-schema.org and schemas.neumont.edu appear to be schema references. No network calls to these domains are present in the analyzed chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 36/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_LOCAL_CONTENT",
+        "description": "The extension builds a webview HTML page that loads local webview.js and style.css from the extension directory and applies a Content Security Policy with a nonce. This is consistent with a diagram editor and does not load remote content.",
+        "code_reference": "buildHtml(e) { ... script nonce=\"${i}\" src=\"${n}\" ... }",
+        "line_hint": "approx 100-120",
+        "target": "extension/out/extension.js (chunk 79/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIGURATION_ACCESS",
+        "description": "Br() reads VS Code configuration under the 'orm' namespace for diagram and verbalization settings. This is expected for an ORM modeling extension and does not send configuration data over the network.",
+        "code_reference": "let t = R.workspace.getConfiguration(\"orm\");",
+        "line_hint": "approx 125",
+        "target": "extension/out/extension.js (chunk 79/124)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_WRITE_USER_SELECTED",
+        "description": "saveExport() prompts the user with a save dialog and writes exported SVG/PNG data using workspace.fs.writeFile. The destination is user-selected and no sensitive paths are targeted.",
+        "code_reference": "await R.workspace.fs.writeFile(r, o)",
+        "line_hint": "approx 80",
+        "target": "extension/out/extension.js (chunk 79/124)"
+      }
+    ],
+    "findings_truncated": 14
+  },
+  "ai_summary": "The code chunk is from a webview component of an ORM modeling extension. It contains standard data structure initialization (Maps for object types, fact types, roles) and utility functions for reading model data. The 'critical' scanner hits are false positives: the keydown listener is for UI navigation (Enter/Escape), and the image data URL is for diagram rendering. The code is minified but not heavily obfuscated, and the logic aligns with the extension's stated purpose of visualizing and managing ORM schemas.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-29T08:21:32.8Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T06:56:34.358882+00:00Z"
+}

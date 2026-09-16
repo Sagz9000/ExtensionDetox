@@ -1,0 +1,136 @@
+{
+  "extension_id": "lengmo1996.codex-notifier-collector",
+  "display_name": "Codex \u8fdc\u7aef\u901a\u77e5\u91c7\u96c6\u5668\uff08lengmo1996\uff09",
+  "version": "0.2.2",
+  "publisher": {
+    "name": "lengmo1996",
+    "verified": false
+  },
+  "vsix_sha256": "a3dbb1d190504ef266ce393af564b57788f101399dc73e9eda3e8d0cb32ab668",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.274375,
+    "ai_vibe": 0.15,
+    "static": 0.4375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/extension.js",
+        "line": 36,
+        "snippet": "os.hostname()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/core.js",
+        "line": 97,
+        "snippet": "os.hostname()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const childProcess = require('node:child_process');"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/src/extension.js",
+        "summary": "The extension is a legitimate utility designed to collect notification events from the Codex plugin in remote VS Code environments (SSH/Containers) and forward them to a local UI component. The code structure is clean, with no obfuscation, hardcoded secrets, or suspicious network endpoints. The use of `child_process` is necessary for its core function of running a Python collector script, and the `os.hostname` call is benign context identification. The activation event `onStartupFinished` is appropriate for a background collector that needs to be ready when the remote session starts. No malicious behavior was detected."
+      },
+      {
+        "target": "extension/src/core.js",
+        "summary": "The provided source code is a benign utility module for a VS Code extension designed to collect and forward Codex AI session notifications from remote environments (SSH/Containers) to a local Windows UI component. The code implements standard JSON line parsing, event normalization, and a command bridge using VS Code's internal command execution API. The use of `os.hostname()` and `os.homedir()` is strictly for generating unique identifiers for the notification sources, not for exfiltration. There are no signs of credential harvesting, arbitrary code execution, or network exfiltration to unauthorized endpoints. The activation event `onStartupFinished` is slightly broad but justifiable for a background notification bridge."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname()` as a system fingerprinting/infostealer pattern. In this context, the hostname is used solely to identify the source of events for the notification UI (as described in the README: 'source identification'). It is not combined with network exfiltration or credential harvesting, making this a false positive.",
+        "code_reference": "const source = makeSource(config, { hostname: os.hostname(), ... });",
+        "line_hint": 36,
+        "target": "extension/src/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `child_process.spawn` to execute a local Python script (`collector.py`). This is proportional to its stated purpose of collecting Codex plugin session events on remote SSH/Container environments. The script path is relative to the extension directory, and the command arguments are constructed from user-configured settings (Python path, Codex home), not from untrusted network input.",
+        "code_reference": "child = spawn(config.python, [...config.pythonArgs, '-u', script, 'follow', ...], ...)",
+        "line_hint": 135,
+        "target": "extension/src/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a notification collector that primarily relies on external hooks or manual commands. However, this is likely intended to ensure the local bridge is ready to receive events from remote sessions immediately upon startup, rather than indicating malicious persistence.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/core.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "INFO_LEAKAGE",
+        "description": "The code collects system metadata including `os.hostname()` and `os.homedir()` to generate a unique source ID and label for the notification events. While flagged by static analysis as potential fingerprinting, in this context it is used to identify the specific remote environment (SSH/Container) sending the notification to the local UI, which is consistent with the extension's stated purpose.",
+        "code_reference": "const id = crypto.createHash('sha256').update(hostname + '\\0' + config.codexHome).digest('hex').slice(0, 32);",
+        "line_hint": 97,
+        "target": "extension/src/core.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is a legitimate utility designed to collect notification events from the Codex plugin in remote VS Code environments (SSH/Containers) and forward them to a local UI component. The code structure is clean, with no obfuscation, hardcoded secrets, or suspicious network endpoints. The use of `child_process` is necessary for its core function of running a Python collector script, and the `os.hostname` call is benign context identification. The activation event `onStartupFinished` is appropriate for a background collector that needs to be ready when the remote session starts. No malicious behavior was detected.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-08T08:08:04.93Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-13T20:32:24.017671+00:00Z"
+}

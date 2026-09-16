@@ -1,0 +1,294 @@
+{
+  "extension_id": "tsiens.sub2api-account-usage",
+  "display_name": "Sub2API \u8d26\u6237\u7528\u91cf",
+  "version": "0.0.4",
+  "publisher": {
+    "name": "tsiens",
+    "verified": false
+  },
+  "vsix_sha256": "aacb4c4f7be80b2e6b080e6427a348293632b0b2506373a8d4782b7a05e007e8",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.271132519536884,
+    "ai_vibe": 0.15,
+    "static": 0.4245300781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/extension.js",
+        "line": 9,
+        "snippet": "TOKEN = 'sub2apiAccountUsage.accessToken'"
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/extension.js",
+        "line": 10,
+        "snippet": "TOKEN = 'sub2apiAccountUsage.refreshToken'"
+      }
+    ],
+    "high": [],
+    "total": 21
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "sub2api.example.com",
+      "source_file": "extension/extension.js",
+      "line": 345,
+      "context": "placeHolder: 'https://sub2api.example.com',",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "www.chartjs.org",
+      "source_file": "extension/media/chart.umd.min.js",
+      "line": 3,
+      "context": "* https://www.chartjs.org",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/16)",
+        "summary": "The code is a legitimate VS Code extension for monitoring API usage via a status bar item. It uses standard VS Code APIs for UI (status bar, output channel), secure secret storage (SecretStorage), and HTTP requests to a user-configured server. The static scanner hits are false positives resulting from standard secure coding practices (using string keys for secrets, updating own config). There are no indicators of malicious intent, data exfiltration, or unauthorized system access in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/16)",
+        "summary": "The code is a legitimate VS Code extension for monitoring API account usage. It correctly uses VS Code's SecretStorage API for credential management and standard configuration APIs for user settings. The static analysis hits regarding 'leaked secrets' and 'configuration tampering' are false positives resulting from the scanner misinterpreting secure storage keys and self-configuration updates. No malicious behavior, obfuscation, or data exfiltration patterns were detected in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/16)",
+        "summary": "The code is a legitimate implementation of a VS Code extension designed to display Sub2API account usage in the status bar. It correctly uses VS Code's SecretStorage API to handle sensitive credentials (API keys, tokens) and standard configuration APIs for user preferences. The static scanner hits are false positives resulting from variable naming conventions and standard configuration management. No malicious behavior, data exfiltration, or suspicious network activity was detected in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/16)",
+        "summary": "The code is a legitimate VS Code extension for managing Sub2API account usage. It uses standard VS Code APIs for configuration management, secret storage, and user interaction. The static scanner hits are false positives resulting from standard secure coding practices (using SecretStorage keys as strings, updating own config). There are no indicators of malicious behavior, data exfiltration, or unauthorized access in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/16)",
+        "summary": "This code chunk is part of a legitimate VS Code extension designed to display Sub2API account usage in the status bar. The logic involves fetching account lists and usage data from a user-configured API endpoint, handling authentication via VS Code's secure SecretStorage, and rendering the results. All flagged items by the static scanner are false positives resulting from standard VS Code extension development patterns (using string keys for secrets, updating own configuration, and reading own secret storage). There are no indicators of malicious behavior, data exfiltration, or unauthorized system access in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 10/16)",
+        "summary": "The code is a legitimate implementation of a VS Code extension designed to display Sub2API account usage in the status bar. It correctly uses VS Code's SecretStorage API to manage authentication tokens (API keys, JWTs) and standard configuration APIs for user preferences. The network requests are directed to the documented Sub2API endpoints for authentication and data retrieval. All static scanner hits are false positives resulting from the scanner misinterpreting storage keys as hardcoded secrets and standard configuration updates as malicious tampering. There are no indicators of malicious intent, data exfiltration, or unauthorized system access."
+      },
+      {
+        "target": "extension/extension.js (chunk 11/16)",
+        "summary": "The code is a legitimate implementation of a VS Code extension designed to display API usage statistics in the status bar. It uses standard VS Code APIs for secure credential storage (SecretStorage) and configuration management. The network requests are made to a user-configured base URL, which is appropriate for a tool that connects to a specific backend service (Sub2API). The static scanner hits are false positives resulting from the scanner misinterpreting secure storage keys as hardcoded secrets and legitimate configuration updates as tampering. There are no indicators of malicious behavior, data exfiltration, or obfuscation."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged lines 9-10 as 'leaked_secrets' due to hardcoded strings. However, these are merely key names for the VS Code SecretStorage API (e.g., 'sub2apiAccountUsage.accessToken'), not actual credentials. This is a standard and secure pattern for storing secrets in VS Code extensions.",
+        "code_reference": "const SECRET_ACCESS_TOKEN = 'sub2apiAccountUsage.accessToken';",
+        "line_hint": 9,
+        "target": "extension/extension.js (chunk 1/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' for updating workspace configuration. The code uses `workspace.getConfiguration().update()` to persist user settings (like refresh intervals or server URLs) within the extension's own namespace. This is standard behavior for extensions that allow users to configure their preferences.",
+        "code_reference": "workspace.getConfiguration('sub2apiAccountUsage').update(",
+        "line_hint": 263,
+        "target": "extension/extension.js (chunk 1/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_credential_theft' for reading from `extensionContext.secrets`. This is the correct and secure way to access secrets stored by the extension itself. It does not access other extensions' secrets or system credential stores.",
+        "code_reference": "extensionContext.secrets.get(",
+        "line_hint": 107,
+        "target": "extension/extension.js (chunk 1/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged lines 9-10 as hardcoded secrets. However, the code shows these are string constants used as keys for `vscode.SecretStorage` (e.g., 'sub2apiAccountUsage.accessToken'). This is a standard and secure pattern for storing sensitive data in VS Code extensions, not a leak of actual credentials.",
+        "code_reference": "const SECRET_EMAIL = 'sub2apiAccountUsage.email'; ...",
+        "line_hint": 9,
+        "target": "extension/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.getConfiguration().update()` as tampering. In this context, the extension is updating its own configuration namespace (`sub2apiAccountUsage`) to persist user preferences (like base URL or intervals) after user interaction. This is standard behavior for extensions that manage their own settings.",
+        "code_reference": "workspace.getConfiguration('sub2apiAccountUsage').update(...)",
+        "line_hint": 263,
+        "target": "extension/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "INFO",
+        "description": "The extension uses `extensionContext.secrets` to store JWT tokens and API keys. This is the recommended secure storage mechanism in VS Code, ensuring data is encrypted at rest and scoped to the extension. No cross-extension access or exfiltration patterns were observed.",
+        "code_reference": "extensionContext.secrets.get(...)",
+        "line_hint": 107,
+        "target": "extension/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'leaked_secrets' for lines 9-10, but the code shows these are variable names (SECRET_ADMIN_API_KEY, etc.) or string keys for SecretStorage, not hardcoded credential values. The actual secrets are stored securely in VS Code's SecretStorage API.",
+        "code_reference": "SECRET_ADMIN_API_KEY, SECRET_ACCESS_TOKEN",
+        "line_hint": 9,
+        "target": "extension/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_api_abuse' for configuration updates. The code uses `workspace.getConfiguration().update()` to persist user-selected settings (like refresh intervals) to the extension's own configuration namespace, which is standard and expected behavior for a configurable extension.",
+        "code_reference": "workspace.getConfiguration('sub2apiAccountUsage').update(",
+        "line_hint": 263,
+        "target": "extension/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged lines 9 and 10 as hardcoded secrets. However, the code shows these are string constants used as keys for `vscode.SecretStorage` (e.g., 'sub2apiAccountUsage.accessToken'). This is a standard and secure pattern for storing user-provided credentials in VS Code, not a leakage of hardcoded secrets.",
+        "code_reference": "TOKEN = 'sub2apiAccountUsage.accessToken'",
+        "line_hint": 9,
+        "target": "extension/extension.js (chunk 4/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration().update()` as potential tampering. In this context, the extension is updating its own configuration settings (`sub2apiAccountUsage`) based on explicit user input via `showInputBox`. This is the intended behavior for a configurable extension and does not constitute malicious tampering.",
+        "code_reference": "workspace.getConfiguration('sub2apiAccountUsage').update(",
+        "line_hint": 263,
+        "target": "extension/extension.js (chunk 4/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `extensionContext.secrets.get()` as credential theft. This API is used to retrieve secrets stored by the extension itself for its own authentication purposes (Admin API Key, tokens). It does not access other extensions' secrets or system credentials.",
+        "code_reference": "extensionContext.secrets.get(",
+        "line_hint": 107,
+        "target": "extension/extension.js (chunk 4/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'leaked_secrets' for lines 9 and 10. However, the code `TOKEN = 'sub2apiAccountUsage.accessToken'` is merely defining a string key for the VS Code SecretStorage API, not a hardcoded credential. This is standard practice for extensions managing user secrets.",
+        "code_reference": "const SECRET_ACCESS_TOKEN = 'sub2apiAccountUsage.accessToken';",
+        "line_hint": 9,
+        "target": "extension/extension.js (chunk 5/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' for updating workspace configuration. The code updates settings specific to the extension (`sub2apiAccountUsage`), which is the correct and intended way for an extension to persist user preferences (like refresh intervals or server URLs).",
+        "code_reference": "workspace.getConfiguration('sub2apiAccountUsage').update(...)",
+        "line_hint": 263,
+        "target": "extension/extension.js (chunk 5/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_credential_theft' for reading SecretStorage. The code reads from `extensionContext.secrets`, which is the secure, per-extension storage provided by VS Code. It does not access browser credentials, SSH keys, or other system-level secrets.",
+        "code_reference": "extensionContext.secrets.get(...)",
+        "line_hint": 107,
+        "target": "extension/extension.js (chunk 5/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged hardcoded secrets, but the code uses string constants (e.g., 'sub2apiAccountUsage.accessToken') as keys for VS Code's SecretStorage API. These are not actual credentials but identifiers for where to store/retrieve them securely.",
+        "code_reference": "const SECRET_ACCESS_TOKEN = 'sub2apiAccountUsage.accessToken';",
+        "line_hint": 9,
+        "target": "extension/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged programmatic tampering with workspace configuration. The code uses `workspace.getConfiguration().update()` to persist user preferences (like refresh intervals) within the extension's own namespace, which is standard and expected behavior for VS Code extensions.",
+        "code_reference": "workspace.getConfiguration('sub2apiAccountUsage').update(...)",
+        "line_hint": 263,
+        "target": "extension/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged credential theft via SecretStorage. The code only accesses `extensionContext.secrets`, which is scoped to this specific extension. It does not attempt to read secrets from other extensions or system stores.",
+        "code_reference": "extensionContext.secrets.get(SECRET_ADMIN_API_KEY)",
+        "line_hint": 107,
+        "target": "extension/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'leaked_secrets' for lines defining SECRET_ACCESS_TOKEN and SECRET_REFRESH_TOKEN. These are string constants used as keys for the VS Code SecretStorage API, not actual hardcoded credentials. This is a standard pattern for secure credential management in extensions.",
+        "code_reference": "const SECRET_ACCESS_TOKEN = 'sub2apiAccountUsage.accessToken';",
+        "line_hint": 9,
+        "target": "extension/extension.js (chunk 11/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' for updating workspace configuration. The code updates settings specific to the extension ('sub2apiAccountUsage'), which is a legitimate way to persist user preferences (like refresh intervals or base URLs) within the extension's scope.",
+        "code_reference": "workspace.getConfiguration('sub2apiAccountUsage').update(",
+        "line_hint": 263,
+        "target": "extension/extension.js (chunk 11/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_credential_theft' for reading SecretStorage. The code reads from `extensionContext.secrets`, which is the secure, per-extension storage provided by VS Code. It does not access browser stores, SSH keys, or other extensions' secrets. This is the correct and secure way to handle API keys.",
+        "code_reference": "extensionContext.secrets.get(SECRET_ADMIN_API_KEY)",
+        "line_hint": 107,
+        "target": "extension/extension.js (chunk 11/16)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate VS Code extension for monitoring API usage via a status bar item. It uses standard VS Code APIs for UI (status bar, output channel), secure secret storage (SecretStorage), and HTTP requests to a user-configured server. The static scanner hits are false positives resulting from standard secure coding practices (using string keys for secrets, updating own config). There are no indicators of malicious intent, data exfiltration, or unauthorized system access in this chunk.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-30T10:13:49.44Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T09:04:11.847917+00:00Z"
+}

@@ -1,0 +1,106 @@
+{
+  "extension_id": "txefficiency.code-issues-viewer",
+  "display_name": "Code Issues Viewer",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "txefficiency",
+    "verified": false
+  },
+  "vsix_sha256": "8e744a1385f918d8915e7a0a41972df2cd8ea10ace04f41ec899dfe824621343",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 6
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "devmind.woa.com",
+      "source_file": "extension/out/webview-provider.js",
+      "line": 78,
+      "context": "const url = 'http://devmind.woa.com:8888/aiNative/queryVersion?storyId=1010085371136341334';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": null,
+        "summary": "The extension exhibits strong signs of malicious intent through deception and potential data exfiltration. The advertised 'fix' functionality is a non-functional stub that fakes success, which is a classic social engineering tactic to make the extension appear useful and harmless. More critically, static analysis of the package reveals a connection to an unknown external domain ('devmind.woa.com') within the webview provider. This combination of deceptive UI behavior and unauthorized network communication to an untrusted endpoint is a high-risk pattern indicative of a supply-chain attack or information stealer. The extension should be considered malicious."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises 'Code Issues Viewer' with 'One-click fix' capabilities, but the implementation is a complete stub. The 'fixAll' and 'fixFile' commands do not perform any code analysis or modification; they simply display fake success messages after a short delay. This is a deceptive pattern often used to build trust before deploying a payload or to mask the fact that the extension is a vector for other malicious activities (like the network call found in the webview provider).",
+        "code_reference": "vscode.commands.registerCommand('codeIssuesViewer.fixAll', ...)",
+        "line_hint": "58",
+        "target": null
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The extracted indicators reveal a network connection to 'devmind.woa.com' in 'webview-provider.js'. While the provided source file 'extension.js' does not show this directly, the presence of an unknown domain in the webview provider of a 'code viewer' extension is highly suspicious. Combined with the deceptive 'fix' commands, this suggests the webview may be loading remote content or exfiltrating data (such as workspace file paths or content) to an external server.",
+        "code_reference": "require('./webview-provider')",
+        "line_hint": "52",
+        "target": null
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension size is reported as 0.0 MB, which is extremely small for an extension that claims to handle Git repositories and code analysis. This suggests the core logic is either missing (stub) or relies heavily on remote resources (the suspicious domain), which is a common pattern for lightweight malware droppers or C2 clients.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": null
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits strong signs of malicious intent through deception and potential data exfiltration. The advertised 'fix' functionality is a non-functional stub that fakes success, which is a classic social engineering tactic to make the extension appear useful and harmless. More critically, static analysis of the package reveals a connection to an unknown external domain ('devmind.woa.com') within the webview provider. This combination of deceptive UI behavior and unauthorized network communication to an untrusted endpoint is a high-risk pattern indicative of a supply-chain attack or information stealer. The extension should be considered malicious.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-19T02:28:27.42Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-19T03:34:51.559187+00:00Z"
+}

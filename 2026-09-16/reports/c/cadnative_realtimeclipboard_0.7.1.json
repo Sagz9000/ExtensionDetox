@@ -1,0 +1,302 @@
+{
+  "extension_id": "cadnative.realtimeclipboard",
+  "display_name": "RealtimeClipboard",
+  "version": "0.7.1",
+  "publisher": {
+    "name": "cadnative",
+    "verified": false
+  },
+  "vsix_sha256": "9003b44eea30e29fa1914ca136363ab08c52acb1a3037b0a431d0df350c03f3d",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.29896253847611115,
+    "ai_vibe": 0.15,
+    "static": 0.5358501539044447,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Clipboard monitoring loop",
+        "file": "extension/extension.js",
+        "line": 3,
+        "snippet": "clipboard.readText()}catch{return null}}async function On(){if(!navigator.clipboard?.read)return null;try{for(let e of await navigator.clipboard.read()){let t=e.types.find(n=>fe.TYPES.includes(n));if("
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Clipboard monitoring loop",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "clipboard.readText()}catch{return}typeof l!=\"string\"||!l||r(l)||(c(l),i(l))}function u(){clearInterval(s),s=null,!(!i||!p)&&(s=setInterval"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Clipboard content being sent over network",
+        "file": "extension/extension.js",
+        "line": 3,
+        "snippet": "clipboard.readText()}catch{return null}}async function On(){if(!navigator.clipboard?.read)return null;try{for(let e of await navigator.clipboard.read()){let t=e.types.find(n=>fe.TYPES.includes(n));if("
+      }
+    ],
+    "high": [],
+    "total": 14
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "realtimeclipboard.com",
+      "source_file": "extension/package.json",
+      "line": 14,
+      "context": "\"homepage\": \"https://realtimeclipboard.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "realtimeclipboard.fastapicloud.dev",
+      "source_file": "extension/extension.js",
+      "line": 155,
+      "context": "Zo = typeof location < \"u\" && [\"localhost\", \"127.0.0.1\", \"[::1]\"].includes(location.hostname), er = \"wss://realtimeclipboard.fastapicloud.dev\", tr = \"ws://127.0.0.1:8000\", Ze = \"realtimeclipboard.\", n",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/18)",
+        "summary": "The code is a legitimate implementation of a clipboard synchronization extension. The static scanner hits for 'infostealer' and 'credential harvesting' are false positives resulting from the extension's core functionality: reading the clipboard to sync it to other devices. The code uses standard VS Code APIs for configuration and state management. There are no signs of malicious intent, obfuscation, or unauthorized data exfiltration beyond the advertised clipboard sync feature."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/18)",
+        "summary": "The code is a legitimate implementation of a clipboard synchronization tool. The 'suspicious' behaviors flagged by the static scanner (clipboard reading, network transmission, config access) are the core features of the extension as described in its README. The network endpoints are specific to the service (realtimeclipboard.com/fastapicloud.dev) or local development (127.0.0.1). There are no indicators of credential theft, obfuscated payloads, or unauthorized system access. The code appears to be a shared library between web, desktop (Tauri), and VS Code surfaces."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/18)",
+        "summary": "The code is consistent with the extension's stated purpose of end-to-end encrypted clipboard synchronization. The flagged 'infostealer' and 'API abuse' indicators are false positives resulting from the extension's legitimate need to read the clipboard and manage its own configuration/state. The network endpoints are consistent with the service's branding. No malicious patterns such as credential harvesting, obfuscated payloads, or unauthorized system access were identified in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/18)",
+        "summary": "The code is consistent with the extension's stated purpose of end-to-end encrypted clipboard synchronization. The 'suspicious' behaviors flagged by the static analyzer (clipboard access, network transmission of text) are the primary features of the tool. Notably, the code includes a security layer that scans clipboard content for malicious patterns (like reverse shells or encoded commands) before allowing them to be synced, which is a positive security indicator. No evidence of credential theft, unauthorized file access, or malicious payload execution was found in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 13/18)",
+        "summary": "This code chunk is part of a legitimate VS Code extension designed for cross-device clipboard synchronization. The 'suspicious' behaviors flagged by the static scanner (clipboard polling, network transmission of clipboard content) are core features of the extension's stated purpose. The code includes encryption (AES) before transmission, which aligns with the 'end-to-end encrypted' claim in the README. There are no indicators of malicious intent, credential theft, or unauthorized data exfiltration. The findings are false positives resulting from the scanner's inability to distinguish between malicious clipboard monitoring and legitimate clipboard synchronization."
+      },
+      {
+        "target": "extension/extension.js (chunk 15/18)",
+        "summary": "The code is consistent with the extension's stated purpose of end-to-end encrypted clipboard synchronization. The flagged 'infostealer' and 'network exfiltration' patterns are false positives resulting from the legitimate implementation of clipboard reading and text sharing features. The code includes user confirmation dialogs for sensitive actions (like pasting potentially malicious content) and does not exhibit signs of credential harvesting, arbitrary code execution, or unauthorized data exfiltration. The domain `realtimeclipboard.com` is the primary service endpoint, which is expected for this type of extension."
+      },
+      {
+        "target": "extension/extension.js (chunk 16/18)",
+        "summary": "The code is a legitimate implementation of a clipboard synchronization extension. The 'suspicious' behaviors flagged by the static scanner (clipboard reading, network transmission, configuration access) are all core features of the extension's stated purpose: end-to-end encrypted clipboard sync. The code uses standard VS Code APIs and does not exhibit any malicious patterns such as credential harvesting, obfuscated payloads, or unauthorized system access. The domain 'realtimeclipboard.com' is consistent with the extension's branding."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'infostealer_behavior' due to clipboard monitoring. However, the code explicitly implements the advertised 'RealtimeClipboard' functionality (copy on one machine, paste on another). The use of `clipboard.readText` and `env.clipboard.readText` is core to the extension's purpose, not malicious harvesting.",
+        "code_reference": "clipboard.readText() / env.clipboard.readText()",
+        "line_hint": 3,
+        "target": "extension/extension.js (chunk 1/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_api_abuse' for reading configuration and sending over network. The code reads `realtimeclipboard.relayUrl` from VS Code settings to configure the relay endpoint. This is standard configuration handling for a network-based extension, not credential harvesting.",
+        "code_reference": "workspace.getConfiguration(\"realtimeclipboard\").get(\"relayUrl\")",
+        "line_hint": 1,
+        "target": "extension/extension.js (chunk 1/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `onStartupFinished` activation. While this is broader than necessary for a clipboard tool (which could activate on command), it is not malicious. It ensures the clipboard sync is ready immediately upon VS Code startup, which aligns with the 'realtime' promise. The package size (0.1 MB) is appropriate for a lightweight extension.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 1/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'infostealer_behavior' due to clipboard reading and network activity. However, the code explicitly implements the extension's stated purpose: 'RealtimeClipboard' which syncs clipboard content between machines. The use of `navigator.clipboard.read` and `env.clipboard.readText` is core functionality, not malicious harvesting. The network destination is a documented relay service (`realtimeclipboard.fastapicloud.dev`) or local loopback, consistent with the README.",
+        "code_reference": "async function On(){if(!navigator.clipboard?.read)return nul...",
+        "line_hint": 3,
+        "target": "extension/extension.js (chunk 2/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_api_abuse' for reading configuration and updating settings. The code reads `realtimeclipboard.relayUrl` to determine the connection endpoint and updates settings to persist user preferences. This is standard configuration management for a networked extension, not tampering or secret exfiltration.",
+        "code_reference": "workspace.getConfiguration(\"realtimeclipboard\").get(\"relayUrl\")",
+        "line_hint": 1,
+        "target": "extension/extension.js (chunk 2/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code includes Tauri integration (`__TAURI__`), indicating this chunk is shared with a desktop application version of the tool. This is consistent with the README stating 'Works with the web app, the desktop app and the CLI'. The presence of Tauri APIs does not indicate malicious intent but rather cross-platform code sharing.",
+        "code_reference": "let n = V.__TAURI__?.core;",
+        "line_hint": 1,
+        "target": "extension/extension.js (chunk 2/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' due to clipboard monitoring. However, the code context confirms this is the core functionality of the 'RealtimeClipboard' extension, which is explicitly designed to sync clipboard content between machines. The use of `clipboard.readText` is proportional to the advertised feature.",
+        "code_reference": "clipboard.readText()",
+        "line_hint": 3,
+        "target": "extension/extension.js (chunk 3/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' for reading configuration and sending data. The code reads `realtimeclipboard` specific settings (like `relayUrl`) and manages local state via `localStorage`/`globalState`. This is standard behavior for a sync extension and does not indicate harvesting of unrelated user secrets or system information.",
+        "code_reference": "workspace.getConfiguration(\"realtimeclipboard\")",
+        "line_hint": 1,
+        "target": "extension/extension.js (chunk 3/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The code references `realtimeclipboard.com` and `realtimeclipboard.fastapicloud.dev`. These domains align with the extension's stated purpose (syncing via a relay). While `fastapicloud.dev` is a subdomain of a cloud provider, it is likely used for the relay service infrastructure. No suspicious tunneling services (ngrok, trycloudflare) or hardcoded IPs were found.",
+        "code_reference": "Qe = \"https://realtimeclipboard.com\"",
+        "line_hint": 155,
+        "target": "extension/extension.js (chunk 3/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'clipboard monitoring loop' and 'credential harvesting'. However, the code explicitly implements a clipboard synchronization feature (reading/writing clipboard to sync between machines) which is the core advertised functionality of the extension. The code also includes a security filter (`In` function) that actively blocks the synchronization of dangerous payloads (e.g., `curl | bash`, encoded PowerShell), indicating a defensive rather than malicious intent.",
+        "code_reference": "function In(e) { ... if (n.test(t)) return o; ... }",
+        "line_hint": 150,
+        "target": "extension/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Reading document content and sending over network'. The code `document.getText(r.selection)` is part of the 'Send Selection' command, which allows users to explicitly share selected text. This is a user-initiated action, not a silent exfiltration of workspace files.",
+        "code_reference": "document.getText(r.selection)",
+        "line_hint": 8,
+        "target": "extension/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' due to clipboard polling and network transmission. However, the code explicitly implements the extension's stated purpose: 'RealtimeClipboard' (copy on one machine, paste on another). The data is encrypted (AES) before transmission, and the polling loop is a standard mechanism for clipboard synchronization extensions. This is not credential harvesting or exfiltration.",
+        "code_reference": "async function f() { ... l = await e.env.clipboard.readText() ... i(l) }",
+        "line_hint": 15,
+        "target": "extension/extension.js (chunk 13/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' for reading configuration and sending it over the network. The code reads `realtimeclipboard.relayUrl` to determine where to send the encrypted clipboard data. This is a legitimate configuration for a sync service, not a leak of user secrets.",
+        "code_reference": "workspace.getConfiguration(\"realtimeclipboard\").get(\"relayUrl\")",
+        "line_hint": 1,
+        "target": "extension/extension.js (chunk 13/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code behavior (clipboard polling, AES encryption, WebSocket/HTTP relay communication) is fully proportional to the advertised functionality of a cross-device clipboard sync tool. No hidden capabilities, obfuscation, or suspicious network endpoints were found in this chunk.",
+        "code_reference": "async function To(e, t, n) { ... await Pt(e.aesKey, t) ... }",
+        "line_hint": 5,
+        "target": "extension/extension.js (chunk 13/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'clipboard monitoring loop' and 'infostealer_behavior'. This is a false positive. The code explicitly implements the extension's core advertised feature: syncing clipboard content between machines. The use of `clipboard.readText` is necessary for the 'Copy on one machine, paste on another' functionality described in the README.",
+        "code_reference": "env.clipboard.readText()",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 15/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Reading document content and sending over network'. This is a false positive. The code reads the active text editor's selection (`document.getText(r.selection)`) to allow the user to share specific text via the 'Send Selection' command. This is a standard and expected behavior for a clipboard/text sharing tool.",
+        "code_reference": "r.document.getText(r.selection)",
+        "line_hint": 8,
+        "target": "extension/extension.js (chunk 15/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code includes a security feature that warns the user if a received clip looks like a shell command (`showWarningMessage`). This indicates a defensive posture against prompt injection or malicious payload execution, which is consistent with a legitimate security-conscious extension.",
+        "code_reference": "A clip arrived that looks like a shell command. Put it on your clipboard?",
+        "line_hint": 12,
+        "target": "extension/extension.js (chunk 15/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged clipboard monitoring and network transmission as infostealer behavior. However, the code explicitly implements the extension's core feature: syncing clipboard content between machines. The data is encrypted (AES) before transmission, and the destination is the user's own session/relay, not a third-party exfiltration endpoint.",
+        "code_reference": "clipboard.readText() ... await Et(r.text)",
+        "line_hint": 3,
+        "target": "extension/extension.js (chunk 16/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged reading document content and sending over network. This is the 'Send Selection' feature, which allows users to share selected text without touching the system clipboard. This is a documented feature in the README.",
+        "code_reference": "document.getText(r.selection)",
+        "line_hint": 8,
+        "target": "extension/extension.js (chunk 16/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged reading VSCode configuration. The code reads the 'realtimeclipboard' configuration to determine the relay URL and sync mode. This is standard behavior for a configurable extension.",
+        "code_reference": "workspace.getConfiguration(\"realtimeclipboard\")",
+        "line_hint": 1,
+        "target": "extension/extension.js (chunk 16/18)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate implementation of a clipboard synchronization extension. The static scanner hits for 'infostealer' and 'credential harvesting' are false positives resulting from the extension's core functionality: reading the clipboard to sync it to other devices. The code uses standard VS Code APIs for configuration and state management. There are no signs of malicious intent, obfuscation, or unauthorized data exfiltration beyond the advertised clipboard sync feature.",
+  "escalation_reasons": [
+    "3 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-05T17:59:06.21Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T12:49:16.271475+00:00Z"
+}

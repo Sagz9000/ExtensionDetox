@@ -1,0 +1,155 @@
+{
+  "extension_id": "appversestudio.edgecase-ai",
+  "display_name": "EdgeCase AI: Adversarial Mock & Test Generator",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "appversestudio",
+    "verified": false
+  },
+  "vsix_sha256": "5049dfcb42d4458f17d808b2f25e0ad2182daec2fca83e5f8923175b1530b9ba",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.29064006324130753,
+    "ai_vibe": 0.1,
+    "static": 0.57256025296523,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/config/secrets.js",
+        "line": 4,
+        "snippet": "SECRET = 'edgecase.geminiApiKey'"
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/config/secrets.js",
+        "line": 5,
+        "snippet": "SECRET = 'edgecase.openaiApiKey'"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 49,
+        "snippet": "fetch(r,{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify(i)});if(!s.ok){let m=await s.text(),u=`Gemini API error (${s.status}): ${s.statusText}`;try{let p=JSON.parse(m);p"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 49,
+        "snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify(i)});if(!s.ok){let m=await s.text(),u=`Gemini API error (${s.status}): ${s.statusText}`;try{let p=JSON.parse(m);p?.error?."
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "theappversestudio.com",
+      "source_file": "extension/package.json",
+      "line": 9,
+      "context": "\"homepage\": \"https://theappversestudio.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.openai.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 294,
+      "context": "let i = await fetch(\"https://api.openai.com/v1/chat/completions\", {",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js",
+        "summary": "The extension 'EdgeCase AI' appears to be a legitimate tool for generating adversarial test fixtures and unit tests using AI providers (Gemini, OpenAI, Ollama). The code structure is clean, with no obfuscation, no credential harvesting from sensitive system paths, and no unauthorized network exfiltration. The flagged 'exfiltration' patterns are false positives corresponding to standard API calls to documented AI services. The only minor issue is the use of `onStartupFinished` for activation, which is inefficient but not malicious."
+      },
+      {
+        "target": "extension/out/config/secrets.js",
+        "summary": "The provided code is a standard implementation of a secrets manager for a VS Code extension. It defines constant strings ('edgecase.geminiApiKey', 'edgecase.openaiApiKey') which serve as keys for the VS Code SecretStorage API, not as hardcoded credentials themselves. The class methods correctly delegate to the `vscode.SecretStorage` interface (via the injected `secrets` object) to get, store, and delete API keys. There is no evidence of credential harvesting, exfiltration, or malicious behavior. The static rule engine hits regarding 'leaked_secrets' are false positives, as the scanner likely misidentified the storage keys as the secrets themselves. The code aligns perfectly with the extension's stated purpose of managing API keys for AI services."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `onStartupFinished` as an activation event. While not inherently malicious, this is inefficient for an extension that only activates when the user explicitly runs a command. It causes the extension to load on every VS Code startup, potentially slowing down the editor. Standard practice is to use `onCommand` or `onLanguage`.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/dist/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `fetch` calls with POST methods as potential data exfiltration. However, inspection reveals these calls are directed to legitimate AI API endpoints (`generativelanguage.googleapis.com`, `api.openai.com`) and a local service (`http://localhost:11434` for Ollama). The data sent is user-selected code snippets for test generation, which aligns with the extension's stated purpose.",
+        "code_reference": "fetch(r,{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify(i)});",
+        "line_hint": 49,
+        "target": "extension/dist/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `workspace.getConfiguration` usage as potential harvesting. The code reads configuration values (`provider`, `model`, `endpoint`) to determine how to interact with AI providers. It does not read sensitive secrets from configuration (secrets are handled via `context.secrets`). This is standard behavior for configurable extensions.",
+        "code_reference": "workspace.getConfiguration(\"edgecase\").get(\"provider\",\"gemini\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'EdgeCase AI' appears to be a legitimate tool for generating adversarial test fixtures and unit tests using AI providers (Gemini, OpenAI, Ollama). The code structure is clean, with no obfuscation, no credential harvesting from sensitive system paths, and no unauthorized network exfiltration. The flagged 'exfiltration' patterns are false positives corresponding to standard API calls to documented AI services. The only minor issue is the use of `onStartupFinished` for activation, which is inefficient but not malicious.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 13,
+    "published_date": "2026-09-15T12:13:11.213Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T14:11:00.506364+00:00Z"
+}

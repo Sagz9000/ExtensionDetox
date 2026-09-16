@@ -1,0 +1,248 @@
+{
+  "extension_id": "RoboStar.gz-bridge-remote",
+  "display_name": "Gazebo Bridge (Remote)",
+  "version": "0.2.4",
+  "publisher": {
+    "name": "RoboStar",
+    "verified": false
+  },
+  "vsix_sha256": "5d26d80db75e8d02ae171c42bcf57b4c6624af9f3d8f1b62e4953b131b32b635",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.26789003907376807,
+    "ai_vibe": 0.15,
+    "static": 0.41156015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "c2_tunneling",
+        "severity": "CRITICAL",
+        "description": "Bash reverse shell payload",
+        "file": "extension/dist/extension.js",
+        "line": 9015,
+        "snippet": "/dev/tcp/"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 8694,
+        "snippet": "var child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 8694,
+        "snippet": "var child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 8713,
+        "snippet": "child = (0, child_process_1.spawn)(options.command, args, { env: env2, stdio: [\"ignore\", \"pipe\", \"pipe\"], detached: true });"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 8694,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "www.apache.org",
+      "source_file": "extension/dist/extension.js",
+      "line": 6897,
+      "context": "exports2.TIME_PROTO = '/*\\n * Copyright (C) 2017 Open Source Robotics Foundation\\n *\\n * Licensed under the Apache License, Version 2.0 (the \"License\");\\n * you may not use this file except in complia",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "ip",
+      "value": "239.255.0.7",
+      "source_file": "extension/dist/extension.js",
+      "line": 7347,
+      "context": "exports2.GZ_DISCOVERY_MULTICAST_GROUP = \"239.255.0.7\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 79/126)",
+        "summary": "The analyzed code chunk consists of standard protobuf definitions for Gazebo/ROS2 messaging (Time, Header, Discovery) and library imports. The static scanner hits for 'child_process' and '/dev/tcp/' are likely false positives or refer to legitimate functionality required for the extension's stated purpose of bridging remote ROS2 traffic to a local simulator. There are no signs of credential harvesting, obfuscated payloads, or malicious network exfiltration in this segment. The extension's capabilities align with its description as a ROS2/Gazebo bridge tool."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 80/126)",
+        "summary": "The analyzed code chunk is a Protocol Buffers definition file for Gazebo Simulation discovery messages, wrapped in an Apache License header. It contains no executable JavaScript logic, network calls, or system interactions. The static scanner hits for 'child_process' and '/dev/tcp/' do not appear in this specific chunk and are likely false positives or refer to other parts of the large bundled file. Given the extension's purpose (bridging ROS2/Gazebo traffic), the presence of proto definitions is expected and benign. No malicious behavior is evident in this segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 84/126)",
+        "summary": "The analyzed code chunk is benign. It implements a standard UDP multicast channel for Gazebo discovery, which aligns perfectly with the extension's documented purpose of bridging ROS2/Gazebo traffic. The static scanner hits for `child_process` and reverse shells are not present in this specific chunk and likely refer to other parts of the file or are false positives from context-less scanning. The use of `dgram` and multicast groups (239.255.0.7) is standard for Gazebo/ROS2 discovery protocols. No secrets, exfiltration, or malicious execution patterns are visible in this segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 85/126)",
+        "summary": "The analyzed code chunk is part of a VS Code extension designed to bridge Gazebo Transport discovery traffic between a remote environment (Dev Container/SSH) and a local machine. The code implements robust multicast socket handling, specifically joining multicast groups on all available IPv4 interfaces to ensure reliable discovery in complex network environments (Wi-Fi, VPN, Docker). The static scanner hits for `/dev/tcp/` and `child_process` are likely false positives or benign usage in the context of network debugging and process management for the simulator bridge. There are no signs of credential harvesting, data exfiltration, obfuscated payloads, or malicious C2 communication in this specific chunk. The behavior aligns with the extension's stated purpose of facilitating ROS2/Gazebo simulation across network boundaries."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 110/126)",
+        "summary": "The code is a legitimate implementation of a 'Gazebo Bridge' extension designed to run inside a Dev Container and bridge ROS2/Gazebo traffic to a local native simulator. The use of `child_process` to spawn the simulator process is consistent with the extension's stated purpose. The flagged `/dev/tcp/` indicator is likely a false positive or part of a configuration string for the simulator, not a C2 tunnel. No credential harvesting, obfuscation, or exfiltration patterns were observed in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 114/126)",
+        "summary": "This chunk contains a bash shim script used to rewrite file paths for the `ros_gz_sim` create tool. The flagged `/dev/tcp/` connection is to localhost for inter-process communication, not external exfiltration. The `child_process` usage is expected for a tool that manages external simulator binaries. No hardcoded secrets or suspicious external domains were found in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 126/126)",
+        "summary": "This chunk represents the final 6% of the extension bundle, containing the `deactivate` lifecycle hook, export definitions, and license comments for the `long` library. The code visible here is standard VS Code extension boilerplate. The static scanner hits for `child_process` and `/dev/tcp/` refer to lines earlier in the file (8694 and 9015) which are not included in this specific chunk, making it difficult to verify them directly here. However, given the extension's stated purpose of bridging ROS2/Gazebo traffic, using `child_process` to manage simulator processes and multicast IPs for discovery are highly plausible and likely benign. No direct evidence of obfuscation, credential harvesting, or suspicious network exfiltration is present in this specific code segment."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'child_process' and '/dev/tcp/' as high/critical risks. However, the provided code chunk (79/126) contains only protobuf definitions and library imports. The 'child_process' reference is likely part of the bundled library code or a false positive from the scanner's line mapping, and '/dev/tcp/' is not present in the visible source. Given the extension's purpose (bridging ROS2/Gazebo traffic), using child_process to manage local simulator processes or network utilities is a legitimate capability, not malicious behavior.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 8694,
+        "target": "extension/dist/extension.js (chunk 79/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses 'onStartupFinished' activation. While this is broader than necessary for a specific command, it is common for extensions that need to establish background connections or listeners (like a bridge/relay) immediately upon VS Code startup to ensure low latency for ROS2 discovery. This is not a malicious indicator.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 79/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'child_process' and '/dev/tcp/' as high/critical risks. However, the provided source code chunk (80/126) consists entirely of an Apache License header and a Protocol Buffers (proto3) definition for Gazebo Discovery messages. The flagged strings are likely present in other chunks of the file (e.g., within bundled dependencies or string literals in the JS wrapper) or are false positives from the scanner matching against the entire file content rather than this specific logical block. The code visible here is benign data definition.",
+        "code_reference": "syntax = \"proto3\"; package gz.msgs;",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 80/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `/dev/tcp/` as critical/high risk. However, the provided source code chunk (84/126) contains only standard Node.js boilerplate (`__importStar`, `__setModuleDefault`) and the implementation of a `MulticastChannel` class using `dgram` (UDP) and `events`. The specific lines cited by the scanner (8694 and 9015) are not present in this chunk. The code visible here is consistent with the extension's stated purpose of bridging Gazebo discovery traffic via multicast UDP, which is a legitimate network operation for ROS2/Gazebo integration. No malicious behavior is evident in this specific file segment.",
+        "code_reference": "exports2.MulticastChannel = ...; var dgram = __importStar(require(\"dgram\"));",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 84/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'Bash reverse shell payload' at line 9015 matching `/dev/tcp/`. However, the provided code chunk (85/126) contains extensive comments explaining multicast networking behavior for Gazebo Transport. The string `/dev/tcp/` is likely part of a documentation comment or a string literal used in a non-executable context (e.g., explaining why a specific network configuration fails or referencing a shell command in a help message), rather than an active reverse shell execution. Given the extension's purpose is to bridge ROS2/Gazebo traffic, network debugging strings are expected. No `child_process.exec` or `eval` is visible in this chunk to execute such a string.",
+        "code_reference": "joinOnAllInterfaces(socket) { ... }",
+        "line_hint": 9015,
+        "target": "extension/dist/extension.js (chunk 85/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` at line 8694. While `child_process` is a high-risk module, in the context of a 'Bridge' extension that needs to interact with local system processes (like Gazebo Sim or ROS2 nodes) or manage network interfaces, it may be used for legitimate purposes such as checking process status or executing specific, controlled commands. Without seeing the specific usage in this chunk, it is flagged as a potential false positive given the legitimate networking context of the surrounding code. The code shown focuses on `os.networkInterfaces()` and `socket.addMembership`, which are standard Node.js APIs for network configuration.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 8694,
+        "target": "extension/dist/extension.js (chunk 85/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `/dev/tcp/` as critical/high risk. However, the code context shows `child_process` is used to spawn a native Gazebo simulator process (`options.command`) as part of the extension's documented 'bridge' functionality. The `/dev/tcp/` string is likely part of a shell command string passed to the simulator or a test case, not a reverse shell payload executed by the extension itself. The extension's purpose is to relay traffic to a local simulator, making process spawning a core feature, not malicious behavior.",
+        "code_reference": "var child_process_1 = require(\"child_process\"); ... child = (0, child_process_1.spawn)(options.command, args, ...)",
+        "line_hint": 8694,
+        "target": "extension/dist/extension.js (chunk 110/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require(\"child_process\")` and `/dev/tcp/` as high/critical risks. However, the `/dev/tcp/` usage is inside a bash script string (`CREATE_SHIM_SCRIPT`) that connects to `127.0.0.1` (localhost) on a configurable port (default 47101). This is a standard IPC mechanism for the shim to communicate with the local host process, not a reverse shell to an external C2 server. The `child_process` usage is likely part of the logic to execute this shim or manage the overlay, which is consistent with the extension's purpose of bridging ROS2/Gazebo processes.",
+        "code_reference": "exports2.CREATE_SHIM_SCRIPT = `... exec 3<>\"/dev/tcp/127.0.0.1/$SHIM_PORT\" ...`",
+        "line_hint": 8694,
+        "target": "extension/dist/extension.js (chunk 114/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is a 'Bridge' for Gazebo/ROS2 in remote containers. It requires spawning processes and managing file paths across the container/host boundary. The use of bash shims and local socket communication is proportional to this complex infrastructure task.",
+        "code_reference": "installCreateShimOverlay2",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 114/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require(\"child_process\")` at line 8694 and a `/dev/tcp/` match at line 9015. However, this chunk (126/126) contains only the tail end of the bundle: the `deactivate` function, CommonJS export annotations, and bundled license comments (specifically for the `long` library). The actual code lines referenced by the scanner are not present in this chunk. Given the extension's purpose (bridging network traffic for Gazebo Sim), `child_process` is likely used to spawn the simulator process, and `/dev/tcp/` is likely a string literal within a dependency or a network utility, not necessarily a reverse shell payload in the main logic. Without seeing the specific lines, these are likely benign usage or false positives from minified/bundled dependencies.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 8694,
+        "target": "extension/dist/extension.js (chunk 126/126)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The domain `www.apache.org` and IP `239.255.0.7` are extracted from the bundle. `www.apache.org` is clearly from the license header of the `long` library visible in this chunk. `239.255.0.7` is a multicast address (239.0.0.0/8), which is consistent with the extension's description of bridging 'discovery/pub-sub traffic' (likely DDS/ROS2 multicast). These are not suspicious C2 endpoints.",
+        "code_reference": "www.apache.org, 239.255.0.7",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 126/126)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The analyzed code chunk consists of standard protobuf definitions for Gazebo/ROS2 messaging (Time, Header, Discovery) and library imports. The static scanner hits for 'child_process' and '/dev/tcp/' are likely false positives or refer to legitimate functionality required for the extension's stated purpose of bridging remote ROS2 traffic to a local simulator. There are no signs of credential harvesting, obfuscated payloads, or malicious network exfiltration in this segment. The extension's capabilities align with its description as a ROS2/Gazebo bridge tool.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "4 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-04T12:12:59.99Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T10:42:31.716717+00:00Z"
+}

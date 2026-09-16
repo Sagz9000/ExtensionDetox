@@ -1,0 +1,265 @@
+{
+  "extension_id": "workjerry.forrrk",
+  "display_name": "forrrk",
+  "version": "0.1.4",
+  "publisher": {
+    "name": "workjerry",
+    "verified": false
+  },
+  "vsix_sha256": "fac6709e2bb426d02220ea16644418fcc9427bde1e33067047e2c70100e93ea1",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2665625,
+    "ai_vibe": 0.15,
+    "static": 0.40625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "lolbins_stagers",
+        "severity": "CRITICAL",
+        "description": "Curl piped to shell (download-and-execute)",
+        "file": "extension/out/extension.js",
+        "line": 221,
+        "snippet": "curl -fsSL https://raw.githubusercontent.com/lazyjerry/git-auto-push/refs/heads/master/install.sh | sh"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 40,
+        "snippet": "var import_node_child_process = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 931,
+        "snippet": "var execFileAsync = (0, import_node_util.promisify)(import_node_child_process.execFile);"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "fork.info",
+      "source_file": "extension/package.json",
+      "line": 46,
+      "context": "\"id\": \"fork.info\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "git-fork.com",
+      "source_file": "extension/out/extension.js",
+      "line": 64,
+      "context": "var FORK_DOWNLOAD_URL = \"https://git-fork.com/\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "fork.app",
+      "source_file": "extension/out/extension.js",
+      "line": 121,
+      "context": "candidates2.push(join(homeDir, \"Applications\", \"Fork.app\"));",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "user.name",
+      "source_file": "extension/media/main.js",
+      "line": 21,
+      "context": "\"user.name\": \"\u63d0\u4ea4\u8005\u540d\u7a31\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/14)",
+        "summary": "This chunk of the 'forrrk' extension appears to be a standard TypeScript-compiled VS Code extension. It imports standard Node.js modules (`fs`, `path`, `os`, `child_process`) and the `vscode` API. The primary logic visible involves locating the `git-fork` CLI binary on the system, which aligns with the extension's stated purpose of providing a one-click interface to Git Fork. The 'curl | bash' hit is a false positive for malicious execution, as it is part of a user-facing installation hint string. No hardcoded secrets, obfuscated code, or suspicious network endpoints were found in this chunk. The use of `child_process` is justified by the need to interact with the external `fork` CLI."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/14)",
+        "summary": "This chunk of the extension source code is largely benign. It contains utility functions for locating the 'Fork' Git client application and its CLI on the user's system, as well as logic to generate installation hints. The primary static analysis hit (curl piped to shell) is a false positive in the context of this specific file, as it appears to be a string constant for user display rather than an active execution call. The code aligns well with the extension's documented purpose of providing Git repository information and Fork integration without heavy obfuscation or unexpected network activity."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/14)",
+        "summary": "This chunk of the extension source code is primarily concerned with locating the `.git` directory and checking for the presence of the `git-auto-push` CLI tool. The logic is straightforward, using standard Node.js `fs` and `path` modules. The only potential red flag, the `curl | sh` command, is a false positive in the context of this specific file because it is stored as a string constant intended for user display (installation instructions) rather than immediate execution, and the dependency is documented in the README. The code aligns well with the extension's stated purpose of providing read-only git info and integrating with external tools."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/14)",
+        "summary": "This chunk of the 'forrrk' extension contains standard utility functions for reading local file system data (git metadata, project manifests) without any network calls, child process execution, or obfuscation. The code aligns perfectly with the extension's stated purpose of providing read-only git information from local files. The flagged 'curl' pattern is not visible in this specific code segment and is likely a false positive or a string constant for user instructions in another part of the file."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/14)",
+        "summary": "This chunk of the extension source code is benign. It contains utility functions for parsing JSON manifests, TOML values, and reading repository metadata files (LICENSE, README) directly from the file system. The only flagged indicator was a curl command, which is a documented user-facing installation helper for an external tool, not a hidden stager. The code is clean, unobfuscated, and proportional to the extension's stated functionality."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 6/14)",
+        "summary": "This chunk of the extension source code is benign. It focuses on parsing local git metadata (reflogs and config files) to display statistics in the VS Code panel. The only flagged item, a curl-pipe-to-shell command, is a user-initiated installation helper for an external tool, which is consistent with the extension's documentation. No obfuscation, credential theft, or unexpected network activity was detected."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 11/14)",
+        "summary": "This chunk of the 'forrrk' extension source code appears benign and consistent with its advertised functionality. It implements logic to parse Git metadata (recent branches, stash count) directly from files and manages a Webview panel for display. The use of `child_process` is limited to invoking specific external CLI tools (`fork`, `git-auto-push`) as described in the README. The 'curl piped to shell' hit is likely a false positive or a low-risk user-triggered installation step for the optional `git-auto-push` tool, not a hidden payload. No obfuscation, credential harvesting, or suspicious network exfiltration patterns were observed in this segment."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'curl piped to shell' pattern (line 221). However, the code constructs a command string `curl -fsSL ... | bash` to display to the user as an installation hint for the `git-auto-push` tool. It does not execute this command directly in the extension's context but rather presents it for the user to run or copies it to the clipboard. This is a standard pattern for CLI tool installation instructions.",
+        "code_reference": "curl -fsSL https://raw.githubusercontent.com/lazyjerry/git-auto-push/refs/heads/master/install.sh | ",
+        "line_hint": 221,
+        "target": "extension/out/extension.js (chunk 1/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension imports `node:child_process` and `node:os`. While the README claims to be 'fully offline' and not call git commands directly, it does use `child_process` to locate the `fork` CLI binary and potentially execute `fork -C <repo> open`. This is proportional to the advertised 'One-click Open Fork' feature, but the 'offline' claim is slightly misleading if it spawns external processes, though no network exfiltration is evident in this chunk.",
+        "code_reference": "var import_node_child_process = require(\"node:child_process\");",
+        "line_hint": 42,
+        "target": "extension/out/extension.js (chunk 1/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'curl piped to shell' pattern at line 221. However, the code context indicates this is a string literal (`copyCommand`) intended to be displayed to the user for manual copying and execution, not executed directly by the extension via `child_process`. This is a standard installation hint for the `git-auto-push` tool.",
+        "code_reference": "copyCommand: `curl -fsSL https://raw.githubusercontent.com/lazyjerry/git-auto-push/refs/heads/master/install.sh | `",
+        "line_hint": 221,
+        "target": "extension/out/extension.js (chunk 2/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code performs filesystem checks for the existence of the 'Fork' application and its CLI binary in standard OS locations (e.g., /Applications, LOCALAPPDATA). This is proportional to the extension's stated purpose of integrating with the Fork Git client.",
+        "code_reference": "appCandidates(platform, env2, homeDir)",
+        "line_hint": 30,
+        "target": "extension/out/extension.js (chunk 2/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'curl piped to shell' pattern. However, the code defines this string as `GIT_AUTO_PUSH_INSTALL_COMMAND` and the README explicitly states that 'Auto Push' is an external tool (`git-auto-push`) that the user installs separately. The extension only displays this command to the user if the tool is missing; it does not execute it directly in this chunk. This is a standard installation hint for a third-party CLI dependency, not a hidden stager.",
+        "code_reference": "const GIT_AUTO_PUSH_INSTALL_COMMAND = \"curl -fsSL https://raw.githubusercontent.com/lazyjerry/git-auto-push/refs/heads/master/install.sh | sh\";",
+        "line_hint": 221,
+        "target": "extension/out/extension.js (chunk 3/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code performs filesystem operations (`stat`, `readFile`, `access`) to locate `.git` directories and check for the existence of the `git-auto-push` binary in PATH. These operations are consistent with the extension's stated purpose of reading git metadata without invoking the `git` binary and checking for external tool availability.",
+        "code_reference": "async function locateGitAutoPush(options = {}) { ... }",
+        "line_hint": 225,
+        "target": "extension/out/extension.js (chunk 3/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'curl piped to shell' pattern at line 221. However, the source code in this chunk (lines 1-100+) consists of utility functions for reading file system metadata (readTextFile, readFileTail, listDirectory, fileSize, modifiedAt) and project identity parsing (readProjectIdentity, parseManifest). The specific curl command is not present in this chunk, suggesting it is either in a different chunk or the line number refers to the full file where it likely appears as a string constant for user display (e.g., instructions to install git-auto-push) rather than an immediate execution in this context. Given the extension's purpose is to read local git files, this is likely a benign reference or a false positive from a broader scan.",
+        "code_reference": "curl -fsSL https://raw.githubusercontent.com/lazyjerry/git-auto-push/refs/heads/master/install.sh | ",
+        "line_hint": 221,
+        "target": "extension/out/extension.js (chunk 4/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'curl piped to shell' pattern (line 221). However, the code constructs a command string `curl -fsSL ... | bash` intended to be executed in the user's integrated terminal via `vscode.window.activeTerminal.sendText`. This is a standard installation helper for the `git-auto-push` tool, not a hidden download-and-execute payload running in the extension's Node context. The README explicitly documents this feature.",
+        "code_reference": "curl -fsSL https://raw.githubusercontent.com/lazyjerry/git-auto-push/refs/heads/master/install.sh | ",
+        "line_hint": 221,
+        "target": "extension/out/extension.js (chunk 5/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code performs file system reads (package.json, README, LICENSE, .git files) which aligns perfectly with the extension's stated purpose of displaying repository metadata without invoking the `git` binary. No obfuscation or suspicious network calls were found in this chunk.",
+        "code_reference": "readLicense, readReadme, parseJsonManifest",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 5/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'curl piped to shell' pattern (line 221). However, the code constructs a command string `curl -fsSL ... | sh` intended to be executed in the user's integrated terminal to install the `git-auto-push` tool. This is a standard installation helper pattern, not a hidden download-and-execute payload running in the extension's Node context. The README explicitly documents this behavior.",
+        "code_reference": "curl -fsSL https://raw.githubusercontent.com/lazyjerry/git-auto-push/refs/heads/master/install.sh | ",
+        "line_hint": 221,
+        "target": "extension/out/extension.js (chunk 6/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code in this chunk performs pure file system reads (`.git/logs/HEAD`) and parsing of git config files. This aligns perfectly with the extension's stated purpose of providing 'read-only git info' without invoking the `git` binary. No network calls or credential harvesting are observed in this segment.",
+        "code_reference": "readFileTail(import_node_path6.default.join(gitDir, \"logs\", \"HEAD\"), REFLOG_TAIL_BYTES)",
+        "line_hint": 10,
+        "target": "extension/out/extension.js (chunk 6/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'curl piped to shell' pattern at line 221. However, the code snippet provided (chunk 11/14) does not contain this line. Based on the README, the extension executes `git-auto-push` in the integrated terminal. If the extension constructs a command string like `curl ... | bash` to install or run the external tool, this is a user-initiated action (Auto Push) rather than a silent background stager. It is a standard pattern for CLI tool installation/execution, not a hidden LOLBIN abuse.",
+        "code_reference": "curl -fsSL https://raw.githubusercontent.com/lazyjerry/git-auto-push/refs/heads/master/install.sh | ",
+        "line_hint": 221,
+        "target": "extension/out/extension.js (chunk 11/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `child_process.execFile` (promisified) to launch the `fork` CLI and `git-auto-push`. This is proportional to its stated purpose of providing 'one-click' integration with external Git tools. The code correctly scopes the execution to specific commands rather than arbitrary shell strings where possible, though `execFile` is generally safer than `exec`.",
+        "code_reference": "var execFileAsync = (0, import_node_util.promisify)(import_node_child_process.execFile);",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 11/14)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the 'forrrk' extension appears to be a standard TypeScript-compiled VS Code extension. It imports standard Node.js modules (`fs`, `path`, `os`, `child_process`) and the `vscode` API. The primary logic visible involves locating the `git-fork` CLI binary on the system, which aligns with the extension's stated purpose of providing a one-click interface to Git Fork. The 'curl | bash' hit is a false positive for malicious execution, as it is part of a user-facing installation hint string. No hardcoded secrets, obfuscated code, or suspicious network endpoints were found in this chunk. The use of `child_process` is justified by the need to interact with the external `fork` CLI.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-25T15:50:20.837Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T03:05:28.318565+00:00Z"
+}

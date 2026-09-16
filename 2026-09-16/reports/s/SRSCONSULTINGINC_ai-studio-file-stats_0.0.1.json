@@ -1,0 +1,308 @@
+{
+  "extension_id": "SRSCONSULTINGINC.ai-studio-file-stats",
+  "display_name": "AI-Studio-File-Stats",
+  "version": "0.0.1",
+  "publisher": {
+    "name": "SRSCONSULTINGINC",
+    "verified": false
+  },
+  "vsix_sha256": "2ed0c994397e0fcfbcda8dc0df610fdb6c832dc39333f645e79d8a7b8173f888",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.278945019536884,
+    "ai_vibe": 0.15,
+    "static": 0.4557800781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Embedded private key block",
+        "file": "extension/out/extension.js",
+        "line": 179,
+        "snippet": "OPENSSH"
+      }
+    ],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 835,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 844,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/16)",
+        "summary": "This chunk of code appears to be the utility and export section of a file statistics extension. It defines helper functions for counting lines, classifying files (sensitive, generated, dotfiles), and building CSV reports. The static hits for 'OPENSSH' and '.hidden' are highly likely to be false positives related to the extension's core function of scanning and filtering files. The code structure is standard TypeScript-compiled JavaScript with no immediate signs of obfuscation or hidden network calls in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/16)",
+        "summary": "This chunk of the extension source code primarily consists of constant definitions for file extensions and directory names used to filter out generated, binary, or secret files during workspace scanning. The logic is consistent with the extension's stated purpose of counting files and lines. The static rule hits for 'leaked secrets' and 'persistence evasion' appear to be false positives resulting from string matching on file extension lists (e.g., '.pem', '.key') and hidden file checks, rather than actual credential storage or OS attribute manipulation. No network calls, child process executions, or obfuscation are present in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/16)",
+        "summary": "This chunk of code defines logic for identifying sensitive files (secrets, credentials, private keys) within a workspace. The patterns used (e.g., checking for `.env`, `id_rsa`, `PRIVATE KEY` blocks) are standard for file auditing tools. The 'leaked secret' and 'persistence' hits from the static scanner appear to be false positives resulting from the extension's core function of detecting these patterns in user files rather than containing them itself. The code is well-structured and aligns with the extension's stated purpose of providing file statistics and identifying sensitive content."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 6/16)",
+        "summary": "This chunk of code contains the core logic for detecting 'sensitive' files (those containing secrets, private keys, or environment variables) to potentially exclude them from the line count or flag them in the report. The code is well-structured and uses standard JavaScript patterns for parsing JSON, PHP defines, and generic key-value pairs. The 'leaked secret' finding is a false positive caused by the regex pattern used to *detect* secrets in user files, not a secret embedded in the extension itself. The behavior is fully aligned with the extension's stated purpose of analyzing workspace file statistics."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 8/16)",
+        "summary": "This chunk of code is highly consistent with the extension's stated purpose of counting files and lines in a workspace. The logic for classifying files (Frontend/Backend/Other) and collecting statistics is straightforward and uses standard VS Code APIs. The static rule hits appear to be false positives or low-severity observations typical for a file-scanning utility. No network calls, child processes, or obfuscation are present in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 13/16)",
+        "summary": "This chunk of code primarily contains the HTML/JS logic for the 'Project Statistics' webview panel. It handles client-side sorting, filtering, and CSV export of file statistics. The logic is straightforward and aligns perfectly with the extension's stated purpose of displaying file counts and line numbers. The static rule hits are largely false positives: 'OPENSSH' is likely a file type filter string, `.hidden` is DOM row visibility, and the webview scripts are local UI logic. No network exfiltration, credential harvesting, or obfuscation is evident in this section."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 15/16)",
+        "summary": "This chunk of the extension source code appears benign. It handles the extension's activation, displays a one-time welcome message, and sets up the sidebar and webview panel for displaying file statistics. The logic is straightforward and aligns with the extension's stated purpose of counting files and lines. The static rule hits for 'leaked secrets' and 'persistence' do not correspond to the code visible in this specific chunk, likely indicating they are either in other chunks or false positives from the scanner's broad matching."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'OPENSSH' as a leaked private key. However, the code exports a function `isSensitiveFile` and `valueHoldsEmbeddedCredential`, indicating the extension scans for secrets. The string 'OPENSSH' is likely a regex pattern or constant used to detect SSH keys in user files, not a hardcoded credential itself.",
+        "code_reference": "exports.isSensitiveFile = isSensitiveFile; ... exports.valueHoldsEmbeddedCredential = valueHoldsEmbeddedCredential;",
+        "line_hint": 179,
+        "target": "extension/out/extension.js (chunk 1/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `.hidden` attribute setting. Given the extension's purpose is to count 'readable files' and exclude generated/hidden ones, this is likely logic to filter out dotfiles or hidden system files from the statistics, not a persistence mechanism.",
+        "code_reference": "exports.isDotfileOrEnvFile = isDotfileOrEnvFile;",
+        "line_hint": 835,
+        "target": "extension/out/extension.js (chunk 1/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`, which is broader than necessary for a simple file stats tool (could use `onCommand` or `onView`). However, this is a common pattern for extensions that want to populate a sidebar view immediately upon startup, so it is not strictly malicious, just slightly aggressive.",
+        "code_reference": "activationEvents: [\"onStartupFinished\"]",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'OPENSSH' as a leaked private key, but in this chunk it appears within a list of file extensions or directory names used for filtering generated/binary files. Without the full context of the string definition (likely in a previous chunk), this is likely a false positive for a file extension check (e.g., checking for .pem or .key files which are common in SSH dirs).",
+        "code_reference": "SECRET_EXTENSIONS or similar set definition (implied by context of line 179 hit)",
+        "line_hint": 179,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged '.hidden' as persistence evasion. In the context of a file stats extension, this is likely part of a regex or string check to identify hidden files/directories (e.g., dotfiles) to exclude them from the count or mark them differently, rather than setting the OS hidden attribute.",
+        "code_reference": "File filtering logic",
+        "line_hint": 835,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code defines extensive sets of binary, source, and secret file extensions. This is consistent with an extension that counts lines and files, as it needs to distinguish between text files (to count lines) and binary files (to skip or handle differently).",
+        "code_reference": "BINARY_EXTENSIONS, SOURCE_CODE_EXTENSIONS, SECRET_EXTENSIONS",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'OPENSSH' as a leaked secret, but the code defines a regex constant `OPENSSH_PRIVATE_KEY` to detect private keys within user files. This is consistent with the extension's purpose of identifying sensitive files to prevent accidental commits or exposure.",
+        "code_reference": "const OPENSSH_PRIVATE_KEY = /-----BEGIN OPENSSH PRIVATE KEY-----/;",
+        "line_hint": 179,
+        "target": "extension/out/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` as a persistence/evasion mechanism. In the context of a file statistics extension, this likely refers to checking the `hidden` file attribute or filtering hidden files (e.g., dotfiles) during the workspace scan, which is standard behavior for file enumeration tools.",
+        "code_reference": "match=`.hidden`",
+        "line_hint": 835,
+        "target": "extension/out/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code uses `workspace.findFiles('**')` to enumerate all files. While broad, this is necessary for an extension that counts total files and lines in the workspace. It aligns with the advertised feature of showing project structure statistics.",
+        "code_reference": "workspace.findFiles('**')",
+        "line_hint": 560,
+        "target": "extension/out/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'OPENSSH' as a leaked private key. However, the code defines a regex constant `OPENSSH_PRIVATE_KEY` and uses it to test file content (`PRIVATE_KEY_BLOCK.test(content)`). This is part of the extension's core logic to detect sensitive files (like SSH keys) to exclude them from the line count report, not a hardcoded secret itself.",
+        "code_reference": "if (PRIVATE_KEY_BLOCK.test(content) || OPENSSH_PRIVATE_KEY.test(content) || PGP_PRIVATE_KEY.test(content))",
+        "line_hint": 179,
+        "target": "extension/out/extension.js (chunk 6/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `.hidden` attribute setting. In the context of a file statistics extension, this likely refers to checking if a file path contains a hidden segment (dotfile) or setting a flag in the UI/report to indicate the file is hidden, rather than modifying filesystem attributes for persistence.",
+        "code_reference": "isDotfileOrEnvFile(relativePath)",
+        "line_hint": 835,
+        "target": "extension/out/extension.js (chunk 6/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "EXPECTED_BEHAVIOR",
+        "description": "The extension uses `workspace.findFiles('**')` to enumerate all files. This is necessary for a 'File Stats' extension to count lines and files across the workspace.",
+        "code_reference": "workspace.findFiles('**')",
+        "line_hint": 560,
+        "target": "extension/out/extension.js (chunk 6/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'OPENSSH' as a leaked private key, but in this context it is likely a string constant used to identify file types or extensions (e.g., checking if a file is an SSH key to classify it or exclude it). Without the specific line context showing a full key block, this is likely a false positive for a file stats extension that needs to recognize various file types.",
+        "code_reference": "OPENSSH",
+        "line_hint": 179,
+        "target": "extension/out/extension.js (chunk 8/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged '.hidden' as persistence evasion. In a file statistics extension, checking for hidden files (dotfiles) is standard behavior to exclude them from counts or reports, not to set the hidden attribute on the extension's own files.",
+        "code_reference": ".hidden",
+        "line_hint": 835,
+        "target": "extension/out/extension.js (chunk 8/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code uses `vscode.workspace.findFiles('**/*')` to enumerate workspace files. This is the core function of a 'File Stats' extension and is proportional to its advertised purpose. The exclusion list is comprehensive (node_modules, .git, etc.), indicating careful design.",
+        "code_reference": "workspace.findFiles('**/*', exclude)",
+        "line_hint": 560,
+        "target": "extension/out/extension.js (chunk 8/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code reads file contents (`readDiskText`) to count lines. This is necessary for the 'line count' feature. It also checks for sensitive content (`isSensitiveContent`) to potentially skip or flag files, which is a reasonable privacy consideration for a stats tool.",
+        "code_reference": "readDiskText(uri)",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 8/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'OPENSSH' as a leaked private key, but in this context it is likely a string constant used to filter or identify file extensions (e.g., checking if a filename ends in '.pub' or contains 'OPENSSH' to count SSH keys as files). Without the full file, it's hard to be 100% certain, but given the extension's purpose is counting files, this is likely a benign string match rather than a hardcoded credential.",
+        "code_reference": "match=`OPENSSH`",
+        "line_hint": 179,
+        "target": "extension/out/extension.js (chunk 13/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `.hidden` as a persistence/evasion mechanism. In this code chunk, `row.hidden` is standard DOM manipulation used to hide table rows during filtering/sorting in the webview. It is not setting the file system hidden attribute.",
+        "code_reference": "row.hidden = score === 99;",
+        "line_hint": 835,
+        "target": "extension/out/extension.js (chunk 13/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.findFiles('**')` as broad enumeration. For a file statistics extension, scanning the entire workspace is the core function. This is expected behavior.",
+        "code_reference": "workspace.findFiles('**'",
+        "line_hint": 560,
+        "target": "extension/out/extension.js (chunk 13/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged the Webview panel with scripts enabled as a potential C2 channel. The code shows standard local DOM manipulation (sorting, filtering, CSV download) without external network calls or `postMessage` to unknown origins. The `enableScripts` is necessary for the interactive UI features described in the README.",
+        "code_reference": "createWebviewPanel('poc.projectStatistics', ...)",
+        "line_hint": 1056,
+        "target": "extension/out/extension.js (chunk 13/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'OPENSSH' as a leaked private key. However, this chunk (15/16) contains only UI logic (welcome prompt, sidebar activation). The key is likely in a different chunk or is a false positive from a string literal not visible here. No key usage or exfiltration logic is present in this chunk.",
+        "code_reference": null,
+        "line_hint": 179,
+        "target": "extension/out/extension.js (chunk 15/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged '.hidden' attribute setting. This chunk does not contain file system attribute logic, suggesting the match is in a different chunk or a false positive. The logic here is standard VS Code extension activation and webview creation.",
+        "code_reference": null,
+        "line_hint": 835,
+        "target": "extension/out/extension.js (chunk 15/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code creates a WebviewPanel with 'enableScripts: true'. This is standard for interactive reports (sorting/searching) as described in the README. The panel ID 'poc.projectStatistics' suggests a 'Proof of Concept' origin, which is slightly unprofessional but not malicious.",
+        "code_reference": "vscode.window.createWebviewPanel('poc.projectStatistics', ...)",
+        "line_hint": 1056,
+        "target": "extension/out/extension.js (chunk 15/16)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of code appears to be the utility and export section of a file statistics extension. It defines helper functions for counting lines, classifying files (sensitive, generated, dotfiles), and building CSV reports. The static hits for 'OPENSSH' and '.hidden' are highly likely to be false positives related to the extension's core function of scanning and filtering files. The code structure is standard TypeScript-compiled JavaScript with no immediate signs of obfuscation or hidden network calls in this specific chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-26T13:37:15.097Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T00:30:31.179329+00:00Z"
+}

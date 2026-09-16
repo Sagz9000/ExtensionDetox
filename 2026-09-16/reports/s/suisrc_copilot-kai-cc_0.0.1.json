@@ -1,0 +1,171 @@
+{
+  "extension_id": "suisrc.copilot-kai-cc",
+  "display_name": "KaiCC",
+  "version": "0.0.1",
+  "publisher": {
+    "name": "suisrc",
+    "verified": false
+  },
+  "vsix_sha256": "ca94b2adc50025b2bd8f77ab568fe1c96a5f727a8f06a3a8e3f39617bd465595",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.21,
+    "ai_vibe": 0.1,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Browser Local Storage / IndexedDB access",
+        "file": "extension/out/models.js",
+        "line": 119,
+        "snippet": "IndexedDB"
+      }
+    ],
+    "high": [],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/models.js (chunk 1/3)",
+        "summary": "The code is a benign utility for synchronizing AI model configurations between a custom extension and the official VS Code Copilot extension. It reads and writes a specific JSON file (`chatLanguageModels.json`) using standard VS Code APIs. There are no signs of credential harvesting, network exfiltration, obfuscation, or malicious behavior. The static scanner hit for 'IndexedDB' is a false positive as the string does not exist in the code. The extension's capabilities are proportional to its advertised function."
+      },
+      {
+        "target": "extension/out/models.js (chunk 2/3)",
+        "summary": "The code is a legitimate utility for synchronizing custom AI model configurations and API keys to VS Code's Copilot Custom Endpoint. It reads configuration from `settings.json` and writes to local VS Code storage files (`chatLanguageModels.json`). The flagged 'IndexedDB' reference is a false positive resulting from a comment describing VS Code's internal storage mechanism. There is no evidence of data exfiltration, credential theft, or malicious behavior. The behavior is proportional to the extension's advertised function."
+      },
+      {
+        "target": "extension/out/models.js (chunk 3/3)",
+        "summary": "The code is a legitimate utility extension designed to synchronize custom AI model configurations from VS Code settings to the official Copilot Custom Endpoint. It reads configuration from `settings.json` and writes to `chatLanguageModels.json` within the VS Code user data directory. The logic is transparent, handles API keys by injecting them into request headers (as documented), and does not exhibit any malicious behavior such as data exfiltration, credential theft, or obfuscation. The 'IndexedDB' flag is a false positive resulting from the data structure naming conventions used by VS Code's language model storage."
+      },
+      {
+        "target": "extension/out/config.js (chunk 1/2)",
+        "summary": "The provided code chunk is a standard TypeScript-compiled module for a VS Code extension named 'KaiCC'. It contains utility functions for reading VS Code configuration settings (`kaicustomendpoint.models` and `kaicustomendpoint.secrets`). The code uses standard `vscode.workspace.getConfiguration()` APIs and performs basic data validation/filtering. There are no signs of malicious behavior, obfuscation, credential theft, or unauthorized network activity in this chunk. The logic aligns with the extension's stated purpose of syncing model configurations to the official Copilot Custom Endpoint."
+      },
+      {
+        "target": "extension/out/config.js (chunk 2/2)",
+        "summary": "The analyzed code chunk is a configuration utility for the 'KaiCC' extension. It reads model configurations and secrets from VS Code settings and resolves secret references. The behavior is consistent with the extension's advertised purpose of syncing custom model endpoints to the official Copilot extension. There are no indicators of malicious activity such as data exfiltration, credential harvesting from system paths, obfuscation, or unauthorized command execution. The risk is low, primarily due to the inherent sensitivity of handling API keys, but the implementation appears benign and aligned with the extension's documentation."
+      },
+      {
+        "target": "extension/out/logger.js",
+        "summary": "The provided source code (`extension/out/logger.js`) is a standard, benign logging utility module. It utilizes the official `vscode` API to create and manage an Output Channel named 'KaiCC'. There are no network calls, file system operations, child process executions, or access to sensitive data. The code aligns perfectly with the extension's stated purpose of providing a logging mechanism for the 'KaiCC' configuration sync tool. No malicious or suspicious indicators were found."
+      },
+      {
+        "target": "extension/out/types.js",
+        "summary": "The provided source file `extension/out/types.js` contains only constant definitions and type exports for the KaiCC extension. It defines configuration keys, command IDs, and file paths related to syncing model configurations to VS Code's Copilot Custom Endpoint. There is no executable logic, network activity, file system access, or obfuscation in this specific file. The constants align with the extension's advertised purpose of managing AI model configurations. No malicious indicators were found in this file."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'IndexedDB' as a credential harvesting indicator. However, the code does not contain the string 'IndexedDB'. It uses `vscode.workspace.fs` to read/write `chatLanguageModels.json`, which is a standard VS Code API for accessing extension or user data files. This is a false positive from the rule engine.",
+        "code_reference": "vscode.workspace.fs.readFile(uri)",
+        "line_hint": 85,
+        "target": "extension/out/models.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension activates on 'onStartupFinished'. While this is more aggressive than necessary for a utility that is primarily triggered by user action (status bar click or command palette), it is a common pattern for extensions that need to ensure their status bar item is visible immediately upon VS Code startup. It does not indicate malicious intent.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/models.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'IndexedDB' as a credential harvesting indicator. However, the code context confirms this is a comment explaining that VS Code's internal storage for `chatLanguageModels.json` is backed by IndexedDB. The code itself does not execute any IndexedDB API calls; it manipulates JSON objects in memory which are then written to the VS Code extension storage. This is a false positive.",
+        "code_reference": "const KNOWN_AUTH_HEADERS = new Set(['authorization', 'x-api-key', 'api-key', 'apikey', 'x-goog-api-key']);",
+        "line_hint": 119,
+        "target": "extension/out/models.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension reads API keys from `settings.json` (via `kaicustomendpoint.secrets`) and injects them into `requestHeaders` of the model configuration. This is consistent with the extension's stated purpose of syncing custom model configurations to the official Copilot Custom Endpoint. The keys are not exfiltrated to external servers but written to local VS Code storage files.",
+        "code_reference": "function injectAuthHeader(model, plaintextApiKey, apiType, modelUrl)",
+        "line_hint": 25,
+        "target": "extension/out/models.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'IndexedDB' as a credential harvesting indicator. However, in this context, the code is manipulating VS Code's internal `chatLanguageModels.json` file structure, which uses a schema similar to browser storage (groups/models). There is no actual access to browser Local Storage or IndexedDB APIs. This is a false positive.",
+        "code_reference": "readLanguageModelGroups / writeLanguageModelGroups",
+        "line_hint": null,
+        "target": "extension/out/models.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a utility that is primarily triggered by user interaction (status bar click or command palette). While not malicious, it consumes resources at startup for a feature that is not always active.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/config.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "SECRET_HANDLING",
+        "description": "The code reads API keys and secrets from VS Code configuration (`kaicustomendpoint.secrets`) and resolves references to plaintext. While this is the stated purpose of the extension (syncing to Copilot), handling plaintext secrets in memory and writing them to `chatLanguageModels.json` is a sensitive operation. However, it does not exfiltrate data or read from sensitive system paths like `~/.ssh` or browser stores.",
+        "code_reference": "resolveSecret",
+        "line_hint": null,
+        "target": "extension/out/config.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a utility that only runs when the user explicitly clicks a status bar icon or invokes a command. While not malicious, this is a minor deviation from best practices for non-essential extensions.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/types.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a benign utility for synchronizing AI model configurations between a custom extension and the official VS Code Copilot extension. It reads and writes a specific JSON file (`chatLanguageModels.json`) using standard VS Code APIs. There are no signs of credential harvesting, network exfiltration, obfuscation, or malicious behavior. The static scanner hit for 'IndexedDB' is a false positive as the string does not exist in the code. The extension's capabilities are proportional to its advertised function.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-27T09:45:00.673Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T02:26:41.547691+00:00Z"
+}

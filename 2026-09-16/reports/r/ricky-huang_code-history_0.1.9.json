@@ -1,0 +1,157 @@
+{
+  "extension_id": "ricky-huang.code-history",
+  "display_name": "Code History (AI Code Archaeology)",
+  "version": "0.1.9",
+  "publisher": {
+    "name": "ricky-huang",
+    "verified": false
+  },
+  "vsix_sha256": "ba15a2b287d35e5548bff9208db75fe7725618789b41ffa0987224e75fe22c21",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25820253907376806,
+    "ai_vibe": 0.1,
+    "static": 0.44281015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/svn/svnAuthService.js",
+        "line": 63,
+        "snippet": "PASSWORD = 'codeHistory.svn.password'"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/svn/svnCli.js",
+        "line": 5,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/svn/svnCli.js",
+        "line": 5,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/svn/svnCli.js",
+        "line": 7,
+        "snippet": "const execFileAsync = (0, util_1.promisify)(child_process_1.execFile);"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/svn/svnCli.js",
+        "line": 5,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 4,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/out/llm/llmClient.js",
+        "summary": "The code implements a standard LLM client for interacting with OpenAI-compatible APIs and Google Gemini. It correctly uses VS Code's SecretStorage for API keys and allows users to configure local or remote endpoints. The use of raw TCP sockets for local connections is a legitimate workaround for VS Code proxy issues and is restricted to private IP ranges. No malicious behavior, data exfiltration, or suspicious network calls were detected. The static rule hit regarding credential theft is a false positive, as it refers to the extension's own secure storage mechanism."
+      },
+      {
+        "target": "extension/out/svn/svnAuthService.js",
+        "summary": "The code is a standard implementation of SVN credential management using VS Code's SecretStorage API. It securely stores passwords in the OS keychain and usernames in settings, which is the recommended approach. The static scanner's 'leaked_secrets' hit is a false positive caused by the string key for the secret storage. The extension's capabilities are proportional to its advertised function (SVN history analysis), and there are no signs of malicious behavior, data exfiltration, or obfuscation."
+      },
+      {
+        "target": "extension/out/svn/svnCli.js",
+        "summary": "The code is a standard, well-structured wrapper for the SVN command-line client. It uses `child_process.execFile` to execute SVN commands (`info`, `log`, `blame`, `diff`, `cat`) with user-provided arguments and credentials. The use of `execFile` (rather than `exec`) is a secure practice as it avoids shell injection vulnerabilities. The code does not contain any obfuscation, hardcoded secrets, credential harvesting, or network exfiltration logic. The static rule hit for `child_process` is a false positive in this context, as executing SVN commands is the core advertised functionality of the extension. The domains found in dependencies (fast-xml-parser) are standard npm package metadata and not indicative of malicious activity. The extension's capabilities are proportional to its stated purpose."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a tool that is primarily triggered via user commands (e.g., 'codeHistory.analyzeSelectedCode'). While not malicious, it increases the attack surface slightly by loading the extension at startup.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/llm/llmClient.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'codeHistory.svn.password' as a hardcoded secret. This is a false positive; it is a string key used to identify the entry in VS Code's SecretStorage API, not the actual password value.",
+        "code_reference": "SvnAuthService.SECRET_KEY_PASSWORD = 'codeHistory.svn.password';",
+        "line_hint": 63,
+        "target": "extension/out/svn/svnAuthService.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this is broader than necessary for a command-triggered tool (which could use 'onCommand'), it is a common pattern for extensions that need to initialize services or check configurations early. It does not indicate malicious intent, but it is a minor deviation from best practices for performance.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/svn/svnAuthService.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for an SCM analysis tool that is primarily triggered by user commands (e.g., 'codeHistory.analyzeSelectedCode'). While not malicious, this increases the attack surface slightly by loading the extension at startup rather than on-demand.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/svn/svnCli.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code implements a standard LLM client for interacting with OpenAI-compatible APIs and Google Gemini. It correctly uses VS Code's SecretStorage for API keys and allows users to configure local or remote endpoints. The use of raw TCP sockets for local connections is a legitimate workaround for VS Code proxy issues and is restricted to private IP ranges. No malicious behavior, data exfiltration, or suspicious network calls were detected. The static rule hit regarding credential theft is a false positive, as it refers to the extension's own secure storage mechanism.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "4 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 10,
+    "published_date": "2026-09-11T07:22:15.553Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-14T04:46:00.768773+00:00Z"
+}

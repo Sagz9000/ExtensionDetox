@@ -1,0 +1,123 @@
+{
+  "extension_id": "somshrestha.bagchal-game",
+  "display_name": "Bagchal \u2014 Tiger & Goat",
+  "version": "0.0.3",
+  "publisher": {
+    "name": "somshrestha",
+    "verified": false
+  },
+  "vsix_sha256": "c7e242bd9a1b0beba1f8a403c256b125ff2f828feededef27c0cbfa66953a92a",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.21,
+    "ai_vibe": 0.1,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/server.js",
+        "line": 160,
+        "snippet": "os.networkInterfaces()"
+      }
+    ],
+    "high": [],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/server.js (chunk 1/3)",
+        "summary": "The code is a standard implementation of a board game (Bagchal) using Node.js `http` and `ws` libraries for local multiplayer functionality. The game logic (board state, moves, win conditions) is consistent with the advertised 'Tiger & Goat' game. The use of `os.networkInterfaces` is a benign pattern for local network discovery in a LAN game context, not a malicious fingerprinting attempt. No malicious indicators, obfuscation, or capability disconnects were found in this chunk."
+      },
+      {
+        "target": "extension/server.js (chunk 2/3)",
+        "summary": "The code implements a local HTTP and WebSocket server to facilitate a two-player board game over a local network. The logic is consistent with the extension's stated purpose of allowing '2 Players' to play on the same screen or via LAN. The flagged `os.networkInterfaces()` call is a benign utility to display the local IP address, and the binding to `0.0.0.0` is a standard requirement for LAN accessibility. No malicious indicators, data exfiltration, or capability disconnects were found."
+      },
+      {
+        "target": "extension/server.js (chunk 3/3)",
+        "summary": "The code snippet is the tail end of a local HTTP server implementation for a board game extension. It logs the local and network URLs to allow two users on the same LAN to connect and play. The use of `os.networkInterfaces()` is appropriate for this functionality and is not indicative of malicious intent. No other suspicious patterns, obfuscation, or capability disconnects were found in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.networkInterfaces()` as a system fingerprinting/infostealer pattern. However, in the context of a local multiplayer game server (using WebSocket), this call is likely used to determine the local IP address to display connection instructions to the user (e.g., 'Connect to ws://192.168.1.5:3000'). It is not combined with network exfiltration or credential harvesting in this chunk.",
+        "code_reference": "const os = require('os');",
+        "line_hint": 6,
+        "target": "extension/server.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EXPOSURE",
+        "description": "The server binds to '0.0.0.0', exposing the local game server to the local network. While this is necessary for the advertised '2 Players' mode (LAN play), it technically allows any device on the same network to connect. This is a functional requirement for the feature, not malicious behavior.",
+        "code_reference": "server.listen(PORT, '0.0.0.0', ...)",
+        "line_hint": 175,
+        "target": "extension/server.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `os.networkInterfaces()` is flagged by static scanners as potential system fingerprinting. However, in this context, it is used exclusively to determine the local IP address to display in the console for the user to share with a second player. It does not exfiltrate data or combine with other reconnaissance APIs.",
+        "code_reference": "Object.values(os.networkInterfaces())",
+        "line_hint": 176,
+        "target": "extension/server.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.networkInterfaces()` as system fingerprinting/infostealer behavior. However, in the context of a local multiplayer game server, this API is used to determine the machine's LAN IP address to display a shareable URL for the second player. This is a standard and benign pattern for local network applications and does not indicate data exfiltration or malicious reconnaissance.",
+        "code_reference": "os.networkInterfaces()",
+        "line_hint": 160,
+        "target": "extension/server.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard implementation of a board game (Bagchal) using Node.js `http` and `ws` libraries for local multiplayer functionality. The game logic (board state, moves, win conditions) is consistent with the advertised 'Tiger & Goat' game. The use of `os.networkInterfaces` is a benign pattern for local network discovery in a LAN game context, not a malicious fingerprinting attempt. No malicious indicators, obfuscation, or capability disconnects were found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 5,
+    "published_date": "2026-06-22T10:30:49.557+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T19:48:58.056941+00:00Z"
+}

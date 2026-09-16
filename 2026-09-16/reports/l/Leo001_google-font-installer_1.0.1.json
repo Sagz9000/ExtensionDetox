@@ -1,0 +1,144 @@
+{
+  "extension_id": "Leo001.google-font-installer",
+  "display_name": "FontMate",
+  "version": "1.0.1",
+  "publisher": {
+    "name": "Leo001",
+    "verified": false
+  },
+  "vsix_sha256": "0ed196de8b24409241abc8161798d4678279a568e4248080f18b9a58bd7cc297",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.290625,
+    "ai_vibe": 0.35,
+    "static": 0.3125,
+    "behavioral": 0.0,
+    "trust_signal": 0.6,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/extension.ts",
+        "line": 103,
+        "snippet": "os.platform()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/out/extension.js",
+        "line": 110,
+        "snippet": "os.platform()"
+      }
+    ],
+    "high": [],
+    "total": 21
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 51,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.25,
+    "confidence": 0.85,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/2)",
+        "summary": "The code appears to be a straightforward implementation of a Google Font installer. It uses standard libraries (`axios`, `fs-extra`, `os`) to fetch font data and write files to the system font directory. The primary risk indicator (`os.platform()`) is a false positive in this context. The main suspicion arises from the need to verify the specific URLs used in `fetchGoogleFont` and `installFont` in the second chunk to ensure they point to legitimate Google Fonts endpoints and not a typosquatted domain or C2 server. Currently, the logic is transparent and proportional to the extension's stated purpose."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/2)",
+        "summary": "The code appears to be a straightforward implementation of a Google Font installer. It fetches font metadata from Google Fonts, downloads the TTF file, writes it to the OS-specific font directory, and updates VS Code settings to use the new font. The primary concern is the modification of global VS Code settings, which is a side effect not clearly documented in the provided README. The `os.platform()` call is a false positive for infostealer behavior. The dependencies (axios, fs-extra) are standard for this task. No obfuscation or suspicious credential harvesting was found in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.platform()` as system fingerprinting. In the context of a font installer, this is a standard and necessary operation to determine the correct font directory path (e.g., `/usr/share/fonts` on Linux vs `C:\\Windows\\Fonts` on Windows). It is not combined with network exfiltration in this chunk.",
+        "code_reference": "const os = __importStar(require(\"os\"));",
+        "line_hint": 110,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DEPENDENCY_ANALYSIS",
+        "description": "The extension bundles `axios` and `fs-extra`. While `axios` is a standard HTTP client, its presence implies network calls to fetch font metadata/URLs. `fs-extra` is used for file operations. The extracted indicators show domains like `axios-http.com` and `ruben.verborgh.org`, which are likely from the `package.json` of the bundled dependencies (author/homepage fields) rather than hardcoded C2 endpoints in the logic, but this requires verification in chunk 2 to ensure no obfuscated URLs are present.",
+        "code_reference": "const axios_1 = __importDefault(require(\"axios\"));",
+        "line_hint": 85,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension size (0.9 MB) is proportional to a simple installer with a few dependencies. The activation event `onCommand` is appropriate. The functionality (fetching and installing fonts) aligns with the README description.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension modifies global VS Code settings (`editor.fontFamily` and `terminal.integrated.fontFamily`) without explicit mention in the README or description. While related to font installation, modifying global user configuration is a side effect that users might not expect from a simple 'installer' command, potentially altering their default editor font.",
+        "code_reference": "await config.update(\"editor.fontFamily\", ...)",
+        "line_hint": 45,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.platform()` as 'infostealer_behavior'. In this context, it is used solely to determine the correct font directory path for the current OS (Windows/macOS/Linux), which is standard and necessary for a cross-platform font installer.",
+        "code_reference": "switch (os.platform())",
+        "line_hint": 28,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_CALL",
+        "description": "The extension makes network requests to `fonts.googleapis.com` and the resulting font CDN URL. This is expected behavior for fetching Google Fonts, though the specific font URL is extracted dynamically from the CSS response.",
+        "code_reference": "const apiUrl = `https://fonts.googleapis.com/css?family=${encodeURIComponent(fontName)}`",
+        "line_hint": 12,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code appears to be a straightforward implementation of a Google Font installer. It uses standard libraries (`axios`, `fs-extra`, `os`) to fetch font data and write files to the system font directory. The primary risk indicator (`os.platform()`) is a false positive in this context. The main suspicion arises from the need to verify the specific URLs used in `fetchGoogleFont` and `installFont` in the second chunk to ensure they point to legitimate Google Fonts endpoints and not a typosquatted domain or C2 server. Currently, the logic is transparent and proportional to the extension's stated purpose.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 233,
+    "published_date": "2025-03-26T04:17:47.383+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T11:52:41.357887+00:00Z"
+}

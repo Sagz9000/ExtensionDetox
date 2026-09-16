@@ -1,0 +1,231 @@
+{
+  "extension_id": "code-colab.codecolab",
+  "display_name": "CodeColab \u2014 Live Code Collaboration",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "code-colab",
+    "verified": false
+  },
+  "vsix_sha256": "a2e4da72db6968e7aac675cb7521446aa0c0b6599161a06cb46ce67822ea4613",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.15,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/identity.js",
+        "line": 30,
+        "snippet": "os.userInfo()"
+      }
+    ],
+    "high": [],
+    "total": 18
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "code-colab.renode.space",
+      "source_file": "extension/package.json",
+      "line": 36,
+      "context": "\"default\": \"https://code-colab.renode.space\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/src/identity.js",
+        "summary": "The code is a simple identity management module for a code collaboration extension. It handles storing and retrieving a user's display name using VS Code's `globalState`. The only potentially suspicious API call, `os.userInfo()`, is used benignly to suggest a default username and does not involve network exfiltration or credential harvesting. The extension's behavior is proportional to its advertised purpose of facilitating live code collaboration without accounts."
+      },
+      {
+        "target": "extension/src/updater.js (chunk 1/4)",
+        "summary": "This file is a well-documented updater module for a code collaboration extension. It implements a polling mechanism to check for updates from a specific backend server. The code explicitly addresses security concerns regarding self-updating (requiring HTTPS/loopback and digest verification). The static rule hit for `extensions.getExtension` is a false positive in the context of malicious reconnaissance; it is used here to clean up legacy extension IDs from previous publisher names. The domain `code-colab.renode.space` is unknown but consistent with the project's backend. No malicious indicators (credential theft, obfuscation, C2) are present in this chunk. The primary risk is inherent to the self-updating feature, which requires verification in the remaining chunks to ensure the security controls described in the comments are actually implemented."
+      },
+      {
+        "target": "extension/src/updater.js (chunk 2/4)",
+        "summary": "The code chunk contains standard updater logic, including a trusted transport check (HTTPS/localhost) and a legacy extension cleanup routine. The flagged `getExtension` call is a false positive, used for safe uninstallation of old versions. The network domain is consistent with the extension's stated purpose of remote collaboration. No malicious patterns, obfuscation, or credential harvesting were detected in this chunk."
+      },
+      {
+        "target": "extension/src/updater.js (chunk 3/4)",
+        "summary": "This code chunk implements a standard auto-update mechanism for the CodeColab extension. It checks a remote server for a new version, verifies the integrity of the downloaded VSIX file using SHA256, and prompts the user or silently installs the update based on configuration. The flagged `getExtension` call is a false positive for reconnaissance; it is used to get the current version. The network activity is proportional to the extension's function (collaboration backend). The presence of checksum verification is a positive security indicator."
+      },
+      {
+        "target": "extension/src/updater.js (chunk 4/4)",
+        "summary": "The provided code chunk is part of an updater module for a code collaboration extension. It handles version checking, installing updates from a trusted source, and managing window reloads. The logic is transparent and aligns with the extension's stated purpose of facilitating collaborative coding sessions. The static rule hit for `extensions.getExtension` is a false positive in the context of self-updating/cleanup. There are no signs of credential harvesting, obfuscation, or malicious payload execution."
+      },
+      {
+        "target": "extension/src/config.js",
+        "summary": "The analyzed file `config.js` is a benign configuration module. It defines helper functions to read extension settings from VS Code's configuration API and environment variables. There are no signs of malicious behavior such as credential harvesting, obfuscation, arbitrary code execution, or data exfiltration. The network endpoint identified is consistent with the extension's advertised functionality as a collaboration tool. The activation events and dependencies are appropriate for the stated purpose."
+      },
+      {
+        "target": "extension/src/log.js",
+        "summary": "The provided source file `extension/src/log.js` is a standard, benign logging utility. It uses the `vscode.window.createOutputChannel` API to write timestamped log messages to the VS Code Output panel. There are no network calls, file system operations, process execution, or obfuscation present in this file. The domain `code-colab.renode.space` identified in the package.json is consistent with the extension's stated purpose of providing a backend for live code collaboration. The activation event `onStartupFinished` is slightly broad but common for extensions that need to be ready for URI handling or immediate user interaction, and does not indicate malicious intent in isolation. No malicious behavior was detected in this file."
+      },
+      {
+        "target": "extension/src/http.js (chunk 1/2)",
+        "summary": "The provided code chunk is a standard, well-structured HTTP/HTTPS client wrapper using Node.js built-in modules. It implements basic error handling, timeout management, and response size limiting. There are no signs of obfuscation, credential harvesting, arbitrary command execution, or malicious network exfiltration. The network activity is consistent with the extension's advertised functionality of connecting to a collaboration backend. The 'unknown' domain reputation is a minor note but does not constitute malicious behavior in the context of the code provided."
+      },
+      {
+        "target": "extension/src/http.js (chunk 2/2)",
+        "summary": "The provided code chunk is a standard HTTP client utility module. It implements `request` and `download` functions using Node.js core `http`/`https` modules. The code exhibits defensive programming patterns, including input validation (URL protocol checks), resource limits (maxBytes, timeouts), and integrity verification (SHA-256 hashing of downloads). There are no indicators of obfuscation, credential harvesting, arbitrary code execution, or data exfiltration. The network activity is consistent with the extension's advertised functionality of facilitating live code collaboration via a backend server."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `os.userInfo()` is flagged by static analysis as potential system fingerprinting. However, in this context, it is used solely to provide a default display name suggestion for the user on first run. The value is stored locally in `globalState` and is not transmitted to any external server or combined with other sensitive data for exfiltration. This is a benign UX pattern.",
+        "code_reference": "const info = os.userInfo(); if (info && info.username) return info.username;",
+        "line_hint": 30,
+        "target": "extension/src/identity.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension implements a self-updating mechanism that downloads and installs VSIX files from a remote server. While the code comments indicate strict security controls (HTTPS/loopback only, digest verification, no arbitrary link installation), self-updating extensions are a high-risk vector for supply chain attacks. The ability to silently install code requires careful scrutiny of the `http.js` and installation logic in subsequent chunks to ensure the 'digest verification' and 'authenticated transport' claims are actually enforced and not bypassable.",
+        "code_reference": "const { request, download } = require(\"./http\"); ... CHECK_EVERY_MS ... POLL_EVERY_MS",
+        "line_hint": "28",
+        "target": "extension/src/updater.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The code enumerates installed extensions to identify and potentially uninstall legacy versions of itself (voritsack.codecolab, etc.). This is a legitimate cleanup mechanism for a project that changed its publisher ID, but it does involve inspecting the extension environment.",
+        "code_reference": "const LEGACY_EXTENSION_IDS = [ ... ];",
+        "line_hint": "48",
+        "target": "extension/src/updater.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.extensions.getExtension` as reconnaissance. In this context, it is used to check if a specific legacy extension ID is installed before attempting to uninstall it. This is a standard cleanup pattern for renamed extensions, not malicious enumeration.",
+        "code_reference": "if (!vscode.extensions.getExtension(id)) continue;",
+        "line_hint": "101",
+        "target": "extension/src/updater.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_DOMAIN",
+        "description": "The domain `code-colab.renode.space` is listed as an indicator. Given the extension's purpose is 'live code collaboration' with a backend, connecting to a custom domain is expected behavior. The domain reputation is 'unknown', which warrants monitoring but is not inherently malicious in the context of a collaboration tool that requires a server for synchronization.",
+        "code_reference": "domain: code-colab.renode.space",
+        "line_hint": null,
+        "target": "extension/src/updater.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.extensions.getExtension` as reconnaissance. In the context of an auto-updater, this is standard practice to retrieve the current extension's metadata (version, path) to compare against the remote manifest. It is not used for enumerating other extensions or system reconnaissance.",
+        "code_reference": "vscode.extensions.getExtension",
+        "line_hint": 101,
+        "target": "extension/src/updater.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The code connects to `code-colab.renode.space` to check for updates. While the domain reputation is unknown, the behavior is consistent with the extension's stated purpose (live collaboration backend). The code includes a SHA256 checksum verification for the downloaded VSIX file, which is a strong security control that mitigates supply-chain risks associated with auto-updating.",
+        "code_reference": "config.serverUrl() + \"/api/extension/latest\"",
+        "line_hint": 25,
+        "target": "extension/src/updater.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The code references `vscode.extensions.getExtension` (likely in the `removeLegacyInstall` function which is not fully visible in this chunk but implied by the context of cleaning up old installs). This is a standard practice for extensions to detect and remove previous versions or conflicting legacy extensions. It is not malicious reconnaissance.",
+        "code_reference": "removeLegacyInstall(this.context)",
+        "line_hint": 101,
+        "target": "extension/src/updater.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension communicates with `code-colab.renode.space`. Given the extension's purpose is 'live code collaboration', connecting to a backend server is expected behavior. The domain reputation is 'unknown', which warrants monitoring but is not inherently malicious without evidence of data exfiltration or C2 activity in the code.",
+        "code_reference": "code-colab.renode.space",
+        "line_hint": null,
+        "target": "extension/src/updater.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension connects to a hardcoded external domain 'code-colab.renode.space'. While this is consistent with the extension's stated purpose (live collaboration backend), the domain has an unknown reputation. Users should verify the legitimacy of this backend service.",
+        "code_reference": "const DEFAULT_SERVER_URL = \"https://code-colab.renode.space\";",
+        "line_hint": 14,
+        "target": "extension/src/config.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a collaboration tool that is typically triggered by user command or URI. While not malicious, this increases the attack surface slightly by loading the extension immediately upon VS Code startup.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/src/log.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension communicates with the domain 'code-colab.renode.space'. While the domain reputation is unknown, the code is a standard HTTP client wrapper. The behavior is consistent with the extension's stated purpose of live collaboration via a backend server. No exfiltration of sensitive local files (like ~/.ssh or credentials) is observed in this chunk.",
+        "code_reference": "domain: code-colab.renode.space",
+        "line_hint": null,
+        "target": "extension/src/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension communicates with the domain 'code-colab.renode.space'. While the domain reputation is unknown, the code context (live collaboration backend) aligns with the extension's stated purpose. The 'download' function includes security best practices such as SHA-256 hashing, size limits, and protocol validation, which suggests a legitimate implementation rather than a malicious payload delivery mechanism.",
+        "code_reference": "domain: code-colab.renode.space",
+        "line_hint": null,
+        "target": "extension/src/http.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a simple identity management module for a code collaboration extension. It handles storing and retrieving a user's display name using VS Code's `globalState`. The only potentially suspicious API call, `os.userInfo()`, is used benignly to suggest a default username and does not involve network exfiltration or credential harvesting. The extension's behavior is proportional to its advertised purpose of facilitating live code collaboration without accounts.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-21T00:46:31.617Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:50.374549+00:00Z"
+}

@@ -1,0 +1,411 @@
+{
+  "extension_id": "TheLunatic.thelunatic-codekeep",
+  "display_name": "CodeKeep - Developer Notes & Scratchpad",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "TheLunatic",
+    "verified": false
+  },
+  "vsix_sha256": "6c5cdc2c05dd39d8613ccaa86c8ee6d7075f71e3726c12b66b4c0890747e6d51",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.286757519536884,
+    "ai_vibe": 0.15,
+    "static": 0.4870300781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/webview/main.js",
+        "line": 330,
+        "snippet": "addEventListener(\"keydown\",e=>{(e.ctrlKey||e.metaKey)&&e.key===\"Enter\"&&(o.editingNoteId?P(o.editingNoteId):o.creator.isExpanded&&H()),e.key===\"Escape\"&&(o.editingNoteId?(o.editingNoteId=void 0,p()):o"
+      }
+    ],
+    "high": [
+      {
+        "check": "HIGH_ENTROPY_BLOB",
+        "severity": "HIGH",
+        "description": "File 'extension/dist/webview/pin.png' has high entropy (7.90/8.0) \u2014 possible encrypted shellcode or packed payload (10379 bytes)",
+        "file": "extension/dist/webview/pin.png",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": ".postMessage(e)}triggerNewNote(e){this._view&&(this._view.show(!0),this.postMessage({type:\"triggerNewNote\",payload:e}))}triggerSearch(){this._view&&(this._view.show(!0),this.postMessage({type:\"trigger"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/webview/main.js",
+        "line": 330,
+        "snippet": ".postMessage({type:\"copyToClipboard\",payload:{text:f}})}break}case\"edit\":{N(c);break}case\"delete\":m.postMessage({type:\"deleteNote\",payload:{id:c}}),o.editingNoteId===c&&(o.editingNoteId=void 0);break;"
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [
+    {
+      "type": "ip",
+      "value": "03.04.062.078",
+      "source_file": "extension/dist/webview/main.js",
+      "line": 19,
+      "context": "<path d=\"M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z\"/>",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 14,
+    "blocks_seen": 14,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/8)",
+        "summary": "This chunk contains standard boilerplate for a VS Code extension: module exports, VS Code API imports, and a `NoteStorage` class that manages notes using `workspaceState` and `globalState`. The logic is consistent with a 'Google Keep-style' notes manager. The static rule hits are largely false positives triggered by standard VS Code API patterns (`postMessage`, `getConfiguration`) that the scanner misinterpreted as network exfiltration or config harvesting. No obfuscation, child processes, or sensitive file access is present in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/8)",
+        "summary": "This chunk of the 'Developer Notes' extension contains standard logic for importing/exporting notes (JSON parsing), filtering/sorting notes, and managing tags. The code is minified but readable, with no obvious obfuscation, eval, or child_process usage. The static rule engine hits are largely false positives resulting from the extension's core functionality (reading editor content to create notes, communicating with the webview via postMessage, and reading its own configuration). The high-entropy PNG file and the IP address found in the webview bundle are likely assets or CDN references, not shellcode or C2 servers, given the low obfuscation score and benign nature of the logic in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/8)",
+        "summary": "This chunk of code represents the core business logic for a 'Developer Notes' extension. It handles CRUD operations for notes, including creating, updating, and deleting notes, as well as managing metadata like tags, colors, and file references. The logic is straightforward and relies on standard VS Code APIs (`workspace.getConfiguration`, `EventEmitter`). The static analysis hits are largely false positives resulting from generic pattern matching on `postMessage` and configuration reads, which are expected in this context. No obfuscation, external network calls, or sensitive file system access is observed in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/8)",
+        "summary": "This chunk of the 'Developer Notes' extension contains standard logic for managing notes, toggling TODOs, extracting tags, and resolving file references within the workspace. The code uses standard VS Code APIs (`vscode.window`, `vscode.workspace`, `path`) appropriately for a notes/scratchpad tool. The static rule hits are largely false positives resulting from the combination of reading editor state and using `postMessage` for UI updates, which are expected behaviors for this type of extension. No obfuscation, child process execution, or sensitive file access (like ~/.ssh) was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/8)",
+        "summary": "This chunk of code represents the core Webview provider for a 'Developer Notes' extension. It handles standard VS Code Webview lifecycle events, message passing between the host and UI, and CRUD operations for notes. The logic is consistent with the extension's stated purpose of managing scratchpads and notes. The static rule hits are largely false positives resulting from generic pattern matching on `postMessage` and `getConfiguration` without context. No obfuscation, external network calls, or sensitive file access is evident in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/8)",
+        "summary": "This chunk of the extension source code appears benign and consistent with the 'Developer Notes' extension's purpose. It handles message passing between the webview and extension host, manages note state (todos, colors), and interacts with VS Code APIs for file opening and clipboard access. The static rule hits are largely false positives triggered by standard VS Code patterns (postMessage, configuration reading) that were flagged without context. No obvious obfuscation, network exfiltration, or credential harvesting is visible in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 7/8)",
+        "summary": "This chunk of the 'Developer Notes' extension source code appears benign and consistent with its advertised purpose. It handles command registration for creating notes from selections or files, and constructs the HTML template for the webview UI. The use of `postMessage` is standard for VS Code webview communication, and reading workspace configuration is typical for managing user preferences. The static rule engine hits are largely false positives resulting from generic pattern matching on common VS Code APIs (`postMessage`, `getConfiguration`, `getText`) without considering the local context. No direct network exfiltration, child process execution, or sensitive file access is observed in this specific chunk."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 1/19)",
+        "summary": "The code chunk represents the webview UI logic for a 'Developer Notes' extension. The behavior observed (HTML escaping, keyboard shortcuts for saving, IPC via postMessage for clipboard operations) is perfectly proportional to the extension's advertised purpose of being a scratchpad/notes manager. The static rule engine hits are largely false positives resulting from generic pattern matching on standard webview IPC and UI event listeners. No signs of obfuscation, credential harvesting, or suspicious network calls were found in this chunk."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 2/19)",
+        "summary": "This chunk of the webview bundle for the 'Developer Notes' extension appears to be standard React/Vue-like UI logic handling note editing, deletion, and keyboard shortcuts. The static rule engine hits are largely false positives resulting from the generic nature of the patterns (e.g., keydown listeners, postMessage IPC) in a webview context. The code aligns well with the extension's stated purpose of managing scratchpad notes in the sidebar. No direct network calls, child_process usage, or sensitive file access are visible in this specific chunk."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 3/19)",
+        "summary": "This chunk of the 'Developer Notes' extension appears to be standard minified JavaScript for a Webview UI. The static analysis flags for 'keylogging' and 'exfiltration' are likely false positives resulting from the minification process, where standard UI event listeners (Ctrl+Enter for save) and Webview-to-Extension communication (`postMessage`) were misinterpreted by pattern-matching rules. The code logic aligns with the extension's purpose of managing notes and TODOs. No hardcoded secrets, suspicious network calls, or native module usage were found in this specific chunk."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 4/19)",
+        "summary": "This chunk of the 'Developer Notes' extension appears to be standard minified webview code. The static rule engine hits are largely false positives: the 'keylogger' is a Ctrl+Enter save shortcut, 'exfiltration' is standard VS Code IPC via postMessage, and 'directory traversal' refers to note scopes (global/workspace). The large Base64 blob is likely an embedded asset or minified library, which is common in bundled webviews. No direct network calls, child_process, or sensitive file reads are visible in this specific chunk."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 7/19)",
+        "summary": "This chunk of the webview bundle contains standard UI rendering logic for a notes extension. It generates HTML for search bars, scope tabs (All/Workspace/Global), tag chips, and color palettes. The variable names are minified but the structure is typical of a React/Vue or similar frontend framework bundle. The specific 'suspicious' patterns flagged by the static analyzer (keydown listener, postMessage, 'global' string) are all benign in the context of a VS Code webview UI for a notes application. No direct network calls, file system access, or obfuscated payloads are visible in this chunk."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 15/19)",
+        "summary": "This chunk of the webview bundle contains standard UI event binding logic for a notes/scratchpad extension. It handles DOM interactions like clicking buttons to create notes, toggling checkboxes for todos, and listening for keyboard shortcuts to submit content. The use of `postMessage` is consistent with VS Code webview architecture. The static rule hits are largely false positives resulting from generic pattern matching on UI code rather than deep semantic analysis."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 16/19)",
+        "summary": "This chunk of the webview bundle contains standard UI event handling logic for a notes/scratchpad extension. It manages DOM interactions for note cards, including pinning, completing, copying to clipboard, editing, and deleting notes. All network-like activity is via `postMessage` to the extension host, which is the expected communication channel for VS Code Webviews. The specific actions (copying text, toggling todos) align perfectly with the extension's stated purpose of being a 'scratchpad and notes manager'. No direct filesystem access, external network calls, or obfuscated code execution is present in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' due to `postMessage` usage. However, `postMessage` is the standard VS Code API for communication between the extension host and the Webview UI, not necessarily network exfiltration to an external server.",
+        "code_reference": "this._view.postMessage(...)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'directory traversal' and 'config harvesting'. The code reads `workspaceState` and `globalState` (standard VS Code storage) and `workspace.getConfiguration` for its own extension settings (`developerNotes.sortOrder`). This is expected behavior for a notes manager.",
+        "code_reference": "this.context.workspaceState.get(...)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extracted IP `03.04.062.078` is likely a false positive from a regex match on a version string or similar numeric sequence in `main.js` (e.g., version 3.4.62.78 or similar), as it is not a valid IPv4 address (octets > 255). No network call is visible in this chunk.",
+        "code_reference": "extension/dist/webview/main.js:19",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' due to `postMessage` usage. However, `postMessage` is the standard VS Code API for communication between the extension host and the Webview UI, not necessarily network exfiltration.",
+        "code_reference": "this._view.postMessage(...)",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Reading document content and sending over network'. The code reads `document.getText()` to capture context for a note, which is the core function of a 'Developer Notes' extension. No direct network call is visible in this chunk.",
+        "code_reference": "document.getText(t)",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Harvesting VSCode configuration'. The code reads `workspace.getConfiguration('developerNotes')` to retrieve user preferences (sort order, etc.), which is standard for extensions with settings.",
+        "code_reference": "workspace.getConfiguration(\"developerNotes\")",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Programmatic tampering with workspace configuration'. The code appears to be reading configuration values (`get`), not necessarily writing/tampering, although `update` might be present in other chunks. In the context of a notes app, reading sort order is benign.",
+        "code_reference": "workspace.getConfiguration(\"developerNotes\").get(\"sortOrder\", \"pinnedFirst\")",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' due to `postMessage` usage. However, `postMessage` is the standard VS Code API for communication between the extension host and the Webview UI. In this context, it is used to trigger UI updates (e.g., `triggerNewNote`), not to send data to an external network server.",
+        "code_reference": "this._view.postMessage({type:\"triggerNewNote\"...})",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 3/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'Reading document content and sending over network'. The code reads `document.getText()` and `document.languageId` to create file references for notes. This is consistent with a 'Developer Notes' extension that allows bookmarking code locations. No direct network transmission is visible in this chunk.",
+        "code_reference": "document.getText(t),o=this.getActiveFileReference()",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 3/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'Harvesting VSCode configuration'. The code reads `workspace.getConfiguration(\"developerNotes\")` to retrieve user preferences like `defaultScope` and `sortOrder`. This is standard behavior for an extension managing its own settings.",
+        "code_reference": "E.workspace.getConfiguration(\"developerNotes\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 3/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' due to `postMessage`, but this is standard communication between the VS Code extension host and the Webview UI, not network egress.",
+        "code_reference": "this._view.postMessage(...)",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'reading document content and sending over network'. The code reads the active editor's selection (`document.getText`) to capture context for a note, which is core functionality for a notes extension. No direct network call is visible in this chunk.",
+        "code_reference": "getActiveEditorSelection",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'harvesting VSCode configuration'. The code reads `workspace.getConfiguration('developerNotes')` to retrieve user preferences (sort order), which is standard for extensions storing settings.",
+        "code_reference": "workspace.getConfiguration(\"developerNotes\")",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'directory traversal'. The code uses `path.relative` and `workspace.fs.stat` to resolve file paths relative to the workspace folder, which is necessary for the 'bookmark file locations' feature.",
+        "code_reference": "openFile",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' due to `postMessage` usage. However, `postMessage` here is the standard VS Code Webview API used to communicate between the extension host and the webview UI, not a network transmission to an external server.",
+        "code_reference": "this._view.webview.postMessage(e)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'reading document content and sending over network'. The code reads `document.getText()` to capture context for a note, which is consistent with a 'Developer Notes' extension that saves snippets. No direct network call is visible in this chunk.",
+        "code_reference": "document.getText(t)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'harvesting VSCode configuration'. The code reads `workspace.getConfiguration('developerNotes')` to retrieve user preferences (like `sortOrder` and `confirmDelete`). This is standard behavior for extensions to respect user settings.",
+        "code_reference": "workspace.getConfiguration(\"developerNotes\").get(\"sortOrder\",\"pinnedFirst\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'programmatic tampering with workspace configuration'. The code appears to be reading configuration values to determine UI behavior (e.g., whether to show a delete confirmation modal), not necessarily writing/tampering with them in this specific snippet.",
+        "code_reference": "workspace.getConfiguration(\"developerNotes\").get(\"confirmDelete\", !0)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' due to `postMessage` usage. However, `postMessage` is the standard VS Code API for communication between the extension host and the Webview UI, not necessarily network exfiltration.",
+        "code_reference": "this._view&&(this._view.show(!0),this.postMessage({type:\"triggerNe",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 6/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'reading document content and sending over network'. The code reads `document.getText` and `languageId` to provide context for notes (e.g., linking a note to the current file). This is consistent with a 'Developer Notes' extension that tracks context.",
+        "code_reference": "document.getText(t),o=this.getActiveFileReference(),s=e.document.languageId",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 6/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'harvesting VSCode configuration'. The code reads `workspace.getConfiguration(\"developerNotes\")` to retrieve user preferences like `sortOrder`. This is standard configuration access for the extension's own settings.",
+        "code_reference": "workspace.getConfiguration(\"developerNotes\").get(\"sortOrder\",\"pinnedFirst\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 6/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'programmatic tampering with workspace configuration'. The code accesses configuration to read state, which is benign for a notes manager.",
+        "code_reference": "workspace.getConfiguration(\"developerNotes\").get(\"sortOrder\",\"pinnedFirst\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 6/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN",
+        "description": "The code handles standard UI interactions: toggling todos, updating colors, opening files, copying to clipboard, and moving the view to the secondary sidebar. All behaviors align with the extension's stated purpose.",
+        "code_reference": "case \"toggleTodo\": ... case \"copyToClipboard\": ... case \"moveToSecondarySideBar\":",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 6/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' due to `postMessage` usage. However, `postMessage` is the standard VS Code API for communication between the extension host and the Webview UI. The context shows it being used to trigger UI updates (e.g., `triggerNewNote`), not to send data to an external server.",
+        "code_reference": "this._view&&(this._view.show(!0),this.postMessage({type:\"triggerNe",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Reading document content and sending over network'. The code reads `document.getText(t)` to capture the active editor's selection for a new note. This is core functionality for a 'Developer Notes' extension that allows saving code snippets. No direct network call is visible in this chunk; data is likely passed to the webview or stored locally.",
+        "code_reference": "document.getText(t),o=this.getActiveFileReference()",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Harvesting VSCode configuration'. The code reads `workspace.getConfiguration(\"developerNotes\")` to retrieve user preferences like `sortOrder`. This is standard practice for extensions to respect user settings.",
+        "code_reference": "workspace.getConfiguration(\"developerNotes\").get(\"sortOrder\",\"pinnedFirst\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Programmatic tampering with workspace configuration'. The code appears to be reading configuration values. While `update` might be called elsewhere to save settings, reading them is benign. The specific match shown is a `.get()` call.",
+        "code_reference": "workspace.getConfiguration(\"developerNotes\").get(\"sortOrder\",\"pinnedFirst\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "OBSERVATION",
+        "description": "The extracted IP `03.04.062.078` is likely a false positive from a regex match on a version string, timestamp, or hex value in `main.js` (e.g., `0x0304062078` or similar), as it is not a standard dotted-decimal IP format in this context and the reputation is unknown. It does not appear in this specific chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 7/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged a keydown listener as a potential keylogger. However, the code `e.ctrlKey||e.metaKey)&&e.key===\"Enter\"` indicates a specific keyboard shortcut handler (likely for saving or submitting a note), not a general key capture buffer. This is standard UI behavior for a notes extension.",
+        "code_reference": "window.addEventListener(\"keydown\",e=>{(e.ctrlKey||e.metaKey)&&e.key===\"Enter\"...",
+        "line_hint": 330,
+        "target": "extension/dist/webview/main.js (chunk 1/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `postMessage` with 'copyToClipboard' as data exfiltration. In a VS Code webview context, `postMessage` is the standard IPC mechanism to communicate with the extension host. Copying to clipboard is a core feature of a notes/scratchpad extension.",
+        "code_reference": ".postMessage({type:\"copyToClipboard\",payload:{text:f}})",
+        "line_hint": 330,
+        "target": "extension/dist/webview/main.js (chunk 1/19)"
+      }
+    ],
+    "findings_truncated": 24
+  },
+  "ai_summary": "This chunk contains standard boilerplate for a VS Code extension: module exports, VS Code API imports, and a `NoteStorage` class that manages notes using `workspaceState` and `globalState`. The logic is consistent with a 'Google Keep-style' notes manager. The static rule hits are largely false positives triggered by standard VS Code API patterns (`postMessage`, `getConfiguration`) that the scanner misinterpreted as network exfiltration or config harvesting. No obfuscation, child processes, or sensitive file access is present in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-05T14:28:46.003Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T12:30:06.194776+00:00Z"
+}

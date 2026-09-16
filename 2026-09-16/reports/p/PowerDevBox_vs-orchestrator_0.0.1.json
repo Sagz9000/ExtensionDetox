@@ -1,0 +1,237 @@
+{
+  "extension_id": "PowerDevBox.vs-orchestrator",
+  "display_name": "VS Orchestrator",
+  "version": "0.0.1",
+  "publisher": {
+    "name": "PowerDevBox",
+    "verified": false
+  },
+  "vsix_sha256": "2ef8c91d6d8630b7d8beb273c6d3c5bb0377a313a6598bdef02bb5cab58f85d5",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2821875,
+    "ai_vibe": 0.15,
+    "static": 0.46875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 772,
+        "snippet": "os.hostname()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 7,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 7,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 7,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/23)",
+        "summary": "This chunk of the VS Orchestrator extension appears to be a standard utility for managing multiple VS Code windows. It uses Node.js built-in modules (`fs`, `os`, `path`, `child_process`) which aligns with the 'zero runtime dependencies' claim (referring to npm packages). The code structure is clean, with clear class definitions and logging. The flagged `child_process` and `os.hostname` are likely false positives given the extension's purpose of cross-window coordination. No obfuscation or suspicious network calls were found in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/23)",
+        "summary": "This chunk of the VS Orchestrator extension contains standard utility functions for managing local state (JSON files), path normalization, and color palette definitions. The code is clean, well-structured, and uses standard Node.js APIs (`fs`, `path`) and VS Code APIs (`vscode.workspace`). The static scanner hits for `child_process` and `os.hostname` are likely false positives in the context of this specific chunk, as they are common in extensions that need to identify unique instances or manage local processes, and no exfiltration or obfuscation is present. The behavior aligns with the extension's stated purpose of a local window manager."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/23)",
+        "summary": "This chunk of the VS Orchestrator extension source code appears benign. It handles UI logic for generating color swatches (SVG files) and managing title bar color settings. The operations are local and consistent with the extension's stated purpose of visualizing and managing VS Code windows. The static rule hits for `child_process` and `os.hostname` are likely false positives in the context of this specific chunk or are justified by the extension's need to interact with the VS Code CLI and identify local windows."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/23)",
+        "summary": "This chunk of the VS Orchestrator extension source code is primarily responsible for UI interactions, specifically a color picker webview and title bar color management. The code is clean, uses standard VS Code APIs, and implements proper security measures for the webview (CSP with nonce). The static scanner hits for `child_process` and `os.hostname` are likely false positives in the context of this specific chunk, as those calls are not present in the visible code and are likely used elsewhere for legitimate window management purposes consistent with the extension's goal of managing multiple VS Code windows."
+      },
+      {
+        "target": "extension/extension.js (chunk 9/23)",
+        "summary": "This chunk of code is purely logical, handling the parsing and state management of VS Code session files (likely Copilot agent sessions). It reads local files (`fs.readFileSync`) and processes JSON lines to update an in-memory state object. There are no network calls, no obfuscation, and no direct execution of system commands within this visible segment. The static rule hits appear to be either false positives or refer to lines outside this specific chunk's visible range. The behavior is consistent with a local-first extension that tracks workspace state."
+      },
+      {
+        "target": "extension/extension.js (chunk 10/23)",
+        "summary": "This chunk of the 'VS Orchestrator' extension appears to be handling local state management for chat sessions, specifically parsing `.jsonl` files to determine the status (running, done, stalled) of Copilot agent sessions. The code uses standard `fs` operations (`readdirSync`, `statSync`) and caching mechanisms. While the static scanner flagged `child_process` and `os.hostname`, these are likely part of the extension's core functionality to manage and identify VS Code windows and local processes, which is consistent with its advertised purpose of orchestrating workspaces. No direct network exfiltration or credential harvesting is visible in this specific chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 11/23)",
+        "summary": "This chunk of the VS Orchestrator extension appears benign and consistent with its advertised functionality. The code implements a local heartbeat mechanism using JSON files to track open VS Code windows and chat sessions. The use of `os.hostname()` is for local identification, and file operations are confined to managing state (heartbeats, repos). The 'Everything runs locally' claim in the README aligns with the observed file-based IPC pattern. No network calls, obfuscation, or sensitive credential access are present in this specific chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "STATIC_RULE_FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a HIGH risk indicator. However, the extension is a 'Window Orchestrator' that likely needs to spawn processes to manage or detect other VS Code instances/windows. While `child_process` is powerful, it is a plausible dependency for this specific utility, especially given the 'zero dependencies' claim (meaning no npm packages, but Node built-ins are allowed).",
+        "code_reference": "const cp = require('child_process');",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 1/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "STATIC_RULE_FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname` as a CRITICAL infostealer pattern. In the context of a multi-window orchestrator, the hostname is likely used to distinguish between different machines or to create unique identifiers for the local instance in the shared storage heartbeat. Without evidence of network exfiltration in this chunk, it is likely benign.",
+        "code_reference": "os.hostname",
+        "line_hint": 772,
+        "target": "extension/extension.js (chunk 1/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `os.hostname()` as high/critical risk. However, this chunk (3/23) contains only utility functions for path normalization, workspace info retrieval, JSON file I/O, and color palette management. The `child_process` require is likely at the top of the file (line 7) for other chunks to use, and `os.hostname` (line 772) is likely used for unique window identification or local state keying, which is consistent with a 'local-only' orchestrator. No direct evidence of exfiltration or arbitrary command execution in this specific chunk.",
+        "code_reference": "require('child_process'), os.hostname",
+        "line_hint": "7, 772",
+        "target": "extension/extension.js (chunk 3/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code uses `fs.readFileSync` and `fs.writeFileSync` to manage JSON state files (colors, workspace info). This is standard for extensions that persist user preferences locally. The README claims 'no runtime dependencies' and 'everything runs locally', which aligns with the use of Node.js built-ins (`fs`, `path`, `os`) rather than external npm packages for core logic.",
+        "code_reference": "readJsonSafe, writeJsonAtomic",
+        "line_hint": "20-35",
+        "target": "extension/extension.js (chunk 3/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `os.hostname()` as high/critical risk. However, this chunk (4/23) does not contain these calls. The `os.hostname()` call likely exists in another chunk for window identification or local network discovery, which is consistent with the extension's purpose of listing live VS Code windows. The `child_process` usage is likely for spawning VS Code CLI commands to open/focus windows, which is standard for this type of extension. No obfuscation or suspicious network exfiltration is visible in this chunk.",
+        "code_reference": "require('child_process') / os.hostname()",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 4/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM",
+        "description": "The code writes SVG files to a `swatchesDir` (likely within the extension's storage path) to generate custom color dots. It uses `fs.mkdirSync` and `fs.writeFileSync`. This is a benign operation for generating UI assets locally.",
+        "code_reference": "fs.writeFileSync(file, `<svg ...`)",
+        "line_hint": 20,
+        "target": "extension/extension.js (chunk 4/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `os.hostname()` as high/critical risk. However, this chunk (5/23) contains only the tail end of a title bar color function and the implementation of a color picker webview. The `child_process` and `os.hostname` calls are likely defined in earlier chunks or used for specific window management tasks (e.g., getting window IDs or handling native dialogs) which are common in VS Code extensions that manage multiple windows. In this specific chunk, the code is purely UI logic (HTML generation, message handling for color selection).",
+        "code_reference": "require('child_process') / os.hostname()",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 5/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The extension creates a webview panel for color picking. It correctly uses a nonce for Content Security Policy (`script-src 'nonce-${nonce}'`) and escapes HTML in the `escapeHtml` function. The webview is local and does not appear to load remote resources in this snippet.",
+        "code_reference": "vscode.window.createWebviewPanel",
+        "line_hint": 45,
+        "target": "extension/extension.js (chunk 5/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` at line 7. However, the provided source code chunk (lines 1-60+) contains only pure JavaScript logic for parsing session state (functions `rememberRequests`, `applySessionEvent`, `parseSessionFile`, `sessionStatus`). The `require` statement is likely in the header of the file (not visible in this chunk) or is a false positive from the scanner's line mapping. The visible code does not execute any child processes.",
+        "code_reference": "require('child_process')",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 9/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname` at line 772. The provided source code chunk ends around line 60. The `os.hostname` call is not present in this specific chunk. Even if present elsewhere in the file, `os.hostname` is a common benign API for local identification in multi-window extensions, and without a corresponding network exfiltration call in the same scope, it is not inherently malicious.",
+        "code_reference": "os.hostname",
+        "line_hint": 772,
+        "target": "extension/extension.js (chunk 9/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `os.hostname()` as high/critical risk. However, this chunk (10/23) primarily contains logic for `listChatSessions()` which reads local `.jsonl` files to track Copilot chat session status. The `os.hostname` call (line 772) is likely part of a broader system fingerprinting or unique ID generation for local state, which is common in extensions that sync local state or identify unique windows, but without immediate network exfiltration visible in this chunk, it is not definitively malicious. The `child_process` require is likely for spawning processes related to the 'Orchestrator' functionality (e.g., checking window states or running local scripts), which aligns with the extension's purpose of managing VS Code windows.",
+        "code_reference": "require('child_process'), os.hostname()",
+        "line_hint": "7, 772",
+        "target": "extension/extension.js (chunk 10/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a direct command execution risk. However, in the context of a 'Window Orchestrator' extension, this is likely used for process management (e.g., checking if a window is alive via PID) or launching new VS Code instances, which is consistent with the extension's purpose. No specific `exec` or `spawn` call is visible in this chunk to suggest arbitrary shell injection.",
+        "code_reference": "require('child_process')",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 11/23)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname()` as system fingerprinting/infostealer behavior. In this code, `os.hostname()` is used to populate the `host` field in a local JSON heartbeat file (`writeHeartbeat`). This is a standard pattern for multi-window coordination to distinguish between different local VS Code instances, not for exfiltration to a remote server.",
+        "code_reference": "host: os.hostname()",
+        "line_hint": 772,
+        "target": "extension/extension.js (chunk 11/23)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the VS Orchestrator extension appears to be a standard utility for managing multiple VS Code windows. It uses Node.js built-in modules (`fs`, `os`, `path`, `child_process`) which aligns with the 'zero runtime dependencies' claim (referring to npm packages). The code structure is clean, with clear class definitions and logging. The flagged `child_process` and `os.hostname` are likely false positives given the extension's purpose of cross-window coordination. No obfuscation or suspicious network calls were found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-02T20:30:19.207Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-02T21:08:27.365404+00:00Z"
+}

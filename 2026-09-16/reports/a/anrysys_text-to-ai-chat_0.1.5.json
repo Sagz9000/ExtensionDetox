@@ -1,0 +1,127 @@
+{
+  "extension_id": "anrysys.text-to-ai-chat",
+  "display_name": "AI Prompt File Manager",
+  "version": "0.1.5",
+  "publisher": {
+    "name": "anrysys",
+    "verified": false
+  },
+  "vsix_sha256": "2e2ce149732d9c1ef900e13aac53cd922d079869cfc60ecc1cbe02d90917b63a",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.1925,
+    "ai_vibe": 0.05,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Clipboard monitoring loop",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "clipboard.readText()}}async function le(e){if(!Re())return e;let t=Je(e);if(t.size===0)return e;let o={selection:\"\",active_file:\"\",clipboard:\"\"};for(let r of t)o[r]=await qt(r);return Ye(e,o)}var ne=l"
+      }
+    ],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/2)",
+        "summary": "The code is a legitimate VS Code extension for managing AI prompt files. It uses standard VS Code APIs to read/write files, manage a tree view, and insert text into the editor or clipboard. The static scanner's critical hits regarding clipboard monitoring and configuration harvesting are false positives resulting from the extension's macro expansion feature and standard configuration reading. There is no evidence of malicious intent, data exfiltration, or unauthorized command execution in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/2)",
+        "summary": "The code is a benign implementation of an 'AI Prompt File Manager'. It manages markdown/text files, provides a tree view, and allows users to copy prompts to the clipboard or open them in Obsidian. The static scanner hits are false positives resulting from the extension's legitimate use of the clipboard API (for copying prompts) and configuration API (for user settings). There are no indicators of malicious intent, data exfiltration, or unauthorized system access."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Clipboard monitoring loop' and 'Credential harvesting'. Upon review, the code uses `vscode.env.clipboard.readText()` solely to resolve a user-defined macro `{{clipboard}}` within a prompt snippet. This is a documented feature of the extension (macro expansion) and is not a monitoring loop or credential exfiltration attempt. The data is processed locally and inserted into the editor or chat, not sent over the network.",
+        "code_reference": "async function qt(e) { ... case \"clipboard\": return await G.env.clipboard.readText() ... }",
+        "line_hint": 850,
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Harvesting VSCode configuration and sending over network'. The code reads configuration values (e.g., `promptManager.global.path`) to determine where to look for prompt files. There is no network exfiltration of these settings. The `workspace.getConfiguration` calls are standard VS Code API usage for reading extension settings.",
+        "code_reference": "function b(e) { return e ? W.workspace.getConfiguration(H, e) : W.workspace.getConfiguration(H) }",
+        "line_hint": 120,
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension's capabilities are proportional to its advertised function. It manages local files (.md/.txt), provides a tree view, and inserts content into the clipboard or editor. The use of `node:path` and `node:os` is standard for file path manipulation and home directory resolution. No suspicious dependencies or network calls to external C2 servers were found in this chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'clipboard monitoring loop' and 'credential harvesting'. Upon review, the code only uses `vscode.env.clipboard.writeText()` to copy prompt content to the clipboard for user insertion into AI chat panels. It does not read clipboard contents in a loop, nor does it exfiltrate data. This is a core feature of the extension (copying prompts).",
+        "code_reference": "await m.env.clipboard.writeText(t)",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Harvesting VSCode configuration and sending over network'. The code reads configuration (`workspace.getConfiguration`) to determine user preferences (like file extensions and Obsidian vault settings) and updates them via `updateInsertStrategy`. There is no network exfiltration of this data. The 'network send' flag is likely a false positive triggered by the combination of config access and the presence of URI handling for external apps (Obsidian), which is a documented feature.",
+        "code_reference": "workspace.getConfiguration(H,e)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate VS Code extension for managing AI prompt files. It uses standard VS Code APIs to read/write files, manage a tree view, and insert text into the editor or clipboard. The static scanner's critical hits regarding clipboard monitoring and configuration harvesting are false positives resulting from the extension's macro expansion feature and standard configuration reading. There is no evidence of malicious intent, data exfiltration, or unauthorized command execution in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 48,
+    "published_date": "2026-09-14T06:47:55.283Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T07:44:08.555904+00:00Z"
+}

@@ -1,0 +1,281 @@
+{
+  "extension_id": "EashanHasija.vsforces",
+  "display_name": "VSForces",
+  "version": "0.1.2",
+  "publisher": {
+    "name": "EashanHasija",
+    "verified": false
+  },
+  "vsix_sha256": "f78cc286dbd35683d3e671beaed530a5340ff0736b71ef2d72c44380b504f772",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.21968749999999998,
+    "ai_vibe": 0.15,
+    "static": 0.21875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "toString(\"base64\"),u=o?Xr.request:Zr.request,h=new Set,g;if(n.createConnection=n.createConnection||(o?gs:ms),n.defaultPort=n.defaultPort||l,n.port=i.port||l,n.host=i.hostname.startsWith(\"[\")?i.hostnam"
+      }
+    ],
+    "high": [],
+    "total": 5
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "codeforces.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 1920,
+      "context": "i.protocol === \"https:\" && (i.hostname === \"codeforces.com\" || i.hostname.endsWith(\".codeforces.com\")) && k.env.openExternal(k.Uri.parse(n))",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "filename",
+      "value": "wnumb.min.js",
+      "source_file": "extension/dist/extension.js",
+      "line": 2534,
+      "context": "<script src=\"https://cdn.jsdelivr.net/npm/wnumb@1.2.0/wNumb.min.js\"></script>",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "filename",
+      "value": "nouislider.min.js",
+      "source_file": "extension/dist/extension.js",
+      "line": 2535,
+      "context": "<script src=\"https://cdn.jsdelivr.net/npm/nouislider@15.8.1/dist/nouislider.min.js\"></script>",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "filename",
+      "value": "katex.min.js",
+      "source_file": "extension/dist/extension.js",
+      "line": 2536,
+      "context": "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js\"></script>",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "filename",
+      "value": "auto-render.min.js",
+      "source_file": "extension/dist/extension.js",
+      "line": 2537,
+      "context": "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js\"></script>",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/43)",
+        "summary": "This chunk of code primarily consists of bundled dependencies, specifically the 'ws' WebSocket library and its buffer utilities, which are essential for the extension's documented feature of bridging VS Code with a Chrome extension via a local WebSocket connection. The minified code is standard for a bundled extension. The flagged 'infostealer' behavior is a false positive resulting from the WebSocket library's internal data handling. The activation event 'onStartupFinished' is slightly broad but acceptable for a productivity tool that may need to maintain a persistent local server connection. No hardcoded secrets, suspicious child_process calls, or obfuscated payloads were found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/43)",
+        "summary": "This chunk of the extension source code primarily contains the implementation of the `ws` (WebSocket) library, including frame parsing, UTF-8 validation, and stream handling. The code is minified but recognizable as standard library code rather than custom malicious logic. The extension's purpose is to bridge VS Code with a Chrome extension via a local WebSocket connection, which explains the network activity and data transfer. No hardcoded secrets, obfuscated payloads, or suspicious system calls were found in this specific chunk. The static rule hits appear to be false positives resulting from the bundling of standard libraries and the extension's legitimate local communication pattern."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 17/43)",
+        "summary": "This chunk of code appears to be a bundled version of the `ws` library (a popular Node.js WebSocket implementation). It handles low-level details like WebSocket handshakes, redirects, and authentication headers. The 'suspicious' base64 encoding is standard for HTTP Basic Auth. Given that the extension explicitly uses a WebSocket connection to bridge VS Code and a Chrome extension, this code is highly relevant and expected. No direct malicious logic is present in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 18/43)",
+        "summary": "This chunk of code appears to be the bundled `ws` (WebSocket) library implementation. It handles the low-level socket connection, upgrade handshake, and protocol verification. The specific logic for verifying the `Sec-WebSocket-Accept` header using SHA1 and Base64 is standard for WebSocket clients and was incorrectly flagged as an info-stealer pattern by the static scanner. The code is consistent with the extension's stated purpose of communicating with a local Chrome extension via WebSocket."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 22/43)",
+        "summary": "This chunk of code appears to be the implementation of a WebSocket server (likely using the `ws` library) that handles the upgrade handshake and connection verification. The logic for parsing `Sec-WebSocket-Key`, `Sec-WebSocket-Version`, and `Sec-WebSocket-Protocol` headers is standard boilerplate for WebSocket servers. The 'Base64' hit is a false positive related to the standard SHA1+Base64 calculation for the WebSocket accept key. The extension's stated purpose involves a local WebSocket bridge between a Chrome extension and VS Code, which aligns with the code found here. No obvious malicious patterns like obfuscated evals, remote IP connections, or credential harvesting are present in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 24/43)",
+        "summary": "This chunk of the VSForces extension source code appears benign and consistent with its advertised purpose. It implements a local WebSocket bridge to communicate with a Chrome extension, allowing users to submit code from VS Code to Codeforces. The 'suspicious' network and file reading behaviors are core to the extension's function (sending code to the browser for submission). The use of `crypto` is for generating unique IDs, not encryption of secrets. No hardcoded IPs, obfuscated payloads, or access to sensitive system paths (like ~/.ssh) were found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 33/43)",
+        "summary": "This chunk of the VSForces extension source code primarily consists of HTML and JavaScript for the extension's Webview sidebar. It includes UI elements for a timer, submission history, and problem statement display, along with a custom HTML sanitizer to prevent XSS from Codeforces content. The static rule engine hits appear to be false positives or low-severity patterns typical of minified bundles and standard Webview communication. The code aligns well with the extension's stated purpose of bridging Codeforces and VS Code, with no obvious signs of credential harvesting, obfuscated payloads, or arbitrary command execution in this specific segment."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a Codeforces companion tool that is primarily triggered by user commands or sidebar interactions. While not critical, it increases the attack surface slightly by loading the extension immediately upon VS Code startup.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' due to Base64 encoding and network requests. However, the code context indicates this is part of the 'ws' (WebSocket) library implementation (specifically buffer utilities and WebSocket connection logic), which is standard for the documented WebSocket bridge to the Chrome extension. The 'vscode_api_abuse' hit regarding document content is also likely a false positive, as the extension is designed to read problem statements and test cases to send to the local judge/bridge.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' due to Base64 encoding and network requests. However, the code in this chunk is part of the `ws` (WebSocket) library implementation (specifically the `WebSocketReceiver` class and UTF-8 validation utilities). The `toString('base64')` and `request` references are likely from a different module bundled in the same file or a generic utility, but the visible code here is standard WebSocket frame parsing logic (checking opcodes, payload lengths, and UTF-8 validity). The presence of `utf-8-validate` native module fallback is standard for high-performance WebSocket libraries.",
+        "code_reference": "function Or(t) { ... } ... var Fe = _((en, St) => { ... De = class extends Nr ... }",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' for reading document content and sending it over the network. While the extension does send problem statements to a local WebSocket bridge (ws://127.0.0.1:6543) for the Chrome extension, this is the core advertised functionality ('bridges Codeforces with VS Code'). The code in this specific chunk does not show the `document.getText()` call, but the behavior is consistent with the extension's purpose of transferring problem data to a browser extension via a local socket.",
+        "code_reference": "document.getText(),a=Ee.extname(n.document.fileName).toLowerCase()",
+        "line_hint": 7,
+        "target": "extension/dist/extension.js (chunk 5/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'infostealer_behavior' due to `Buffer.from(n.auth).toString(\"base64\")`. However, this code is part of the standard `ws` (WebSocket) library implementation for handling HTTP Basic Authentication headers during the WebSocket handshake. The base64 encoding is a standard protocol requirement for the `Authorization` header, not data exfiltration.",
+        "code_reference": "n.auth && !s.headers.authorization && (s.headers.authorization = \"Basic \" + Buffer.from(n.auth).toString(\"base64\"))",
+        "line_hint": 38,
+        "target": "extension/dist/extension.js (chunk 17/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' regarding document content sending. While this chunk is primarily WebSocket library code, the extension's purpose (VSForces) involves communicating with a local Chrome extension via WebSocket to sync problem data. The presence of WebSocket logic is expected and proportional to the 'bridge' functionality described in the README.",
+        "code_reference": "n.createConnection = n.createConnection || (o ? gs : ms)",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 17/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'infostealer_behavior' due to Base64 encoding and network activity. However, the code explicitly shows `ts(\"sha1\").update(d + os).digest(\"base64\")` being compared against `f.headers[\"sec-websocket-accept\"]`. This is the standard WebSocket handshake verification logic (RFC 6455), not data exfiltration.",
+        "code_reference": "let Je = ts(\"sha1\").update(d + os).digest(\"base64\"); if (f.headers[\"sec-websocket-accept\"] !== Je)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 18/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for reading document content and sending it over the network. The code `this.bridge.send({t...` likely refers to sending metadata or a specific message type via the WebSocket bridge to the Chrome extension, which is the core documented functionality of VSForces (bridging VS Code and Codeforces). Without evidence of the entire document being sent unencrypted to a third-party server, this is consistent with the extension's purpose.",
+        "code_reference": "document.getText(),a=Ee.extname(n.document.fileName).toLowerCase(),c=js[a]??null;this.bridge.send({t",
+        "line_hint": 7,
+        "target": "extension/dist/extension.js (chunk 18/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'infostealer_behavior' due to Base64 encoding and network activity. However, the code snippet shows `Ns(\"sha1\").update(r+Us).digest(\"base64\")` being used to calculate the `Sec-WebSocket-Accept` header. This is the standard RFC 6455 handshake mechanism for WebSocket connections, not data exfiltration.",
+        "code_reference": "Ns(\"sha1\").update(r+Us).digest(\"base64\")",
+        "line_hint": 45,
+        "target": "extension/dist/extension.js (chunk 22/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for reading document content and sending it over the network. While this chunk is primarily WebSocket server logic, the extension's purpose is to bridge Codeforces problems to VS Code. Sending problem statements or test cases via the local WebSocket bridge (ws://127.0.0.1:6543) is the core functionality described in the README, not necessarily malicious exfiltration, especially given the local nature of the endpoint.",
+        "code_reference": "this.bridge.send",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 22/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'infostealer_behavior' due to `toString(\"base64\")` and network requests. However, the code shows `ar.randomBytes(32).toString(\"hex\")` (using crypto for ID generation) and standard WebSocket/HTTP logic for the Chrome extension bridge. The specific match string in the rule engine appears to be a concatenation artifact or refers to a different part of the minified bundle not fully visible here, but the visible logic is consistent with a local bridge server.",
+        "code_reference": "var ar = x(require(\"crypto\")); function lr() { return ar.randomBytes(32).toString(\"hex\") }",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 24/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The rule 'vscode_api_abuse' flagged reading document content and sending it over the network. The code shows `document.getText()` being sent via `this.bridge.send`. This is the core functionality of the extension: sending the user's code to the Chrome extension to be submitted to Codeforces. This is expected behavior for a submission tool.",
+        "code_reference": "document.getText(),a=Ee.extname(n.document.fileName).toLowerCase(),c=js[a]??null;this.bridge.send({t",
+        "line_hint": 7,
+        "target": "extension/dist/extension.js (chunk 24/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK",
+        "description": "The extension listens on `127.0.0.1` (localhost) for connections from the Chrome extension. This is a standard pattern for local IPC between a browser extension and a desktop app, limiting exposure to the local machine only.",
+        "code_reference": "this.server.listen(Xe, \"127.0.0.1\", () => {",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 24/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'infostealer_behavior' due to a match for `toString(\"base64\")` and `request` on line 1. However, this chunk (33/43) contains Webview HTML/JS code (timer UI, sanitizers). The match likely originates from a minified library or a different part of the bundle not fully visible in this specific snippet, or is a false positive from a generic scanner hitting a standard base64 utility. The visible code in this chunk is primarily UI logic and HTML sanitization, which is benign for a sidebar extension.",
+        "code_reference": "toString(\"base64\"),u=o?Xr.request:Zr.request",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 33/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for reading document content and sending it over the network. The code `document.getText()` is part of the Webview's JavaScript context (running in the browser-like environment of the sidebar), not the Node.js extension host. It is sending data via `this.bridge.send`, which is a standard VS Code Webview postMessage mechanism to communicate with the extension host, not a direct network exfiltration to an external server. This is expected behavior for a sidebar that displays problem statements.",
+        "code_reference": "document.getText(),a=Ee.extname(n.document.fileName).toLowerCase(),c=js[a]??null;this.bridge.send({t",
+        "line_hint": 7,
+        "target": "extension/dist/extension.js (chunk 33/43)"
+      },
+      {
+        "severity": "LOW",
+        "category": "REMOTE_CONTENT",
+        "description": "The Webview loads external scripts from CDNs (jsdelivr.net, cloudflare.com) for KaTeX and NoUiSlider. While these are reputable CDNs, loading remote scripts in a Webview is a minor supply-chain risk if the CDN is compromised. However, this is a common pattern for VS Code extensions that need complex UI libraries not bundled locally.",
+        "code_reference": "<script src=\"https://cdn.jsdelivr.net/npm/wnumb@1.2.0/wNumb.min.js\"></script>",
+        "line_hint": 2534,
+        "target": "extension/dist/extension.js (chunk 33/43)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of code primarily consists of bundled dependencies, specifically the 'ws' WebSocket library and its buffer utilities, which are essential for the extension's documented feature of bridging VS Code with a Chrome extension via a local WebSocket connection. The minified code is standard for a bundled extension. The flagged 'infostealer' behavior is a false positive resulting from the WebSocket library's internal data handling. The activation event 'onStartupFinished' is slightly broad but acceptable for a productivity tool that may need to maintain a persistent local server connection. No hardcoded secrets, suspicious child_process calls, or obfuscated payloads were found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-02T08:49:40.813Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-02T12:55:26.955161+00:00Z"
+}

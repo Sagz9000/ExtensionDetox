@@ -1,0 +1,393 @@
+{
+  "extension_id": "ada-platforms.ada-security",
+  "display_name": "ada \u2014 Seguridad de c\u00f3digo",
+  "version": "0.2.1",
+  "publisher": {
+    "name": "ada-platforms",
+    "verified": false
+  },
+  "vsix_sha256": "52074663227e3570bbe5db4a69bcd2847e421fad84edfb414ac39b87684432f5",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6425000000000001,
+    "ai_vibe": 0.8,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": "Buffer.from(n).toString(\"utf8\"));return r?V(r)?.repoFullName:void 0}catch{return}}function Y(e){let t=p.workspace.getConfiguration(\"ada\").get(\"ideMinSecondsBetweenAnalyses\",20),i=Z.get(e.toString());r"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": "readFile(i),r=G(Buffer.from(n).toString(\"utf8\"));return r?V(r)?.repoFullName:void 0}catch{return}}function Y(e){let t=p.workspace.getConfiguration(\"ada\").get(\"ideMinSecondsBetweenAnalyses\",20),i=Z.get"
+      }
+    ],
+    "high": [
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": "readFile(i),r=G(Buffer.from(n).toString(\"utf8\"));return r?V(r)?.repoFullName:void 0}catch{return}}function Y(e){let t=p.workspace.getConfiguration(\"ada\").get(\"ideMinSecondsBetweenAnalyses\",20),i=Z.get"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 4,
+        "snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({package:{name:e.name,ecosystem:e.ecosystem},version:e.version}),signal:t.signal});return clearTimeout(i),n.ok?(await n.js"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "www.ada",
+      "source_file": "extension/package.json",
+      "line": 17,
+      "context": "\"homepage\": \"https://www.ada-platforms.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.osv.dev",
+      "source_file": "extension/dist/extension.js",
+      "line": 4,
+      "context": "`)){let o=we(i,r);o&&n.push(o)}return xe(n)}function H(e){let t=(e.database_specific?.severity??\"\").toUpperCase();return t===\"CRITICAL\"?\"critical\":t===\"MODERATE\"||t===\"LOW\"?\"medium\":\"high\"}function be",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.7,
+    "confidence": 0.8,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/9)",
+        "summary": "The extension exhibits several red flags, including a small package size, inappropriate activation events, and potential data exfiltration patterns. While its core functionality may be legitimate, these indicators suggest a possible capability disconnect or behavioral mismatch, warranting further investigation."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/9)",
+        "summary": "The extension exhibits high-risk behavior by harvesting VSCode configuration and potentially exfiltrating data via base64 encoding and immediate file reading. These activities significantly deviate from the stated purpose of detecting exposed secrets and vulnerabilities, raising concerns about data security and misuse."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/9)",
+        "summary": "The extension exhibits several suspicious patterns, including potential data exfiltration via Base64 encoding and network transmission, as well as harvesting VS Code configurations. While these activities may align with its security scanning purpose, they raise concerns about data handling and could indicate malicious behavior. The confidence is moderate due to the potential for legitimate functionality, but further dynamic analysis is recommended."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/9)",
+        "summary": "The extension exhibits high-risk behavior by harvesting VSCode configuration and potentially exfiltrating data. While the activities may align with its security scanning purpose, the methods used raise concerns about data handling and could indicate malicious intent or poor security practices."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/9)",
+        "summary": "The extension exhibits several suspicious patterns, including potential credential harvesting, data exfiltration via network calls, and reading sensitive files. While some behavior may align with its stated purpose of analyzing code security, the presence of critical-risk indicators necessitates further investigation to rule out malicious intent."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 7/9)",
+        "summary": "The extension exhibits high-risk patterns including potential data exfiltration via base64 encoding and network transmission, as well as attempts to read sensitive files. While the extension's purpose is security-related, these activities raise concerns about potential misuse or poor security practices. The findings suggest a need for thorough dynamic analysis and code review to confirm the legitimacy of these operations."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 8/9)",
+        "summary": "The extension exhibits several suspicious patterns, including potential credential harvesting and data exfiltration. However, these activities may be part of its intended security functionality. Further dynamic analysis is recommended to confirm benign behavior."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "Extension's VSIX package size (0.1 MB) is disproportionately small for its stated security scanning capabilities, suggesting potential mismatch in functionality.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "Activation event 'onStartupFinished' is inappropriate for a security tool, suggesting early and broad activation that may not align with its stated purpose.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "INFostealer_behavior",
+        "description": "Static analysis indicates potential file reading and network exfiltration patterns, which may not be justified by the extension's stated functionality.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 1/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_CALLS",
+        "description": "Network calls to unknown domains (api.osv.dev) and potential data exfiltration detected, raising concerns about unintended communication.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 1/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network detected.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 2/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Base64 encoding data then sending over network (data exfil) detected.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 2/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network detected.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 2/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 3/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 3/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Attempt to read credential / key files",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 3/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Pattern suggesting data exfiltration",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 3/9)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 3/9)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 3/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "vscode_api_abuse",
+        "description": "Extension harvests VSCode configuration and sends over network.",
+        "code_reference": "extension/dist/extension.js (chunk 5/9)",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 5/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network, potential data exfiltration.",
+        "code_reference": "extension/dist/extension.js (chunk 5/9)",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 5/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 6/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 6/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Attempt to read credential / key files",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 6/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Pattern suggesting data exfiltration",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 6/9)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 6/9)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 6/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network.",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 7/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 7/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Attempt to read credential / key files",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 7/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Pattern suggesting data exfiltration",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 7/9)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 7/9)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 7/9)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "credential_harvesting",
+        "description": "Attempt to read credential or key files detected.",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 8/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Base64 encoding data then sending over network detected.",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 8/9)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network detected.",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 8/9)"
+      }
+    ],
+    "findings_truncated": 1
+  },
+  "ai_summary": "The extension exhibits several red flags, including a small package size, inappropriate activation events, and potential data exfiltration patterns. While its core functionality may be legitimate, these indicators suggest a possible capability disconnect or behavioral mismatch, warranting further investigation.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 11,
+    "published_date": "2026-08-14T04:38:10.84Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-14T05:39:18.146909+00:00Z"
+}

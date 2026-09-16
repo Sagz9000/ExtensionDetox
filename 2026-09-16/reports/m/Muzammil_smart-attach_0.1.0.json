@@ -1,0 +1,174 @@
+{
+  "extension_id": "Muzammil.smart-attach",
+  "display_name": "Smart Attach",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "Muzammil",
+    "verified": false
+  },
+  "vsix_sha256": "067540253357c57fc1e7834b34944c39d4485e3551cfd8fc731d24a59d0cac2d",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.2,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 130,
+        "snippet": "var import_child_process = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 130,
+        "snippet": "var import_child_process = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 145,
+        "snippet": "const ps = (0, import_child_process.spawn)("
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 130,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.2,
+    "confidence": 0.85,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/6)",
+        "summary": "The extension appears to be a legitimate debugger tool for .NET processes. While the use of `child_process` is flagged, it aligns with the extension's purpose of attaching to processes. No critical or malicious behavior was detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/6)",
+        "summary": "The extension uses `child_process.spawn()` to execute PowerShell commands, which is flagged as a high-risk indicator. However, in this context, it's used for legitimate process enumeration. The extension's functionality aligns with its stated purpose, but the use of `child_process` raises some concerns about potential arbitrary command execution risks."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/6)",
+        "summary": "The extension exhibits potential suspicious behavior due to the use of `child_process`, which could enable arbitrary command execution. However, the extension's stated purpose as a debugger might justify this usage, making the finding uncertain but notable."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/6)",
+        "summary": "The extension exhibits a high-risk indicator by using `require('child_process')`, which can execute arbitrary commands. While this is sometimes legitimate for debugger tools, the presence of this code in an extension meant for managing .NET processes raises concerns about potential misuse for remote execution or lateral movement. The extension's functionality, while potentially legitimate, introduces a significant security risk that could be exploited."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/6)",
+        "summary": "The extension appears to be a legitimate debugger utility for attaching to .NET processes. The detected use of `child_process` could be part of its legitimate functionality to manage debug sessions. No evidence of malicious behavior was found, but the extension's actual implementation should be reviewed to ensure proper command execution safety."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/6)",
+        "summary": "The extension exhibits legitimate debugger functionality but includes a HIGH-RISK indicator with the use of `child_process`, which could potentially be exploited for arbitrary command execution. While the immediate purpose appears proportional to its stated features, the presence of this capability introduces some risk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `require('child_process')` which could indicate potential command execution capabilities, but this might be legitimate for debugging purposes.",
+        "code_reference": "extension/dist/extension.js (chunk 1/6)",
+        "line_hint": 130,
+        "target": "extension/dist/extension.js (chunk 1/6)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "Use of `child_process.spawn()` which can execute arbitrary commands, though in this context it's used for legitimate process enumeration.",
+        "code_reference": "src/services/ProcessFinder.ts",
+        "line_hint": 10,
+        "target": "extension/dist/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which can enable arbitrary command execution.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 130,
+        "target": "extension/dist/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which allows arbitrary command execution, a common vector for malicious activities.",
+        "code_reference": "extension/dist/extension.js (chunk 4/6)",
+        "line_hint": 130,
+        "target": "extension/dist/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "EXECUTION",
+        "description": "Usage of `require('child_process')` which can execute arbitrary commands.",
+        "code_reference": "src/extension.ts",
+        "line_hint": "130",
+        "target": "extension/dist/extension.js (chunk 5/6)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which can execute arbitrary shell commands.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 130,
+        "target": "extension/dist/extension.js (chunk 6/6)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension appears to be a legitimate debugger tool for .NET processes. While the use of `child_process` is flagged, it aligns with the extension's purpose of attaching to processes. No critical or malicious behavior was detected.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-13T11:12:56.17Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:49.707427+00:00Z"
+}

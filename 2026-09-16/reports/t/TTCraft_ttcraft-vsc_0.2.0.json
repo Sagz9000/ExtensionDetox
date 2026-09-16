@@ -1,0 +1,198 @@
+{
+  "extension_id": "TTCraft.ttcraft-vsc",
+  "display_name": "TTCraft VSC",
+  "version": "0.2.0",
+  "publisher": {
+    "name": "TTCraft",
+    "verified": false
+  },
+  "vsix_sha256": "72503ced094f86e7e941ffde5eeb16301145175e4147bc2c57a8fd789e2f644c",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.27949999999999997,
+    "ai_vibe": 0.12,
+    "static": 0.5,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "toString(\"base64\"),h=o?ti.request:si.request,m=new Set,b;if(i.createConnection=i.createConnection||(o?bi:yi),i.defaultPort=i.defaultPort||c,i.port=n.port||c,i.host=n.hostname.startsWith(\"[\")?n.hostnam"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/extension.js",
+        "line": 75,
+        "snippet": "readFile(t)).toString(\"utf8\")}catch{return}let o=r.get(t.fsPath);if(o===n)return;r.set(t.fsPath,n);let a=C.relative(this.dir.fsPath,t.fsPath),l;try{l=await this.push(e,i,n)}catch(h){o===void 0?r.delet"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 7,
+        "snippet": "method:\"POST\",headers:{\"content-type\":\"application/json\",accept:\"application/json\"},body:JSON.stringify({client_name:`VS Code (${Rt.hostname()})`})});if(!a.ok)throw new Error(`HTTP ${a.status}`);t=awa"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "ttcraft.net",
+      "source_file": "extension/package.json",
+      "line": 16,
+      "context": "\"homepage\": \"https://ttcraft.net/docs/vscode\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.12,
+    "confidence": 0.78,
+    "blocks_parsed": 3,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 5/38)",
+        "summary": "The analyzed chunk appears benign and is consistent with normal WebSocket protocol handling plus a VS Code extension that edits TTCraft Lua scripts. The scanner hits are likely false positives caused by legitimate network synchronization, OAuth token storage, configuration access, and file editing. No malicious primitives such as eval, child_process, obfuscated payloads, hardcoded secrets, or credential harvesting are visible in this chunk. Residual uncertainty remains because only a small portion of the bundled file was provided."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 17/38)",
+        "summary": "The provided chunk is a minified but not obfuscated WebSocket client handshake implementation, likely from a standard WebSocket library or bundled dependency. It constructs normal WebSocket upgrade headers, handles subprotocols, compression, authentication, redirects, and timeouts. The static scanner hits are false positives in this context: Base64 is used for a Basic Authorization header, network sends are part of the WebSocket handshake, and configuration/secret storage access is consistent with the extension's advertised OAuth and table-server workflow. No child_process execution, filesystem harvesting, keylogging, clipboard theft, persistence, DLL loading, mining, or remote-access tooling is visible in this chunk. Because only one chunk of a large bundled file was provided, confidence is moderate rather than absolute, but the visible code is benign and proportionate to the extension's stated purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 18/38)",
+        "summary": "This chunk appears to be bundled or vendored WebSocket client implementation code, not custom malicious logic. It performs standard WebSocket handshake validation, including Upgrade header checks, Sec-WebSocket-Accept SHA1/base64 verification, subprotocol negotiation, extension negotiation, and socket setup. No credential harvesting, child process execution, eval, obfuscation, tunneling, persistence, or suspicious exfiltration is visible in this chunk. The scanner hits are likely false positives caused by generic WebSocket/HTTP library patterns. Because only chunk 18/38 is visible, confidence is moderate rather than absolute, but the visible code is benign and aligned with the extension's stated purpose of communicating with TTCraft table servers over WebSocket."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_RULE",
+        "description": "The visible code is WebSocket receiver and UTF-8 validation logic, consistent with a bundled WebSocket library such as ws. It contains no eval, Function constructor, child_process usage, obfuscated payload, or direct credential theft in this chunk.",
+        "code_reference": "class extends Ir { constructor(e = {}) ... _write(e, t, r) ... consume(e) {",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 5/38)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_RULE",
+        "description": "Static rule hits for POST/base64/readFile/configuration/SecretStorage are consistent with the advertised TTCraft workflow: OAuth sign-in, storing tokens in per-extension SecretStorage, reading/writing Lua scripts, and synchronizing with a table server. The extracted domain ttcraft.net matches the README and package description.",
+        "code_reference": "context.secrets.get(...), workspace.getConfiguration(\"ttcraft\")..., readFile(...), POST JSON",
+        "line_hint": "7,75",
+        "target": "extension/dist/extension.js (chunk 5/38)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_HIT",
+        "description": "The Base64 encoding followed by a network request is standard HTTP Basic Authorization header construction during a WebSocket handshake, not credential exfiltration.",
+        "code_reference": "i.auth && !r.headers.authorization && (r.headers.authorization = \"Basic \" + Buffer.from(i.auth).toString(\"base64\"))",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 17/38)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_HIT",
+        "description": "The WebSocket upgrade headers, subprotocol validation, permessage-deflate setup, origin handling, and redirect handling are consistent with a standard WebSocket client implementation and align with the extension's stated use of a table server over WebSocket.",
+        "code_reference": "i.headers = { ...i.headers, \"Sec-WebSocket-Version\": i.protocolVersion, \"Sec-WebSocket-Key\": d, Connection: \"Upgrade\", Upgrade: \"websocket\" }",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 17/38)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_HIT",
+        "description": "The static hit for reading file content and immediately sending it over the network is not present in the provided chunk. It may correspond to legitimate script synchronization, but cannot be confirmed malicious from this excerpt.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 17/38)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_HIT",
+        "description": "The configuration retrieval and network send hit appears to be normal extension configuration for the TTCraft/table server URL, not harvesting of sensitive user secrets.",
+        "code_reference": "workspace.getConfiguration(\"ttcraft\")",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 17/38)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_HIT",
+        "description": "The SecretStorage access hit is for the extension's own secret storage, which is expected for OAuth tokens or session credentials and is not cross-extension credential theft.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 17/38)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_HIT",
+        "description": "The extension enumeration hit is not visible in the provided chunk and may be benign dependency or activation logic; no malicious reconnaissance behavior is demonstrated here.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 17/38)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged base64/network and file-read/network patterns, but the visible chunk is standard WebSocket client handshake code. The base64 usage is for the Sec-WebSocket-Accept SHA1 digest, not data exfiltration.",
+        "code_reference": "let xt = ni(\"sha1\").update(d + di).digest(\"base64\"); if (p.headers[\"sec-websocket-accept\"] !== xt) { ... }",
+        "line_hint": "10-14",
+        "target": "extension/dist/extension.js (chunk 18/38)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements WebSocket connection handling, upgrade validation, extension negotiation, and socket buffering. This is consistent with an extension that connects to a game table server over WebSocket, as described in the README.",
+        "code_reference": "_.on(\"upgrade\", (p, T, H) => { ... s.setSocket(T, H, { ... }) })",
+        "line_hint": "2-45",
+        "target": "extension/dist/extension.js (chunk 18/38)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The analyzed chunk appears benign and is consistent with normal WebSocket protocol handling plus a VS Code extension that edits TTCraft Lua scripts. The scanner hits are likely false positives caused by legitimate network synchronization, OAuth token storage, configuration access, and file editing. No malicious primitives such as eval, child_process, obfuscated payloads, hardcoded secrets, or credential harvesting are visible in this chunk. Residual uncertainty remains because only a small portion of the bundled file was provided.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-10T16:32:46.27Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-10T16:57:20.166385+00:00Z"
+}

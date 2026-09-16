@@ -1,0 +1,237 @@
+{
+  "extension_id": "thirtyeighttwentysix.volan-language-server",
+  "display_name": "Volan Language Server",
+  "version": "0.1.3",
+  "publisher": {
+    "name": "thirtyeighttwentysix",
+    "verified": false
+  },
+  "vsix_sha256": "b5e811fa11f12f5debe633bca5ad14bef274ccaace604dc78e409b6924886bd1",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.287217626482615,
+    "ai_vibe": 0.15,
+    "static": 0.4888705059304601,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.js",
+        "line": 17847,
+        "snippet": "Object.keys(process.env)"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 16425,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 16425,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 16447,
+        "snippet": "var result = cp.spawnSync(cmd, [process2.pid.toString()]);"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 17687,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 17687,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 16425,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 17687,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 42/273)",
+        "summary": "This chunk of code appears to be standard, bundled infrastructure from the `vscode-languageclient` or similar LSP library, handling message transport over ports, sockets, and streams. The static hits for `child_process` and `process.env` are typical for this type of extension (spawning a server process and configuring IPC paths) and do not indicate malicious credential harvesting or arbitrary command execution in this context. The code is well-structured and matches the advertised functionality of a local language server."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 217/273)",
+        "summary": "This chunk of the extension source code contains standard implementation details for the `FileOperationFeature` class, which is part of the Language Server Protocol (LSP) client library. It handles file path matching and filtering using `minimatch` and VS Code's `workspace.fs` API. While the static scanner flagged `child_process` and `process.env` usage in the broader file, those specific lines are not visible in this chunk, and the visible logic is benign and consistent with a language server extension. The 'credential harvesting' flag is likely a false positive from a generic environment variable read in a different context (e.g., determining OS or user home directory) or belongs to a different chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 249/273)",
+        "summary": "This chunk of code appears to be part of the bundled `vscode-languageclient` library, which is a standard dependency for VS Code extensions that use a Language Server Protocol (LSP) backend. The 'suspicious' hits for `child_process` and `process.env` are consistent with the need to spawn and manage a local language server process. The extension is described as a 'Prisma-style language tooling' with a 'bundled local language server', which perfectly aligns with the observed code behavior. No direct network exfiltration or obfuscated payloads were found in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 250/273)",
+        "summary": "This chunk of the extension source code primarily consists of bundled dependencies, specifically the `semver` library and `vscode-languageserver-protocol`. The flagged indicators (child_process, process.env) are standard patterns within these well-known libraries used for version parsing and debugging. There is no evidence of obfuscation, hardcoded secrets, or suspicious network calls in this specific chunk. The behavior aligns perfectly with a language server extension that bundles its runtime dependencies."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 264/273)",
+        "summary": "This chunk contains the bundled code for the `vscode-languageclient` library, which is a standard dependency for VS Code extensions that provide language server support. The 'suspicious' hits for `child_process` and environment variable access are inherent to the library's function of spawning and configuring the language server process. There are no signs of obfuscation, hardcoded secrets, or exfiltration patterns in this specific chunk. The behavior aligns perfectly with the extension's stated purpose of providing a local language server."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 266/273)",
+        "summary": "This chunk of code is part of the standard `vscode-languageclient` library, which is the de facto standard for connecting VS Code extensions to external language servers. The 'suspicious' signals (child_process, env serialization) are inherent to the mechanism of spawning a local server process. Since the extension is a 'Language Server' tool, using these APIs is expected and proportional to its function. No direct network exfiltration or obfuscated payloads are visible in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 267/273)",
+        "summary": "This chunk of code is part of the `vscode-languageclient` library, which is the standard infrastructure for VS Code extensions that use a separate language server process. The 'suspicious' signals (child_process, env vars) are inherent to how language servers are launched and configured. Given that the extension is a 'Language Server' tool, these capabilities are expected and proportional to its function. No direct network exfiltration or obfuscated payloads are visible in this specific chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, this chunk contains standard VS Code Language Client/Server infrastructure code (PortMessageReader, SocketMessageWriter, StreamMessageReader). The `child_process` references are likely part of the bundled `vscode-languageclient` library used to spawn the language server process, which is expected for a 'bundled local language server'. The `process.env` access is for `XDG_RUNTIME_DIR` to determine IPC socket paths on Linux, a standard practice for inter-process communication, not credential harvesting.",
+        "code_reference": "var XDG_RUNTIME_DIR = process.env[\"XDG_RUNTIME_DIR\"];",
+        "line_hint": 17847,
+        "target": "extension/dist/extension.js (chunk 42/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is a language server for a specific schema language. The presence of IPC/socket handling code is consistent with the LSP architecture. The VSIX size (3.2 MB) is reasonable for a bundled language server. Activation on `onLanguage:volan` is appropriate.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 42/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, the provided source code chunk (lines ~16400-17900) consists entirely of the `FileOperationFeature` class implementation, which handles file filtering using `minimatch` and VS Code workspace APIs. The specific lines cited by the scanner (16425, 17687, 17847) are not present in this text snippet, suggesting they belong to other chunks or are part of the bundled VS Code/LSP client library logic (e.g., for terminal integration or environment detection) rather than the extension's core malicious logic. The visible code is standard LSP client boilerplate.",
+        "code_reference": "FileOperationFeature class implementation",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 217/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` as a high-risk indicator. However, the code is located within the `vscode-languageclient` library's `processes.js` module. It is used specifically to terminate the language server process (using `taskkill` on Windows or a bundled shell script on Unix). This is standard behavior for a language server extension that spawns a local process.",
+        "code_reference": "var cp = require(\"child_process\"); ... cp.execFileSync(\"taskkill\", ...)",
+        "line_hint": 16425,
+        "target": "extension/dist/extension.js (chunk 249/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `Object.keys(process.env)` as credential harvesting. In the context of a language server client, environment variables are typically serialized to pass configuration (like PATH, JAVA_HOME, etc.) to the spawned language server process. Without evidence of network exfiltration in this specific chunk, this is likely benign configuration passing.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 17847,
+        "target": "extension/dist/extension.js (chunk 249/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, the code context shows these are part of the `semver` library (a standard dependency for version checking) and `vscode-languageserver-protocol`. The `process.env` access is specifically checking `NODE_DEBUG` for semver debugging, not mass exfiltration. The `child_process` usage is likely for spawning the language server binary, which is standard for LSP extensions.",
+        "code_reference": "var debug = typeof process === \"object\" && process.env && process.env.NODE_DEBUG && /\\bsemver\\b/i.test(process.env.NODE_DEBUG) ? (...args) => console.error(\"SEMVER\", ...args) : () => {};",
+        "line_hint": 17847,
+        "target": "extension/dist/extension.js (chunk 250/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, the code context clearly shows this is the bundled source of the `vscode-languageclient` library (specifically `node_modules/vscode-languageclient/lib/node/main.js`). This library is the standard mechanism for VS Code extensions to spawn and communicate with external language server processes. The use of `child_process` is expected for launching the server, and reading environment variables is standard for passing configuration to the child process. Given the extension is a 'Language Server' tool, these capabilities are proportional to its function.",
+        "code_reference": "var cp = require(\"child_process\");",
+        "line_hint": 16425,
+        "target": "extension/dist/extension.js (chunk 264/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, the code context reveals this is the standard `vscode-languageclient` library implementation for spawning a local language server process. The environment variable serialization is used to pass the current environment to the child process (standard practice for LSP clients), not to exfiltrate secrets to a remote server. The `child_process` usage is necessary to launch the bundled Volan language server binary/script.",
+        "code_reference": "getEnvironment(env, fork) { ... Object.keys(process.env).forEach ... }",
+        "line_hint": 17847,
+        "target": "extension/dist/extension.js (chunk 266/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, the code context reveals this is the standard `vscode-languageclient` library logic for spawning a local language server process. The `child_process` usage is necessary to launch the bundled Volan language server binary, and the environment variable serialization is part of the standard mechanism to pass environment variables to the child process, not a mass exfiltration of secrets to a remote server.",
+        "code_reference": "const serverProcess = cp.spawn(runtime, args, execOptions);",
+        "line_hint": 16425,
+        "target": "extension/dist/extension.js (chunk 267/273)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of code appears to be standard, bundled infrastructure from the `vscode-languageclient` or similar LSP library, handling message transport over ports, sockets, and streams. The static hits for `child_process` and `process.env` are typical for this type of extension (spawning a server process and configuring IPC paths) and do not indicate malicious credential harvesting or arbitrary command execution in this context. The code is well-structured and matches the advertised functionality of a local language server.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "7 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-07T16:00:07.273Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T17:02:26.495831+00:00Z"
+}

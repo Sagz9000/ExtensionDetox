@@ -1,0 +1,119 @@
+{
+  "extension_id": "anrysys.text-to-ai-chat",
+  "display_name": "AI Prompt File Manager",
+  "version": "0.1.12",
+  "publisher": {
+    "name": "anrysys",
+    "verified": false
+  },
+  "vsix_sha256": "e4976addef5b3b2cc7e040c44f7b58f5fb134a2691d0a1d271bb72f6f7bcaa19",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.1925,
+    "ai_vibe": 0.05,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Clipboard monitoring loop",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "clipboard.readText()}}async function we(e,t=te()){if(!Ve())return e;let o=ae(e);if(o.size===0)return e;let n={selection:\"\",active_file:\"\",clipboard:\"\"};for(let r of o)n[r]=await ao(r,t);return at(e,n)"
+      }
+    ],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/2)",
+        "summary": "The extension is a benign utility for managing AI prompt files. It allows users to store prompts as .md/.txt files, browse them in a tree view, and insert them into the editor or AI chat panels. The code uses standard VS Code APIs for file system access, clipboard operations, and command execution. There are no network calls, no obfuscated code, no credential harvesting, and no suspicious child process execution. The static scanner hits are false positives resulting from the legitimate use of clipboard and configuration APIs for the extension's stated purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/2)",
+        "summary": "The code is a benign VS Code extension for managing AI prompts stored as local files. It implements file tree navigation, snippet creation/rename/delete, and integration with Obsidian via URI templates. The static scanner hits are false positives caused by the legitimate use of clipboard writing (for inserting prompts) and configuration reading (for user preferences). There are no indicators of malicious behavior, data exfiltration, or unauthorized system access."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' due to clipboard access. However, the code explicitly uses `clipboard.writeText` to copy user-selected snippets to the clipboard for pasting into AI chat panels, which is the core advertised functionality. The `clipboard.readText` usage is limited to resolving the `{{clipboard}}` macro within a snippet, which is a standard template feature, not a monitoring loop or exfiltration vector.",
+        "code_reference": "async function Oe(e, t, o) { if (await C.env.clipboard.writeText(e)...",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' regarding configuration reading and directory traversal. The code reads `workspace.getConfiguration` to respect user-defined settings for prompt folders and file extensions. File system operations are confined to the configured prompt directories (Global or Workspace) and do not target sensitive system paths like `~/.ssh` or `~/.aws`.",
+        "code_reference": "function w(e) { return e ? M.workspace.getConfiguration(q, e) : M.workspace.getConfiguration(q) }",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Clipboard monitoring loop' and 'Credential harvesting'. Upon review, the code only uses `vscode.env.clipboard.writeText()` to copy prompt content to the clipboard as a core feature of the extension (inserting prompts into chat panels). There is no `readText()` call in this chunk, and no network exfiltration of clipboard data. This is a legitimate feature for a prompt manager.",
+        "code_reference": "await g.env.clipboard.writeText(t)",
+        "line_hint": 142,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Harvesting VSCode configuration and sending over network'. The code uses `workspace.getConfiguration` to read user settings for the extension (e.g., file extensions, Obsidian URI templates) and `env.openExternal` to open Obsidian URIs. There is no network transmission of these settings to external servers. This is standard configuration handling.",
+        "code_reference": "workspace.getConfiguration(q,e)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is a benign utility for managing AI prompt files. It allows users to store prompts as .md/.txt files, browse them in a tree view, and insert them into the editor or AI chat panels. The code uses standard VS Code APIs for file system access, clipboard operations, and command execution. There are no network calls, no obfuscated code, no credential harvesting, and no suspicious child process execution. The static scanner hits are false positives resulting from the legitimate use of clipboard and configuration APIs for the extension's stated purpose.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 84,
+    "published_date": "2026-09-14T06:47:55.283Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T12:15:02.495578+00:00Z"
+}

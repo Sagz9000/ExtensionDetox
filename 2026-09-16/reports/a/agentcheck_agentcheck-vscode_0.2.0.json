@@ -1,0 +1,260 @@
+{
+  "extension_id": "agentcheck.agentcheck-vscode",
+  "display_name": "AgentCheck",
+  "version": "0.2.0",
+  "publisher": {
+    "name": "agentcheck",
+    "verified": false
+  },
+  "vsix_sha256": "3bdedd3eb660dcacf8b0e9ce753ca4b454573f980d07ec1cf5e87d5d6dbc43a8",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.26765507814753614,
+    "ai_vibe": 0.1,
+    "static": 0.5106203125901445,
+    "behavioral": 0.0,
+    "trust_signal": 0.7,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "AWS Access Key ID",
+        "file": "extension/dist/extension.cjs",
+        "line": 821,
+        "snippet": "[REDACTED:AWS_ACCESS_KEY_ID]"
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/dist/extension.cjs",
+        "line": 60,
+        "snippet": "Secret: \"security.possible-secret\""
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/dist/extension.cjs",
+        "line": 77,
+        "snippet": "Secret: \"security.possible-secret\""
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 1335,
+        "snippet": "var import_node_child_process = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 1412,
+        "snippet": "(0, import_node_child_process.execFile)(\"git\", [...args], { cwd, env: env ?? process.env, encoding: \"buffer\", maxBuffer: 64 * 1024 * 1024 }, (error, stdout, stderr) => {"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.cjs (chunk 1/32)",
+        "summary": "The code is a standard VS Code extension entry point that imports core modules for checkpointing and finding analysis. The logic aligns perfectly with the advertised functionality of 'AgentCheck', which verifies changes made by AI coding agents using Git. The static scanner hits are false positives: one is a well-known AWS documentation placeholder, and the other is a string constant used for categorizing security findings, not a leaked credential. There are no signs of malicious behavior, obfuscation, or capability disconnects in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 2/32)",
+        "summary": "The code snippet is benign and consistent with the extension's stated purpose of verifying code changes. It defines constant identifiers for various types of code findings (e.g., security issues, configuration changes) and associated risk contributions. The static analysis hits are false positives: one is a standard AWS documentation placeholder key, and the other is a string identifier used for categorization, not a hardcoded credential. There are no malicious indicators, obfuscation, or capability disconnects in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 3/32)",
+        "summary": "The provided code chunk is benign and consistent with the extension's stated purpose of verifying code changes. It contains logic for identifying configuration files (e.g., .env, docker-compose.yml) and defining human-readable messages for security findings (e.g., 'possibleSecret', 'accessControlWeakened'). The static scanner hits for 'leaked secrets' are false positives caused by the extension's own detection logic and standard documentation examples. No malicious behavior, network exfiltration, or credential harvesting is observed in this segment."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 6/32)",
+        "summary": "The analyzed code chunk is part of a dependency parsing and comparison module for the 'AgentCheck' extension. It contains standard logic for parsing package manifests (package.json, csproj, requirements.txt) and comparing dependency lists. The code is clean, well-structured, and aligns perfectly with the extension's stated purpose of verifying changes made by coding agents. The critical findings from the static scanner are false positives: one is a standard AWS documentation example key, and the other is a placeholder string likely used in testing. No malicious behavior, obfuscation, or suspicious network activity was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 11/32)",
+        "summary": "The code is a legitimate implementation of a secret detection feature for the 'AgentCheck' extension. It analyzes git diffs to identify newly introduced secrets (like API keys or tokens) and flags them as findings. The static scanner hits are false positives caused by the extension's own logic for identifying and filtering placeholder/example secrets. There is no evidence of malicious behavior, data exfiltration, or credential harvesting."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 20/32)",
+        "summary": "The code is a legitimate implementation of the 'AgentCheck' extension, which verifies changes made by AI coding agents using Git. The logic shown involves risk assessment rules, verdict generation, and Git command execution via `node:child_process`, which is appropriate for a Git-based tool. The critical findings from the static scanner are false positives: the AWS key is a well-known example placeholder, and the 'secret' string is a test value for sensitive file detection. No malicious behavior, exfiltration, or obfuscation was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 21/32)",
+        "summary": "The analyzed code chunk is part of a Git utility module for the 'AgentCheck' extension. It implements functions to resolve Git repository paths, read HEAD/branch information, and execute Git commands via `child_process.execFile`. The static scanner hits for 'leaked secrets' are false positives, corresponding to standard AWS example keys and placeholder test strings. The use of `child_process` is appropriate for a Git-based tool and does not exhibit malicious behavior such as arbitrary command execution, credential harvesting, or network exfiltration. The code aligns with the extension's advertised functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged '[REDACTED:AWS_ACCESS_KEY_ID]' as a leaked AWS key. This is the standard placeholder example key used in AWS documentation and is not a valid credential. It appears in the context of defining finding IDs or test fixtures, not as a hardcoded secret for exfiltration.",
+        "code_reference": "line 821 (inferred from scanner hit, likely in a test or example block not fully visible in this chunk)",
+        "line_hint": 821,
+        "target": "extension/dist/extension.cjs (chunk 1/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'security.possible-secret' as a hardcoded secret. This string is actually a constant identifier (FINDING_IDS.possibleSecret) used to categorize security findings within the extension's logic. It is a label, not a credential.",
+        "code_reference": "var FINDING_IDS = { ... possibleSecret: \"security.possible-secret\" ... }",
+        "line_hint": 77,
+        "target": "extension/dist/extension.cjs (chunk 1/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged '[REDACTED:AWS_ACCESS_KEY_ID]' as a leaked AWS key. This is the standard documentation placeholder key provided by AWS in their official documentation and SDKs. It is not a valid credential and is likely used here as a test fixture or example within the extension's logic for detecting secrets.",
+        "code_reference": "[REDACTED:AWS_ACCESS_KEY_ID]",
+        "line_hint": 821,
+        "target": "extension/dist/extension.cjs (chunk 2/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'security.possible-secret' as a hardcoded secret. This string is actually a constant identifier (key) used within the `RISK_CONTRIBUTION_IDS` object to categorize findings. It is not a value being assigned to a variable named 'Secret', but rather a string literal used as a property value in a mapping object.",
+        "code_reference": "possibleSecret: \"security.possible-secret\"",
+        "line_hint": 77,
+        "target": "extension/dist/extension.cjs (chunk 2/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged '[REDACTED:AWS_ACCESS_KEY_ID]' as a leaked AWS key. This is the standard example key provided in AWS documentation and is not a valid credential. It likely appears in a test fixture or documentation string within the full file, not in this specific chunk's logic.",
+        "code_reference": "Static rule hit line 821 (not present in this chunk)",
+        "line_hint": null,
+        "target": "extension/dist/extension.cjs (chunk 3/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'security.possible-secret' as a hardcoded secret. This string is part of the extension's internal logic for detecting potential secrets in user code (specifically the 'possibleSecret' finding ID and associated message). It is a label/description, not a credential.",
+        "code_reference": "Static rule hit lines 60, 77 (not present in this chunk)",
+        "line_hint": null,
+        "target": "extension/dist/extension.cjs (chunk 3/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged '[REDACTED:AWS_ACCESS_KEY_ID]' as a leaked AWS Access Key ID. This is the standard, publicly documented example key used in AWS documentation and SDKs to illustrate the format of an Access Key ID. It is not a valid credential and poses no security risk.",
+        "code_reference": "[REDACTED:AWS_ACCESS_KEY_ID]",
+        "line_hint": 821,
+        "target": "extension/dist/extension.cjs (chunk 6/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'security.possible-secret' as a hardcoded secret. This string appears to be a placeholder or test value, likely part of a unit test fixture or a mock data structure within the extension's logic for handling security findings. It does not represent a real credential.",
+        "code_reference": "Secret: \"security.possible-secret\"",
+        "line_hint": 60,
+        "target": "extension/dist/extension.cjs (chunk 6/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged '[REDACTED:AWS_ACCESS_KEY_ID]' as a leaked AWS key. However, the code explicitly defines this string as a placeholder in the `isPlaceholder` function to filter out false positives during secret detection. This is a standard example key used in documentation and testing, not a real credential.",
+        "code_reference": "if (value === \"[REDACTED:AWS_ACCESS_KEY_ID]\") return true;",
+        "line_hint": 821,
+        "target": "extension/dist/extension.cjs (chunk 11/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged hardcoded secrets. The code actually implements a secret detection engine (`detectSignals`) that scans file diffs for patterns matching `SECRET_PATTERNS`. The 'Secret: security.possible-secret' matches are likely part of the internal logic or test fixtures for the detection engine, not actual credentials being exfiltrated or stored.",
+        "code_reference": "const existingSignals = new Set(detectSignals(before ?? \"\"));",
+        "line_hint": 60,
+        "target": "extension/dist/extension.cjs (chunk 11/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged '[REDACTED:AWS_ACCESS_KEY_ID]' as a leaked AWS Access Key ID. This is the standard, publicly documented example key used in AWS documentation and is not a valid credential. It is likely present in a test fixture, comment, or example string within the codebase.",
+        "code_reference": "[REDACTED:AWS_ACCESS_KEY_ID]",
+        "line_hint": 821,
+        "target": "extension/dist/extension.cjs (chunk 20/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'security.possible-secret' as a hardcoded secret. This string appears to be a placeholder or test value used to demonstrate sensitive file detection logic, rather than an actual credential. The context of the extension (verifying agent changes) supports this being a test case for the 'sensitive-file' category.",
+        "code_reference": "Secret: \"security.possible-secret\"",
+        "line_hint": 60,
+        "target": "extension/dist/extension.cjs (chunk 20/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged '[REDACTED:AWS_ACCESS_KEY_ID]' as a leaked AWS Access Key ID. This is the standard, well-known example key provided in AWS documentation and is not a valid credential. It is likely present in a test fixture, documentation string, or mock data within the codebase.",
+        "code_reference": "[REDACTED:AWS_ACCESS_KEY_ID]",
+        "line_hint": 821,
+        "target": "extension/dist/extension.cjs (chunk 21/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'security.possible-secret' as a hardcoded secret. This string appears to be a placeholder or a test value used in unit tests or documentation examples, not a real credential. The context suggests it is part of a test case for secret detection logic.",
+        "code_reference": "Secret: \"security.possible-secret\"",
+        "line_hint": 60,
+        "target": "extension/dist/extension.cjs (chunk 21/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code uses `child_process.execFile` to execute `git` commands. This is consistent with the extension's stated purpose of creating Git-backed checkpoints and verifying changes. The usage is restricted to the `git` binary and does not involve arbitrary command execution or shell injection vectors.",
+        "code_reference": "executeGit",
+        "line_hint": null,
+        "target": "extension/dist/extension.cjs (chunk 21/32)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension entry point that imports core modules for checkpointing and finding analysis. The logic aligns perfectly with the advertised functionality of 'AgentCheck', which verifies changes made by AI coding agents using Git. The static scanner hits are false positives: one is a well-known AWS documentation placeholder, and the other is a string constant used for categorizing security findings, not a leaked credential. There are no signs of malicious behavior, obfuscation, or capability disconnects in this chunk.",
+  "escalation_reasons": [
+    "3 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 5,
+    "published_date": "2026-08-22T13:09:40.937+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T03:12:20.019468+00:00Z"
+}

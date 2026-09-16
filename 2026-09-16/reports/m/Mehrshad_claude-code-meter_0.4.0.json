@@ -1,0 +1,159 @@
+{
+  "extension_id": "Mehrshad.claude-code-meter",
+  "display_name": "Claude Code Meter - Usage & Limits",
+  "version": "0.4.0",
+  "publisher": {
+    "name": "Mehrshad",
+    "verified": false
+  },
+  "vsix_sha256": "634e71260d1d54af1fbd15e968da13a9ad4c47febfa34c6e0af9490c49770b3e",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2978125,
+    "ai_vibe": 0.15,
+    "static": 0.53125,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/out/extension.js",
+        "line": 33,
+        "snippet": "readFile(te.join(s,\".credentials.json\"),\"utf8\"))}catch{return}}function ge(s){if(s){if(!s.startsWith(\"{\"))return s;try{let e=JSON.parse(s),n=e.claudeAiOauth??e,t=n?.accessToken??n?.access_token;return"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 33,
+        "snippet": "$(graph) Click to open the dashboard`),t}dispose(){this.stopSpinner(),this.item?.dispose()}};function ue(s){return{totals:s.totals,percent:s.percent,limit:s.limit,hasPercent:s.hasPercent,remainingMs:s"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 33,
+        "snippet": "$(graph) Click to open the dashboard`),t}dispose(){this.stopSpinner(),this.item?.dispose()}};function ue(s){return{totals:s.totals,percent:s.percent,limit:s.limit,hasPercent:s.hasPercent,remainingMs:s"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/out/extension.js",
+        "line": 33,
+        "snippet": "readFile(te.join(s,\".credentials.json\"),\"utf8\"))}catch{return}}function ge(s){if(s){if(!s.startsWith(\"{\"))return s;try{let e=JSON.parse(s),n=e.claudeAiOauth??e,t=n?.accessToken??n?.access_token;return"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/out/extension.js",
+        "line": 33,
+        "snippet": "fetch(){let e=await this.resolve();if(!e)return;let n=await fetch(je,{headers:{authorization:`Bearer ${e.token}`,\"anthropic-beta\":\"oauth-2025-04-20\",accept:\"application/json\"}});if(!n.ok)throw(n.statu"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 33,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.anthropic.com",
+      "source_file": "extension/out/extension.js",
+      "line": 725,
+      "context": "je = \"https://api.anthropic.com/api/oauth/usage\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js",
+        "summary": "The extension is a legitimate usage meter for Claude Code. It reads local transcript files and the user's own OAuth token (from Keychain or config file) to query the Anthropic API for accurate rate limit data. All flagged behaviors (reading credentials, using child_process, network calls) are necessary for its stated function and do not indicate malicious intent or data exfiltration."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The extension reads `~/.claude/.credentials.json` and macOS Keychain to retrieve the OAuth token for the user's own Claude Code account. This is a legitimate feature for a usage meter that needs to query the Anthropic API for accurate rate limits, and the token is only used for local API calls, not exfiltrated.",
+        "code_reference": "async function Le() { ... readFile(te.join(s, \".credentials.json\"), \"utf8\") ... }",
+        "line_hint": 33,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The extension uses `child_process.execFile` to run `security find-generic-password` on macOS. This is a standard and necessary method to access the user's Keychain for the Claude Code token, not a malicious command execution.",
+        "code_reference": "await Ee(\"security\", [\"find-generic-password\", \"-s\", Ae, \"-w\"])",
+        "line_hint": 33,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The extension makes a network request to `api.anthropic.com` to fetch usage statistics. This is the documented API for the service the extension monitors, and the request is authenticated with the user's own token.",
+        "code_reference": "fetch(je, { headers: { authorization: `Bearer ${e.token}` ... } })",
+        "line_hint": 33,
+        "target": "extension/out/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is a legitimate usage meter for Claude Code. It reads local transcript files and the user's own OAuth token (from Keychain or config file) to query the Anthropic API for accurate rate limit data. All flagged behaviors (reading credentials, using child_process, network calls) are necessary for its stated function and do not indicate malicious intent or data exfiltration.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "5 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-14T19:48:07.96Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-14T20:16:22.818934+00:00Z"
+}

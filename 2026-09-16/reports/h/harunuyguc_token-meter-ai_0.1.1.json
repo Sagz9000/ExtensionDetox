@@ -1,0 +1,212 @@
+{
+  "extension_id": "harunuyguc.token-meter-ai",
+  "display_name": "Token Meter - AI Context & Token Budget Visualizer",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "harunuyguc",
+    "verified": false
+  },
+  "vsix_sha256": "fe36e394181439c3d250cc67f1aebc188df6661f58c407de99818926caccad4a",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.1925,
+    "ai_vibe": 0.05,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/webview.js",
+        "line": 22,
+        "snippet": "addEventListener(\"keydown\",d=>{d.key===\"Enter\"?m():d.key===\"Escape\"&&(s.classList.add(\"hidden\"),h&&h.classList.add(\"hidden\"),B===\"auto\"?i.value=\"auto\":i.value=\"active_custom\")}))}o&&o.addEventListener"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/webview.js",
+        "line": 22,
+        "snippet": ".postMessage({type:\"openFile\",path:p.absolutePath})},p=>{Ho(p,n)}),r&&r.addEventListener(\"change\",p=>{let m=p.target.value;Wt.postMessage({type:\"selectModel\",modelId:m})});let s=document.getElementByI"
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/webview.js (chunk 1/27)",
+        "summary": "This chunk of the extension source code is a standard bundle of D3.js library code, specifically the event dispatcher and namespace handling modules. The static scanner hits for 'keylogger' and 'exfiltration' are false positives resulting from generic UI event handling and standard Webview-to-Extension communication patterns. The code is consistent with the extension's stated purpose of providing D3.js visualizations for token metrics. No malicious behavior, obfuscation, or suspicious network activity was detected in this portion of the code."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 2/27)",
+        "summary": "The analyzed code chunk consists entirely of standard D3.js library implementation (selections, data binding, DOM manipulation utilities). It contains no malicious logic, network calls, or credential harvesting. The static rule engine hits are false positives resulting from generic UI event handling and standard webview communication patterns. The code is consistent with the extension's stated purpose of providing D3.js visualizations."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 3/27)",
+        "summary": "The provided code chunk is a standard implementation of the D3.js library, specifically handling data joins and selection management. The static rule engine hits are false positives caused by generic UI event handling (Enter/Escape keys) and internal webview messaging, which are benign and consistent with the extension's stated purpose of providing visualizations. No malicious behavior, obfuscation, or suspicious network activity was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 4/27)",
+        "summary": "The provided code chunk consists entirely of standard D3.js library implementation (selections, attributes, styles, sorting). It contains no malicious logic, network calls, or credential access. The static rule engine hits are false positives resulting from generic UI event handling and standard VS Code webview communication patterns. The code is consistent with the extension's stated purpose of providing D3.js visualizations."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 9/27)",
+        "summary": "The provided code chunk is a standard implementation of D3.js color utilities, specifically handling color parsing, conversion between formats (hex, rgb, hsl), and color object manipulation. It contains no network activity, no file system access, no credential harvesting, and no obfuscated payloads. The static rule hits are false positives caused by the scanner misinterpreting or misaligning with the actual content of this specific chunk, which is benign visualization library code consistent with the extension's purpose of providing D3.js visualizations."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 11/27)",
+        "summary": "The provided code chunk is a standard implementation of D3.js interpolation functions (color, number, string) and basic UI event handling for a webview panel. The static rule engine hits are false positives caused by generic patterns (postMessage, keydown) that are benign in the context of a VS Code extension webview communicating with its extension host and handling user input for a UI component. No malicious behavior, obfuscation, or capability disconnect was found."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 12/27)",
+        "summary": "The provided code chunk is a standard D3.js animation/interpolation library implementation (specifically `d3-interpolate` and `d3-transition` internals). It contains mathematical functions for matrix decomposition, SVG transform parsing, and animation timing. There are no malicious indicators, network calls, file system access, or credential harvesting patterns in this specific chunk. The static rule hits are false positives resulting from generic string matching on standard UI event listeners and webview messaging APIs. The code is consistent with the extension's stated purpose of providing D3.js visualizations."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a `keydown` listener. However, the code context shows this is a standard UI interaction handler for a modal or input field (handling 'Enter' to submit and 'Escape' to close/hide). It does not buffer keystrokes or send them to a network endpoint. This is benign UI logic.",
+        "code_reference": "addEventListener(\"keydown\",d=>{d.key===\"Enter\"?m():d.key===\"Escape\"&&(s.classList.add(\"hidden\")...",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 1/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'data exfiltration' pattern due to `postMessage`. In the context of a VS Code Webview, `postMessage` is the standard, secure mechanism for communication between the Webview (frontend) and the Extension Host (backend). It does not send data to an external network server directly from the Webview context in a way that constitutes exfiltration without the extension host's involvement, which is not visible in this chunk but is standard architecture.",
+        "code_reference": ".postMessage({type:\"openFile\",path:p.absolutePath})",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 1/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code contains D3.js event dispatcher logic (`ye`, `yt`, `Er`, `Tr`, `xe`), which aligns with the extension's advertised use of D3.js for visualizations. The presence of SVG namespace definitions (`Qt`) further confirms this is a visualization library bundle. No malicious capabilities were found in this chunk.",
+        "code_reference": "var Qt = { svg: \"http://www.w3.org/2000/svg\", ... }",
+        "line_hint": 45,
+        "target": "extension/dist/webview.js (chunk 1/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'keylogger' pattern due to a `keydown` listener. However, the code context indicates this is a standard UI interaction handler for a modal or input field (handling 'Enter' to submit and 'Escape' to close/hide), which is benign behavior for a webview-based extension.",
+        "code_reference": "addEventListener(\"keydown\",d=>{d.key===\"Enter\"?m():d.key===\"Escape\"&&(s.classList.add(\"hidden\"),h&&h`",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 2/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'data exfiltration' pattern due to `postMessage`. In the context of a VS Code extension webview, `postMessage` is the standard, secure mechanism for communication between the webview UI and the extension host. It does not imply network exfiltration.",
+        "code_reference": ".postMessage({type:\"openFile\",path:p.absolutePath})",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 2/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'keylogger' patterns. Upon inspection, the code is standard D3.js library implementation (selection join logic, enter/update/exit patterns). The 'keydown' listener is part of a UI component (likely a modal or input handler) that closes on Escape and submits on Enter, which is standard UI behavior, not credential harvesting. The 'postMessage' is used for internal webview communication to open files, consistent with the extension's purpose of visualizing workspace files.",
+        "code_reference": "addEventListener(\"keydown\",d=>{d.key===\"Enter\"?m():d.key===\"Escape\"&&(s.classList.add(\"hidden\")",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 3/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged a 'keylogger' pattern due to a keydown listener. However, the code context indicates this is a standard UI interaction handler for a modal or input field (handling 'Enter' to submit and 'Escape' to close/hide), not a credential harvesting mechanism. No data is being buffered or exfiltrated.",
+        "code_reference": "addEventListener(\"keydown\",d=>{d.key===\"Enter\"?m():d.key===\"Escape\"&&(s.classList.add(\"hidden\")...",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 4/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged a 'data exfiltration' pattern due to postMessage. The code sends a message to open a file within the VS Code environment (`openFile`), which is a standard and benign interaction for a file explorer or visualizer extension.",
+        "code_reference": ".postMessage({type:\"openFile\",path:p.absolutePath})",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 4/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'keylogger' pattern due to a keydown listener. However, the code snippet provided is entirely composed of D3.js color parsing and manipulation logic (hex, rgb, hsl conversions). The specific line referenced by the scanner (line 22) does not exist in this chunk (which starts with color definitions) or contains the described logic. This is a false positive resulting from the scanner analyzing a different part of the file or a misalignment in line numbers.",
+        "code_reference": "function D(t) { ... }",
+        "line_hint": null,
+        "target": "extension/dist/webview.js (chunk 9/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'keylogger' patterns. Upon review, the code is standard D3.js interpolation logic (color/number transitions) and a UI event listener for a modal dialog (Enter/Escape keys). There is no network exfiltration, credential harvesting, or malicious intent.",
+        "code_reference": "addEventListener(\"keydown\", ...)",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 11/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged a 'keylogger' pattern due to `addEventListener(\"keydown\")`. However, the code context (not fully visible in this chunk but implied by the webview nature and standard UI patterns) suggests this is likely a standard UI interaction handler (e.g., for closing a modal or confirming an input) rather than a malicious keylogger. The snippet provided in the rule hit shows `d.key===\"Enter\"` and `d.key===\"Escape\"` handling, which is typical for form/modal interactions. No buffer accumulation or network exfiltration logic is visible in the provided chunk.",
+        "code_reference": "addEventListener(\"keydown\",d=>{d.key===\"Enter\"?m():d.key===\"Escape\"&&(s.classList.add(\"hidden\"),h&&h",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 12/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' due to `postMessage`. The code `postMessage({type:\"openFile\",path:p.absolutePath})` is a standard VS Code webview-to-extension communication pattern used to request file opening. This is a legitimate API usage for a file explorer or viewer extension, not exfiltration.",
+        "code_reference": ".postMessage({type:\"openFile\",path:p.absolutePath})",
+        "line_hint": 22,
+        "target": "extension/dist/webview.js (chunk 12/27)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the extension source code is a standard bundle of D3.js library code, specifically the event dispatcher and namespace handling modules. The static scanner hits for 'keylogger' and 'exfiltration' are false positives resulting from generic UI event handling and standard Webview-to-Extension communication patterns. The code is consistent with the extension's stated purpose of providing D3.js visualizations for token metrics. No malicious behavior, obfuscation, or suspicious network activity was detected in this portion of the code.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 10,
+    "published_date": "2026-08-30T09:21:15.233Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T08:06:35.665100+00:00Z"
+}

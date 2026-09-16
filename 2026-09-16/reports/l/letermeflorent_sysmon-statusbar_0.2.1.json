@@ -1,0 +1,116 @@
+{
+  "extension_id": "letermeflorent.sysmon-statusbar",
+  "display_name": "System Monitor Status Bar",
+  "version": "0.2.1",
+  "publisher": {
+    "name": "letermeflorent",
+    "verified": false
+  },
+  "vsix_sha256": "7b6316f476e028a8e3e4ec666ea83f9c067c76f7e433c5895fb12aa9b05b7dd0",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25875,
+    "ai_vibe": 0.15,
+    "static": 0.375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/metrics.js",
+        "line": 13,
+        "snippet": "os.cpus()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/metrics.js",
+        "line": 78,
+        "snippet": "os.cpus()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/probe.js",
+        "line": 1,
+        "snippet": "const cp = require('node:child_process');"
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/metrics.js",
+        "summary": "This file (`metrics.js`) contains pure utility functions for calculating CPU and RAM usage and formatting strings for display. It relies on standard Node.js `os` module APIs (`os.cpus`, `os.totalmem`, `os.freemem`) which are exactly what a system monitor extension needs. The code is clean, unobfuscated, and contains no network calls, child process execution, or file system access to sensitive directories. The 'CRITICAL' scanner hits for `os.cpus()` are false positives given the extension's stated purpose. The only minor note is the activation event `onStartupFinished`, which is reasonable for a status bar widget but slightly broader than necessary; however, it does not indicate malicious intent."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.cpus()` as 'infostealer_behavior' (system fingerprinting). However, in the context of a 'System Monitor' extension, calling `os.cpus()` to calculate CPU usage percentages and retrieve the CPU model name is the primary function of the extension. There is no network exfiltration or combination with other fingerprinting APIs (like hostname/userInfo) in this file, so this is a legitimate use of the API.",
+        "code_reference": "const c = os.cpus();",
+        "line_hint": 78,
+        "target": "extension/metrics.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. While common for status bar items to ensure they are visible immediately, strictly speaking, a status bar item could be activated on `onCommand` or specific workspace events. However, for a system monitor, this is a standard and acceptable activation scope to ensure the metrics are available as soon as the editor is ready.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/metrics.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This file (`metrics.js`) contains pure utility functions for calculating CPU and RAM usage and formatting strings for display. It relies on standard Node.js `os` module APIs (`os.cpus`, `os.totalmem`, `os.freemem`) which are exactly what a system monitor extension needs. The code is clean, unobfuscated, and contains no network calls, child process execution, or file system access to sensitive directories. The 'CRITICAL' scanner hits for `os.cpus()` are false positives given the extension's stated purpose. The only minor note is the activation event `onStartupFinished`, which is reasonable for a status bar widget but slightly broader than necessary; however, it does not indicate malicious intent.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-03T09:19:05.26Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-03T11:55:18.824194+00:00Z"
+}

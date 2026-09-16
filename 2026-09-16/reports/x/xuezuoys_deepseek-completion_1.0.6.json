@@ -1,0 +1,190 @@
+{
+  "extension_id": "xuezuoys.deepseek-completion",
+  "display_name": "deepseek \u4ee3\u7801\u548c git \u8865\u5168",
+  "version": "1.0.6",
+  "publisher": {
+    "name": "xuezuoys",
+    "verified": false
+  },
+  "vsix_sha256": "a352c3bb4db8b469873e8dd35af54a81818406a1515c035eabc4892f9f5e99c2",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.24769501953688403,
+    "ai_vibe": 0.15,
+    "static": 0.3307800781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/config.js",
+        "line": 38,
+        "snippet": "SECRET = 'deepseek-completion-apiKey'"
+      }
+    ],
+    "high": [],
+    "total": 11
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.deepseek.com",
+      "source_file": "extension/package.json",
+      "line": 58,
+      "context": "\"default\": \"https://api.deepseek.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "platform.deepseek.com",
+      "source_file": "extension/out/extension.js",
+      "line": 307,
+      "context": "vscode.env.openExternal(vscode.Uri.parse('https://platform.deepseek.com/api_keys'));",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js",
+        "summary": "The extension appears to be a legitimate AI-powered Git helper and code completion tool. The code structure is clean, with no evidence of obfuscation, credential harvesting, or malicious network exfiltration. The API key is stored securely using VS Code's SecretStorage. The network calls are directed to the official DeepSeek API endpoints. The static analysis flags regarding Webview scripts and configuration updates are false positives in the context of standard VS Code extension development patterns for this specific use case. The only minor concern is the aggressive activation event (`onStartupFinished`), which is a performance/best-practice issue rather than a security threat."
+      },
+      {
+        "target": "extension/out/config.js",
+        "summary": "The provided source code is a benign configuration management module for a VS Code extension that integrates with DeepSeek AI. It correctly utilizes VS Code's `SecretStorage` API to securely store and retrieve API keys, adhering to security best practices. The 'hardcoded secret' flagged by the scanner is actually a key identifier string, not a credential. The configuration getters are standard for reading user preferences. No malicious behavior, obfuscation, or capability disconnects were detected."
+      },
+      {
+        "target": "extension/out/commitMessageProvider.js",
+        "summary": "The extension code is benign and aligns perfectly with its advertised purpose of generating Git commit messages using DeepSeek AI. The code retrieves Git diffs via the official VS Code Git extension API, constructs prompts, and sends them to the DeepSeek API. There are no signs of credential harvesting, data exfiltration to unauthorized domains, command execution, or obfuscation. The use of `getExtension` is a standard integration pattern, not malicious reconnaissance."
+      },
+      {
+        "target": "extension/out/completionProvider.js",
+        "summary": "The provided source code for `completionProvider.js` implements a standard VS Code Inline Completion Provider. It correctly utilizes the VS Code API (`vscode.InlineCompletionItem`, `vscode.Range`) and interacts with a local configuration module (`config_1`) and an API module (`deepseekApi_1`) to fetch suggestions from DeepSeek. The code handles debouncing, cancellation, and context extraction (prefix/suffix) in a manner consistent with legitimate AI coding assistants. There are no signs of credential harvesting, command execution, obfuscation, or data exfiltration. The network calls are directed to the expected DeepSeek API endpoints (as indicated by the extracted indicators and imported modules). The code is benign."
+      },
+      {
+        "target": "extension/out/deepseekApi.js",
+        "summary": "The provided source code `deepseekApi.js` is a standard API client for interacting with the DeepSeek AI service. It correctly implements chat completion and FIM (Fill-in-the-Middle) requests using the `fetch` API. The code handles API keys securely by retrieving them from a configuration module (`config_1.DeepSeekConfig.getApiKey()`) rather than hardcoding them. There are no signs of credential harvesting, command execution, obfuscation, or data exfiltration to unauthorized domains. The network calls are directed to the expected DeepSeek endpoints. The code is benign and aligns with the stated purpose of providing AI code completion and Git commit message generation."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `onStartupFinished` as an activation event. While not inherently malicious, this is an aggressive activation strategy for an AI completion tool, which typically activates on `onLanguage` or `onCommand`. This ensures the extension is always running in the background, potentially consuming resources unnecessarily if the user doesn't use the feature.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "SECURITY_BEST_PRACTICE",
+        "description": "The `explainSelectedCommit` function creates a Webview with `enableScripts: true`. While the content is generated locally and HTML-escaped via `escapeHtml`, enabling scripts in a Webview that displays user-controlled data (commit messages/diffs) is a potential XSS vector if the escaping logic is flawed or bypassed. However, the provided `escapeHtml` function appears robust for basic XSS prevention.",
+        "code_reference": "const panel = vscode.window.createWebviewPanel(..., { enableScripts: true });",
+        "line_hint": 183,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The extension accesses the Git extension API (`vscode.extensions.getExtension('vscode.git')`) to retrieve commit history and diffs. This is necessary for the advertised 'Git Commit Message Generation' and 'Commit Explanation' features but constitutes access to repository metadata.",
+        "code_reference": "const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;",
+        "line_hint": 149,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'SECRET = ...' as a hardcoded secret. However, the code defines `const API_KEY_SECRET = 'deepseek-completion-apiKey';`. This is a configuration key name used to retrieve the actual secret from VS Code's `SecretStorage` (OS credential manager), not the secret itself. This is standard, secure practice for VS Code extensions.",
+        "code_reference": "const API_KEY_SECRET = 'deepseek-completion-apiKey';",
+        "line_hint": "38",
+        "target": "extension/out/config.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `workspace.getConfiguration` as potential harvesting. The code reads user-defined configuration values (API endpoints, model names, thresholds) to configure the extension's behavior. It does not exfiltrate these settings; it uses them locally to construct API requests to the official DeepSeek API.",
+        "code_reference": "return vscode.workspace.getConfiguration(this.SECTION).get('apiEndpoint', 'https://api.deepseek.com');",
+        "line_hint": "79",
+        "target": "extension/out/config.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The code uses `vscode.extensions.getExtension('vscode.git')` to access the Git extension API. While flagged by static rules as potential reconnaissance, this is a standard and necessary pattern for VS Code extensions that integrate with Git (e.g., to read diffs or commit history). It does not enumerate all installed extensions for malicious profiling.",
+        "code_reference": "const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;",
+        "line_hint": "61",
+        "target": "extension/out/commitMessageProvider.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `onStartupFinished` as an activation event. While not inherently malicious, this is an aggressive activation strategy for a completion provider, which typically activates on `onLanguage` or `onCommand`. This ensures the extension is always running, potentially increasing resource usage, but aligns with the goal of providing immediate inline suggestions.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/completionProvider.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished' which is aggressive for an AI completion tool that should ideally activate on 'onLanguage' or 'onCommand'. However, this is a common pattern for extensions that need to register providers early and is not inherently malicious.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/deepseekApi.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The README contains a warning 'Warning: This repository is basically developed by Deepseek adults, please use with caution' and humorous text. While not malicious, it indicates a non-professional or potentially unofficial source. The publisher name 'XuezuoYS' does not impersonate a major vendor but is an individual developer.",
+        "code_reference": "README: **\u8b66\u544a\uff1a\u6b64\u4ed3\u5e93\u57fa\u672c\u7531 Deepseek \u5927\u4eba\u5f00\u53d1\uff0c\u8bf7\u8c28\u614e\u4f7f\u7528**",
+        "line_hint": null,
+        "target": "extension/out/deepseekApi.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension appears to be a legitimate AI-powered Git helper and code completion tool. The code structure is clean, with no evidence of obfuscation, credential harvesting, or malicious network exfiltration. The API key is stored securely using VS Code's SecretStorage. The network calls are directed to the official DeepSeek API endpoints. The static analysis flags regarding Webview scripts and configuration updates are false positives in the context of standard VS Code extension development patterns for this specific use case. The only minor concern is the aggressive activation event (`onStartupFinished`), which is a performance/best-practice issue rather than a security threat.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 20,
+    "published_date": "2026-09-13T01:06:39.99Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T02:44:40.865548+00:00Z"
+}

@@ -1,0 +1,278 @@
+{
+  "extension_id": "stackcn.custom-ai-commit",
+  "display_name": "Custom AI Commit",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "stackcn",
+    "verified": false
+  },
+  "vsix_sha256": "1289caa3675dbf59c4875071b9751f7f6bf0328164f2c0f87daa0f40512005ab",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6074999999999999,
+    "ai_vibe": 0.7,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 90,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 97,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/configModel.js",
+        "line": 5,
+        "snippet": "SECRET = 'aiCommit.provider.apiKey'"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/coreGit.js",
+        "line": 7,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/coreGit.js",
+        "line": 7,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/coreGit.js",
+        "line": 11,
+        "snippet": "(0, child_process_1.execFile)('git', args, { cwd: workspace, maxBuffer: 128 * 1024 * 1024, encoding: 'utf8' }, (error, stdout, stderr) => {"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/coreGit.js",
+        "line": 7,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "gitee.com",
+      "source_file": "extension/package.json",
+      "line": 9,
+      "context": "\"url\": \"https://gitee.com/stackcn/ai-commit.git\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.openai.com",
+      "source_file": "extension/package.json",
+      "line": 77,
+      "context": "\"default\": \"https://api.openai.com/v1\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.2,
+    "confidence": 0.8,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/4)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VSCode SecretStorage, which could expose sensitive credentials. Additionally, it shows medium-risk behavior by enumerating installed extensions, potentially indicating reconnaissance activities. While the extension's purpose aligns with its functionality, the handling of secrets and extension enumeration raises security concerns."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/4)",
+        "summary": "The extension exhibits critical risk by accessing VSCode SecretStorage, potentially exposing sensitive API keys. While the functionality aligns with its purpose, the handling of credentials poses a significant security risk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/4)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VSCode SecretStorage, potentially exposing sensitive credentials. While this may align with its purpose of storing API keys, it poses a significant security risk. Additionally, the extension demonstrates medium-risk behavior by enumerating installed extensions, which may indicate unintended functionality or reconnaissance activities. Overall, the extension's behavior raises concerns about potential misuse of its capabilities."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/4)",
+        "summary": "The extension exhibits critical risks related to credential handling via SecretStorage and medium risks involving extension enumeration. While these activities may align with the extension's stated purpose, they pose significant security risks and warrant closer scrutiny."
+      },
+      {
+        "target": "extension/out/coreGit.js (chunk 1/2)",
+        "summary": "The extension exhibits high-risk behavior by using `child_process` for command execution, which could enable arbitrary commands. Additionally, the VSIX package size is unusually small, raising concerns about potential omissions or hidden functionality. While the code aligns with its stated purpose, these factors introduce significant security risks and suggest a need for further investigation."
+      },
+      {
+        "target": "extension/out/coreGit.js (chunk 2/2)",
+        "summary": "The extension exhibits a capability disconnect by including 'child_process' which enables shell execution, a feature not described in its documentation. This raises concerns about potential malicious intent or unintended functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which could expose sensitive information.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": "90, 97",
+        "target": "extension/out/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Enumerating installed extensions which may indicate reconnaissance or unauthorized access.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": "282",
+        "target": "extension/out/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which can expose sensitive API keys.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 90,
+        "target": "extension/out/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which can expose sensitive API keys.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 97,
+        "target": "extension/out/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which can expose sensitive API keys.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 90,
+        "target": "extension/out/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which can expose sensitive API keys.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 97,
+        "target": "extension/out/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Enumerating installed extensions which may indicate reconnaissance or unintended functionality.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 282,
+        "target": "extension/out/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which could expose sensitive information if misused.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 90,
+        "target": "extension/out/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which could expose sensitive information if misused.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 97,
+        "target": "extension/out/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Enumerating installed extensions which could be used for reconnaissance or unintended purposes.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 282,
+        "target": "extension/out/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `child_process.exec()` which allows arbitrary command execution.",
+        "code_reference": "extension/out/coreGit.js:13",
+        "line_hint": 13,
+        "target": "extension/out/coreGit.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "VSIX package size is 0.0 MB, which is unusually small for an extension with AI and Git functionality.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/coreGit.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension requires 'child_process' which enables arbitrary command execution, but this capability is not mentioned in the extension's README or marketplace listing. This is a significant disconnect between advertised features and actual code functionality.",
+        "code_reference": "extension/out/coreGit.js",
+        "line_hint": "7",
+        "target": "extension/out/coreGit.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits critical-risk behavior by accessing VSCode SecretStorage, which could expose sensitive credentials. Additionally, it shows medium-risk behavior by enumerating installed extensions, potentially indicating reconnaissance activities. While the extension's purpose aligns with its functionality, the handling of secrets and extension enumeration raises security concerns.",
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "4 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-14T02:42:58.753Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-14T02:53:48.872220+00:00Z"
+}

@@ -1,0 +1,291 @@
+{
+  "extension_id": "NitinTU.codewarden-ai",
+  "display_name": "CodeWarden AI",
+  "version": "0.5.0",
+  "publisher": {
+    "name": "NitinTU",
+    "verified": false
+  },
+  "vsix_sha256": "57ef4027a14e6da1c30049187bad8916cf3cc9b46dcef070af9199c8d0f6ebb0",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25039003907376806,
+    "ai_vibe": 0.1,
+    "static": 0.41156015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/dbWorker.js",
+        "line": 1,
+        "snippet": "readFileSync(e,t?void 0:\"utf8\")),Ie=e=>(e=Ve(e,!0),e.buffer||(e=new Uint8Array(e)),e),ke=(e,t,r,n=!0)=>{e=Se(e)?new URL(e):Xe.normalize(e),Ye.readFile(e,n?void 0:\"utf8\",(i,s)=>{i?r(i):t(n?s.buffer:s)}"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/dbWorker.js",
+        "line": 1,
+        "snippet": ".postRun=G.postRun||[],G.postRun.push(function(){g(G)}),ne=void 0;var o;o||=typeof G<\"u\"?G:{},o.onRuntimeInitialized=function(){function e(a,f){switch(typeof f){case\"boolean\":ln(a,f?1:0);break;case\"nu"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/dbWorker.js",
+        "line": 3,
+        "snippet": ".postRun)for(typeof o.postRun==\"function\"&&(o.postRun=[o.postRun]);o.postRun.length;){var t=o.postRun.shift();Mt.unshift(t)}rt(Mt)}}if(!(0<X)){if(o.preRun)for(typeof o.preRun==\"function\"&&(o.preRun=[o"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/webview/main.js",
+        "line": 40,
+        "snippet": ".postMessage(e)}function Df(e){const t=n=>e(n.data);return window.addEventListener(\"message\",t),()=>window.removeEventListener(\"message\",t)}const $f={connection:null,kase:null,mapSummary:null,mapResul"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "reactjs.org",
+      "source_file": "extension/dist/webview/main.js",
+      "line": 634,
+      "context": "for (var t = \"https://reactjs.org/docs/error-decoder.html?invariant=\" + e, n = 1; n < arguments.length; n++) t += \"&args[]=\" + encodeURIComponent(arguments[n]);",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 10,
+    "blocks_seen": 10,
+    "summaries": [
+      {
+        "target": "extension/dist/dbWorker.js (chunk 1/3)",
+        "summary": "The provided source code is a standard, unmodified Emscripten-generated WebAssembly loader for SQLite (sql-wasm.wasm). It contains no malicious logic, credential harvesting, or network exfiltration. The static scanner hits are false positives triggered by standard Emscripten boilerplate code (filesystem shims and runtime initialization). The extension's behavior aligns with its stated purpose of running a local AI code investigator using a local database for evidence tracking. The only minor concern is the aggressive 'onStartupFinished' activation event, which is a performance consideration rather than a security risk."
+      },
+      {
+        "target": "extension/dist/dbWorker.js (chunk 2/3)",
+        "summary": "The provided code chunk is a minified implementation of a virtual filesystem (likely Emscripten's MEMFS) used to support WebAssembly execution within the VS Code extension environment. The static analysis flags for 'data exfiltration' and 'infostealer behavior' are false positives triggered by standard filesystem API implementations (`read`, `write`, `open`) and Emscripten runtime hooks (`postRun`) which resemble malicious patterns in isolation but are benign in this context. The code does not contain any network exfiltration logic, credential harvesting, or command execution capabilities. It is consistent with the 'local' nature of the advertised 'CodeWarden AI' extension which likely uses a WASM-based language server or analysis engine."
+      },
+      {
+        "target": "extension/dist/dbWorker.js (chunk 3/3)",
+        "summary": "The provided source code is a benign implementation of a SQLite database worker using a WASM-based SQLite library (likely sql.js or better-sqlite3-wasm). The code handles standard database operations (open, exec, query, batch, export) within a Web Worker context. The 'suspicious' patterns flagged by the static scanner (readFileSync, postRun) are false positives resulting from the internal implementation details of the WASM runtime and standard Emscripten lifecycle hooks. There is no evidence of credential harvesting, network exfiltration, or malicious command execution. The behavior aligns perfectly with the extension's stated purpose of local code investigation."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 1/9)",
+        "summary": "The provided source code is a minified bundle of standard React libraries (React, React DOM, Scheduler) used for the extension's webview UI. The code contains no malicious logic, credential harvesting, or network exfiltration. The static scanner hits are false positives triggered by standard webview messaging patterns and React internals. The only minor concern is the 'onStartupFinished' activation event, which is suboptimal for a tool that likely operates on-demand, but does not pose a security risk."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 2/9)",
+        "summary": "The provided code chunk is a minified section of the React library (specifically React DOM and React Fiber internals). It contains standard implementations for DOM property handling, event system definitions (synthetic events for mouse, keyboard, pointer, etc.), and fiber reconciliation logic. The static scanner hits are false positives triggered by common React internal patterns (message listeners for devtools/debugging, property definitions for pointer events). There is no evidence of malicious behavior, credential harvesting, or network exfiltration. The code aligns with the expected behavior of a VS Code extension using a React-based webview UI."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 3/9)",
+        "summary": "The provided source code is a chunk of the bundled `react-dom` library (specifically the event system and fiber reconciliation logic). It contains standard React internal functions for handling DOM events (focus, blur, selection, keyboard, mouse), managing fiber nodes, and updating the DOM. There is no evidence of malicious behavior, credential harvesting, or network exfiltration. The static scanner hits are false positives triggered by standard React internals (e.g., `postMessage` for DevTools, zero-size elements for feature detection). The extension's stated purpose (AI code investigator) is not contradicted by this specific file, which is just a UI framework dependency."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 4/9)",
+        "summary": "The provided source code is a minified chunk of the React library (specifically the React Reconciler and Hooks implementation). It contains standard internal React functions for managing component state, effects, and the virtual DOM (e.g., `useState`, `useEffect`, `reconcileChildren`). The static scanner hits regarding 'data exfiltration' and 'hidden iframes' are false positives triggered by generic patterns in the minified React code (such as `postMessage` usage in React DevTools integration or standard DOM property definitions). There is no evidence of malicious behavior, credential harvesting, or command execution. The code is benign and consistent with a standard VS Code extension using a React-based webview UI."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 5/9)",
+        "summary": "The provided source code is a chunk of the minified React library (specifically the React DOM reconciler and event handling logic). It contains standard internal functions for managing the virtual DOM, fiber nodes, and event listeners. The static analysis hits regarding `postMessage`, `React DevTools`, and zero-pixel elements are false positives triggered by the generic nature of the scanner rules against minified library code. There is no evidence of malicious intent, credential harvesting, C2 communication, or capability disconnect. The extension's stated purpose (AI code investigator) is consistent with a webview-based UI that would use React."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 6/9)",
+        "summary": "The provided source code is a minified/bundled chunk of the React library (specifically the React Reconciler core, handling fiber trees, commit phases, and effect processing). The static analysis hits regarding 'data exfiltration' and 'hidden iframes' are false positives triggered by standard React internal mechanisms (such as `postMessage` for DevTools communication or standard DOM manipulation properties like `width:0` for hidden elements in specific contexts, though here it appears to be part of a larger bundle or unrelated code snippet mixed in). There is no evidence of malicious intent, credential harvesting, command execution, or network exfiltration. The code is benign and consistent with a standard frontend framework dependency."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 7/9)",
+        "summary": "The provided code chunk is a standard React 18.3.1 production bundle integrated into a VS Code extension webview. It contains the React reconciler, DOM renderer, and a simple state management layer for the extension's UI (handling chat messages, map data, and settings via `postMessage`). The flagged items are false positives resulting from standard React internals (DevTools hooks) and standard VS Code Webview communication patterns. There is no evidence of malicious behavior, data exfiltration, or capability disconnect with the stated purpose of a local AI code investigator."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'readFileSync' and 'postRun' as potential exfiltration/infostealer patterns. However, inspection of the code reveals this is a standard Emscripten-generated WebAssembly loader for SQLite (sql-wasm.wasm). The 'readFileSync' usage is part of the standard Emscripten filesystem shim to load the WASM binary or database files from disk, not to exfiltrate user data. The 'postRun' pattern is part of the Emscripten runtime initialization sequence.",
+        "code_reference": "Ve = (e, t) => (e = Se(e) ? new URL(e) : Xe.normalize(e), Ye.readFileSync(e, t ? void 0 : \"utf8\"))",
+        "line_hint": "approx line 100",
+        "target": "extension/dist/dbWorker.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While not inherently malicious, this is an aggressive activation event for a code analysis tool. It ensures the extension loads immediately upon VS Code startup, potentially impacting performance. A more appropriate activation event would be 'onLanguageServerReady' or 'onView:CodeWarden'.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/dbWorker.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `readFileSync` and network-like patterns. However, analysis of the provided code reveals this is a bundled implementation of **Emscripten's MEMFS** (In-Memory File System) or a similar WASM-compatible virtual filesystem shim. The functions `createNode`, `lookup`, `readdir`, `read`, `write`, `open`, `close` are standard POSIX-like filesystem operations implemented in JavaScript to support WebAssembly modules. The 'network' patterns detected are likely artifacts of minified variable names or internal WASM glue code (e.g., `postRun` is a standard Emscripten hook, not a data exfiltration channel). There is no evidence of actual network calls (`fetch`, `XMLHttpRequest`, `net`) or credential harvesting in this chunk.",
+        "code_reference": "function fe(e, t, r) ... function Xt(e, t, r, n, i) ... function Zt(e, t, r, n, i)",
+        "line_hint": "various",
+        "target": "extension/dist/dbWorker.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' and 'infostealer_behavior' due to patterns like `readFileSync` and `postRun`. However, inspection reveals this is standard boilerplate for a WASM module (likely sql.js or similar) and a Web Worker communication pattern. The `readFileSync` is part of the WASM virtual filesystem implementation (Emscripten-style), not reading host files for exfiltration. The `postRun` is a standard Emscripten lifecycle hook.",
+        "code_reference": "readFileSync(e,t?void 0:\"utf8\")),Ie=e=>(e=Ve(e,!0),e.buffer||(e=new Uint8Array(e)),e),ke=(e,t,r,n=!n",
+        "line_hint": "1",
+        "target": "extension/dist/dbWorker.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The code uses `worker_threads` and `parentPort.postMessage` to communicate with the main extension thread. This is the standard mechanism for offloading heavy tasks (like SQLite operations) to a background thread in Node.js/VS Code extensions. It does not indicate malicious C2 or tunneling.",
+        "code_reference": "Me.parentPort.postMessage({ id: b, ok: g, payload: L })",
+        "line_hint": "100",
+        "target": "extension/dist/dbWorker.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished' despite being a code investigation tool that likely requires explicit user interaction (commands/views) to start. While not malicious, this is an inefficient activation strategy that consumes resources unnecessarily on every VS Code startup.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/webview/main.js (chunk 1/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'postMessage' and 'iframe' patterns. These are standard React/VS Code Webview communication mechanisms (vscode.postMessage) and React DevTools hooks, not malicious C2 or tracking beacons.",
+        "code_reference": "function Df(e){const t=n=>e(n.data);return window.addEventListener(\"message\",t),()=>`",
+        "line_hint": "40",
+        "target": "extension/dist/webview/main.js (chunk 1/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `postMessage` and `addEventListener('message')` as potential data exfiltration. However, this code is part of the React DOM event system (specifically the synthetic event handling and fiber reconciliation logic). The `postMessage` reference is likely part of a polyfill or internal messaging mechanism for React DevTools or similar debugging hooks, not malicious exfiltration. The `addEventListener` is standard for receiving messages in a webview context.",
+        "code_reference": "function Df(e){const t=n=>e(n.data);return window.addEventListener(\"message\",t),()=>`",
+        "line_hint": "40",
+        "target": "extension/dist/webview/main.js (chunk 2/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `width:0,height:0` as a hidden zero-pixel iframe/C2 beacon. This is part of the `PointerEvent` synthetic event definition (`jd` object) in React, defining properties like `width`, `height`, `pressure`, etc., for pointer events. It is not creating an iframe.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0})",
+        "line_hint": "37",
+        "target": "extension/dist/webview/main.js (chunk 2/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'postMessage' and 'addEventListener' as potential data exfiltration. However, the provided code is clearly minified/bundled React DOM event handling logic (specifically `react-dom` internals for synthetic events like `onFocus`, `onBlur`, `onSelect`). The `postMessage` reference in the scanner hit likely refers to standard React DevTools communication or internal message passing within the webview context, not malicious exfiltration. The code handles DOM selection, focus management, and event bubbling/capturing in a standard React manner.",
+        "code_reference": "function xi(e, t, n, r, l) { ... }",
+        "line_hint": "various",
+        "target": "extension/dist/webview/main.js (chunk 3/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'hidden zero-pixel iframe' based on CSS properties like `width:0,height:0`. This is a standard technique used by React's `ReactDOM` to detect passive event support or for other internal DOM measurements and feature detections, not for C2 beacons or tracking in this context.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0})",
+        "line_hint": "37",
+        "target": "extension/dist/webview/main.js (chunk 3/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `postMessage` and `addEventListener('message')` as potential data exfiltration. However, this code is part of the bundled React runtime (specifically the React DOM reconciler and event system). The `postMessage` reference in the scanner hit likely refers to internal React event propagation or a standard web worker communication pattern within the webview context, not malicious exfiltration. The code structure (functions like `ha`, `va`, `to`, `ga`) is characteristic of the minified React source code (specifically the fiber reconciler logic).",
+        "code_reference": "function Df(e){const t=n=>e(n.data);return window.addEventListener(\"message\",t),()=>`",
+        "line_hint": "40",
+        "target": "extension/dist/webview/main.js (chunk 5/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `__REACT_DEVTOOLS_GLOBAL_HOOK__` as potential abuse. This is a standard hook used by the React DevTools browser extension to inspect the component tree. It is benign and expected in any React application.",
+        "code_reference": "var ml=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(!ml.isDisabled&&ml.supportsFiber)try{dr=",
+        "line_hint": "40",
+        "target": "extension/dist/webview/main.js (chunk 5/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged a zero-pixel iframe pattern. The code snippet `width:0,height:0...` appears to be part of a pointer event normalization or a standard DOM element creation utility within the React DOM renderer, not a hidden tracking beacon. The context involves `pointerType`, `tiltX`, `tiltY`, which are standard PointerEvent properties.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0})",
+        "line_hint": "37",
+        "target": "extension/dist/webview/main.js (chunk 5/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `postMessage` and `addEventListener('message')` as potential data exfiltration. However, these are standard VS Code Webview API patterns for communication between the extension host and the webview UI. The code defines a state reducer (`Uf`) and a hook (`Af`) to manage UI state (chat, map, settings) received from the host. There is no network egress (fetch/XHR/WebSocket) or sensitive data harvesting in this chunk.",
+        "code_reference": "function Df(e) { const t = n => e(n.data); return window.addEventListener(\"message\", t), () => window.removeEventListener(\"message\", t) }",
+        "line_hint": "40",
+        "target": "extension/dist/webview/main.js (chunk 7/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `__REACT_DEVTOOLS_GLOBAL_HOOK__` as directory traversal/network send. This is standard React DevTools integration code present in production React builds (specifically React 18.3.1-next). It checks for the existence of the global hook to enable debugging features. It does not perform malicious actions.",
+        "code_reference": "if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ < \"u\") { var ml = __REACT_DEVTOOLS_GLOBAL_HOOK__; ... }",
+        "line_hint": "37",
+        "target": "extension/dist/webview/main.js (chunk 7/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a zero-pixel iframe pattern. The code snippet provided shows SVG rendering logic for a 'Sherlock' icon (`Vf` function) and React internal fiber manipulation. The 'zero-pixel' match likely refers to CSS properties or SVG attributes within the React rendering logic, not an actual hidden iframe used for C2. No `iframe` creation or remote content loading is observed in this chunk.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0})",
+        "line_hint": "37",
+        "target": "extension/dist/webview/main.js (chunk 7/9)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The provided source code is a standard, unmodified Emscripten-generated WebAssembly loader for SQLite (sql-wasm.wasm). It contains no malicious logic, credential harvesting, or network exfiltration. The static scanner hits are false positives triggered by standard Emscripten boilerplate code (filesystem shims and runtime initialization). The extension's behavior aligns with its stated purpose of running a local AI code investigator using a local database for evidence tracking. The only minor concern is the aggressive 'onStartupFinished' activation event, which is a performance consideration rather than a security risk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-08T11:05:27.61Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-13T20:13:51.042927+00:00Z"
+}

@@ -1,0 +1,197 @@
+{
+  "extension_id": "iarxic.crofai-copilot",
+  "display_name": "CrofAI for Copilot Chat",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "iarxic",
+    "verified": false
+  },
+  "vsix_sha256": "12ba158acc4aa63f3ae6ba9ffd514a73ab8c9ec735c1080a0de5a0c63e9dbb97",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2021875,
+    "ai_vibe": 0.1,
+    "static": 0.21875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/auth.js",
+        "line": 38,
+        "snippet": "SECRET = 'crofai-copilot.apiKey'"
+      }
+    ],
+    "high": [],
+    "total": 6
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "crof.ai",
+      "source_file": "extension/package.json",
+      "line": 62,
+      "context": "\"default\": \"https://crof.ai/v1\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 11,
+    "blocks_seen": 11,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js",
+        "summary": "The code is a standard VS Code extension entry point that registers a language model chat provider for the 'CrofAI' service. It aligns perfectly with the advertised functionality (integrating AI models into Copilot Chat). The only network-related domain is `crof.ai`, which is the documented API endpoint. There are no signs of credential harvesting, obfuscation, arbitrary code execution, or data exfiltration. The activation event `onStartupFinished` is appropriate for an extension that needs to register a provider early in the session. The code is clean."
+      },
+      {
+        "target": "extension/out/auth.js (chunk 1/2)",
+        "summary": "The code is a standard authentication manager for a VS Code extension. It correctly uses VS Code's SecretStorage API to securely store API keys in the OS keychain, with a fallback to workspace settings. The static scanner's 'leaked_secrets' hit is a false positive, as it flagged the storage key name rather than a credential. The code behavior is fully aligned with the extension's advertised purpose of managing API keys for the CrofAI service."
+      },
+      {
+        "target": "extension/out/auth.js (chunk 2/2)",
+        "summary": "The provided code snippet is the tail end of an authentication module for a VS Code extension that integrates with the CrofAI API. The code itself is minimal and only contains the export of an 'AuthManager' class. The static analysis hits are false positives: the 'secret' is a key name for secure storage, and the access to 'SecretStorage' is a legitimate and recommended practice for handling user credentials in VS Code extensions. There are no malicious indicators, obfuscation, or suspicious network calls in this file. The behavior is consistent with the extension's stated purpose of securely managing an API key for a third-party AI service."
+      },
+      {
+        "target": "extension/out/logger.js",
+        "summary": "The provided source file `extension/out/logger.js` is a standard, benign logging utility. It uses the `vscode.window.createOutputChannel` API to write debug, info, warning, and error messages to a VS Code output channel named 'CrofAI Copilot'. There are no network calls, file system operations, process execution, or obfuscated code in this file. The code is consistent with the extension's stated purpose of providing logging for the CrofAI Copilot integration. The only minor note is the activation event 'onStartupFinished', which is slightly broader than ideal but not indicative of malicious intent."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 1/5)",
+        "summary": "The provided code chunk is the beginning of the main chat provider class for the CrofAI extension. It imports standard VS Code APIs and local modules for authentication, balance checking, and model discovery. The code structure is clean, follows standard TypeScript/JavaScript patterns, and aligns perfectly with the extension's advertised purpose of integrating CrofAI models into Copilot Chat. No malicious indicators, obfuscation, or suspicious network calls were found in this chunk. The only minor note is the activation event, which is typical for this category of extensions."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 2/5)",
+        "summary": "The provided code chunk is a standard implementation of a VS Code Language Model Chat Provider for the 'CrofAI' extension. It handles configuration changes, API key management via VS Code's SecretStorage (implied by authManager), and model discovery. The logic is consistent with the extension's stated purpose of integrating third-party LLMs into Copilot Chat. There are no signs of obfuscation, credential harvesting, arbitrary code execution, or data exfiltration. The network activity is limited to the documented API endpoint (crof.ai) for model discovery and chat completion, which is expected behavior for this type of extension."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 3/5)",
+        "summary": "The code is a standard implementation of a language model provider for VS Code Copilot Chat. It constructs API requests, handles streaming responses, and reports progress using standard VS Code APIs. The network activity is limited to the documented provider domain (crof.ai), and there are no indicators of credential harvesting, obfuscation, or malicious execution."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 4/5)",
+        "summary": "The provided code chunk is a benign implementation of a VS Code Language Model Provider for the 'CrofAI' extension. It handles the completion of streaming responses, specifically addressing edge cases where models return only reasoning content or empty responses. The code uses standard VS Code APIs (`vscode.LanguageModelTextPart`, `vscode.LanguageModelDataPart`) to report progress and does not contain any suspicious network calls, file system access, credential harvesting, or obfuscated logic. The behavior is fully consistent with the extension's stated purpose of integrating third-party AI models into Copilot Chat."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 5/5)",
+        "summary": "The provided code chunk (5/5) contains benign utility methods for the CrofAI extension. It includes configuration getters that read standard VS Code settings (base URL, token limits, model filters) and helper functions for sanitizing tool parameters and counting message characters. There are no indicators of malicious behavior, such as credential harvesting, obfuscated payloads, arbitrary command execution, or unauthorized network exfiltration. The code aligns perfectly with the extension's stated purpose of integrating AI models into Copilot Chat."
+      },
+      {
+        "target": "extension/out/balance.js (chunk 1/2)",
+        "summary": "The code is a clean implementation of a balance resolver for the CrofAI service. It makes a single, documented network request to the official API endpoint (crof.ai) to fetch user account balance information, using the API key provided by the user. There are no signs of credential harvesting, obfuscation, arbitrary code execution, or data exfiltration. The behavior is fully aligned with the extension's stated purpose of displaying balance and usage information in the Copilot Chat model picker."
+      },
+      {
+        "target": "extension/out/balance.js (chunk 2/2)",
+        "summary": "The provided code snippet is a benign fragment of a VS Code extension designed to integrate with the CrofAI API. It contains standard JavaScript logic for managing asynchronous state (likely a singleton or promise-based cache) and exports a class named 'BalanceResolver'. There are no indicators of malicious behavior, obfuscation, credential theft, or unauthorized network activity in this specific chunk. The extension's stated purpose (AI model integration) aligns with the code structure."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.extensions.getExtension('github.copilot-chat')` as reconnaissance. In this context, it is a legitimate dependency check to ensure the Copilot Chat extension is active before attempting to refresh the model picker. It does not enumerate all extensions or exfiltrate data.",
+        "code_reference": "await vscode.extensions.getExtension('github.copilot-chat')?.activate();",
+        "line_hint": 49,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'crofai-copilot.apiKey' as a hardcoded secret. This is a false positive; the string is a key identifier used to access VS Code's SecretStorage, not the secret value itself.",
+        "code_reference": "const API_KEY_SECRET = 'crofai-copilot.apiKey';",
+        "line_hint": 38,
+        "target": "extension/out/auth.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While common for AI assistants to be ready immediately, this is a broader activation scope than strictly necessary for a chat provider that could activate on demand.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/auth.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'SECRET = 'crofai-copilot.apiKey'' as a hardcoded secret. This is a false positive. The string is a key identifier for VS Code's SecretStorage API, not the actual secret value. It is a standard pattern for referencing where the user's API key is stored.",
+        "code_reference": "SECRET = 'crofai-copilot.apiKey'",
+        "line_hint": 38,
+        "target": "extension/out/auth.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'context.secrets.get' as credential theft. This is a false positive. The code is accessing the extension's own SecretStorage, which is the secure, intended way for VS Code extensions to store and retrieve user-provided secrets (like API keys) without exposing them in plain text settings.",
+        "code_reference": "context.secrets.get",
+        "line_hint": 51,
+        "target": "extension/out/auth.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a Copilot Chat model provider. While not malicious, it implies the extension runs logic at startup, which is slightly disproportionate for a passive provider that should ideally activate on demand (e.g., 'onLanguageModelChatProvider').",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/logger.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this is common for AI chat providers to ensure the model picker is populated immediately, it is a broader activation scope than strictly necessary for a feature that is only used when the user explicitly selects a CrofAI model. However, this is a standard pattern for this type of extension and does not indicate malicious intent.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/provider.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a language model provider that typically activates on demand (e.g., 'onLanguageModelChatProvider'). However, this is a common pattern for extensions that need to register providers early and does not indicate malicious intent.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/balance.js (chunk 1/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension entry point that registers a language model chat provider for the 'CrofAI' service. It aligns perfectly with the advertised functionality (integrating AI models into Copilot Chat). The only network-related domain is `crof.ai`, which is the documented API endpoint. There are no signs of credential harvesting, obfuscation, arbitrary code execution, or data exfiltration. The activation event `onStartupFinished` is appropriate for an extension that needs to register a provider early in the session. The code is clean.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-27T19:54:02.587Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T03:34:49.667488+00:00Z"
+}

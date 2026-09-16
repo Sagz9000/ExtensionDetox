@@ -1,0 +1,263 @@
+{
+  "extension_id": "codewithbullet.bullet",
+  "display_name": "Bullet",
+  "version": "0.3.2",
+  "publisher": {
+    "name": "codewithbullet",
+    "verified": false
+  },
+  "vsix_sha256": "0c21007f497b2bd88aeaa4e250f55e8fd834d4ed5e2dfed3cba3aea3b82f5e94",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.21,
+    "ai_vibe": 0.1,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "SECRET = 'bullet.remoteLink'"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 6,
+        "snippet": "const { spawn } = require('node:child_process');"
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.codewithbullet.com",
+      "source_file": "extension/remote.js",
+      "line": 19,
+      "context": "const api = (params.get('api') || 'https://api.codewithbullet.com/bullet').replace(/\\/+$/, '');",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "codewithbullet.com",
+      "source_file": "extension/extension.js",
+      "line": 294,
+      "context": "placeHolder: 'https://codewithbullet.com/remote#session=\u2026',",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/11)",
+        "summary": "The code is a standard VS Code extension that integrates with a local CLI tool ('bullet') and a remote API. The use of child_process and network requests is proportional to the advertised functionality (AI coding agent). The flagged 'secret' is a storage key, not a credential. No malicious patterns, obfuscation, or capability disconnects were found."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/11)",
+        "summary": "The code is a legitimate implementation of a VS Code extension that integrates with a local CLI tool ('Bullet') for AI-assisted coding. It correctly uses VS Code APIs to gather context (diagnostics, file content) and manages process lifecycle (SIGTERM for steering). The network domains are consistent with the extension's branding. No malicious behavior, obfuscation, or credential theft was detected."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/11)",
+        "summary": "The code is a standard implementation of a VS Code extension that wraps a local CLI tool. It correctly uses VS Code APIs for configuration, secret storage, and workspace state. The use of child_process is appropriate for its function and does not exhibit malicious patterns such as arbitrary command execution, credential theft, or data exfiltration. The static scanner hits are false positives or benign behaviors aligned with the extension's documented purpose."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/11)",
+        "summary": "The code is benign and aligns with the extension's stated purpose of connecting to a local or remote 'Bullet' CLI session. The 'leaked secret' and 'credential theft' flags are false positives resulting from the scanner misinterpreting a storage key and standard secure storage API usage. The network activity is limited to the documented domain `codewithbullet.com` for the remote session feature, and no malicious patterns (obfuscation, exfiltration, arbitrary code execution) were detected."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/11)",
+        "summary": "The provided code chunk is a standard implementation of a VS Code extension's chat interface and session management. It correctly utilizes VS Code APIs for webview communication, process management (killing child processes), and secure secret storage. The static scanner hits are clear false positives related to standard API usage. The code aligns perfectly with the extension's stated purpose of providing a chat interface for a local CLI tool, with no signs of malicious behavior, obfuscation, or data exfiltration."
+      },
+      {
+        "target": "extension/extension.js (chunk 6/11)",
+        "summary": "This code chunk consists entirely of CSS styling rules for a VS Code Webview panel. It defines visual elements for a chat interface (messages, user input, assistant responses, tool outputs, and loading states) using standard VS Code CSS variables. There is no executable JavaScript logic, network activity, file system access, or command execution in this chunk. The static scanner hits are false positives related to standard SecretStorage key naming and API usage. The code is benign and consistent with the extension's purpose of providing a chat interface."
+      },
+      {
+        "target": "extension/extension.js (chunk 10/11)",
+        "summary": "The code is a benign VS Code extension for 'Bullet', an AI coding assistant. It implements a webview-based chat interface, manages local CLI sessions, and securely stores remote connection links in VS Code SecretStorage. The static scanner hits are false positives related to standard API usage. No malicious behavior, obfuscation, or credential harvesting was detected."
+      },
+      {
+        "target": "extension/context.js",
+        "summary": "The provided source code `extension/context.js` is a benign utility module responsible for formatting editor context (selections, file paths, and diagnostics) into XML-like strings. It performs no network communication, file system access outside of path manipulation, or process execution. The code is fully consistent with the extension's advertised purpose of providing context to a local CLI agent. No malicious or suspicious indicators were found in this file."
+      },
+      {
+        "target": "extension/remote.js",
+        "summary": "The code implements a client for connecting to a remote 'Bullet' desktop session. It uses standard Node.js crypto APIs for AES-256-GCM encryption/decryption and fetch for HTTP requests. The behavior is proportional to the extension's advertised functionality (connecting to a remote coding agent). There are no indicators of credential harvesting, obfuscation, arbitrary code execution, or data exfiltration to unauthorized endpoints. The network activity is limited to the documented API endpoint."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'bullet.remoteLink' as a hardcoded secret. This is a false positive; it is a string key used to access VS Code's SecretStorage API, not an actual credential or API key.",
+        "code_reference": "const REMOTE_SECRET = 'bullet.remoteLink';",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses child_process.spawn to interact with the 'bullet' CLI. This is consistent with the extension's stated purpose of wrapping a local CLI tool. The network calls to api.codewithbullet.com are also consistent with the 'AI' category and remote session features described in the README.",
+        "code_reference": "const { spawn } = require('node:child_process');",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'SECRET = 'bullet.remoteLink'' as a hardcoded secret. This is a false positive; the string is a key identifier for VS Code's SecretStorage API, not a credential value.",
+        "code_reference": "SECRET = 'bullet.remoteLink'",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged reading from SecretStorage. This is standard, secure practice for VS Code extensions to store sensitive data (like the remote link mentioned in the README) without exposing it in plain text settings.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 39,
+        "target": "extension/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'SECRET = 'bullet.remoteLink'' as a hardcoded secret. This is a false positive; it is a string key used to identify a value in VS Code's SecretStorage API, not an actual credential or API key.",
+        "code_reference": "SECRET = 'bullet.remoteLink'",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 3/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses child_process.spawn to execute the 'bullet' CLI. This is consistent with the extension's stated purpose of acting as a wrapper for the local Bullet CLI. The arguments passed are controlled and specific to the CLI's functionality (--print, --no-color, etc.), and the working directory is restricted to the current workspace.",
+        "code_reference": "spawn(executable, args, ...)",
+        "line_hint": 45,
+        "target": "extension/extension.js (chunk 3/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = 'bullet.remoteLink'` as a hardcoded secret. This is a false positive; it is a string key used to identify the entry in VS Code's SecretStorage, not the secret value itself.",
+        "code_reference": "SECRET = 'bullet.remoteLink'",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 4/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `context.secrets.get` as credential theft. This is standard VS Code API usage for accessing the extension's own isolated secret storage, which is the secure way to store sensitive data like the remote session link.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 39,
+        "target": "extension/extension.js (chunk 4/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = 'bullet.remoteLink'` as a hardcoded secret. This is a false positive; the string is a key identifier used to store/retrieve data in VS Code's SecretStorage API, not the secret value itself.",
+        "code_reference": "SECRET = 'bullet.remoteLink'",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 5/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `context.secrets.get` as credential theft. This is standard, secure usage of the VS Code SecretStorage API to access secrets scoped specifically to this extension.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 39,
+        "target": "extension/extension.js (chunk 5/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'SECRET = 'bullet.remoteLink'' as a hardcoded secret. This is a false positive; the string is a key identifier for VS Code SecretStorage, not a credential value.",
+        "code_reference": "SECRET = 'bullet.remoteLink'",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 6/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'context.secrets.get' as credential theft. This is standard, secure usage of the VS Code SecretStorage API to retrieve the extension's own stored data (the remote link), not cross-extension or system credential harvesting.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 39,
+        "target": "extension/extension.js (chunk 6/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'SECRET = 'bullet.remoteLink'' as a hardcoded secret. This is a false positive; it is a string key used to access VS Code's SecretStorage API, not a credential value.",
+        "code_reference": "SECRET = 'bullet.remoteLink'",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 10/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged reading from SecretStorage. This is standard, secure practice for storing sensitive data (like the remote link) within the extension's scope, not credential theft.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 39,
+        "target": "extension/extension.js (chunk 10/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension makes network requests to api.codewithbullet.com. This is consistent with the extension's stated purpose of connecting to a remote Bullet desktop session. The domain is not a known malicious C2 or tunneling service, and the connection is user-initiated via a pasted link.",
+        "code_reference": "const api = (params.get('api') || 'https://api.codewithbullet.com/bullet').replace(/\\/+$/, '');",
+        "line_hint": 19,
+        "target": "extension/remote.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension that integrates with a local CLI tool ('bullet') and a remote API. The use of child_process and network requests is proportional to the advertised functionality (AI coding agent). The flagged 'secret' is a storage key, not a credential. No malicious patterns, obfuscation, or capability disconnects were found.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-29T23:37:46.643Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T07:33:14.998100+00:00Z"
+}

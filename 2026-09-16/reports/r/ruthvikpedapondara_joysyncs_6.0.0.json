@@ -1,0 +1,272 @@
+{
+  "extension_id": "ruthvikpedapondara.joysyncs",
+  "display_name": "JoySyncs",
+  "version": "6.0.0",
+  "publisher": {
+    "name": "ruthvikpedapondara",
+    "verified": false
+  },
+  "vsix_sha256": "c8142209faa079c2ec71b094cf96a57c9d9dc562d891de455eef624bc7d6b08e",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.286757519536884,
+    "ai_vibe": 0.15,
+    "static": 0.4870300781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "toString(\"base64\"),h=o?qc.request:Yc.request,u=new Set,p;if(r.createConnection=r.createConnection||(o?ul:hl),r.defaultPort=r.defaultPort||l,r.port=i.port||l,r.host=i.hostname.startsWith(\"[\")?i.hostnam"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 7,
+        "snippet": "toString(\"base64\")}:${i.toString(\"base64\")}:${r.toString(\"base64\")}`}decrypt(e){if(!this.key)throw new Error(\"Encryption key not set\");let t=e.split(\":\");if(t.length!==3)throw new Error(\"Invalid encry"
+      }
+    ],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/extension.js",
+        "line": 773,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 6,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 5/102)",
+        "summary": "This code chunk appears to be a standard implementation of WebSocket handling and UTF-8 validation, likely part of the 'ws' library or a similar networking dependency used for the P2P connection. The static analysis hits for 'infostealer_behavior' and 'persistence_evasion' are false positives resulting from the scanner misinterpreting standard networking and serialization patterns (Base64, buffer manipulation) as malicious. The code aligns with the extension's stated purpose of real-time collaboration. No malicious intent or critical risk indicators are present in this specific segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 23/102)",
+        "summary": "The code chunk is a standard implementation of a P2P collaboration extension using Yjs (implied by context) and Node.js native modules for networking and encryption. The static rule engine flagged Base64 encoding as potential exfiltration, but the code clearly shows this is part of an AES-256-GCM encryption routine (IV:AuthTag:Ciphertext format). The use of `http`, `os`, and `crypto` is proportional to the advertised 'P2P' and 'E2E Encryption' features. No malicious indicators such as hardcoded IPs, credential harvesting, or obfuscated payloads were found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 75/102)",
+        "summary": "The analyzed code chunk is consistent with a legitimate P2P collaboration extension ('JoySyncs'). It implements features such as code review decorations, code lenses for comments, and git status synchronization between peers. The static scanner hits are false positives resulting from the use of standard serialization (Base64) for P2P data transfer and legitimate VS Code API usage for git integration. There are no indicators of malicious intent, credential theft, or unauthorized command execution in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 84/102)",
+        "summary": "The analyzed code chunk is consistent with the extension's stated purpose of providing P2P collaboration features, including file sharing and breakpoint synchronization. The 'Base64 encoding' and 'network send' patterns identified by the static scanner are false positives resulting from the legitimate implementation of a file-sharing feature over a P2P connection. There is no evidence of credential harvesting, C2 communication, or malicious exfiltration in this specific chunk. The code appears to be a standard implementation of a collaborative editing tool."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 89/102)",
+        "summary": "The code is consistent with a legitimate P2P collaboration extension (JoySyncs/Let's Code). It implements standard features such as real-time cursor updates, chat messaging, and file synchronization using Yjs CRDTs. The static rule engine hits are largely false positives resulting from the nature of P2P data serialization (Base64) and standard VS Code API usage for configuration and file management. There are no indicators of credential harvesting, C2 communication, or malicious intent in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 95/102)",
+        "summary": "This chunk of the JoySyncs extension source code consists primarily of HTML and CSS definitions for a Webview UI, including styles for tabs, connection info, and privacy badges. The static rule engine hits are largely false positives resulting from the scanner misinterpreting standard P2P collaboration mechanisms (Base64 serialization for CRDTs) and standard UI patterns (CSS hidden classes) as malicious. There is no evidence of credential harvesting, arbitrary command execution, or unauthorized network exfiltration in this specific code segment. The behavior aligns with the extension's advertised functionality of real-time P2P collaborative coding."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' due to Base64 encoding and network activity. However, the code in this chunk is standard WebSocket protocol implementation (specifically UTF-8 validation and buffer management from the 'ws' library). The Base64 references likely belong to the Yjs CRDT serialization or WebSocket handshake logic, which is expected for a P2P collaboration tool. There is no evidence of credential harvesting or malicious exfiltration in this specific code segment.",
+        "code_reference": "function Ic(s) { ... isBlob ... }",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'persistence_evasion' hit on '.hidden' is likely a false positive from a property name in a UI component or file system utility, not a system-level persistence mechanism. The context provided does not show registry modification or startup folder writes.",
+        "code_reference": ".hidden",
+        "line_hint": 773,
+        "target": "extension/dist/extension.js (chunk 5/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements WebSocket streaming and document change tracking, which aligns with the extension's advertised 'Real-time P2P Collaboration' and 'Yjs CRDT' features. The use of `onDidChangeTextDocument` is necessary for the stated functionality of syncing code changes.",
+        "code_reference": "onDidChangeTextDocument",
+        "line_hint": 10,
+        "target": "extension/dist/extension.js (chunk 5/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'infostealer_behavior' hits regarding Base64 encoding are false positives. The code implements standard AES-256-GCM encryption where the IV, AuthTag, and Ciphertext are Base64-encoded for storage or transmission. This is a legitimate cryptographic pattern, not data exfiltration.",
+        "code_reference": "encrypt(e) { ... return `${t.toString(\"base64\")}:${i.toString(\"base64\")}:${r.toString(\"base64\")}` }",
+        "line_hint": 7,
+        "target": "extension/dist/extension.js (chunk 23/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'persistence_evasion' hit for `.hidden` is likely a false positive or low-risk. In the context of a P2P collaboration tool, this may refer to UI elements (like hidden cursors) or standard file system flags for temporary sync files, not malicious persistence.",
+        "code_reference": ".hidden",
+        "line_hint": 773,
+        "target": "extension/dist/extension.js (chunk 23/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `os` and `http` modules, which aligns with its stated purpose of 'Pure P2P connections' and 'Real-time Collaboration'. The use of `crypto` for E2E encryption is consistent with the 'High Security' claim in the README.",
+        "code_reference": "var fo = x(require(\"http\")), go = x(require(\"os\"))",
+        "line_hint": 10,
+        "target": "extension/dist/extension.js (chunk 23/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' due to Base64 encoding and network requests. However, the code context indicates this is part of a P2P synchronization library (likely Yjs or a similar CRDT implementation) where Base64 is used for serializing binary data (like git status or document deltas) for transmission over WebSockets or similar channels. This is standard behavior for real-time collaboration tools, not data exfiltration.",
+        "code_reference": "toString(\"base64\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 75/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'persistence_evasion' due to a '.hidden' property. In the context of VS Code extensions, this likely refers to a UI element (like a status bar item or a webview) being hidden or a file path property, not setting the Windows hidden attribute on a file for persistence. Without evidence of `fs.chmod` or registry manipulation, this is a false positive.",
+        "code_reference": ".hidden",
+        "line_hint": 773,
+        "target": "extension/dist/extension.js (chunk 75/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' for enumerating extensions. The code explicitly checks for `vscode.git` to read the current branch and dirty file count. This is a legitimate feature for a collaboration tool to sync git status between peers, not reconnaissance for malicious purposes.",
+        "code_reference": "extensions.getExtension(\"vscode.git\")",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 75/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' for reading configuration. The code reads `letscode` configuration to get a username and enablement status. This is standard configuration handling for the extension's features, not harvesting secrets.",
+        "code_reference": "workspace.getConfiguration(\"letscode\")",
+        "line_hint": 242,
+        "target": "extension/dist/extension.js (chunk 75/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged Base64 encoding followed by network transmission as 'infostealer_behavior'. However, the code explicitly shows this is part of a 'file_share' feature where a user-selected file is Base64 encoded and sent to a peer via a P2P connection. This is consistent with the extension's advertised 'Real-time P2P Collaboration' and 'File Sharing' capabilities. The data is not being exfiltrated to a third-party server, but rather sent to a connected peer for collaboration.",
+        "code_reference": "let i = Buffer.from(r).toString(\"base64\")... this.onSendMessage({ type: \"file_share\", ... data: i ... })",
+        "line_hint": "approximate line 20-30 in the provided chunk",
+        "target": "extension/dist/extension.js (chunk 84/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' regarding document change tracking. The code listens to 'onDidChangeTextDocument' to track edits for a 'Copilot' or collaboration dashboard feature ('recordCopilotEdit'). This is standard behavior for a collaboration or productivity extension that needs to know when code is modified to sync state or update UI metrics. It does not read sensitive files or exfiltrate code content directly, but rather tracks metadata (line count, length) for the dashboard.",
+        "code_reference": "rc.workspace.onDidChangeTextDocument(n => { ... this.dashboard.recordCopilotEdit() ... })",
+        "line_hint": "approximate line 1-10 in the provided chunk",
+        "target": "extension/dist/extension.js (chunk 84/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' for reading configuration. The code reads 'letscode' configuration to get a username and enablement status. This is standard configuration handling for a user-specific feature (like a username for P2P identification) and does not involve harvesting secrets or sending them to an external C2 server.",
+        "code_reference": "workspace.getConfiguration(\"letscode\"), a=o.get(\"username\")...",
+        "line_hint": "approximate line 242 in the full file, not visible in this chunk but referenced in static hits",
+        "target": "extension/dist/extension.js (chunk 84/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged Base64 encoding as potential data exfiltration. However, the code context (Yjs CRDT synchronization) indicates this is standard serialization for Peer-to-Peer (P2P) data transfer, not exfiltration to a C2 server. The extension explicitly states 'No Servers' and uses direct connections.",
+        "code_reference": "toString(\"base64\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 89/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'Harvesting VSCode configuration'. The code reads the 'letscode' configuration namespace to retrieve user-defined settings (username, enable flags) for the collaboration session. This is standard behavior for a VS Code extension and does not involve reading sensitive global secrets or credentials.",
+        "code_reference": "workspace.getConfiguration(\"letscode\")",
+        "line_hint": 242,
+        "target": "extension/dist/extension.js (chunk 89/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'Directory traversal paired with network send'. The code writes files to the workspace root based on a remote payload. While this is a potential vector for arbitrary file write if the P2P connection is compromised, it is a core feature of the 'Real-time P2P Collaboration' advertised by the extension. It is not malicious intent but a functional capability.",
+        "code_reference": "b.workspace.fs.writeFile(r, ...)",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 89/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged Base64 encoding as potential data exfiltration. In the context of a P2P collaboration tool using Yjs CRDTs, Base64 is standard for serializing binary CRDT documents or encryption keys for transmission over WebSockets or WebRTC. The code snippet shows standard UI HTML/CSS and does not contain the network exfiltration logic itself, making this a false positive for this specific chunk.",
+        "code_reference": "toString(\"base64\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 95/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'hidden' attribute setting as persistence evasion. The code shows `.hidden { display: none !important; }` which is standard CSS for UI element visibility toggling in webviews, not file system attribute manipulation.",
+        "code_reference": ".hidden",
+        "line_hint": 773,
+        "target": "extension/dist/extension.js (chunk 95/102)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged document change monitoring as 'real-time code theft'. For a collaborative editing extension, listening to `onDidChangeTextDocument` is the core functional requirement to sync changes to peers. This is expected behavior for the stated purpose.",
+        "code_reference": "onDidChangeTextDocument",
+        "line_hint": 10,
+        "target": "extension/dist/extension.js (chunk 95/102)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This code chunk appears to be a standard implementation of WebSocket handling and UTF-8 validation, likely part of the 'ws' library or a similar networking dependency used for the P2P connection. The static analysis hits for 'infostealer_behavior' and 'persistence_evasion' are false positives resulting from the scanner misinterpreting standard networking and serialization patterns (Base64, buffer manipulation) as malicious. The code aligns with the extension's stated purpose of real-time collaboration. No malicious intent or critical risk indicators are present in this specific segment.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 33,
+    "published_date": "2026-03-15T17:48:52.047+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T21:56:31.686922+00:00Z"
+}

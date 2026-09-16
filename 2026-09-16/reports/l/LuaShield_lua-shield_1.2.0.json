@@ -1,0 +1,132 @@
+{
+  "extension_id": "LuaShield.lua-shield",
+  "display_name": "LuaShield: Luau Obfuscator & Asset Protection",
+  "version": "1.2.0",
+  "publisher": {
+    "name": "LuaShield",
+    "verified": false
+  },
+  "vsix_sha256": "94df854e17aeb454ed8920ec6a3a0b8fb9bec7d78adf2c9209e900d21dea0c6d",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.95,
+    "static": 0.125,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "ACTIVATION_WILDCARD",
+        "severity": "HIGH",
+        "description": "Extension uses wildcard activation: ['*']",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "total": 4
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "wearedevs.net",
+      "source_file": "extension/extension.js",
+      "line": 144,
+      "context": "hostname: 'wearedevs.net',",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.9,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "The extension 'LuaShield' is highly suspicious and likely malicious. While it provides a basic Lua obfuscation feature via an API call, it hides a critical payload execution routine that runs on activation. This routine downloads a file named 'svchost.exe' (a common malware name) from an XOR-encrypted URL and executes it using 'vscode.env.openExternal'. The combination of a simple utility function with a hidden, obfuscated stager that executes a binary is a hallmark of supply-chain attacks."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a Lua obfuscator, but it downloads and executes a Windows executable named 'svchost.exe' (a common malware disguise) from a hardcoded, XOR-encrypted URL. This is a classic stager pattern unrelated to the stated functionality.",
+        "code_reference": "const exeName = \"svchost.exe\"; ... vscode.env.openExternal(vscode.Uri.file(exePath));",
+        "line_hint": "45-58",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_C2",
+        "description": "The Command & Control URL is hidden using XOR decryption with a hardcoded key ('pornocuu') and a byte array, making static analysis harder. The decrypted URL points to an unknown domain.",
+        "code_reference": "const payload = Buffer.from([...]); const url = decrypt(payload, key).toString('utf8');",
+        "line_hint": "33-40",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*' (all events), meaning the payload download and execution logic runs immediately upon VS Code startup, regardless of whether the user interacts with the extension.",
+        "code_reference": "Activation Events: *",
+        "line_hint": null,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension sends the user's entire Lua script content to 'wearedevs.net' via HTTPS. While this is the documented function, the domain has unknown reputation, and the script content could be exfiltrated.",
+        "code_reference": "hostname: 'wearedevs.net', path: '/api/obfuscate'",
+        "line_hint": "144",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of 'https' and 'fs' modules is standard for an extension that needs to download files and write to disk, though in this context they are used for the malicious payload.",
+        "code_reference": "const https = require('https'); const fs = require('fs');",
+        "line_hint": "6-7",
+        "target": "extension/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'LuaShield' is highly suspicious and likely malicious. While it provides a basic Lua obfuscation feature via an API call, it hides a critical payload execution routine that runs on activation. This routine downloads a file named 'svchost.exe' (a common malware name) from an XOR-encrypted URL and executes it using 'vscode.env.openExternal'. The combination of a simple utility function with a hidden, obfuscated stager that executes a binary is a hallmark of supply-chain attacks.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-05-01T02:36:04.44Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T23:04:32.300125+00:00Z"
+}

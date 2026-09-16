@@ -1,0 +1,236 @@
+{
+  "extension_id": "0bd91989-c9a7-4bf8-ab11-e26e17f8c8cc.local-share",
+  "display_name": "Local Share",
+  "version": "0.0.6",
+  "publisher": {
+    "name": "0bd91989-c9a7-4bf8-ab11-e26e17f8c8cc",
+    "verified": false
+  },
+  "vsix_sha256": "e1bc0ac3920bd8ea6db06b2a044f021326b379c591c4d37db7e67efa207bd8f9",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.281875,
+    "ai_vibe": 0.35,
+    "static": 0.1875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 124,
+        "snippet": "os.networkInterfaces()"
+      }
+    ],
+    "high": [],
+    "total": 4
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 4,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.35,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/8)",
+        "summary": "This chunk of the 'Local Share' extension source code appears benign and consistent with its stated purpose of sharing code over a local network. It sets up an HTTP server and WebSocket server to manage client connections, assigns colors and temporary usernames to clients, and handles initial cursor synchronization. The use of 'os.networkInterfaces' is a standard requirement for local networking extensions to identify the host IP. No obfuscation, hardcoded secrets, or suspicious external network calls were found in this chunk. The dependencies ('ws', 'http', 'os', 'fs', 'path') are all standard Node.js modules or well-known libraries appropriate for this task."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/8)",
+        "summary": "This chunk of code implements the core server-side logic for a local network collaboration tool. It handles WebSocket message parsing, client connection/disconnection events, and document synchronization (open/save). The use of `os.networkInterfaces()` is appropriate for displaying the host's IP address to users. The code is plain JavaScript with no obfuscation, and the behaviors align perfectly with the extension's stated purpose of sharing code over a local network."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/8)",
+        "summary": "This chunk of the extension source code appears benign and consistent with its stated purpose of local network code sharing. It implements server-side logic for broadcasting document updates and cursor positions to connected clients. The flagged `os.networkInterfaces()` call is a false positive for infostealer behavior given the extension's functionality. No obfuscation, arbitrary command execution, or sensitive file access was observed in this segment."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/8)",
+        "summary": "This chunk of code implements the client-side connection logic for a 'Local Share' extension. It prompts the user for a server IP and port, establishes a WebSocket connection, and sets up listeners to send document content and cursor positions to the server. The behavior is consistent with the extension's stated purpose of real-time collaboration over a local network. The primary risk is inherent to the functionality: sending full file contents over a potentially unencrypted WebSocket connection to a user-specified IP. The static hit for `os.networkInterfaces` is likely a false positive in this context. No obvious obfuscation or hidden exfiltration to third-party servers is visible in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/8)",
+        "summary": "This chunk of the 'Local Share' extension appears to implement standard WebSocket-based collaboration logic. The code handles client disconnection, status bar updates, and message routing for user identification and document updates. The static rule hit for `os.networkInterfaces` is likely a false positive for malicious intent, as determining the local IP is necessary for the 'Host' feature to inform users of the connection address. The extracted domains are from the `ws` library dependencies. No obvious obfuscation, credential harvesting, or suspicious external network calls are present in this specific chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 6/8)",
+        "summary": "This chunk of the 'Local Share' extension handles WebSocket message routing for document synchronization and cursor updates. The logic appears consistent with the extension's advertised functionality of sharing code over a local network. The primary static rule hit for `os.networkInterfaces()` is a reasonable implementation for displaying the host's IP address to users. There are no signs of obfuscation, credential harvesting, or external C2 communication in this specific chunk. The presence of Russian comments is a minor metadata detail. Overall, the code appears benign and proportional to its stated purpose."
+      },
+      {
+        "target": "extension/extension.js (chunk 7/8)",
+        "summary": "This chunk of the extension source code appears to be a standard implementation of a local network collaboration tool. It handles document synchronization, cursor visualization, and fallback file opening. The logic is straightforward, using standard VS Code APIs (`vscode.workspace`, `vscode.window`) and the `ws` library for networking. The static rule engine flagged `os.networkInterfaces` (likely in a previous chunk or context not fully visible here but implied by the 'Local Share' nature) and `os.tmpdir` usage. Neither is inherently malicious in this context. The code does not show signs of obfuscation, credential harvesting, or unexpected system calls. The behavior is proportional to the advertised 'Live Share-like' functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "The code imports the 'os' module and calls 'os.networkInterfaces()'. While this is a system fingerprinting API, in the context of a 'Local Share' extension (similar to Live Share), it is necessary to determine the machine's IP address to display to the user so they can share it with other clients. This is a proportional capability for the advertised feature.",
+        "code_reference": "const os = require('os'); ... os.networkInterfaces()",
+        "line_hint": 124,
+        "target": "extension/extension.js (chunk 1/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.networkInterfaces()` as system fingerprinting/infostealer behavior. However, in the context of a 'Local Share' extension that binds to `0.0.0.0`, retrieving the local IP addresses to display them in a VS Code notification is a necessary and expected feature, not exfiltration.",
+        "code_reference": "const interfaces = os.networkInterfaces();",
+        "line_hint": 124,
+        "target": "extension/extension.js (chunk 2/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK",
+        "description": "The extension uses the `ws` (WebSocket) library. The extracted domains (2x.io, html.spec.whatwg.org, etc.) are standard references found within the `ws` package's source code (documentation links or test fixtures) rather than active C2 endpoints in this specific chunk.",
+        "code_reference": "ws.on('message', ...)",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.networkInterfaces()` as a CRITICAL infostealer pattern. However, in the context of a 'Local Share' extension that acts as a server, this call is necessary to determine the machine's local IP address to display to the user for connection purposes. It is not combined with remote exfiltration in this chunk.",
+        "code_reference": "os.networkInterfaces()",
+        "line_hint": 124,
+        "target": "extension/extension.js (chunk 3/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code uses standard VS Code APIs (`onDidChangeTextDocument`, `onDidChangeTextEditorSelection`) to track file changes and cursor positions, which aligns perfectly with the advertised 'Real-time Collaboration' feature. The use of Russian comments is a stylistic choice, not an obfuscation technique.",
+        "code_reference": "vscode.workspace.onDidChangeTextDocument",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 3/8)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The client sends the entire content of the document (`event.document.getText()`) to the remote server on every text change. While necessary for a 'Live Share' style extension, this means any file opened in the editor is transmitted over the network. If the user connects to a malicious or compromised host, all open code is exposed. This is a functional requirement but represents a significant data exposure surface.",
+        "code_reference": "const content = event.document.getText(); ... wsClient.send(JSON.stringify(message));",
+        "line_hint": "approx 60-70",
+        "target": "extension/extension.js (chunk 4/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.networkInterfaces()` as system fingerprinting. However, in the context of a 'Local Share' extension, this is likely used to determine the local IP address to display to the user or to bind the server. This is a standard pattern for local networking tools and not necessarily malicious.",
+        "code_reference": "os.networkInterfaces",
+        "line_hint": "124",
+        "target": "extension/extension.js (chunk 4/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "DEPENDENCY",
+        "description": "The extension uses the `ws` library for WebSocket connections. The extracted indicators (2x.io, html.spec.whatwg.org, etc.) are standard references found within the `ws` package's source code or documentation, not necessarily direct network calls made by the extension logic itself.",
+        "code_reference": "require('ws')",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 4/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "The code calls `os.networkInterfaces()` (referenced in static hits, likely in a preceding chunk or helper not fully visible in this snippet but implied by the 'Host' feature). For a local network sharing extension, retrieving network interfaces to determine the local IP address is a standard and expected behavior, not necessarily malicious fingerprinting.",
+        "code_reference": "os.networkInterfaces()",
+        "line_hint": 124,
+        "target": "extension/extension.js (chunk 5/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "POTENTIAL_LEAK",
+        "description": "The `userInfo` handler broadcasts the client's username to all connected clients via `broadcastToAll`. While this is core to the collaboration feature, it does expose the local OS username to other users on the local network without explicit opt-in in the code shown.",
+        "code_reference": "broadcastToAll({ type: 'userUpdate', payload: { ... username: message.payload.username ... } })",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 5/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "PERFORMANCE",
+        "description": "A `setInterval` running every 1000ms updates the status bar item. This is a minor performance overhead but common in VS Code extensions for status updates.",
+        "code_reference": "setInterval(() => { ... }, 1000)",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 5/8)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "The code calls `os.networkInterfaces()` to determine the local IP address. While this is necessary for the extension's stated purpose of 'Local Share' (to tell the user which IP to connect to), it is technically a system fingerprinting API. In the context of a local network sharing tool, this is likely a false positive for malicious intent, but it does expose network topology details.",
+        "code_reference": "os.networkInterfaces()",
+        "line_hint": 124,
+        "target": "extension/extension.js (chunk 6/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "LANGUAGE_INCONSISTENCY",
+        "description": "The source code contains Russian comments (e.g., '\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u043c \u0440\u0435\u0430\u043b\u044c\u043d\u043e\u0435 \u0438\u043c\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f', '\u041e\u0431\u043d\u043e\u0432\u043b\u044f\u0435\u043c \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044e \u043e \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u0435'). This is not inherently malicious but indicates the developer's origin, which can be a minor supply-chain trust factor depending on the publisher's claimed identity.",
+        "code_reference": "// \u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u043c \u0440\u0435\u0430\u043b\u044c\u043d\u043e\u0435 \u0438\u043c\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 6/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "DEPENDENCY_ANALYSIS",
+        "description": "The package includes the `ws` library (WebSocket). The domains found in `ws` package files (2x.io, html.spec.whatwg.org, etc.) are standard references within the library's source code or documentation links, not necessarily active network calls from the extension logic itself. The use of WebSockets is consistent with the 'Real-time Collaboration' feature.",
+        "code_reference": "require('ws')",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 6/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "SYSTEM_ACCESS",
+        "description": "The code uses `os.tmpdir()` to write temporary files when opening shared documents fails. While this is a standard fallback mechanism, writing to the system temp directory is a common location for malware staging. However, given the context of a 'Local Share' extension that needs to display files, this is a reasonable engineering choice rather than malicious intent.",
+        "code_reference": "const tempFilePath = path.join(os.tmpdir(), `shared_${Date.now()}.${getFileExtension(languageId)}`);",
+        "line_hint": 18,
+        "target": "extension/extension.js (chunk 7/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_COMMUNICATION",
+        "description": "The code relies heavily on WebSocket (`ws`) for real-time collaboration. This aligns perfectly with the extension's stated purpose of 'Real-time Collaboration' similar to Live Share. The use of `ws` is a standard dependency for this type of functionality.",
+        "code_reference": "clients.forEach((client) => { if (client.ws.readyState === WebSocket.OPEN) ...",
+        "line_hint": 48,
+        "target": "extension/extension.js (chunk 7/8)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the 'Local Share' extension source code appears benign and consistent with its stated purpose of sharing code over a local network. It sets up an HTTP server and WebSocket server to manage client connections, assigns colors and temporary usernames to clients, and handles initial cursor synchronization. The use of 'os.networkInterfaces' is a standard requirement for local networking extensions to identify the host IP. No obfuscation, hardcoded secrets, or suspicious external network calls were found in this chunk. The dependencies ('ws', 'http', 'os', 'fs', 'path') are all standard Node.js modules or well-known libraries appropriate for this task.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 5,
+    "published_date": "2026-09-02T12:01:53.403Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-02T19:28:08.715327+00:00Z"
+}

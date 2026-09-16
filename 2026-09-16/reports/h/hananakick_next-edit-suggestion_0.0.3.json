@@ -1,0 +1,323 @@
+{
+  "extension_id": "hananakick.next-edit-suggestion",
+  "display_name": "Next Edit Suggestion",
+  "version": "0.0.3",
+  "publisher": {
+    "name": "hananakick",
+    "verified": false
+  },
+  "vsix_sha256": "05ae41b77024d06dcda8de22107528146bec3fdb3f52a8112f3e1388902a12b5",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2926550781475361,
+    "ai_vibe": 0.15,
+    "static": 0.5106203125901445,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/extension.js",
+        "line": 45,
+        "snippet": "SECRET = 'nextEditSuggestion.apiKey'"
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 63,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 83,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 275,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 13,
+    "blocks_seen": 13,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/5)",
+        "summary": "This chunk of the extension source code appears to be a standard TypeScript-compiled VS Code extension entry point. It initializes an HTTP provider for an AI model server, using user-configured endpoints and API keys stored in VS Code's secure SecretStorage. The 'critical' findings from the static scanner are largely false positives resulting from the use of standard secure storage APIs. The code structure is clean, with no obfuscation, arbitrary command execution, or suspicious network calls in this chunk. The behavior aligns well with the advertised 'Next Edit Suggestion' functionality."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/5)",
+        "summary": "This chunk of the extension source code appears benign and consistent with its stated purpose of providing context-aware autocomplete. The code handles configuration retrieval, model selection via VS Code QuickPick, and initializes the suggestion engine. The 'critical' findings from the static scanner are false positives: the 'hardcoded secret' is merely a storage key name, and the 'credential theft' is the standard mechanism for reading a user-configured API key from VS Code's secure storage. There are no signs of obfuscation, arbitrary command execution, or unexpected network calls in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/5)",
+        "summary": "This chunk of code implements the core logic for an inline completion provider (autocomplete). It registers event listeners for document changes, selection changes, and visible range changes to manage the lifecycle of ghost text suggestions (triggering, dismissing on scroll/cursor move). The code relies heavily on standard VS Code APIs (`vscode.languages`, `vscode.workspace`, `vscode.window`). The 'critical' hits from the static scanner are false positives: the 'leaked secret' is just a key name string, and the 'credential theft' is the legitimate retrieval of the user's own API key from VS Code's secure storage. There is no obfuscation, arbitrary command execution, or suspicious network activity in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/5)",
+        "summary": "This chunk of the 'Next Edit Suggestion' extension handles command registration (accept, dismiss, open menu) and event listeners for editor changes. The code is clean, well-structured, and uses standard VS Code APIs. The 'critical' hits from the static scanner are false positives: the 'leaked secret' is just a key name string, and the 'credential theft' is the legitimate use of VS Code's SecretStorage to retrieve the user's configured API key. The UI strings are in Korean, which is consistent with the extension's origin but not inherently suspicious."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/5)",
+        "summary": "This chunk (5/5) contains the tail end of the extension's activation logic, specifically handling configuration commands (setting endpoint, API key, model, and API format) and registering event listeners. The code uses standard VS Code APIs (`vscode.window.showInputBox`, `vscode.workspace.getConfiguration`, `context.secrets`) to manage user preferences. The 'leaked secret' and 'credential theft' flags from the static engine are false positives; the code is simply managing the user's own API key for the configured model server. The UI strings are in Korean, which is consistent with a specific regional or developer preference but not inherently suspicious. No obfuscation, arbitrary command execution, or unexpected network calls are present in this chunk."
+      },
+      {
+        "target": "extension/out/model/httpProvider.js (chunk 1/3)",
+        "summary": "This chunk of the 'Next Edit Suggestion' extension contains standard logic for resolving API endpoints and preparing HTTP requests to a user-configured model server. The code is clean, well-commented (in Korean), and uses standard URL parsing and string manipulation. There are no signs of obfuscation, hardcoded secrets, or suspicious child_process usage in this segment. The behavior aligns with the advertised function of connecting to a local or remote LLM endpoint."
+      },
+      {
+        "target": "extension/out/model/httpProvider.js (chunk 2/3)",
+        "summary": "This chunk of code implements the HTTP communication layer for a 'Next Edit Suggestion' extension. It constructs request bodies for various LLM API formats (llama.cpp, OpenAI chat/completions) and sends them to a user-defined endpoint. The logic is straightforward, uses standard `fetch` API, and handles errors gracefully. There are no signs of obfuscation, hardcoded secrets, or suspicious system access. The network calls are directly proportional to the extension's advertised purpose of connecting to a local or remote model server."
+      },
+      {
+        "target": "extension/out/model/httpProvider.js (chunk 3/3)",
+        "summary": "This code snippet is the tail end of an HTTP provider module. It handles the response from a network request, specifically parsing JSON to retrieve a list of model IDs. The logic is straightforward and aligns perfectly with the extension's advertised functionality of connecting to a model server for autocomplete suggestions. No obfuscation, credential harvesting, or suspicious system calls are present in this chunk."
+      },
+      {
+        "target": "extension/out/suggestion/editTracker.js (chunk 1/2)",
+        "summary": "This file contains the `EditTracker` class, which is responsible for listening to text document changes and building context for the model. The code is clean, well-commented (in Korean), and uses standard VS Code APIs (`vscode.workspace.onDidChangeTextDocument` implied by the handler signature, `document.getText`, etc.). There are no network calls, child process executions, or file system accesses to sensitive paths in this chunk. The logic is purely in-memory state management for the last edit. The only minor note is the activation event, but it is not a security risk in itself."
+      },
+      {
+        "target": "extension/out/suggestion/editTracker.js (chunk 2/2)",
+        "summary": "This chunk of the `editTracker.js` file contains utility functions for converting VS Code ranges to a custom text range format and extracting surrounding code context with line numbers. The logic is straightforward and aligns perfectly with the extension's advertised purpose of providing context-aware next-edit suggestions. There are no network calls, child process executions, or access to sensitive system files in this specific chunk. The only minor observation is the extraction of document text, which is inherent to the extension's functionality."
+      },
+      {
+        "target": "extension/out/suggestion/inlineCompletionProvider.js",
+        "summary": "The source code is a standard TypeScript-compiled class implementing the VS Code InlineCompletionProvider interface. It relies on an injected 'engine' object to fetch suggestions and constructs VS Code API objects (Range, Position, InlineCompletionItem). There are no direct network calls, file system accesses, child process executions, or obfuscated logic in this specific file. The logic is strictly proportional to the advertised 'Next Edit Suggestion' functionality."
+      },
+      {
+        "target": "extension/out/suggestion/statusBar.js (chunk 1/2)",
+        "summary": "This file defines a `StatusBarManager` class that manages a VS Code status bar item. It uses standard VS Code APIs (`vscode.window.createStatusBarItem`) to display text, tooltips, and bind commands based on the suggestion state (idle, fetching, error). The code is clean, unobfuscated, and logically consistent with an autocomplete/suggestion extension. There are no network calls, file system accesses, or child process executions in this specific chunk. The Korean comments indicate a localized extension, which is benign. The only minor note is the activation event, but it is not a strong indicator of malice on its own."
+      },
+      {
+        "target": "extension/out/suggestion/statusBar.js (chunk 2/2)",
+        "summary": "This code chunk represents the tail end of a `StatusBarManager` class. It handles updating the VS Code status bar item with error states (text, tooltip, background color) and manages visibility/disposal. The logic is standard VS Code API usage (`vscode.ThemeColor`, `statusBarItem.show/hide/dispose`). There are no network calls, file system accesses, or child process executions in this specific chunk. The presence of Korean text is a minor observation but does not indicate malicious intent on its own."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = 'nextEditSuggestion.apiKey'` as a hardcoded secret. However, this is a string constant used as a key identifier for the VS Code SecretStorage API, not the secret value itself. The actual API key is stored securely by VS Code.",
+        "code_reference": "const API_KEY_SECRET = 'nextEditSuggestion.apiKey';",
+        "line_hint": 45,
+        "target": "extension/out/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `context.secrets.get()` as credential theft. This is the standard, secure way for VS Code extensions to retrieve user-provided secrets (like API keys) without exposing them in plain text settings. Given the extension requires an API key for its model server, this is expected behavior.",
+        "code_reference": "apiKey: () => context.secrets.get(API_KEY_SECRET)",
+        "line_hint": 63,
+        "target": "extension/out/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. While common for productivity tools, it means the extension loads immediately on VS Code startup, which is slightly aggressive for a feature that might not be used in every session, but not necessarily malicious.",
+        "code_reference": "activationEvents: [\"onStartupFinished\"]",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = 'nextEditSuggestion.apiKey'` as a hardcoded secret. However, this is a string constant used as a key to look up a value in VS Code's SecretStorage API, not the secret value itself.",
+        "code_reference": "const API_KEY_SECRET = 'nextEditSuggestion.apiKey'",
+        "line_hint": 45,
+        "target": "extension/out/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `context.secrets.get()` as credential theft. This is the standard VS Code API for retrieving user-provided secrets (like API keys) securely. Given the extension requires an API key for its model server, this is expected behavior.",
+        "code_reference": "const apiKey = await context.secrets.get(API_KEY_SECRET);",
+        "line_hint": 63,
+        "target": "extension/out/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `SECRET = 'nextEditSuggestion.apiKey'` as a hardcoded secret. This is actually a string constant defining the key name used to look up the user's API key in VS Code's SecretStorage. It is not the secret value itself.",
+        "code_reference": "SECRET = 'nextEditSuggestion.apiKey'",
+        "line_hint": 45,
+        "target": "extension/out/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `context.secrets.get()` as credential theft. For an extension that requires a user-configured API key to connect to a model server, reading from VS Code's SecretStorage is the standard and secure way to retrieve that key. It is not reading system credentials like SSH keys or browser cookies.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 63,
+        "target": "extension/out/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = 'nextEditSuggestion.apiKey'` as a hardcoded secret. This is actually a string constant used as a key name for the VS Code SecretStorage API, not the secret value itself.",
+        "code_reference": "SECRET = 'nextEditSuggestion.apiKey'",
+        "line_hint": 45,
+        "target": "extension/out/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `context.secrets.get()` as credential theft. This is the standard VS Code API for retrieving user-defined secrets (like API keys) securely. Given the extension requires an API key for its model server, this is expected behavior.",
+        "code_reference": "context.secrets.get(API_KEY_SECRET)",
+        "line_hint": 83,
+        "target": "extension/out/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = 'nextEditSuggestion.apiKey'` as a hardcoded secret. However, this is a string constant used as a key identifier for the VS Code SecretStorage API, not the secret value itself. The actual secret is stored securely by VS Code.",
+        "code_reference": "SECRET = 'nextEditSuggestion.apiKey'",
+        "line_hint": 45,
+        "target": "extension/out/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `context.secrets.get()` as credential theft. In this context, the extension is retrieving the user-provided API key from the secure storage to use in HTTP requests to the user-configured endpoint. This is standard behavior for extensions requiring authentication.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 63,
+        "target": "extension/out/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a context-aware autocomplete feature that typically activates on text document changes or specific commands. While common for AI extensions to ensure readiness, it is slightly aggressive for a 'Next Edit Suggestion' tool that relies on user edits.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/model/httpProvider.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The code constructs HTTP requests to a user-configured endpoint (`endpointUrl`). This is expected behavior for a local model server (llama.cpp, vLLM) or remote API, but since the destination is user-defined, the trust boundary is the user's configuration. No hardcoded suspicious IPs or domains found in this chunk.",
+        "code_reference": "resolveEndpointUrl, suggestNextEdit",
+        "line_hint": 25,
+        "target": "extension/out/model/httpProvider.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension makes HTTP POST requests to a user-configured endpoint (`endpointUrl`) to fetch model suggestions. While this is the core function of the extension, it means code context is sent to a server defined by the user. If the user misconfigures this or trusts a malicious default, data could leak. However, the code correctly uses `fetch` with standard headers and no obfuscation.",
+        "code_reference": "res = await fetch(endpointUrl, { method: 'POST', ... })",
+        "line_hint": 38,
+        "target": "extension/out/model/httpProvider.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CREDENTIAL_HANDLING",
+        "description": "The API key is retrieved via `this.opts.apiKey()` and added to the Authorization header. This is standard practice for LLM providers. The key is not hardcoded or logged in this chunk.",
+        "code_reference": "const apiKey = await this.opts.apiKey(); if (apiKey) { headers['Authorization'] = `Bearer ${apiKey}`; }",
+        "line_hint": 33,
+        "target": "extension/out/model/httpProvider.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_CALL",
+        "description": "The code performs a network request and parses the JSON response to extract model IDs. This is consistent with the extension's purpose of communicating with a user-configured model server endpoint.",
+        "code_reference": "const data = (await res.json()); return (data.data ?? []).map((m) => m.id).filter((id) => Boolean(id));",
+        "line_hint": 1,
+        "target": "extension/out/model/httpProvider.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a context-aware autocomplete feature that only needs to track edits in active documents. While common for extensions that need to be ready immediately, it is slightly aggressive for a feature that could activate on 'onLanguage' or specific document events.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/suggestion/editTracker.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "DATA_COLLECTION",
+        "description": "The function `extractSurroundingContext` extracts code lines from the active document. In 'auto' mode (maxLines <= 0), it extracts the entire document text. While this is necessary for a context-aware autocomplete extension, it implies that user code is being prepared for transmission to a configured endpoint. This is expected behavior for the extension's purpose but worth noting for data privacy awareness.",
+        "code_reference": "const text = document.getText(); return text.split('\\n')...",
+        "line_hint": 14,
+        "target": "extension/out/suggestion/editTracker.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While common for productivity tools to ensure availability, it is slightly aggressive for a feature that requires specific configuration (endpointUrl/model) to function. However, this is a minor optimization choice rather than a security risk.",
+        "code_reference": "package.json activationEvents (implied by metadata)",
+        "line_hint": null,
+        "target": "extension/out/suggestion/inlineCompletionProvider.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a suggestion engine that typically activates on text changes or specific commands. However, this is common for extensions that need to maintain a persistent status bar item or listen to global events, so it is not strictly malicious, just slightly aggressive.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/suggestion/statusBar.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "UI_TEXT",
+        "description": "The status bar displays Korean text ('NES \uc624\ub958' meaning 'NES Error' and '\ud074\ub9ad\ud558\uc5ec \uba54\ub274 \uc5f4\uae30' meaning 'Click to open menu'). While this suggests the extension may be targeted at a Korean-speaking audience or developed by a Korean team, it is not inherently suspicious, just a localization detail.",
+        "code_reference": "this.statusBarItem.text = '$(warning) NES \uc624\ub958';",
+        "line_hint": 2,
+        "target": "extension/out/suggestion/statusBar.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the extension source code appears to be a standard TypeScript-compiled VS Code extension entry point. It initializes an HTTP provider for an AI model server, using user-configured endpoints and API keys stored in VS Code's secure SecretStorage. The 'critical' findings from the static scanner are largely false positives resulting from the use of standard secure storage APIs. The code structure is clean, with no obfuscation, arbitrary command execution, or suspicious network calls in this chunk. The behavior aligns well with the advertised 'Next Edit Suggestion' functionality.",
+  "escalation_reasons": [
+    "4 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-01T11:35:57.03Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-02T17:23:47.823172+00:00Z"
+}

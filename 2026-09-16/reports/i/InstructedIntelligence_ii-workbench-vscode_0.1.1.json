@@ -1,0 +1,153 @@
+{
+  "extension_id": "InstructedIntelligence.ii-workbench-vscode",
+  "display_name": "II Workbench for VS Code",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "InstructedIntelligence",
+    "verified": false
+  },
+  "vsix_sha256": "9ee35b229c6994580a3cb218f74831c6760b70d157c23ccc720de97ce92840a8",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.28164003907376806,
+    "ai_vibe": 0.1,
+    "static": 0.5365601562950723,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/extension.js",
+        "line": 112,
+        "snippet": "vscode.authentication.getSession"
+      },
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/extension.js",
+        "line": 112,
+        "snippet": "vscode.authentication.getSession(auth_js_1.AUTH_PROVIDER_ID, [], { createIfNone: true"
+      }
+    ],
+    "high": [],
+    "total": 15
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "junction.instructedintelligence.com",
+      "source_file": "extension/out/config.js",
+      "line": 58,
+      "context": "exports.DEFAULT_JUNCTION_URL = \"https://junction.instructedintelligence.com\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 4,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/out/clients.js",
+        "summary": "The provided source code is a benign utility module for an extension designed to bridge VS Code with AI assistants (Claude/Codex) via MCP. It defines a list of supported clients and provides helper functions to detect if these clients are installed (via VS Code API or file system checks) and to manage their configuration. The use of `vscode.extensions.getExtension` is targeted and legitimate for integration purposes, not malicious reconnaissance. There are no signs of credential harvesting, network exfiltration, code execution, or obfuscation. The behavior is fully aligned with the extension's description."
+      },
+      {
+        "target": "extension/out/extension.js",
+        "summary": "The extension appears to be a legitimate utility for connecting AI assistants (Claude, Codex) to an internal organizational toolset via the Model Context Protocol (MCP). The code structure is clean, unobfuscated, and follows standard VS Code extension patterns. The 'critical' flags from the static scanner regarding `vscode.authentication.getSession` are false positives; the extension is correctly using the VS Code Authentication API to manage its own OAuth session. The file system operations are limited to writing configuration files for known AI clients, which aligns perfectly with the advertised functionality. No malicious behavior, data exfiltration, or capability disconnects were detected."
+      },
+      {
+        "target": "extension/out/layout.js",
+        "summary": "The analyzed file `layout.js` is benign. It implements a 'simple layout' feature by snapshotting and modifying standard VS Code user settings (e.g., disabling minimap, changing editor tabs) and restoring them upon request. The code uses standard VS Code APIs (`vscode.workspace.getConfiguration`, `context.globalState`) and does not exhibit any malicious behavior such as data exfiltration, credential harvesting, or arbitrary command execution. The static rule hit regarding `workspace.getConfiguration().update` is a false positive in the context of this extension's stated purpose, which is to modify the user's workspace layout. The domain `junction.instructedintelligence.com` found in other files is consistent with the extension's branding and is not a known malicious indicator."
+      },
+      {
+        "target": "extension/out/config.js",
+        "summary": "The code is a benign configuration module for the 'II Workbench' extension. It defines constants for the extension's backend URL (junction.instructedintelligence.com), OAuth client ID, and server identifiers. It uses standard VS Code APIs to read user configuration. There are no indicators of malicious behavior such as credential harvesting, obfuscation, arbitrary code execution, or data exfiltration. The domain reputation is unknown, but the context (MCP server configuration for an AI assistant) is consistent with the extension's stated purpose."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The code uses `vscode.extensions.getExtension` to check for the presence of specific AI extensions ('anthropic.claude-code' and 'openai.chatgpt'). While flagged by static rules as potential reconnaissance, this is a standard pattern for extensions that integrate with or configure other specific extensions. It does not enumerate all installed extensions for data theft.",
+        "code_reference": "Boolean(vscode.extensions.getExtension(\"anthropic.claude-code\"))",
+        "line_hint": "48",
+        "target": "extension/out/clients.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The code checks for the existence of configuration files in the user's home directory (`.claude.json`) and uses `process.env.CLAUDE_CONFIG_DIR`. This is consistent with the extension's stated purpose of configuring AI clients (Claude/Codex) for MCP (Model Context Protocol) integration. It does not read sensitive credentials or exfiltrate data.",
+        "code_reference": "exists((0, node_path_1.join)(process.env.CLAUDE_CONFIG_DIR || (0, node_os_1.homedir)(), \".claude.json\"))",
+        "line_hint": "50",
+        "target": "extension/out/clients.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.authentication.getSession` as potential credential theft. However, this is the standard, documented VS Code API for extensions to retrieve authentication sessions for their own registered AuthenticationProviders. The code uses this to manage the extension's own OAuth sign-in flow for the 'II Workbench' service, not to steal tokens from other extensions (like GitHub or Azure).",
+        "code_reference": "const session = await vscode.authentication.getSession(auth_js_1.AUTH_PROVIDER_ID, [], { createIfNone: true });",
+        "line_hint": "112",
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension modifies external AI client configuration files (e.g., `~/.claude.json`, `~/.codex/config.toml`) to inject MCP server definitions. While this involves writing to user home directories, it is explicitly described in the README ('We bring the wiring... Claude Code... Codex') and is the core functionality of the extension. It does not read sensitive data from these files, only writes configuration.",
+        "code_reference": "await client.write(token, { backup: false });",
+        "line_hint": "105",
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is an aggressive activation event for a utility that primarily manages layout settings and AI connections. While not malicious, it implies the extension runs code immediately upon VS Code startup, which is disproportionate for a 'layout' feature that should ideally be user-triggered.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/layout.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The provided source code is a benign utility module for an extension designed to bridge VS Code with AI assistants (Claude/Codex) via MCP. It defines a list of supported clients and provides helper functions to detect if these clients are installed (via VS Code API or file system checks) and to manage their configuration. The use of `vscode.extensions.getExtension` is targeted and legitimate for integration purposes, not malicious reconnaissance. There are no signs of credential harvesting, network exfiltration, code execution, or obfuscation. The behavior is fully aligned with the extension's description.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-15T21:25:49.01Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T21:52:44.666011+00:00Z"
+}

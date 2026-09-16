@@ -1,0 +1,293 @@
+{
+  "extension_id": "kendr.kendr-code-vscode",
+  "display_name": "Kendr Code",
+  "version": "0.9.0",
+  "publisher": {
+    "name": "kendr",
+    "verified": false
+  },
+  "vsix_sha256": "d9c1f94c2cb4866c4f335b5ce75e57560ebff422c7c432f4287445a0e383f4e6",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2571875,
+    "ai_vibe": 0.1,
+    "static": 0.46875,
+    "behavioral": 0.0,
+    "trust_signal": 0.7,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/extension.js",
+        "line": 777,
+        "snippet": "addEventListener('keydown',(event)=>{const target=event.target.closest('[role=link]');if(target&&(event.key==='Enter'||event.key===' ')){event.preventDefault();post"
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/dist/extension.js",
+        "line": 1456,
+        "snippet": "SECRET = \"kendr.accountSession.v1\""
+      }
+    ],
+    "high": [],
+    "total": 12
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "kendr.org",
+      "source_file": "extension/package.json",
+      "line": 10,
+      "context": "\"homepage\": \"https://kendr.org\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 20/56)",
+        "summary": "The analyzed code chunk is a standard UI rendering module for a VS Code webview, handling form elements (selects, buttons) and input events for a chat interface. The static scanner hits are false positives: the 'keylogger' is a standard accessibility keyboard handler, the 'secret' is a storage key name, and the 'IP addresses' are localhost endpoints for local backend communication. The code aligns with the extension's stated purpose of providing a chat interface for an AI coding agent. No malicious behavior, credential harvesting, or obfuscation was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 23/56)",
+        "summary": "The analyzed code chunk consists of standard UI rendering logic for a chat interface (Markdown parsing, link handling, code blocks, and clipboard operations). All static scanner hits are false positives: the 'keylogger' is a standard accessibility feature for keyboard navigation, the 'secret' is a storage key name, and the IPs are localhost defaults for a local backend. The code aligns with the extension's purpose as a client for a local AI agent workspace."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 24/56)",
+        "summary": "The code is a standard VS Code Webview implementation for a chat interface. The static scanner hits are false positives: the keydown listener is for accessibility (link activation), the 'secret' string is a storage key, and the IP addresses are local loopback endpoints consistent with the extension's stated purpose of connecting to a local backend. No malicious behavior, obfuscation, or credential theft patterns were found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 34/56)",
+        "summary": "The code is a legitimate VS Code extension client for a local AI agent backend ('Kendr Code'). It strictly enforces loopback-only communication to prevent data exfiltration to remote servers. The static scanner hits are false positives: the 'keylogger' is a UI accessibility feature, the 'secret' is a storage key, and the 'hardcoded IPs' are validated loopback addresses required for local IPC. No malicious behavior, credential theft, or remote command execution was found."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 39/56)",
+        "summary": "The code is a legitimate client for a local AI coding assistant backend. It uses standard VS Code APIs for secret storage and configuration. The 'suspicious' indicators (localhost connections, keydown listeners, secret key names) are all consistent with the extension's documented functionality of connecting to a local service and providing a webview-based UI. No malicious behavior, data exfiltration, or obfuscation was detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 43/56)",
+        "summary": "The code snippet is part of a VS Code extension that acts as a client for a local 'Kendr Code' backend. The functionality shown involves opening git diffs and local web previews (loopback URLs) for coding tasks. The static scanner hits are false positives: the keydown listener is for UI accessibility, the 'secret' string is a storage key, and the IPs are local loopback addresses for development previews. There is no evidence of malicious behavior, data exfiltration, or capability disconnect in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 52/56)",
+        "summary": "The code is benign and aligns with the extension's stated purpose of acting as a client for a local 'Kendr Code' backend. The flagged indicators are false positives: the 'keylogger' is a UI event handler, the 'secret' is a storage key, and the 'C2' IPs are localhost addresses for local service communication. The use of VS Code's SecretStorage API is the correct and secure way to handle session tokens. No malicious behavior was detected."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown event listener. Upon review, the code `addEventListener('keydown',(event)=>{const target=event.target.closest('[role=link]');...` is a standard accessibility feature for handling keyboard navigation (e.g., Enter/Space to activate links) within the webview UI. It does not buffer keystrokes or exfiltrate data.",
+        "code_reference": "addEventListener('keydown',(event)=>{const target=event.target.closest('[role=link]');",
+        "line_hint": 777,
+        "target": "extension/dist/extension.js (chunk 20/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'hardcoded secret' for the string `SECRET = \"kendr.accountSession.v1\"`. This is a versioned key name used for VS Code's SecretStorage API to store user credentials securely. It is not a hardcoded credential value but rather a storage identifier.",
+        "code_reference": "SECRET = \"kendr.accountSession.v1\"",
+        "line_hint": 1456,
+        "target": "extension/dist/extension.js (chunk 20/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged hardcoded IP addresses `127.0.0.1:8765` and `127.0.0.1:5173`. These are localhost addresses used for local development servers or local backend communication (Kendr Code backend), which is consistent with the extension's description as a 'thin client' over a 'local Kendr Code backend'.",
+        "code_reference": "http://127.0.0.1:8765",
+        "line_hint": 1803,
+        "target": "extension/dist/extension.js (chunk 20/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown event listener. However, the code explicitly checks if the target is a link (`closest('[role=link]')`) and is part of a UI interaction handler for accessibility (keyboard navigation for links), not credential harvesting.",
+        "code_reference": "addEventListener('keydown',(event)=>{const target=event.target.closest('[role=link]');if(target&&(ev",
+        "line_hint": 777,
+        "target": "extension/dist/extension.js (chunk 23/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The string 'SECRET = \"kendr.accountSession.v1\"' was flagged as a hardcoded secret. This is actually a key name for VS Code's SecretStorage API, used to store session tokens securely. It is not a hardcoded credential value.",
+        "code_reference": "SECRET = \"kendr.accountSession.v1\"",
+        "line_hint": 1456,
+        "target": "extension/dist/extension.js (chunk 23/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 127.0.0.1:8765 and 127.0.0.1:5173 are localhost addresses. These are standard defaults for local development servers or local backend services (Kendr Code backend) and do not indicate C2 communication.",
+        "code_reference": "\"http://127.0.0.1:8765\"",
+        "line_hint": 1803,
+        "target": "extension/dist/extension.js (chunk 23/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown listener. However, the code explicitly checks for `event.target.closest('[role=link]')` and only triggers on 'Enter' or ' ' keys to simulate a click. This is standard accessibility behavior for webviews, not credential harvesting.",
+        "code_reference": "document.body.addEventListener('keydown',(event)=>{const target=event.target.closest('[role=link]');if(target&&(event.key==='Enter'||event.key===' ')){event.preventDefault();post('openLink',{target:target.dataset.target});}});",
+        "line_hint": 777,
+        "target": "extension/dist/extension.js (chunk 24/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The string 'SECRET = \"kendr.accountSession.v1\"' was flagged as a hardcoded secret. This is actually a key name used for VS Code's SecretStorage API to persist session tokens securely. It is not a hardcoded credential value.",
+        "code_reference": "SECRET = \"kendr.accountSession.v1\"",
+        "line_hint": 1456,
+        "target": "extension/dist/extension.js (chunk 24/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 127.0.0.1:8765 and 127.0.0.1:5173 are loopback addresses. Given the extension description mentions a 'local Kendr Code backend', these are expected local development or runtime endpoints, not C2 servers.",
+        "code_reference": "http://127.0.0.1:8765",
+        "line_hint": 1803,
+        "target": "extension/dist/extension.js (chunk 24/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged a 'keylogger' pattern, but the code snippet shows a standard accessibility feature for keyboard navigation (handling 'keydown' to focus links). It does not buffer keystrokes or send them to a remote server.",
+        "code_reference": "addEventListener('keydown',(event)=>{const target=event.target.closest('[role=link]');if(target&&(ev",
+        "line_hint": 777,
+        "target": "extension/dist/extension.js (chunk 34/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged a 'hardcoded secret', but the string 'kendr.accountSession.v1' is a namespace key for VS Code's SecretStorage API, not a credential value itself. It is used to store/retrieve session data securely.",
+        "code_reference": "SECRET = \"kendr.accountSession.v1\"",
+        "line_hint": 1456,
+        "target": "extension/dist/extension.js (chunk 34/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged hardcoded IPs as potential C2. However, the code explicitly validates that the URL is a loopback address (127.0.0.1, localhost, ::1) and rejects any non-loopback or non-HTTP origin. This is a security control to ensure the extension only talks to the local desktop backend, not a remote server.",
+        "code_reference": "const loopback = parsed.hostname === \"127.0.0.1\" || parsed.hostname === \"localhost\" || parsed.hostname === \"[::1]\";",
+        "line_hint": 1803,
+        "target": "extension/dist/extension.js (chunk 34/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown event listener. However, the code explicitly checks for `event.target.closest('[role=link]')`, indicating it is handling keyboard navigation for accessibility (e.g., Enter/Space to activate links) within the webview UI, not capturing user input for exfiltration.",
+        "code_reference": "addEventListener('keydown',(event)=>{const target=event.target.closest('[role=link]');if(target&&(ev",
+        "line_hint": 777,
+        "target": "extension/dist/extension.js (chunk 39/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The string 'SECRET = \"kendr.accountSession.v1\"' was flagged as a hardcoded secret. This is actually a key name used to store session data in VS Code's SecretStorage API. It is not a credential itself but a reference to where the credential is stored.",
+        "code_reference": "SECRET = \"kendr.accountSession.v1\"",
+        "line_hint": 1456,
+        "target": "extension/dist/extension.js (chunk 39/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Connections to 127.0.0.1 (localhost) are flagged as potential C2. Given the extension's purpose is to act as a client for a local 'Kendr Code' backend (desktop app/CLI), connecting to localhost is the intended and expected behavior, not malicious exfiltration.",
+        "code_reference": "http://127.0.0.1:8765",
+        "line_hint": 1803,
+        "target": "extension/dist/extension.js (chunk 39/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown listener. However, the code explicitly checks for `event.target.closest('[role=link]')` and appears to be handling keyboard navigation for accessibility or UI focus within the webview, not capturing keystrokes for exfiltration. This is a standard UI interaction pattern.",
+        "code_reference": "addEventListener('keydown',(event)=>{const target=event.target.closest('[role=link]');if(target&&(ev",
+        "line_hint": 777,
+        "target": "extension/dist/extension.js (chunk 43/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The string 'SECRET = \"kendr.accountSession.v1\"' was flagged as a hardcoded secret. This is actually a key name used for `vscode.SecretStorage` to persist session tokens securely. It is not a credential itself but a reference to where the credential is stored.",
+        "code_reference": "SECRET = \"kendr.accountSession.v1\"",
+        "line_hint": 1456,
+        "target": "extension/dist/extension.js (chunk 43/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 127.0.0.1:8765 and 127.0.0.1:5173 are loopback addresses used for local development server previews (e.g., Vite default port). This is consistent with the extension's purpose of managing local code tasks and previews, not C2 communication.",
+        "code_reference": "\"http://127.0.0.1:8765\"",
+        "line_hint": 1803,
+        "target": "extension/dist/extension.js (chunk 43/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown listener. However, the code explicitly targets elements with `role=link` and is part of a UI interaction handler, not a global key capture or exfiltration mechanism. This is standard accessibility/UI code.",
+        "code_reference": "addEventListener('keydown',(event)=>{const target=event.target.closest('[role=link]');...",
+        "line_hint": 777,
+        "target": "extension/dist/extension.js (chunk 52/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The string 'kendr.accountSession.v1' was flagged as a hardcoded secret. It is actually a namespace key used for VS Code's SecretStorage API to store session tokens securely. It is not a credential itself.",
+        "code_reference": "SECRET = \"kendr.accountSession.v1\"",
+        "line_hint": 1456,
+        "target": "extension/dist/extension.js (chunk 52/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Connections to 127.0.0.1 (localhost) are flagged as potential C2. In the context of a 'local backend' extension, connecting to localhost is expected behavior for communicating with a local service (e.g., a language server or local agent daemon).",
+        "code_reference": "http://127.0.0.1:8765",
+        "line_hint": 1803,
+        "target": "extension/dist/extension.js (chunk 52/56)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The analyzed code chunk is a standard UI rendering module for a VS Code webview, handling form elements (selects, buttons) and input events for a chat interface. The static scanner hits are false positives: the 'keylogger' is a standard accessibility keyboard handler, the 'secret' is a storage key name, and the 'IP addresses' are localhost endpoints for local backend communication. The code aligns with the extension's stated purpose of providing a chat interface for an AI coding agent. No malicious behavior, credential harvesting, or obfuscation was detected in this chunk.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-31T05:56:22.307Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T09:37:43.066824+00:00Z"
+}

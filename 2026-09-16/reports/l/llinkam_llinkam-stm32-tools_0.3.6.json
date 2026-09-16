@@ -1,0 +1,206 @@
+{
+  "extension_id": "llinkam.llinkam-stm32-tools",
+  "display_name": "STM32 \u4e00\u952e\u70e7\u5f55 \u00b7 \u8c03\u8bd5\u5206\u79bb",
+  "version": "0.3.6",
+  "publisher": {
+    "name": "llinkam",
+    "verified": false
+  },
+  "vsix_sha256": "beb9a6007dcfb5d1793ee1e02be146f47348236c6f88ee436168b91f6c35e01e",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.270625,
+    "ai_vibe": 0.05,
+    "static": 0.5625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Spawning a detached, output-suppressed background process",
+        "file": "extension/extension.js",
+        "line": 351,
+        "snippet": "spawn(exe, [ioc], { cwd: path.dirname(ioc), detached: true, stdio: 'ignore'"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Spawning a detached, output-suppressed background process",
+        "file": "extension/extension.js",
+        "line": 352,
+        "snippet": "spawn('cmd.exe', ['/c', 'start', '\"\"', ioc], { detached: true, stdio: 'ignore'"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/core.js",
+        "line": 4,
+        "snippet": "const { spawn } = require('node:child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('node:child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 352,
+        "snippet": "spawn('cmd"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "www.st.com",
+      "source_file": "extension/extension.js",
+      "line": 12,
+      "context": "['programmerPath', 'STM32_Programmer_CLI', 'ST-Link \u70e7\u5f55', 'https://www.st.com/en/development-tools/stm32cubeprog.html'],",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "www.segger.com",
+      "source_file": "extension/extension.js",
+      "line": 13,
+      "context": "['jlinkPath', 'JLink', 'J-Link Commander', 'https://www.segger.com/downloads/jlink/'],",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "cmake.org",
+      "source_file": "extension/extension.js",
+      "line": 15,
+      "context": "['cmakePath', 'cmake', 'CMake', 'https://cmake.org/download/'],",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "openocd.org",
+      "source_file": "extension/extension.js",
+      "line": 17,
+      "context": "['openocdPath', 'openocd', 'OpenOCD', 'https://openocd.org/pages/getting-openocd.html']",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 4,
+    "blocks_seen": 4,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "The code is a legitimate STM32 flashing and debugging utility. It correctly uses `child_process` to interact with external tools like CMake, STM32_Programmer_CLI, and J-Link Commander, which is essential for its advertised purpose. The 'suspicious' patterns flagged by the static analyzer (detached processes, cmd.exe usage) are standard techniques for launching GUI applications on Windows without interfering with the IDE. There are no network exfiltration attempts, no access to sensitive user data (SSH keys, credentials), and no obfuscation. The extension's capabilities are fully proportional to its description."
+      },
+      {
+        "target": "extension/core.js",
+        "summary": "The code is a legitimate utility for flashing STM32 microcontrollers using ST-Link or J-Link. It uses `child_process.spawn` to execute standard vendor tools (STM32_Programmer_CLI, JLinkExe, CMake) with strictly validated arguments, preventing command injection. The file system operations are limited to locating executables in standard installation paths and finding firmware files within the workspace. There are no network exfiltration attempts, credential harvesting, obfuscation, or suspicious domains. The behavior is fully aligned with the extension's advertised purpose."
+      },
+      {
+        "target": "extension/devices.js",
+        "summary": "The code is a legitimate implementation of an STM32 flashing utility. It correctly uses child_process (via a core module) to execute ST-Link and J-Link CLI tools, which is the standard and necessary method for this functionality. All file operations are confined to the workspace or temporary directories for command scripts. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious network activity. The domains referenced (st.com, segger.com) are official vendor sites. The behavior is fully aligned with the extension's stated purpose."
+      },
+      {
+        "target": "extension/profiles.js",
+        "summary": "The code is a benign configuration management module for an STM32 flashing extension. It handles reading and updating VS Code settings related to build presets, device configurations, and toolchain paths. There are no network calls, no execution of arbitrary commands, no access to sensitive system files, and no obfuscation. The behavior is fully consistent with the extension's stated purpose of managing embedded development workflows."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged the use of `spawn` with `detached: true` and `stdio: 'ignore'` as a potential obfuscated background process. However, this is a standard and necessary pattern on Windows to launch a GUI application (STM32CubeMX) without blocking the VS Code extension host or creating a console window. The target executable is explicitly identified as STM32CubeMX, aligning with the extension's documented functionality.",
+        "code_reference": "spawn(exe, [ioc], { cwd: path.dirname(ioc), detached: true, stdio: 'ignore' ... })",
+        "line_hint": 351,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `cmd.exe /c start` is a fallback mechanism to open a file with its default associated application when the specific executable path is not found. This is a benign file association operation, not a reverse shell or command injection vector, as the input `ioc` is a file path selected by the user from the workspace.",
+        "code_reference": "spawn('cmd.exe', ['/c', 'start', '\"\"', ioc], ...)",
+        "line_hint": 352,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The extension checks for the presence of the 'marus25.cortex-debug' extension. This is a legitimate dependency check required to generate the F5 debug configuration, as stated in the README ('F5 \u4ecd\u7531 Cortex-Debug ... \u63d0\u4f9b'). It is not reconnaissance.",
+        "code_reference": "vscode.extensions.getExtension('marus25.cortex-debug')",
+        "line_hint": 217,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a tool that is primarily triggered by user commands (F5, Ctrl+Alt+U) or specific view interactions. While not malicious, it consumes resources at startup for a utility that could be lazy-loaded.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/core.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a tool that requires a specific STM32 project context. While not malicious, it consumes resources on startup for all workspaces.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/devices.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate STM32 flashing and debugging utility. It correctly uses `child_process` to interact with external tools like CMake, STM32_Programmer_CLI, and J-Link Commander, which is essential for its advertised purpose. The 'suspicious' patterns flagged by the static analyzer (detached processes, cmd.exe usage) are standard techniques for launching GUI applications on Windows without interfering with the IDE. There are no network exfiltration attempts, no access to sensitive user data (SSH keys, credentials), and no obfuscation. The extension's capabilities are fully proportional to its description.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 27,
+    "published_date": "2026-09-15T12:07:45.49Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T13:41:47.630275+00:00Z"
+}

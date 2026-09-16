@@ -1,0 +1,365 @@
+{
+  "extension_id": "zhangjunyu.luaaddin",
+  "display_name": "Lua Addin",
+  "version": "0.1.3",
+  "publisher": {
+    "name": "zhangjunyu",
+    "verified": false
+  },
+  "vsix_sha256": "b30149b7e8c792a0b5f7412025559ece5abdd4b657344a5f3ab10202aa77ac83",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.24312499999999998,
+    "ai_vibe": 0.15,
+    "static": 0.3125,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/out/core/parserWorkerPool.js",
+        "line": 51,
+        "snippet": "os.cpus()"
+      }
+    ],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'better-sqlite3' has 'install': prebuild-install || node-gyp rebuild --release",
+        "file": "extension/node_modules/better-sqlite3/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "HIGH_ENTROPY_BLOB",
+        "severity": "HIGH",
+        "description": "File 'extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node' has high entropy (6.58/8.0) \u2014 possible encrypted shellcode or packed payload (1920512 bytes)",
+        "file": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 50,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 17,
+    "blocks_seen": 17,
+    "summaries": [
+      {
+        "target": "extension/out/core/parserWorkerPool.js (chunk 1/3)",
+        "summary": "This file defines a `ParserWorkerPool` class designed to manage a pool of worker threads for parsing Lua code. The code is clean, well-structured, and uses standard Node.js APIs (`os`, `path`, `worker_threads`, `v8`). The flagged `os.cpus()` call is a benign performance heuristic. The use of `v8` suggests efficient serialization of data between the main thread and workers, which is appropriate for a language service. No suspicious network calls, obfuscation, or credential harvesting are present in this chunk."
+      },
+      {
+        "target": "extension/out/core/parserWorkerPool.js (chunk 2/3)",
+        "summary": "This chunk of code implements a worker thread pool for parsing Lua files. The logic is standard for a language server extension: it manages a queue of parse tasks, distributes them to a pool of worker threads, handles results/errors, and recycles workers to prevent memory leaks. The only flagged item, `os.cpus()`, is a false positive in this context as it is used for pool sizing. There are no network calls, file system reads of sensitive paths, or obfuscation in this specific chunk. The extension's use of native addons (better-sqlite3) and worker threads is proportional to its stated purpose of providing a robust Lua language service with indexing."
+      },
+      {
+        "target": "extension/out/core/parserWorkerPool.js (chunk 3/3)",
+        "summary": "This file chunk represents the tail end of a `ParserWorkerPool` implementation. The logic is standard for managing a queue of parsing tasks and dispatching them to Web Workers. The flagged `os.cpus()` call is likely a false positive in the context of a language server, as it is commonly used to size the worker pool based on available CPU cores. The high-entropy native addon (`better-sqlite3`) is a well-known dependency for SQLite operations, which aligns with the extension's stated use of a 'SQLite workspace index'. No malicious behavior is evident in this specific file."
+      },
+      {
+        "target": "extension/out/core/parserWorker.js",
+        "summary": "The file `parserWorker.js` is a standard Node.js worker thread implementation for a Lua language service. It listens for messages from the main thread, parses Lua text using a local parser module, serializes the result using V8, and posts the result back to the parent thread. The logic is straightforward and consistent with a language server's parsing worker. The only static rule hit was a false positive regarding variable naming. The presence of native dependencies (better-sqlite3) is justified by the extension's documented use of SQLite for workspace indexing. No obfuscation, credential harvesting, or suspicious network calls were found in this file."
+      },
+      {
+        "target": "extension/out/core/parser.js (chunk 1/32)",
+        "summary": "The visible source chunk implements Lua parsing helpers using the luaparse library and local semantic modules, with no evidence of credential access, command execution, network exfiltration, obfuscation, dynamic code evaluation, or remote tooling. The extension's advertised purpose as a Unity Lua language/debug extension is proportional to the visible parser code and the included SQLite native dependency. The static high-entropy native addon and third-party domains in node_modules appear consistent with normal dependencies rather than malicious behavior. Overall assessment is clean, with reduced confidence due to only a small portion of the file being available."
+      },
+      {
+        "target": "extension/out/core/parser.js (chunk 2/32)",
+        "summary": "The analyzed code chunk is part of a Lua language service parser. It implements robust error recovery for incomplete Lua code (e.g., during autocomplete) by applying regex transformations to make the text parseable, then building a dependency summary. The logic is consistent with a legitimate language server implementation. The static findings regarding the native SQLite module are false positives given the extension's documented purpose of using SQLite for indexing. No malicious behavior, obfuscation, or capability disconnects were observed."
+      },
+      {
+        "target": "extension/out/core/parser.js (chunk 3/32)",
+        "summary": "The provided code chunk is a pure JavaScript module responsible for semantic analysis and data structuring for a Lua language service. It performs data transformation, sorting, and mapping of symbols, references, and control flow graphs. There are no network calls, file system operations, process execution, or obfuscation techniques present in this chunk. The code aligns perfectly with the extension's stated purpose of providing Lua language features (syntax highlighting, completion, debugging support) for Unity projects. The static analysis findings regarding the native SQLite module are consistent with legitimate dependencies for a language server that requires workspace indexing."
+      },
+      {
+        "target": "extension/out/core/parser.js (chunk 4/32)",
+        "summary": "The provided code chunk is a segment of a Lua language service parser. It contains standard logic for building symbol instances, local variable relation edges, and materializing aliased members within a semantic analysis context. There are no network calls, file system access to sensitive paths, process execution, or obfuscation patterns in this chunk. The static analysis findings regarding the native addon are consistent with the extension's documented functionality (SQLite indexing) and represent a false positive for malicious intent. The code aligns perfectly with the extension's stated purpose of providing Lua language features."
+      },
+      {
+        "target": "extension/out/core/parser.js (chunk 5/32)",
+        "summary": "The provided code chunk is a fragment of a Lua language server's semantic analysis engine. It implements logic for resolving table aliases and projecting member references, which is consistent with the extension's advertised purpose of providing advanced Lua language features (syntax highlighting, completion, semantic analysis) for Unity projects. The code contains no network calls, no file system access to sensitive locations, no process execution, and no obfuscation. The static analysis findings regarding the native SQLite module are false positives related to the nature of compiled binaries. The extension appears to be a legitimate, complex language tool."
+      },
+      {
+        "target": "extension/out/core/parser.js (chunk 6/32)",
+        "summary": "The analyzed code chunk is part of a Lua language service parser, specifically handling table alias resolution and member identity assignment. The logic is benign and aligns perfectly with the extension's advertised functionality (Lua syntax highlighting, code completion, semantic analysis). The static analysis findings regarding the 'better-sqlite3' native addon are false positives, as this is a standard dependency for the extension's stated SQLite indexing feature. No malicious indicators, obfuscation, or capability disconnects were found in the provided source code."
+      },
+      {
+        "target": "extension/out/core/parser.js (chunk 7/32)",
+        "summary": "The provided code chunk is a standard part of a Lua language server's semantic analysis engine. It handles AST traversal, symbol resolution, and control flow graph construction. The code is clean, well-structured, and aligns perfectly with the extension's advertised purpose of providing Lua syntax highlighting, semantic analysis, and debugging for Unity projects. No malicious or suspicious behavior was detected in this chunk."
+      },
+      {
+        "target": "extension/out/core/luaFacts.js",
+        "summary": "The analyzed file `luaFacts.js` is a benign data module that defines Lua keywords and standard library globals for syntax highlighting and semantic analysis. It contains no executable logic, network calls, or file system access. The extension's overall capabilities (Lua language server, debugging, SQLite indexing) are proportional to its advertised purpose. The static analysis findings regarding the native SQLite addon are false positives consistent with legitimate native module usage."
+      },
+      {
+        "target": "extension/out/core/controlFlow.js (chunk 1/5)",
+        "summary": "The provided code chunk is a pure JavaScript implementation of a control flow graph builder for Lua AST nodes. It performs logical graph construction (nodes, edges, labels) without any interaction with the file system, network, or child processes. The code aligns perfectly with the extension's advertised purpose of providing a Lua language service and debugger. The static analysis findings regarding the native SQLite module are consistent with the documented features and do not indicate malicious intent."
+      },
+      {
+        "target": "extension/out/core/controlFlow.js (chunk 2/5)",
+        "summary": "The provided code chunk is a segment of a control flow graph (CFG) builder for Lua code. It handles AST nodes like 'GotoStatement', 'LabelStatement', 'IfStatement', and logical expressions to construct a graph for semantic analysis. This logic is entirely consistent with the extension's stated purpose of providing a Lua language service (syntax highlighting, code completion, semantic analysis). There are no network calls, file system access to sensitive paths, process execution, or obfuscation in this chunk. The flagged native addon is a legitimate dependency for the documented SQLite indexing feature. The code is benign."
+      },
+      {
+        "target": "extension/out/core/controlFlow.js (chunk 3/5)",
+        "summary": "The provided code chunk is a pure JavaScript implementation of a control flow graph (CFG) builder for Lua AST nodes. It handles logical expressions, loops (while, repeat), and terminating statements to construct a graph structure for analysis. There are no network calls, file system operations, process execution, or obfuscation present in this chunk. The code aligns perfectly with the extension's stated purpose of providing Lua language services and debugging features. The flagged native addon is a legitimate dependency for the documented SQLite indexing feature."
+      },
+      {
+        "target": "extension/out/core/controlFlow.js (chunk 4/5)",
+        "summary": "The provided code chunk is a pure JavaScript implementation of Control Flow Graph (CFG) construction and static analysis logic for Lua code. It contains no network calls, file system access, process execution, or obfuscation. The logic is consistent with the extension's purpose as a Lua language server and debugger. The static analysis findings regarding the native SQLite module are benign and expected for this type of extension."
+      },
+      {
+        "target": "extension/out/core/controlFlow.js (chunk 5/5)",
+        "summary": "The provided code chunk is a benign fragment of a control flow analysis module. It implements standard graph traversal (BFS) and position comparison logic, which are consistent with the extension's stated purpose of providing Lua language services and debugging features. No malicious indicators, obfuscation, or suspicious network activity were detected in this source file."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.cpus()` as a critical info-stealer indicator. However, in this context, it is used solely to determine the optimal number of worker threads for the parser pool (`Math.min(4, Math.max(1, os.cpus().length - 1))`). This is a standard performance optimization pattern, not system fingerprinting for exfiltration.",
+        "code_reference": "constructor(size = Math.min(4, Math.max(1, os.cpus().length - 1)), maxTasksPerWorker = 512)",
+        "line_hint": 51,
+        "target": "extension/out/core/parserWorkerPool.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `worker_threads` and `v8` (imported but likely used in subsequent chunks for serialization/deserialization of parse tasks). This is consistent with a language server/parser that needs to offload heavy parsing tasks from the main UI thread to avoid blocking the editor.",
+        "code_reference": "const worker_threads_1 = require(\"worker_threads\"); const v8 = __importStar(require(\"v8\"));",
+        "line_hint": 48,
+        "target": "extension/out/core/parserWorkerPool.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `os.cpus()` as a system fingerprinting call (line 51). However, in the context of a `parserWorkerPool` for a language server, this is a standard and benign pattern used to determine the number of available CPU cores in order to size the worker thread pool (e.g., `Math.min(4, os.cpus().length)`). It is not combined with network exfiltration or other fingerprinting APIs in this chunk.",
+        "code_reference": "os.cpus()",
+        "line_hint": 51,
+        "target": "extension/out/core/parserWorkerPool.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "The code uses `worker_threads` to spawn `parserWorker.js`. This is a standard Node.js pattern for offloading CPU-intensive parsing tasks (like Lua syntax analysis) to background threads to keep the main VS Code extension thread responsive. The worker path is relative to `__dirname`, which is safe.",
+        "code_reference": "new worker_threads_1.Worker(path.join(__dirname, 'parserWorker.js'))",
+        "line_hint": 82,
+        "target": "extension/out/core/parserWorkerPool.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "The code uses `v8.deserialize` to handle structured data passed from the worker. This is a standard Node.js mechanism for efficient inter-thread communication, not an obfuscation or payload staging technique.",
+        "code_reference": "v8.deserialize(Buffer.from(message.payload))",
+        "line_hint": 103,
+        "target": "extension/out/core/parserWorkerPool.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `os.cpus()` at line 51 as a system fingerprinting call. However, this chunk (3/3) contains only the tail end of the `ParserWorkerPool` class (methods `failSlot` and `dispatch`). The `os.cpus()` call is likely located in the earlier part of the file (not shown in this chunk) where the pool initializes its worker count. In a parser worker pool, using `os.cpus()` to determine the number of parallel workers is a standard, benign optimization pattern, not necessarily part of an info-stealer unless combined with network exfiltration (which is not evident in this file).",
+        "code_reference": "os.cpus()",
+        "line_hint": 51,
+        "target": "extension/out/core/parserWorkerPool.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "The code implements a standard worker pool pattern using `postMessage` to communicate with Web Workers. The data being sent (`uri`, `text`, `typeGuards`) is consistent with a language server parsing Lua files. No obfuscation or suspicious network calls are present in this chunk.",
+        "code_reference": "slot.worker.postMessage",
+        "line_hint": 28,
+        "target": "extension/out/core/parserWorkerPool.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Directory traversal paired with network send' at line 49. However, the code `const globals = request.serializedOnly ? [...parsed.globalsAssigned.keys()] : undefined;` is simply extracting keys from a Map object returned by the parser. There is no file system access or network transmission in this specific line; the variable name `globals` likely triggered a heuristic for global variable access or environment leakage, but it refers to Lua global variables.",
+        "code_reference": "const globals = request.serializedOnly ? [...parsed.globalsAssigned.keys()] : undefined;",
+        "line_hint": 49,
+        "target": "extension/out/core/parserWorker.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The package includes a native addon `better-sqlite3.node` with high entropy (6.58/8.0). While high entropy in native binaries is common due to compression or packing, it warrants a note. However, the README explicitly mentions 'SQLite workspace index', making this dependency proportional to the extension's stated purpose of indexing large Unity Lua projects.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/parserWorker.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "INCOMPLETE_ANALYSIS",
+        "description": "Only chunk 1 of 32 of extension/out/core/parser.js was provided, so later portions could contain additional behavior not visible here. The visible code is consistent with a Lua parser/language-service component.",
+        "code_reference": "SOURCE CODE (chunk 1 of 32; 22% of this file is analyzed in total)",
+        "line_hint": null,
+        "target": "extension/out/core/parser.js (chunk 1/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NATIVE_ADDON_EXPECTED",
+        "description": "The package includes better-sqlite3 native .node binary with high entropy. This is expected for a VS Code extension that advertises SQLite workspace indexing, and high entropy in compiled native modules is not by itself malicious.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/parser.js (chunk 1/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "UNUSED_IMPORT_VISIBLE",
+        "description": "The visible chunk imports crypto but does not show its use. This may be used later for hashing, cache keys, or integrity checks; it is not suspicious in isolation.",
+        "code_reference": "const crypto = __importStar(require(\"crypto\"));",
+        "line_hint": "approx. line 45",
+        "target": "extension/out/core/parser.js (chunk 1/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged the native addon 'better_sqlite3.node' as having high entropy. This is a standard characteristic of compiled native binaries (ELF/PE) and is expected for the 'better-sqlite3' dependency, which is explicitly mentioned in the extension's README for workspace indexing. It is not an indicator of malicious packing or shellcode.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/parser.js (chunk 2/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged a native addon (better_sqlite3.node) with high entropy. This is a standard, well-known npm package used for SQLite database operations. The high entropy is characteristic of compiled native binaries and is not indicative of malicious packing or shellcode in this context.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/parser.js (chunk 3/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged the 'better-sqlite3' native addon as a high-entropy blob and potential shellcode. This is a false positive. 'better-sqlite3' is a well-known, legitimate npm package used for synchronous SQLite operations. The high entropy is characteristic of compiled native binaries (PE/EXE/DLL) and is expected for this dependency. The extension's README explicitly mentions 'SQLite workspace index', confirming the legitimate use of this library.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/parser.js (chunk 4/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged the native addon 'better-sqlite3.node' as having high entropy and being a potential packed payload. This is a false positive. 'better-sqlite3' is a widely used, legitimate npm package for SQLite database operations. The high entropy is characteristic of compiled native binaries (C++ code compiled to machine code), not malicious shellcode or encryption. The extension's README explicitly mentions using a 'SQLite workspace index', confirming the legitimate use of this dependency.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/parser.js (chunk 5/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged the native addon 'better-sqlite3.node' as having high entropy and being a potential packed payload. This is a false positive. 'better-sqlite3' is a widely used, legitimate npm package for SQLite database access. The high entropy is characteristic of compiled native binaries (C++/Node.js addons) and is expected for this dependency. The extension's README explicitly mentions 'SQLite workspace index', confirming the legitimate use of this library.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/parser.js (chunk 6/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The provided code chunk (parser.js) contains logic for resolving Lua table aliases and assigning member identities. This is consistent with the extension's stated purpose of providing Lua language services (syntax analysis, semantic highlighting, reference finding). There are no network calls, file system access to sensitive paths, or execution of arbitrary commands in this chunk.",
+        "code_reference": "extension/out/core/parser.js",
+        "line_hint": null,
+        "target": "extension/out/core/parser.js (chunk 6/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged the native addon 'better-sqlite3.node' as a high-entropy blob. This is a false positive; the file is a standard compiled C++ native module for the well-known 'better-sqlite3' npm package, which is a legitimate dependency for the extension's stated feature of using a SQLite workspace index.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/parser.js (chunk 7/32)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged the native addon 'better-sqlite3.node' as a high-entropy blob. This is a false positive; the file is a standard pre-compiled SQLite native module required for the extension's documented workspace indexing feature. The high entropy is characteristic of compiled binary code, not malicious packing.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/luaFacts.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged the native addon 'better_sqlite3.node' as a high-entropy blob and potential packed payload. This is a false positive; the file is a standard pre-compiled SQLite native module required for the extension's documented workspace indexing feature. The high entropy is typical for compiled binary libraries.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/controlFlow.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged the native addon 'better_sqlite3.node' as a high-entropy blob. This is a false positive. The extension is a Lua language server that explicitly uses SQLite for workspace indexing (as documented in the README). 'better-sqlite3' is a standard, well-known npm package for Node.js, and its native binary naturally exhibits high entropy due to being a compiled binary. The file is located in 'node_modules', indicating it is a dependency, not custom malicious code.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/controlFlow.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged a high-entropy blob in 'better-sqlite3.node'. This is a standard native Node.js addon (SQLite driver) required for the extension's documented 'SQLite workspace index' feature. The high entropy is typical for compiled binary libraries and does not indicate malicious packing or shellcode in this context.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/controlFlow.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged the native addon 'better-sqlite3.node' as a high-entropy blob. This is a false positive; the file is a standard compiled C++ native module for SQLite, which is a legitimate dependency for the extension's stated 'SQLite workspace index' feature. The high entropy is typical for compiled binary code.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/controlFlow.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static analysis flagged the native addon 'better-sqlite3.node' as having high entropy. This is a false positive; native compiled binaries (C++/Rust) typically exhibit high entropy due to compression or packing, and better-sqlite3 is a well-known, legitimate dependency for SQLite operations in Node.js.",
+        "code_reference": "extension/node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "line_hint": null,
+        "target": "extension/out/core/controlFlow.js (chunk 5/5)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This file defines a `ParserWorkerPool` class designed to manage a pool of worker threads for parsing Lua code. The code is clean, well-structured, and uses standard Node.js APIs (`os`, `path`, `worker_threads`, `v8`). The flagged `os.cpus()` call is a benign performance heuristic. The use of `v8` suggests efficient serialization of data between the main thread and workers, which is appropriate for a language service. No suspicious network calls, obfuscation, or credential harvesting are present in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "4 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 4,
+    "published_date": "2026-08-28T06:30:07.577Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T04:31:44.137974+00:00Z"
+}

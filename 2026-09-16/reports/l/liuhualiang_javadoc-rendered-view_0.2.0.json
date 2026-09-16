@@ -1,0 +1,225 @@
+{
+  "extension_id": "liuhualiang.javadoc-rendered-view",
+  "display_name": "JavaDoc Rendered View",
+  "version": "0.2.0",
+  "publisher": {
+    "name": "liuhualiang",
+    "verified": false
+  },
+  "vsix_sha256": "6dfafb807943afbd401f873b2060791e286b2d906d98694503c064af1e8c3caf",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.20406249999999998,
+    "ai_vibe": 0.15,
+    "static": 0.15625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/extension.js",
+        "line": 952,
+        "snippet": "SECRET = \"javadocRenderedView.apiKey\""
+      }
+    ],
+    "high": [],
+    "total": 4
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.openai.com",
+      "source_file": "extension/out/extension.js",
+      "line": 1177,
+      "context": "const baseUrl = cfg.get(\"translate.baseUrl\", \"https://api.openai.com/v1\");",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 6,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 2/16)",
+        "summary": "This chunk of the extension source code primarily contains logic for parsing JavaDoc comments (stripping wrappers, decoding HTML entities, parsing block tags) and setting up the extension's activation context. The code appears clean and well-structured for a JavaDoc rendering tool. The only network-related indicator is the connection to `api.openai.com`, which aligns perfectly with the advertised LLM translation feature. The 'leaked secret' flag is a false positive for a SecretStorage key name. No obfuscation, child process execution, or suspicious file system access was detected in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/16)",
+        "summary": "This chunk of the extension source code contains standard JavaDoc parsing logic (handling tags like @param, @link, @code) and utility functions for decoding HTML entities. The code is clean, readable, and aligns perfectly with the extension's stated purpose of rendering JavaDoc comments. The static rule hits are false positives related to standard VS Code SecretStorage usage. No obfuscation, arbitrary command execution, or suspicious network calls were found in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/16)",
+        "summary": "This chunk of the extension source code contains standard logic for parsing JavaDoc comments (handling braces, links, and HTML entities) and rendering them into safe HTML. The code uses an allowlist for HTML tags and proper escaping, indicating careful implementation. The static rule hits regarding secrets are false positives caused by the scanner confusing a storage key name with a secret value. The network activity is limited to the documented LLM API integration. No obfuscation, arbitrary command execution, or sensitive file access was found in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 9/16)",
+        "summary": "This chunk of the extension source code implements a translation caching mechanism and an LLM client for sending JavaDoc comments to an OpenAI-compatible API. The code uses standard Node.js modules (`crypto`, `fs`, `path`) for local caching and `fetch` for network requests. The 'leaked secret' flag is a false positive for a storage key name. The network activity is proportional to the extension's advertised feature of LLM-based translation. No obfuscation or suspicious system access was detected in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 10/16)",
+        "summary": "This chunk of the extension source code handles the logic for sending Javadoc blocks to an LLM API for translation and parsing the response. The code is straightforward, using standard fetch and JSON parsing. The 'leaked secret' flag is a false positive for a storage key. The network call is expected for the translation feature. No obfuscation or suspicious system access is observed in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 12/16)",
+        "summary": "This chunk of code implements the translation logic for the JavaDoc Rendered View extension. It retrieves the user's API key from the extension's private SecretStorage, reads configuration for the LLM endpoint and model, and sends JavaDoc text to the API for translation. The behavior is proportional to the extension's stated purpose (IDEA-style JavaDoc rendering with optional LLM translation). The 'leaked secret' flag is a false positive for a storage key name. No obfuscation, credential harvesting, or suspicious system access was observed in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a hardcoded secret at line 952 (`SECRET = \"javadocRenderedView.apiKey\"`). However, this string is a key identifier used to access the extension's own `SecretStorage` (confirmed by the `context.secrets.get` hit at line 1048). It is not a hardcoded credential value itself, but a reference to where the user's API key is stored. This is standard VS Code extension practice for managing user-provided secrets.",
+        "code_reference": "SECRET = \"javadocRenderedView.apiKey\"",
+        "line_hint": 952,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_CALL",
+        "description": "The extension connects to `api.openai.com`. Given the extension's stated purpose of providing 'LLM translation to Chinese' via an 'OpenAI compatible LLM API', this network call is expected and proportional to the functionality. The user provides their own API key, which mitigates the risk of data exfiltration to a third-party service not explicitly documented.",
+        "code_reference": "api.openai.com",
+        "line_hint": 1177,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a hardcoded secret at line 952, but the code `SECRET = \"javadocRenderedView.apiKey\"` is actually a string key used to look up a value in VS Code's SecretStorage API, not the secret value itself. This is standard practice for extensions storing user-provided API keys.",
+        "code_reference": "SECRET = \"javadocRenderedView.apiKey\"",
+        "line_hint": 952,
+        "target": "extension/out/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged credential theft at line 1048, but `context.secrets.get()` accesses the extension's own isolated SecretStorage scope, which is the recommended way for VS Code extensions to store sensitive user data like API keys.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1048,
+        "target": "extension/out/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_CALL",
+        "description": "The extension connects to `api.openai.com` for LLM translation. This is consistent with the extension's documented feature of using an OpenAI-compatible API for translation. The domain is well-known and expected.",
+        "code_reference": "api.openai.com",
+        "line_hint": 1177,
+        "target": "extension/out/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 952, but the code `SECRET = \"javadocRenderedView.apiKey\"` is merely a string constant defining the key name used to access the extension's private SecretStorage. It is not the secret value itself.",
+        "code_reference": "SECRET = \"javadocRenderedView.apiKey\"",
+        "line_hint": 952,
+        "target": "extension/out/extension.js (chunk 4/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged credential theft at line 1048, but `context.secrets.get()` accesses the extension's isolated SecretStorage scope, which is the standard VS Code API for storing user-provided API keys securely. This is not cross-extension access or system credential harvesting.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1048,
+        "target": "extension/out/extension.js (chunk 4/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension connects to `api.openai.com` (or a compatible endpoint) for LLM translation. This is consistent with the documented feature 'LLM translation to Chinese' and uses a well-known, reputable domain.",
+        "code_reference": "api.openai.com",
+        "line_hint": 1177,
+        "target": "extension/out/extension.js (chunk 4/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a hardcoded secret at line 952, but the code `SECRET = \"javadocRenderedView.apiKey\"` is actually a key name string used to look up a value in VS Code's SecretStorage API, not the secret value itself.",
+        "code_reference": "SECRET = \"javadocRenderedView.apiKey\"",
+        "line_hint": 952,
+        "target": "extension/out/extension.js (chunk 9/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_CALL",
+        "description": "The code constructs a URL for an LLM API endpoint (`/chat/completions`). While the base URL is dynamic (from options), the package indicators show a reference to `api.openai.com`. This is consistent with the extension's stated purpose of supporting OpenAI-compatible APIs for translation.",
+        "code_reference": "const url = `${base}/chat/completions`;",
+        "line_hint": 1177,
+        "target": "extension/out/extension.js (chunk 9/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'SECRET = \"javadocRenderedView.apiKey\"' as a hardcoded secret. However, this is a string key used to access the extension's isolated SecretStorage, not the secret value itself. The actual API key is stored securely by VS Code.",
+        "code_reference": "var API_KEY_SECRET = \"javadocRenderedView.apiKey\";",
+        "line_hint": 952,
+        "target": "extension/out/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The code makes a POST request to an LLM API endpoint (likely api.openai.com or a compatible endpoint) to translate Javadoc comments. This is consistent with the extension's advertised feature of 'LLM translation to Chinese'. The API key is passed via Bearer token from user configuration.",
+        "code_reference": "const res = await fetchFn(url, { method: \"POST\", headers: { ... Authorization: `Bearer ${options.apiKey}` ... } ... });",
+        "line_hint": 960,
+        "target": "extension/out/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = \"javadocRenderedView.apiKey\"` as a hardcoded secret. This is actually a constant string key used to look up the user's API key in VS Code's SecretStorage. It is not the secret value itself.",
+        "code_reference": "const apiKey = await this.context.secrets.get(API_KEY_SECRET);",
+        "line_hint": 952,
+        "target": "extension/out/extension.js (chunk 12/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension makes network calls to `api.openai.com` (or a user-configured base URL) to perform LLM translation. This is consistent with the extension's advertised feature of translating JavaDoc comments via an OpenAI-compatible API.",
+        "code_reference": "const baseUrl = cfg.get(\"translate.baseUrl\", \"https://api.openai.com/v1\");",
+        "line_hint": 958,
+        "target": "extension/out/extension.js (chunk 12/16)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the extension source code primarily contains logic for parsing JavaDoc comments (stripping wrappers, decoding HTML entities, parsing block tags) and setting up the extension's activation context. The code appears clean and well-structured for a JavaDoc rendering tool. The only network-related indicator is the connection to `api.openai.com`, which aligns perfectly with the advertised LLM translation feature. The 'leaked secret' flag is a false positive for a SecretStorage key name. No obfuscation, child process execution, or suspicious file system access was detected in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 17,
+    "published_date": "2026-09-11T02:53:18.833Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T04:11:21.055070+00:00Z"
+}

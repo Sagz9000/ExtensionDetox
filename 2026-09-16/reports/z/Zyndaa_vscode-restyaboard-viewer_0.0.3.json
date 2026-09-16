@@ -1,0 +1,134 @@
+{
+  "extension_id": "Zyndaa.vscode-restyaboard-viewer",
+  "display_name": "Restyaboard Viewer",
+  "version": "0.0.3",
+  "publisher": {
+    "name": "Zyndaa",
+    "verified": false
+  },
+  "vsix_sha256": "",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25187499999999996,
+    "ai_vibe": 0.15,
+    "static": 0.4375,
+    "behavioral": 0.0,
+    "trust_signal": 0.6,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Generic hardcoded API key",
+        "file": "extension/out/restyaboard/constants.js",
+        "line": 13,
+        "snippet": "API_KEY: \"restyaboardViewerApiKey\""
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/restyaboard/constants.js",
+        "line": 15,
+        "snippet": "TOKEN: \"restyaboardViewerApiToken\""
+      }
+    ],
+    "high": [
+      {
+        "check": "ACTIVATION_WILDCARD",
+        "severity": "HIGH",
+        "description": "Extension uses wildcard activation: ['*']",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "LIFECYCLE_SCRIPT",
+        "severity": "HIGH",
+        "description": "Extension has 'postinstall' script: node ./node_modules/vscode/bin/install",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "zyndaa.com",
+      "source_file": "extension/package.json",
+      "line": 9,
+      "context": "\"url\": \"https://zyndaa.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 9,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/out/restyaboard/constants.js",
+        "summary": "This file is a standard constants module for the Restyaboard Viewer extension. It defines configuration keys, view column indices, and item types. The 'leaked secrets' flagged by the static engine are false positives; they are storage keys for user-provided credentials, not hardcoded credentials. The code is plain, unobfuscated, and consistent with the extension's stated purpose of browsing Restyaboard boards."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'API_KEY' and 'API_TOKEN' as hardcoded secrets. However, these are string literals used as keys for the VS Code global state storage (e.g., context.globalState.get('restyaboardViewerApiKey')), not the actual secret values themselves. The actual secrets are stored by the user at runtime.",
+        "code_reference": "exports.GLOBALSTATE_CONFIG = { API_KEY: \"restyaboardViewerApiKey\", ... }",
+        "line_hint": 13,
+        "target": "extension/out/restyaboard/constants.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*' (all events). While common for extensions that need to register commands/views early, it is slightly broader than necessary for a sidebar viewer, though not inherently malicious.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/restyaboard/constants.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This file is a standard constants module for the Restyaboard Viewer extension. It defines configuration keys, view column indices, and item types. The 'leaked secrets' flagged by the static engine are false positives; they are storage keys for user-provided credentials, not hardcoded credentials. The code is plain, unobfuscated, and consistent with the extension's stated purpose of browsing Restyaboard boards.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 131,
+    "published_date": "2020-03-31T06:01:03.177+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-09T01:49:13.042121+00:00Z"
+}

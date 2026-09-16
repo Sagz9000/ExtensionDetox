@@ -1,0 +1,165 @@
+{
+  "extension_id": "ricky-huang.code-history",
+  "display_name": "Code History (AI Code Archaeology)",
+  "version": "0.1.10",
+  "publisher": {
+    "name": "ricky-huang",
+    "verified": false
+  },
+  "vsix_sha256": "730c24b2fee43bc019ed6c07c35e498002b2c9afd03a21dda4e9091bedca2aed",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25820253907376806,
+    "ai_vibe": 0.1,
+    "static": 0.44281015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/svn/svnAuthService.js",
+        "line": 63,
+        "snippet": "PASSWORD = 'codeHistory.svn.password'"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/svn/svnCli.js",
+        "line": 5,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/svn/svnCli.js",
+        "line": 5,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/svn/svnCli.js",
+        "line": 7,
+        "snippet": "const execFileAsync = (0, util_1.promisify)(child_process_1.execFile);"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/svn/svnCli.js",
+        "line": 5,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 4,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/out/llm/llmClient.js",
+        "summary": "The code is a standard LLM client implementation for a VS Code extension that analyzes SVN history. It correctly uses VS Code's SecretStorage for API keys and makes network requests only to user-configured endpoints (local LLMs or Google Gemini). There are no signs of malicious behavior, data exfiltration, or obfuscation. The 'disconnect' regarding activation events is minor and common in extensions that want to be ready for immediate use. The raw TCP implementation is a specific technical choice to handle local network connectivity issues, not a security risk."
+      },
+      {
+        "target": "extension/out/svn/svnAuthService.js",
+        "summary": "The code is a standard implementation of SVN credential management for a VS Code extension. It correctly uses VS Code's SecretStorage API to securely store passwords and standard configuration APIs for usernames. There are no signs of malicious behavior, data exfiltration, or unauthorized system access. The static scanner hits are false positives or minor behavioral notes that do not indicate risk."
+      },
+      {
+        "target": "extension/out/svn/svnCli.js",
+        "summary": "The code is a standard wrapper for the SVN command-line client, using `child_process.execFile` to execute specific, whitelisted SVN commands (info, log, blame, diff, cat). It does not execute arbitrary user input as shell commands, nor does it exfiltrate data or access sensitive system files. The use of `child_process` is appropriate and necessary for the extension's stated purpose of analyzing SVN history. The static rule hit for `child_process` is a false positive in the context of a legitimate SCM tool. The extension's capabilities are proportional to its advertised function."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a tool that is primarily triggered manually via commands (e.g., 'codeHistory.analyzeSelectedCode'). While not malicious, this increases the attack surface slightly by loading the extension at startup rather than on-demand.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/llm/llmClient.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "INFO",
+        "description": "The code implements a raw TCP socket connection ('rawHttpTcpStream') to bypass VS Code's proxy settings for local LLM instances. This is a legitimate feature for connecting to local servers (like Ollama) that might be blocked by corporate proxies, but it is an unusual implementation detail that warrants awareness.",
+        "code_reference": "rawHttpTcpStream method",
+        "line_hint": 260,
+        "target": "extension/out/llm/llmClient.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'codeHistory.svn.password' as a hardcoded secret. This is a false positive; it is a string key used to identify the entry in VS Code's SecretStorage, not the actual password value.",
+        "code_reference": "SvnAuthService.SECRET_KEY_PASSWORD = 'codeHistory.svn.password';",
+        "line_hint": 63,
+        "target": "extension/out/svn/svnAuthService.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this ensures the extension is ready for SCM views, it is broader than necessary for a tool primarily triggered by user commands (like 'analyzeSelectedCode'). However, this is a common pattern for SCM extensions to ensure availability and is not inherently malicious.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/svn/svnAuthService.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a tool that is primarily triggered by user commands (e.g., analyzing selected code). While not malicious, this increases the attack surface slightly by loading the extension at startup rather than on-demand.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/svn/svnCli.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard LLM client implementation for a VS Code extension that analyzes SVN history. It correctly uses VS Code's SecretStorage for API keys and makes network requests only to user-configured endpoints (local LLMs or Google Gemini). There are no signs of malicious behavior, data exfiltration, or obfuscation. The 'disconnect' regarding activation events is minor and common in extensions that want to be ready for immediate use. The raw TCP implementation is a specific technical choice to handle local network connectivity issues, not a security risk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "4 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 13,
+    "published_date": "2026-09-11T07:22:15.553Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-14T04:43:05.390076+00:00Z"
+}

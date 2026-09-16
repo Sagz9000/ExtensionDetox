@@ -1,0 +1,234 @@
+{
+  "extension_id": "seeu-studio.commandcode-goat-bridge",
+  "display_name": "Command Code GOAT Provider for Copilot",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "seeu-studio",
+    "verified": false
+  },
+  "vsix_sha256": "4916fd1dfbee63fa28523c65b0ad75beb267055812c5d8e7ac8dd531754c8be1",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2021875,
+    "ai_vibe": 0.1,
+    "static": 0.21875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/extension.js",
+        "line": 43,
+        "snippet": "SECRET = \"commandcode.apiKey\""
+      }
+    ],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.commandcode.ai",
+      "source_file": "extension/package.json",
+      "line": 84,
+      "context": "\"default\": \"https://api.commandcode.ai/provider/v1\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "commandcode.ai",
+      "source_file": "extension/out/extension.js",
+      "line": 72,
+      "context": "\"\u8f93\u5165\u4f60\u7684 Command Code API Key\uff08\u5728 https://commandcode.ai/settings/keys \u521b\u5efa\uff09\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 16,
+    "blocks_seen": 16,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/2)",
+        "summary": "The code is a standard VS Code extension implementing a Language Model Chat Provider. It correctly uses VS Code's SecretStorage API to securely store and retrieve the user's API key, avoiding hardcoded credentials. The network calls are directed to the documented API endpoint (api.commandcode.ai). There are no signs of malicious behavior, obfuscation, credential theft, or unauthorized system access. The static scanner hits are false positives or minor behavioral notes."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/2)",
+        "summary": "The code is a benign VS Code extension that acts as a bridge to a third-party LLM provider (Command Code GOAT). It correctly uses VS Code's SecretStorage to securely store and retrieve user-provided API keys, which is the standard and secure practice. The network calls are directed to the documented provider API. There are no indicators of malicious behavior, data exfiltration, or obfuscation. The static scanner hits are false positives related to the use of the SecretStorage API."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 1/5)",
+        "summary": "The code is a standard implementation of a VS Code Language Model Chat Provider. It imports standard libraries ('vscode', 'crypto') and local modules for catalog, conversion, and SSE handling. The visible code defines helper functions for reporting usage to the UI and deriving session IDs. There are no signs of obfuscation, credential harvesting, arbitrary command execution, or data exfiltration. The network domain 'api.commandcode.ai' is consistent with the extension's stated purpose of bridging to the Command Code API. The code appears benign and proportional to its advertised function."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 2/5)",
+        "summary": "The code snippet is a standard implementation of a VS Code Language Model Chat Provider. It correctly uses `vscode.SecretStorage` to retrieve API keys, ensuring they are not hardcoded or logged. The network logic targets the documented API endpoint (`api.commandcode.ai`) and uses standard HTTP fetch mechanisms with appropriate timeouts. There are no signs of obfuscation, credential theft, arbitrary code execution, or data exfiltration. The behavior is fully aligned with the extension's stated purpose of bridging a third-party LLM API to Copilot Chat."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 3/5)",
+        "summary": "This code chunk implements the core logic for sending chat requests to the Command Code API. It handles message conversion, request body construction, and response processing (streaming and non-streaming). The network activity is limited to the documented API endpoint, and there are no signs of credential harvesting, obfuscation, or malicious command execution. The behavior is fully aligned with the extension's advertised functionality."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 4/5)",
+        "summary": "The provided code chunk is a standard implementation of a VS Code Language Model Provider that handles streaming responses from an external API. It correctly uses the `vscode.LanguageModelTextPart` and `vscode.LanguageModelToolCallPart` APIs to report progress and tool calls. The logic for parsing Server-Sent Events (SSE), accumulating tool call arguments, and tracking usage metrics is consistent with the extension's stated purpose of bridging an OpenAI-compatible API to Copilot Chat. No malicious indicators, obfuscation, credential harvesting, or suspicious network exfiltration patterns were found in this segment."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 5/5)",
+        "summary": "The provided code chunk is a benign utility module for a VS Code extension that bridges a third-party LLM API to GitHub Copilot. It contains helper functions for parsing JSON arguments, creating 'thinking' response parts using standard VS Code APIs, and extracting reasoning effort configurations. There are no indicators of malicious behavior, such as credential harvesting, obfuscation, arbitrary command execution, or data exfiltration. The network activity implied by the extension's purpose (connecting to api.commandcode.ai) is consistent with its documented functionality as an API bridge."
+      },
+      {
+        "target": "extension/out/statusBar.js (chunk 1/2)",
+        "summary": "The provided code chunk is a standard TypeScript-compiled module for managing VS Code status bar items and tracking token usage. It uses standard VS Code APIs (`vscode.workspace.getConfiguration`, `vscode.window.createStatusBarItem` implied by context) and performs simple arithmetic for token counting. There are no signs of obfuscation, credential harvesting, network exfiltration, or malicious command execution. The network domain `api.commandcode.ai` is consistent with the extension's stated purpose of bridging to a third-party AI provider. The code is benign."
+      },
+      {
+        "target": "extension/out/statusBar.js (chunk 2/2)",
+        "summary": "The provided code chunk is a benign implementation of a VS Code status bar item. It handles UI updates for token usage statistics (input, output, cache hits) and constructs tooltips. There are no network calls, file system access, credential harvesting, obfuscation, or suspicious command execution in this specific file. The behavior is fully consistent with the extension's stated purpose of displaying session usage metrics for the 'Command Code GOAT' provider."
+      },
+      {
+        "target": "extension/out/modelList.js (chunk 1/3)",
+        "summary": "This code chunk is a benign model list builder for a VS Code extension that integrates third-party AI models into GitHub Copilot Chat. It defines functions to construct model metadata objects (`buildModelInfo`) and manage a cache of live model IDs. There are no signs of malicious behavior such as credential harvesting, obfuscated code, network exfiltration, or arbitrary command execution. The only network-related domain mentioned (`api.commandcode.ai`) is consistent with the extension's stated purpose of connecting to a specific AI provider API. The code is clean and aligns with its advertised functionality."
+      },
+      {
+        "target": "extension/out/modelList.js (chunk 2/3)",
+        "summary": "The code is a benign implementation of a model list builder for a VS Code extension that bridges a third-party AI provider (Command Code GOAT) to GitHub Copilot. It performs standard network requests to fetch available models using a user-provided API key stored securely in VS Code's SecretStorage. There are no indicators of malicious behavior, such as credential theft, obfuscation, arbitrary code execution, or data exfiltration. The network activity is limited to the documented API endpoint and is consistent with the extension's stated purpose."
+      },
+      {
+        "target": "extension/out/modelList.js (chunk 3/3)",
+        "summary": "The provided code snippet is a benign utility module responsible for managing a static list of AI models and resetting a discovery cache. It contains no network requests, file system access, credential harvesting, or obfuscated logic. The behavior is fully consistent with the extension's stated purpose of bridging a third-party AI provider to VS Code Copilot."
+      },
+      {
+        "target": "extension/out/catalog.js (chunk 1/4)",
+        "summary": "This code chunk is a static data definition file (catalog.js) containing a list of AI model configurations (IDs, names, vendors, context windows). It contains no executable logic, network calls, file system access, or obfuscation. The data aligns perfectly with the extension's stated purpose of providing a list of models for the 'Command Code GOAT' service. The only minor note is the activation event, but the code itself is benign."
+      },
+      {
+        "target": "extension/out/catalog.js (chunk 2/4)",
+        "summary": "The provided code chunk consists entirely of static data definitions for a list of AI models (GLM, Qwen, Tencent, Gemini) including their IDs, names, vendors, and capabilities. There is no executable logic, network communication, file system access, or obfuscation present in this specific segment. The content is fully consistent with the extension's stated purpose of providing a model catalog for a Copilot bridge."
+      },
+      {
+        "target": "extension/out/catalog.js (chunk 3/4)",
+        "summary": "The provided code chunk consists entirely of static data definitions for a list of AI models (including IDs, names, vendors, and capabilities like context window size and tool calling support). This is consistent with the extension's stated purpose of providing a bridge to various LLMs for GitHub Copilot. There are no executable statements, network calls, file system operations, or obfuscated logic in this specific chunk. The domain indicators found in the package are consistent with the documented API endpoint for the service."
+      },
+      {
+        "target": "extension/out/catalog.js (chunk 4/4)",
+        "summary": "The provided code chunk is a static data definition file (catalog.js) containing a list of AI model configurations and hardcoded URLs for the 'Command Code' service. It contains no executable logic, network requests, file system access, or obfuscated code. The URLs point to the documented API and dashboard of the service the extension is designed to bridge. There are no indicators of malicious behavior, credential harvesting, or capability disconnect in this specific file."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'SECRET = \"commandcode.apiKey\"' as a hardcoded secret. This is a false positive; the string is a key identifier used to store the user's API key in VS Code's SecretStorage, not the secret value itself.",
+        "code_reference": "const API_KEY_SECRET = \"commandcode.apiKey\";",
+        "line_hint": 43,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While common for chat providers to ensure availability, it is slightly broader than necessary (e.g., 'onLanguageModelChatProvider' or command activation would be more precise). However, this is a minor optimization issue, not a security risk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'SECRET = \"commandcode.apiKey\"' as a hardcoded secret. This is a false positive; the string is a key identifier used for the VS Code SecretStorage API, not an actual credential or API key.",
+        "code_reference": "SECRET = \"commandcode.apiKey\"",
+        "line_hint": 43,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this is common for chat providers to ensure availability, it is slightly broader than necessary for a specific model provider, though not malicious.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/provider.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "INFORMATIONAL",
+        "description": "The extension uses `require` to load `undici` from the VS Code application root (`vscode.env.appRoot`). While this is a common pattern for accessing Node.js modules bundled with VS Code, it relies on internal implementation details that may change. It is not malicious, but worth noting for maintainability.",
+        "code_reference": "const undici = require(path.join(vscode.env.appRoot, \"node_modules\", \"undici\"));",
+        "line_hint": 28,
+        "target": "extension/out/provider.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The code sends user API keys and chat messages to an external endpoint (api.commandcode.ai). This is consistent with the extension's stated purpose of acting as a bridge to a third-party LLM provider. The use of Bearer tokens and standard HTTP POST requests is expected behavior for this type of extension.",
+        "code_reference": "const response = await dispatchFetch(`${baseUrl}/chat/completions`, ...)",
+        "line_hint": 45,
+        "target": "extension/out/provider.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this is common for extensions that need to register status bar items or language model providers immediately, it is slightly broader than necessary for a simple API bridge. However, given the functionality (status bar usage tracking), this is a standard and acceptable practice, not a malicious indicator.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/statusBar.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a model provider that should ideally activate when Copilot Chat is used or when the user configures the provider. However, this is a common pattern for extensions that need to register language model providers early and is not inherently malicious.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/modelList.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a language model provider that is typically invoked on-demand. While not malicious, this ensures the extension is loaded at startup, which is slightly disproportionate for a simple API bridge.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/catalog.js (chunk 1/4)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension implementing a Language Model Chat Provider. It correctly uses VS Code's SecretStorage API to securely store and retrieve the user's API key, avoiding hardcoded credentials. The network calls are directed to the documented API endpoint (api.commandcode.ai). There are no signs of malicious behavior, obfuscation, credential theft, or unauthorized system access. The static scanner hits are false positives or minor behavioral notes.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-08T03:54:46.287Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T04:17:47.637972+00:00Z"
+}

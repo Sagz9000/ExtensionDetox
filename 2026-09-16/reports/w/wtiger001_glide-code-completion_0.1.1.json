@@ -1,0 +1,245 @@
+{
+  "extension_id": "wtiger001.glide-code-completion",
+  "display_name": "Glide for OpenAI Code Completion",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "wtiger001",
+    "verified": false
+  },
+  "vsix_sha256": "197872cad7e7726c82ff3f8db0bca4039494ea43d471b30c1b7040ddf33fc692",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.21968749999999998,
+    "ai_vibe": 0.15,
+    "static": 0.21875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/dist/extension.js",
+        "line": 124,
+        "snippet": "SECRET = \"glide.openaiApiKey\""
+      }
+    ],
+    "high": [],
+    "total": 5
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.openai.com",
+      "source_file": "extension/package.json",
+      "line": 106,
+      "context": "\"default\": \"https://api.openai.com/v1\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/18)",
+        "summary": "This chunk of the Glide extension source code appears benign. It contains standard ES module boilerplate, a completion cache implementation using SHA-256 hashing for identity, and basic VS Code API usage. The 'leaked secret' finding is a false positive (it's a config key name). The code aligns with the extension's stated purpose of providing AI code completion. No obfuscation, child_process, or suspicious network calls were found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/18)",
+        "summary": "This chunk of the Glide extension source code appears benign and consistent with its stated purpose of providing AI code completion. The code defines constants for configuration keys, model names, and default API endpoints (api.openai.com). The logic shown handles completion continuation and configuration normalization. The two static rule hits are likely false positives: one is a key name for secret storage, and the other is a standard configuration update. No obfuscation, child process execution, or suspicious network calls were observed in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/18)",
+        "summary": "This chunk of the Glide extension source code appears benign and consistent with its stated purpose of providing AI code completion. It handles URL normalization for OpenAI-compatible endpoints, reads and validates user configuration (debounce, token limits, model selection), and manages basic string truncation for context building. The network call to `api.openai.com` is expected for an OpenAI-based extension. No obfuscation, credential harvesting, or suspicious child process execution was found in this segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/18)",
+        "summary": "This chunk of the Glide extension source code appears benign and well-structured. It focuses on extracting code context around the cursor for AI completion and defining heuristics to exclude sensitive files (like .env or .git) from being sent to the model. The static rule hits are likely false positives related to configuration key naming and standard settings persistence. The logic is consistent with the extension's advertised purpose of providing AI code completion."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/18)",
+        "summary": "This chunk of the Glide extension source code contains standard logic for eligibility checking (verifying API keys, workspace trust, file types) and output processing (stripping code fences, detecting leakage patterns). The code is well-structured and uses standard VS Code APIs. The flagged 'leaked secret' is a configuration key name, and the configuration update is likely for internal state management. No obfuscation, child process execution, or suspicious network calls are present in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/18)",
+        "summary": "This chunk of code contains utility functions for processing AI-generated code completions (normalizing indentation, stripping code fences, checking for runaway repetition) and the beginning of an error class for the OpenAI client. The logic is straightforward and aligns perfectly with the extension's stated purpose of providing low-latency AI code completion. The 'leaked secret' and 'API abuse' flags from the static scanner are false positives resulting from standard configuration handling patterns. No obfuscation, arbitrary command execution, or suspicious network calls were found in this segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 14/18)",
+        "summary": "This chunk of the Glide extension source code appears benign and well-structured. It implements a `SecretStore` class that correctly uses VS Code's `SecretStorage` API to manage the OpenAI API key, falling back to environment variables if necessary. It also includes a `LocalStatistics` class for tracking usage metrics (requests, latency, etc.) using local state. The logic is straightforward, with no obfuscation, arbitrary command execution, or suspicious network calls in this specific segment. The static rule hits are likely false positives due to the scanner not distinguishing between a secret *key name* and a secret *value*, and between self-managed configuration updates and tampering."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'SECRET = \"glide.openaiApiKey\"' as a hardcoded secret. However, this string is a configuration key name (namespace.property) used to look up the user's API key in VS Code settings, not the secret value itself.",
+        "code_reference": "SECRET = \"glide.openaiApiKey\"",
+        "line_hint": 124,
+        "target": "extension/dist/extension.js (chunk 1/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'workspace.getConfiguration(CONFIG_SECTION).update(' as programmatic tampering. In the context of an extension that manages its own settings (like an API key), updating its own configuration section is standard behavior to persist user input.",
+        "code_reference": "workspace.getConfiguration(CONFIG_SECTION).update(",
+        "line_hint": 217,
+        "target": "extension/dist/extension.js (chunk 1/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this is common for AI completion extensions to ensure they are ready when the user starts typing, it is slightly broader than necessary for a simple command-triggered tool. However, given the 'low-latency' goal, this is acceptable.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = \"glide.openaiApiKey\"` as a hardcoded secret. However, this is a string constant defining the *key name* for the VS Code SecretStorage API, not the actual secret value. The actual API key is stored securely by VS Code.",
+        "code_reference": "var API_KEY_SECRET = \"glide.openaiApiKey\";",
+        "line_hint": 124,
+        "target": "extension/dist/extension.js (chunk 2/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration(CONFIG_SECTION).update(` as programmatic tampering. In the context of an AI completion extension, updating its own configuration section (e.g., to persist user preferences or model selection) is standard behavior, not tampering with unrelated workspace settings.",
+        "code_reference": "workspace.getConfiguration(CONFIG_SECTION).update(",
+        "line_hint": 217,
+        "target": "extension/dist/extension.js (chunk 2/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = \"glide.openaiApiKey\"` as a hardcoded secret. However, this string is a configuration key name (identifier) used to look up the user's API key, not the secret value itself. The actual secret is stored in VS Code's secure storage or settings, not hardcoded in the source.",
+        "code_reference": "SECRET = \"glide.openaiApiKey\"",
+        "line_hint": 124,
+        "target": "extension/dist/extension.js (chunk 3/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration(CONFIG_SECTION).update` as programmatic tampering. This is a standard pattern for extensions to persist user preferences (like enabling/disabling the extension) to the global settings file. It is not modifying unrelated settings or hiding changes.",
+        "code_reference": "vscode.workspace.getConfiguration(CONFIG_SECTION).update(\"enabled\", enabled, vscode.ConfigurationTarget.Global)",
+        "line_hint": 217,
+        "target": "extension/dist/extension.js (chunk 3/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = \"glide.openaiApiKey\"` as a hardcoded secret. However, this is a configuration key name (string literal) used to look up the user's API key, not the secret value itself. This is standard practice for VS Code extensions.",
+        "code_reference": "SECRET = \"glide.openaiApiKey\"",
+        "line_hint": 124,
+        "target": "extension/dist/extension.js (chunk 4/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.getConfiguration(CONFIG_SECTION).update(` as programmatic tampering. In the context of an extension, updating its own configuration section (likely to persist the API key or settings) is a standard and expected behavior, not necessarily malicious tampering.",
+        "code_reference": "workspace.getConfiguration(CONFIG_SECTION).update(",
+        "line_hint": 217,
+        "target": "extension/dist/extension.js (chunk 4/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements logic to build completion context (prefix/suffix extraction) and defines 'protected paths' (e.g., .env, id_rsa, .git) to avoid sending sensitive files to the AI model. This aligns perfectly with the extension's stated purpose of 'low-latency AI code completion' and shows good hygiene for an enterprise/government tool.",
+        "code_reference": "buildCompletionContext, protectedPath",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = \"glide.openaiApiKey\"` as a hardcoded secret. However, this is a configuration key name (string identifier) used to look up the user's API key in VS Code settings, not the secret value itself. The actual secret is stored in the user's configuration.",
+        "code_reference": "SECRET = \"glide.openaiApiKey\"",
+        "line_hint": 124,
+        "target": "extension/dist/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.getConfiguration(CONFIG_SECTION).update(` as programmatic tampering. In the context of an AI completion extension, updating its own configuration section (likely to persist state or toggle features) is standard behavior, not necessarily malicious tampering with unrelated user settings.",
+        "code_reference": "workspace.getConfiguration(CONFIG_SECTION).update(",
+        "line_hint": 217,
+        "target": "extension/dist/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = \"glide.openaiApiKey\"` as a hardcoded secret. However, this string is a configuration key name (identifying where the user's API key is stored in VS Code settings), not the actual secret value itself. This is standard practice for extensions reading user-provided credentials.",
+        "code_reference": "SECRET = \"glide.openaiApiKey\"",
+        "line_hint": 124,
+        "target": "extension/dist/extension.js (chunk 6/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.getConfiguration(CONFIG_SECTION).update(` as programmatic tampering. In the context of an AI completion extension, this is likely used to persist user preferences (like model selection or API endpoint) or cache state, which is a benign and expected use of the VS Code API.",
+        "code_reference": "workspace.getConfiguration(CONFIG_SECTION).update(",
+        "line_hint": 217,
+        "target": "extension/dist/extension.js (chunk 6/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `SECRET = \"glide.openaiApiKey\"` as a hardcoded secret. However, this string is a key identifier used to access the VS Code SecretStorage API, not the actual API key value. The actual key is stored securely by VS Code.",
+        "code_reference": "var API_KEY_SECRET = \"glide.openaiApiKey\" (implied context from usage)",
+        "line_hint": 124,
+        "target": "extension/dist/extension.js (chunk 14/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.getConfiguration(CONFIG_SECTION).update(` as programmatic tampering. In the context of an extension managing its own settings (likely saving user preferences or API endpoints), updating its own configuration section is standard behavior, not tampering with unrelated workspace settings.",
+        "code_reference": "workspace.getConfiguration(CONFIG_SECTION).update(",
+        "line_hint": 217,
+        "target": "extension/dist/extension.js (chunk 14/18)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the Glide extension source code appears benign. It contains standard ES module boilerplate, a completion cache implementation using SHA-256 hashing for identity, and basic VS Code API usage. The 'leaked secret' finding is a false positive (it's a config key name). The code aligns with the extension's stated purpose of providing AI code completion. No obfuscation, child_process, or suspicious network calls were found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-07T20:22:51.883Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T17:47:14.540301+00:00Z"
+}

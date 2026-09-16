@@ -1,0 +1,137 @@
+{
+  "extension_id": "BlendGenDNA.9router-connection",
+  "display_name": "9Router Connection",
+  "version": "0.1.3",
+  "publisher": {
+    "name": "BlendGenDNA",
+    "verified": false
+  },
+  "vsix_sha256": "f82b983a1994e1b65870c18771638f60da250a76e950b5066ce5bf8e08474fe6",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.22375,
+    "ai_vibe": 0.05,
+    "static": 0.375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/out/extension.js",
+        "line": 747,
+        "snippet": "addEventListener('keydown', (event) => { if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') { event.preventDefault(); $('send"
+      }
+    ],
+    "high": [],
+    "total": 23
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "9router.com",
+      "source_file": "extension/package.json",
+      "line": 105,
+      "context": "\"description\": \"9Router OpenAI-compatible base URL. Local default: http://localhost:20128/v1; cloud: https://9router.com/v1.\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/2)",
+        "summary": "The extension is a legitimate utility for connecting VS Code to a 9Router OpenAI-compatible endpoint. It uses standard VS Code APIs (SecretStorage, Webviews, Language Model Provider) appropriately. The network calls are directed to user-configured endpoints (defaulting to localhost or the documented 9router.com domain). The static scanner hits are false positives resulting from standard UI interaction patterns (keyboard shortcuts) and legitimate configuration management. No malicious behavior, obfuscation, or credential theft was detected."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/2)",
+        "summary": "The code is a legitimate VS Code extension designed to connect to a 9Router OpenAI-compatible API. It implements standard features such as fetching model lists, sending chat completions, and handling streaming responses. The use of `context.secrets` is correctly scoped to the extension's own storage for API keys. The network calls are directed to user-configured endpoints (defaulting to localhost or 9router.com) and are necessary for the extension's stated purpose. No malicious behavior, obfuscation, or credential harvesting was detected."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern at line 747. Upon inspection, this is a standard keyboard shortcut handler (Ctrl+Enter) within the Chat webview to submit a prompt. It does not buffer keystrokes or exfiltrate data.",
+        "code_reference": "addEventListener('keydown', (event) => { if ((event.ctrlKey || event.metaKey) && event.key === 'Enter'...",
+        "line_hint": 747,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Harvesting VSCode configuration' at line 1200. The code reads the '9router' configuration to determine the server URL and API key for the intended API connection. This is the core function of the extension, not data harvesting.",
+        "code_reference": "workspace.getConfiguration('9router').get('request...",
+        "line_hint": 1200,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Multiple flags for 'Programmatic tampering with workspace configuration'. The extension updates its own settings (serverUrl, selectedModel) when the user interacts with the UI. This is standard behavior for a configuration extension.",
+        "code_reference": "workspace.getConfiguration('9router').update(...)",
+        "line_hint": 186,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'keylogger' pattern due to a keydown listener. Upon inspection, the code `prompt.addEventListener('keydown', ...)` is attached to a specific textarea element within a Webview. It only triggers on Ctrl+Enter or Cmd+Enter to submit the form, which is a standard UI convenience feature and not a keylogging mechanism.",
+        "code_reference": "prompt.addEventListener('keydown', (event) => { if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') { event.preventDefault(); $('send').click(); } });",
+        "line_hint": 747,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'Harvesting VSCode configuration'. The code reads `workspace.getConfiguration('9router')` to retrieve user-defined settings like `requestTimeoutMs` and server URLs. This is standard behavior for an extension to access its own configuration namespace and does not involve exfiltration or sensitive data theft.",
+        "code_reference": "vscode.workspace.getConfiguration('9router').get('requestTimeoutMs', 15000)",
+        "line_hint": 1200,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is a legitimate utility for connecting VS Code to a 9Router OpenAI-compatible endpoint. It uses standard VS Code APIs (SecretStorage, Webviews, Language Model Provider) appropriately. The network calls are directed to user-configured endpoints (defaulting to localhost or the documented 9router.com domain). The static scanner hits are false positives resulting from standard UI interaction patterns (keyboard shortcuts) and legitimate configuration management. No malicious behavior, obfuscation, or credential theft was detected.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-14T03:43:33.873Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T00:03:00.424847+00:00Z"
+}

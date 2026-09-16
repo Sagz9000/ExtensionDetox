@@ -1,0 +1,231 @@
+{
+  "extension_id": "cloudfluent.terragraph-vscode",
+  "display_name": "Terragraph Blueprint",
+  "version": "0.1.4",
+  "publisher": {
+    "name": "cloudfluent",
+    "verified": false
+  },
+  "vsix_sha256": "dcdf63f653a6085654f693be49d396ffbff430a785f6a4f734e2697ddf591dc8",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.15,
+    "static": 0.4888705059304601,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/out/extension.js",
+        "line": 17843,
+        "snippet": "Object.keys(process.env)"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 16421,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 16421,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/out/extension.js",
+        "line": 16443,
+        "snippet": "var result = cp.spawnSync(cmd, [process2.pid.toString()]);"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 17683,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 17683,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 16421,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 17683,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 42/273)",
+        "summary": "This chunk of code appears to be standard, unmodified boilerplate from the `vscode-jsonrpc` library, which is a common dependency for VS Code extensions that use Language Server Protocol (LSP). The classes defined (`PortMessageReader`, `SocketMessageWriter`, etc.) are standard transport mechanisms. The static rule hits for `child_process` and `process.env` are likely false positives in this context, as they are part of the standard infrastructure for launching and communicating with the bundled `terragraph language-server` binary described in the README. The obfuscation score is low (0.10), indicating readable code. No specific malicious logic is visible in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 217/273)",
+        "summary": "This chunk of the extension source code contains standard logic for handling file operation events within a VS Code Language Client (LSP) implementation. It filters file URIs based on patterns and determines file types, which is typical for managing workspace synchronization. The static rule hits for `child_process` and `process.env` are likely false positives for this specific chunk, as they probably refer to code in other parts of the large bundled file responsible for spawning the language server binary. The behavior is proportional to the extension's stated purpose of providing IntelliSense via a bundled language server."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 249/273)",
+        "summary": "This chunk of code primarily consists of bundled dependencies, specifically the `vscode-languageclient` and `vscode-languageserver-protocol` libraries. The extension is a language server client for 'Terragraph Blueprint', which explains the presence of process management code (to start/stop the server) and protocol definitions. The flagged `child_process` usage is standard for terminating the language server process, and the environment variable access is likely for passing the environment to the child process. No direct evidence of obfuscation, hardcoded secrets, or suspicious network calls was found in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 250/273)",
+        "summary": "This chunk of the extension source code consists almost entirely of the bundled `semver` library, which is a standard, trusted dependency for version string parsing. The code exhibits no obfuscation, no network calls, and no suspicious file system operations. The static rule engine hits for `child_process` and `process.env` are likely false positives or refer to standard library internals not visible in this specific snippet but consistent with benign bundling. Given the extension's purpose (running a language server), the presence of standard utility libraries is expected and proportional."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 264/273)",
+        "summary": "This chunk of code is primarily the bundled `vscode-languageclient` library, which is a standard, well-known dependency for VS Code extensions that interact with external language servers. The 'suspicious' signals (child_process, env vars) are inherent to the function of spawning a language server process. The extension's stated purpose (IntelliSense for Terragraph HCL) requires exactly these capabilities. No obfuscation, hardcoded secrets, or unexpected network calls were found in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 266/273)",
+        "summary": "This chunk of code appears to be the bundled `vscode-languageclient` library, which is the standard mechanism for VS Code extensions to communicate with external language servers. The extension's stated purpose is to provide IntelliSense for Terragraph HCL files by launching a `terragraph language-server` binary. The use of `child_process` to spawn this binary and the propagation of environment variables to the child process are expected and necessary behaviors for this type of extension. There are no signs of obfuscation, hardcoded secrets, or suspicious network calls in this specific chunk. The 'credential harvesting' flag is a false positive in the context of standard LSP client implementation."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 267/273)",
+        "summary": "This chunk of code is part of the standard `vscode-languageclient` library logic responsible for spawning the language server process. The extension 'Terragraph Blueprint' is a language server client, so using `child_process` to spawn the server binary and passing environment variables is the intended and expected behavior. The 'credential harvesting' flag on `Object.keys(process.env)` is a false positive in this context, as it is simply forwarding the current environment to the child process rather than exfiltrating it to a remote server. No obfuscation or suspicious network calls were observed in this specific chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, this chunk contains standard boilerplate code from the `vscode-jsonrpc` library (classes like `PortMessageReader`, `SocketMessageReader`, `StreamMessageWriter`). These are standard transport implementations used by VS Code extensions to communicate with Language Servers. The `child_process` usage is likely for spawning the language server binary (documented in README), and the `process.env` access is likely for standard IPC path resolution (e.g., `XDG_RUNTIME_DIR`), not mass exfiltration.",
+        "code_reference": "var XDG_RUNTIME_DIR = process.env[\"XDG_RUNTIME_DIR\"];",
+        "line_hint": 17843,
+        "target": "extension/out/extension.js (chunk 42/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, this code chunk is part of a large bundled file (chunk 217/273) containing the `vscode-languageclient` library. The visible code in this chunk deals with `FileOperationFeature` and URI filtering, which does not directly use child_process or env vars. The hits likely originate from other modules bundled in the same file (e.g., the language server process manager or telemetry), which are standard for a LSP client extension that spawns a binary. Given the extension's purpose (running `terragraph language-server`), these are expected behaviors.",
+        "code_reference": "require(\"child_process\") / Object.keys(process.env)",
+        "line_hint": 16421,
+        "target": "extension/out/extension.js (chunk 217/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, this code is part of the `vscode-languageclient` library's `processes.js` module, specifically the `terminate` function. It uses `taskkill` on Windows and a bundled shell script on Unix to kill the language server process tree. This is standard behavior for VS Code extensions that spawn external language servers.",
+        "code_reference": "var cp = require(\"child_process\"); ... cp.execFileSync(\"taskkill\", ...)",
+        "line_hint": 16421,
+        "target": "extension/out/extension.js (chunk 249/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `Object.keys(process.env)` as credential harvesting. In the context of a language server extension, environment variables are typically serialized to pass the user's environment to the spawned language server process (e.g., for PATH resolution or specific tool configurations). Without evidence of network exfiltration in this specific chunk, this is likely benign configuration passing.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 17843,
+        "target": "extension/out/extension.js (chunk 249/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, the source code in this chunk is entirely from the `semver` library (a standard, well-known npm package for version parsing). The `process.env` access is specifically checking `NODE_DEBUG` for internal logging, and the `child_process` references are likely from other bundled dependencies or false positives from the scanner's line mapping in this specific chunk context. The code shown is standard library boilerplate, not custom malicious logic.",
+        "code_reference": "var debug = typeof process === \"object\" && process.env && process.env.NODE_DEBUG ...",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 250/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `Object.keys(process.env)` as critical/high risk. However, the code context reveals this is the bundled `vscode-languageclient` library (evidenced by `LanguageClient2`, `TransportKind`, `BaseLanguageClient`). This library is the standard mechanism for VS Code extensions to spawn and communicate with external language servers. The `child_process` usage is necessary to launch the `terragraph language-server` binary, and the `process.env` access is standard for passing environment variables to the child process. This aligns perfectly with the extension's stated purpose of running a language server.",
+        "code_reference": "var cp = require(\"child_process\"); ... var LanguageClient2 = class extends client_1.BaseLanguageClient",
+        "line_hint": 16421,
+        "target": "extension/out/extension.js (chunk 264/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The code uses `require('child_process')` and iterates over `Object.keys(process.env)`. However, this code is part of the standard `vscode-languageclient` library logic (specifically the `NodeClientProcess` or transport creation logic) used to spawn the language server. The environment variable serialization is necessary to pass the current environment to the child process (the `terragraph` binary), which is standard behavior for LSP clients, not necessarily credential harvesting.",
+        "code_reference": "createMessageTransports(encoding) { ... Object.keys(process.env).forEach ... }",
+        "line_hint": 17843,
+        "target": "extension/out/extension.js (chunk 266/273)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` and `Object.keys(process.env)` as high/critical risks. However, the code context reveals this is the standard `NodeClientProcessTransport` implementation from the `vscode-languageclient` library. It uses `cp.spawn` to launch the language server binary (terragraph) and `process.env` to pass environment variables to the child process. This is expected behavior for a language server extension.",
+        "code_reference": "const serverProcess = cp.spawn(runtime, args, execOptions);",
+        "line_hint": 16421,
+        "target": "extension/out/extension.js (chunk 267/273)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of code appears to be standard, unmodified boilerplate from the `vscode-jsonrpc` library, which is a common dependency for VS Code extensions that use Language Server Protocol (LSP). The classes defined (`PortMessageReader`, `SocketMessageWriter`, etc.) are standard transport mechanisms. The static rule hits for `child_process` and `process.env` are likely false positives in this context, as they are part of the standard infrastructure for launching and communicating with the bundled `terragraph language-server` binary described in the README. The obfuscation score is low (0.10), indicating readable code. No specific malicious logic is visible in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "7 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-02T09:02:28.42Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T00:41:36.233811+00:00Z"
+}

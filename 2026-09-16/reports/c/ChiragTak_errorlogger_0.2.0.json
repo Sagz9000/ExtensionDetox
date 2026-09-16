@@ -1,0 +1,317 @@
+{
+  "extension_id": "ChiragTak.errorlogger",
+  "display_name": "ErrorLogger",
+  "version": "0.2.0",
+  "publisher": {
+    "name": "ChiragTak",
+    "verified": false
+  },
+  "vsix_sha256": "ff851dc4b5d15607a6cd244eec2a1a26a113167892db06eda5fb1be04077e567",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.278945019536884,
+    "ai_vibe": 0.15,
+    "static": 0.4557800781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "readFileSync(e)),ze=async e=>(e=Re(e)?new URL(e):e,Fe.readFileSync(e,void 0)),1<process.argv.length&&(Y=process.argv[1].replace(/\\\\/g,\"/\")),process.argv.slice(2),typeof Pe<\"u\"&&(Pe.exports=l),Te=(e,t)"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": ".postRun=a.postRun||[],a.postRun.push(function(){r(a)}),Pe=void 0;var l;l||=typeof a<\"u\"?a:{};var v=!!globalThis.window,R=!!globalThis.WorkerGlobalScope,$=globalThis.process?.versions?.node&&globalThi"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 166,
+        "snippet": ".post()}refresh(){this.post()}post(){this.panel&&this.panel.webview.postMessage({type:\"init\",payload:{groups:this.timeline.groups().map(r=>({bucket:r.bucket,items:r.items.map(o=>({id:o.id,errorType:o."
+      },
+      {
+        "check": "crypto_mining",
+        "severity": "HIGH",
+        "description": "WASM-based mining (high CPU usage)",
+        "file": "extension/dist/extension.js",
+        "line": 54,
+        "snippet": ".wasmPath=o}db;persistTimer;closed=!1;async init(){let r=await(0,Vn.default)({locateFile:o=>o.endsWith(\".wasm\")?this.wasmPath:o});if(this.filePath&&ge.existsSync(this.filePath)){let o=ge.readFileSync("
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 9/48)",
+        "summary": "This chunk of code appears to be the runtime initialization and utility functions for a WebAssembly module bundled within the extension. It includes standard memory management, string decoding, and path resolution logic. The static scanner hits for 'mining' and 'exfiltration' are likely false positives resulting from the generic nature of WASM runtime code and standard file/webview APIs. No direct evidence of malicious network calls, credential harvesting, or obfuscated payloads is present in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 33/48)",
+        "summary": "This chunk of the ErrorLogger extension primarily contains error parsing logic for various languages (Java, JavaScript, Node.js, Python). The code defines classes to detect and parse specific error patterns (e.g., 'Exception in thread', 'ECONNREFUSED') and extract stack traces. The static rule hits are largely false positives resulting from minified code patterns (e.g., `postMessage` for webviews, `readFileSync` for local logs) and a likely WASM-based dependency for data storage or parsing. The behavior aligns well with the extension's stated purpose of capturing and parsing terminal errors locally."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 34/48)",
+        "summary": "This chunk of the ErrorLogger extension primarily contains error parsing logic for various runtimes (Python, React/Vite/Webpack, TypeScript) and utility functions for date handling. The code structure is consistent with a bundled TypeScript application. The static rule hits are largely false positives resulting from minified/bundled code patterns (e.g., WASM initialization for local processing, Webview messaging) rather than malicious network exfiltration or mining. The logic aligns well with the extension's stated purpose of parsing and storing terminal errors locally."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 43/48)",
+        "summary": "This chunk of the ErrorLogger extension appears to be standard, well-structured code for managing terminal attachments and rendering a Webview-based dashboard. The static rule engine hits are largely false positives resulting from generic patterns (like `postMessage` and `readFileSync`) that are common in legitimate VS Code extensions. The code aligns well with the advertised features of capturing errors and providing a local dashboard. No obvious signs of obfuscation, credential harvesting, or suspicious network calls are present in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 44/48)",
+        "summary": "This chunk of the ErrorLogger extension primarily handles UI communication via Webviews and local data management. The code uses standard VS Code APIs (`createWebviewPanel`, `postMessage`, `getConfiguration`) to display error details and analytics. The static rule hits are largely false positives resulting from generic patterns (like `postMessage` and `readFileSync`) that are common in legitimate extensions. The behavior aligns well with the extension's stated purpose of capturing and displaying terminal errors locally."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 45/48)",
+        "summary": "This chunk of the ErrorLogger extension primarily contains UI logic for creating Webview panels (Analytics and Timeline views) and handling message passing between the extension host and the webview. The code uses standard VS Code APIs (`createWebviewPanel`, `postMessage`, `executeCommand`). The static rule hits for 'mining' and 'exfiltration' appear to be false positives resulting from bundled dependencies (WASM) and standard webview communication patterns. The behavior is consistent with a local-first error logging tool."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 47/48)",
+        "summary": "This chunk of the ErrorLogger extension source code appears benign and consistent with its advertised functionality. It registers standard VS Code commands for exporting error logs, toggling the extension's active state, and interacting with the clipboard. The static rule engine hits for 'exfiltration' and 'mining' are likely false positives caused by generic patterns in bundled libraries (Webview communication and WASM loading). No hardcoded secrets, suspicious network calls, or access to sensitive system files were identified in this specific segment."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'WASM-based mining' and 'data exfiltration' hits are false positives. The code contains standard WebAssembly runtime boilerplate (memory views for i32/i64/float/double, TextDecoder, path resolution utilities) typical of a bundled WASM module (likely for parsing or heavy computation). The 'exfiltration' matches are standard Webview postMessage calls and file reading utilities, not network sends.",
+        "code_reference": "case \"i64\": return Z[e >> 3]; ... P = (e, t, n) => e ? Qt.decode(M.subarray(e, Gt(M, e, t, n))) : \"\"",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 9/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses 'onStartupFinished' activation. While this is common for extensions that need to monitor existing terminals, it is slightly aggressive for a utility that could potentially activate on terminal creation. However, given the feature 'Monitors every VS Code integrated terminal, including terminals that already exist', this is justified.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 9/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'WASM-based mining' due to the presence of `.wasmPath` and `locateFile`. In the context of an error logger, this is likely a bundled dependency (such as a parser or database engine like DuckDB/SQLite-WASM) rather than a mining pool connection. No stratum protocol or mining pool domains are visible in this chunk.",
+        "code_reference": ".wasmPath=o}db;persistTimer;closed=!1;async init(){let r=await(0,Vn.default)({locateFile:o=>o.endsWi",
+        "line_hint": 54,
+        "target": "extension/dist/extension.js (chunk 33/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' for `postMessage`. This is standard VS Code Webview API usage for communicating between the extension host and the sidebar UI, not necessarily network exfiltration.",
+        "code_reference": ".post()}refresh(){this.post()}post(){this.panel&&this.panel.webview.postMessage({type:\"init\",payload",
+        "line_hint": 166,
+        "target": "extension/dist/extension.js (chunk 33/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'infostealer_behavior' for `readFileSync`. While file reading is present, the code context suggests parsing local log files or error stacks. Without a clear network send immediately following in this specific chunk, it is likely benign local I/O for the error history feature.",
+        "code_reference": "readFileSync(e)),ze=async e=>(e=Re(e)?new URL(e):e,Fe.readFileSync(e,void 0)),1<process.argv.length&",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 33/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'WASM-based mining' due to the string `.wasmPath` and `locateFile`. In context, this is standard initialization code for a WASM module (likely a parser or database engine like SQLite/WASM) used for local data processing, not a mining pool connection.",
+        "code_reference": "async init(){let r=await(0,Vn.default)({locateFile:o=>o.endsWi",
+        "line_hint": 54,
+        "target": "extension/dist/extension.js (chunk 34/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' for `postMessage`. The code shows `this.panel.webview.postMessage`, which is the standard VS Code API for communicating with a Webview UI, not an external network endpoint.",
+        "code_reference": "this.panel&&this.panel.webview.postMessage({type:\"init\",payload",
+        "line_hint": 166,
+        "target": "extension/dist/extension.js (chunk 34/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'infostealer_behavior' for `readFileSync`. The code appears to be part of a bundled library (likely a file system abstraction or path utility) that handles file reading generically. Without evidence of sensitive paths (like ~/.ssh) being targeted in this specific chunk, it is likely benign utility code.",
+        "code_reference": "readFileSync(e)),ze=async e=>(e=Re(e)?new URL(e):e,Fe.readFileSync(e,void 0))",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 34/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' due to `postRun` and `postMessage` patterns. In this context, `postMessage` is the standard VS Code Webview API for communicating with the UI panel, and `postRun` appears to be internal lifecycle management, not network exfiltration.",
+        "code_reference": "this.panel.webview.postMessage",
+        "line_hint": 166,
+        "target": "extension/dist/extension.js (chunk 43/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'WASM-based mining' due to `.wasmPath` and `init` logic. This is likely a standard initialization pattern for a WASM module (possibly for parsing or performance), not necessarily a miner, especially given the low obfuscation score and clear variable names.",
+        "code_reference": "wasmPath=o}db;persistTimer;closed=!1;async init()",
+        "line_hint": 54,
+        "target": "extension/dist/extension.js (chunk 43/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'infostealer_behavior' for `readFileSync` and `process.argv`. While `readFileSync` is present, it is likely part of a utility for reading local files (consistent with 'local history' feature). The presence of `process.argv` is common in Node.js environments but not inherently malicious without specific sensitive path targeting visible in this chunk.",
+        "code_reference": "readFileSync(e)),ze=async e=>(e=Re(e)?new URL(e):e,Fe.readFileSync(e,void 0))",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 43/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code uses `crypto.randomBytes` for generating nonces for Webview CSP, which is a standard security practice. The extension creates a Webview panel for a dashboard, which aligns with the 'Dashboard, analytics' feature described in the README.",
+        "code_reference": "So.randomBytes(16).toString(\"base64\")",
+        "line_hint": 10,
+        "target": "extension/dist/extension.js (chunk 43/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' due to `postRun` and `postMessage` patterns. In this context, `postMessage` is the standard VS Code Webview API for communicating with the UI panel, and `postRun` appears to be part of a lifecycle hook or internal state management, not network exfiltration.",
+        "code_reference": "this.panel.webview.postMessage({ type: \"init\", payload: ... })",
+        "line_hint": 166,
+        "target": "extension/dist/extension.js (chunk 44/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'WASM-based mining' due to `.wasmPath` and `locateFile`. This is standard initialization code for a WASM module (likely a parser or database engine like SQLite/WASM), not a mining pool connection.",
+        "code_reference": "async init(){let r=await(0,Vn.default)({locateFile:o=>o.endsWi",
+        "line_hint": 54,
+        "target": "extension/dist/extension.js (chunk 44/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'infostealer_behavior' due to `readFileSync` and `process.argv`. The code snippet shows a utility function for reading files, likely for configuration or local data storage, which is consistent with the extension's promise of 'local history'.",
+        "code_reference": "readFileSync(e)),ze=async e=>(e=Re(e)?new URL(e):e,Fe.readFileSync(e,void 0))",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 44/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'vscode_api_abuse' for directory traversal and config updates. The code uses `readdir` and `workspace.getConfiguration` which are standard APIs for managing extension storage and user settings.",
+        "code_reference": "readdir(e){return[\".\",\"..\",...Object.keys(e.Na)]}",
+        "line_hint": 2,
+        "target": "extension/dist/extension.js (chunk 44/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'WASM-based mining' due to the presence of `.wasmPath` and `init()` logic. In the context of an error logger, this is likely a bundled dependency (e.g., a parser or database engine like DuckDB/SQLite-WASM) rather than a mining pool connection. No stratum protocol or mining pool domains are visible in this chunk.",
+        "code_reference": ".wasmPath=o}db;persistTimer;closed=!1;async init(){let r=await(0,Vn.default)({locateFile:o=>o.endsWi",
+        "line_hint": 54,
+        "target": "extension/dist/extension.js (chunk 45/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' for `postMessage` calls. These are standard VS Code Webview API calls (`this.panel.webview.postMessage`) used to send data from the extension host to the local UI panel, not external network requests.",
+        "code_reference": "this.panel&&this.panel.webview.postMessage({type:\"init\",payload",
+        "line_hint": 166,
+        "target": "extension/dist/extension.js (chunk 45/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'infostealer_behavior' for `readFileSync`. While `readFileSync` is present, it is part of a utility function likely used to read local error logs or configuration files. Without evidence of network egress in this specific chunk, it is not definitively exfiltration.",
+        "code_reference": "readFileSync(e)),ze=async e=>(e=Re(e)?new URL(e):e,Fe.readFileSync(e,void 0))",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 45/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'data exfiltration' due to `postRun` and `postMessage` patterns. In this context, `postMessage` is used to communicate with the VS Code Webview panel (`this.panel.webview.postMessage`), which is standard for UI updates, not network exfiltration. `postRun` appears to be part of a lifecycle hook or internal state management.",
+        "code_reference": "this.panel&&this.panel.webview.postMessage({type:\"init\",payload",
+        "line_hint": 166,
+        "target": "extension/dist/extension.js (chunk 47/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'WASM-based mining'. The code shows `wasmPath` and `locateFile`, which are typical for loading WebAssembly modules (likely for a parser or database like SQLite/WASM) rather than a miner. No mining pool domains or stratum protocol references are visible in this chunk.",
+        "code_reference": ".wasmPath=o}db;persistTimer;closed=!1;async init(){let r=await(0,Vn.default)({locateFile:o=>o.endsWi",
+        "line_hint": 54,
+        "target": "extension/dist/extension.js (chunk 47/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule flagged 'infostealer_behavior' for `readFileSync` and `process.argv`. While `readFileSync` is present, it is likely part of a bundled library (e.g., for reading config or WASM files). The presence of `process.argv` is common in Node.js environments. Without evidence of sensitive paths (like `~/.ssh`) being read in this specific chunk, it is likely a false positive from a generic scanner.",
+        "code_reference": "readFileSync(e)),ze=async e=>(e=Re(e)?new URL(e):e,Fe.readFileSync(e,void 0)),1<process.argv.length&",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 47/48)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements standard VS Code commands for exporting errors (JSON/CSV), toggling tracking, and copying to clipboard. These align perfectly with the extension's stated purpose of capturing and managing terminal errors. The use of `S.workspace.getConfiguration` is for updating the extension's own settings (`enabled` flag), which is expected.",
+        "code_reference": "S.commands.registerCommand(x.exportErrors, ...)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 47/48)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of code appears to be the runtime initialization and utility functions for a WebAssembly module bundled within the extension. It includes standard memory management, string decoding, and path resolution logic. The static scanner hits for 'mining' and 'exfiltration' are likely false positives resulting from the generic nature of WASM runtime code and standard file/webview APIs. No direct evidence of malicious network calls, credential harvesting, or obfuscated payloads is present in this specific chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-04T07:19:35.98Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-04T07:44:55.637087+00:00Z"
+}

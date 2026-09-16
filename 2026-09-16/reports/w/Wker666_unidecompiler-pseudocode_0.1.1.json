@@ -1,0 +1,432 @@
+{
+  "extension_id": "Wker666.unidecompiler-pseudocode",
+  "display_name": "UniDecompiler Pseudocode",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "Wker666",
+    "verified": false
+  },
+  "vsix_sha256": "c80db2dc116150cc3d37ef1ada6c8dd65efec9cabb277d6df1b6698047506036",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.274375,
+    "ai_vibe": 0.15,
+    "static": 0.4375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/hexView.js",
+        "line": 352,
+        "snippet": "addEventListener('keydown',(event)=>{if(event.key==='Enter')sendOffset(input.value);});document.getElementById('choose-artifact')?.addEventListener('click',()=>vscode.postMessage({type:'chooseArtifact"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/views.js",
+        "line": 102,
+        "snippet": ".postMessage({type:'reveal',uri:element.dataset.uri,start:Number(element.dataset.start),end:Number(element.dataset.end)});});element.addEventListener('keydown',(event)=>{if(event.key==='Enter'||event."
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/hexView.js",
+        "line": 352,
+        "snippet": ".postMessage({type:'byteOffset',offset});}document.getElementById('jump').addEventListener('click',()=>sendOffset(input.value));input.addEventListener('keydown',(event)=>{if(event.key==='Enter')sendOf"
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.9,
+    "blocks_parsed": 24,
+    "blocks_seen": 27,
+    "summaries": [
+      {
+        "target": "extension/dist/views.js (chunk 1/9)",
+        "summary": "This chunk contains standard TypeScript-to-JavaScript boilerplate (helpers like `__createBinding`, `__importStar`) and the definition of a `DocumentWebviewViewProvider` class. The class manages VS Code Webview views for displaying CFG, structure, and call graphs, which aligns perfectly with the extension's stated purpose of providing navigation and visualization for decompiled pseudocode. The only flagged item is a `postMessage` call, which is a standard VS Code API usage for webview communication, not a network exfiltration. No suspicious network calls, file system accesses, or obfuscation were found in this chunk."
+      },
+      {
+        "target": "extension/dist/views.js (chunk 2/9)",
+        "summary": "This chunk of code is responsible for rendering Control Flow Graphs (CFG), structural trees, and call graphs within a VS Code Webview. The logic is purely presentational, converting graph data structures into SVG and HTML strings. The only network/IPC activity is the standard `postMessage` used to notify the extension host when a user clicks a node to reveal the corresponding source code. There are no signs of obfuscation, external network calls, or sensitive file access in this segment. The behavior is fully aligned with the extension's stated purpose of providing syntax highlighting and navigation for pseudocode."
+      },
+      {
+        "target": "extension/dist/views.js (chunk 3/9)",
+        "summary": "This chunk of code is primarily responsible for calculating the layout of a call graph visualization and rendering it as SVG within a VS Code Webview. The logic involves standard array manipulations, map lookups for node positions, and string concatenation for HTML/SVG generation. The only network-like activity is `postMessage`, which is a standard local IPC mechanism in VS Code Webviews, not a direct external network call. There are no signs of obfuscation, credential harvesting, or arbitrary command execution. The code aligns perfectly with the extension's stated purpose of providing lightweight navigation and visualization for pseudocode."
+      },
+      {
+        "target": "extension/dist/views.js (chunk 4/9)",
+        "summary": "This chunk of code consists primarily of SVG rendering functions for a Control Flow Graph (CFG) and Call Graph visualization. It uses standard DOM manipulation and string interpolation to generate SVG elements. The only network-like activity is `postMessage`, which is expected for Webview communication. The code aligns perfectly with the extension's stated purpose of providing syntax highlighting and navigation for UniDecompiler pseudocode. No obfuscation, child processes, or sensitive file access were detected in this chunk."
+      },
+      {
+        "target": "extension/dist/views.js (chunk 5/9)",
+        "summary": "This chunk of code implements a recursive tree rendering function (`renderStructureNode`) for a Webview UI, likely used for the 'Outline' or 'Structure' view mentioned in the README. It constructs HTML strings using standard DOM elements (`span`, `div`, `details`) and includes basic accessibility attributes. The code is clean, unobfuscated, and logically consistent with a syntax highlighting/navigation extension. The only flagged item is a standard Webview-to-Extension message, which is a false positive for exfiltration."
+      },
+      {
+        "target": "extension/dist/views.js (chunk 7/9)",
+        "summary": "This file chunk contains the HTML/CSS/JS template for a VS Code Webview panel. It defines styles for a call graph/structure tree and includes a small script to handle click events on elements with `data-start` attributes. The script uses the standard `acquireVsCodeApi()` to send a 'reveal' message to the extension host, which is appropriate for a language/navigation extension. The 'exfiltration' hit is a false positive for standard Webview communication. No external network calls, eval, or suspicious file access are present in this chunk."
+      },
+      {
+        "target": "extension/dist/hexView.js (chunk 2/10)",
+        "summary": "The code chunk contains standard logic for a VS Code extension providing a hex view and pseudocode navigation. The 'critical' and 'high' risk flags from the static scanner are false positives resulting from DOM event listeners and Webview IPC messages being misinterpreted as Node.js-level credential harvesting or exfiltration. The code uses `Math.random()` for a nonce, which is acceptable for a local webview context. No hardcoded secrets, child_process calls, or suspicious network endpoints are present in this chunk."
+      },
+      {
+        "target": "extension/dist/hexView.js (chunk 3/10)",
+        "summary": "This chunk of the UniDecompiler extension source code appears benign and consistent with its stated purpose of providing syntax highlighting and a hex view for decompiled pseudocode. The code manages state for a hex viewer webview, handling document changes, calculating byte offsets for instructions, and rendering HTML content. The static rule engine hits are largely false positives resulting from standard Webview IPC patterns (`postMessage`) and UI event handling (`keydown` for Enter key) that are typical for interactive VS Code extensions. No obfuscation, external network calls, or sensitive file system access were observed in this chunk."
+      },
+      {
+        "target": "extension/dist/hexView.js (chunk 4/10)",
+        "summary": "This chunk of code implements the logic for a Hex View provider within a VS Code extension. It handles navigation between source code and binary offsets, resolves artifact paths, and sets up a Webview for displaying hex data. The static rule engine hits are false positives resulting from the scanner misinterpreting standard Webview IPC (`postMessage`) and UI event handling (`keydown` for Enter key) as exfiltration or keylogging. The code behavior is proportional to the extension's stated purpose of providing syntax highlighting and navigation for decompiled pseudocode."
+      },
+      {
+        "target": "extension/dist/hexView.js (chunk 5/10)",
+        "summary": "This chunk of the UniDecompiler extension implements a hex viewer feature. It reads binary artifacts, validates byte ranges, and renders them in a VS Code Webview panel. The code uses standard VS Code APIs (`vscode.workspace.fs.readFile`, `vscode.window.createWebviewPanel`) and follows best practices like using a nonce for CSP. The static rule hits are largely false positives resulting from generic pattern matching that does not account for the specific context of a hex viewer UI (e.g., Enter key for jumping to an offset, postMessage for webview IPC). No direct network calls, child_process executions, or sensitive file reads outside the user-selected artifact are observed in this chunk."
+      },
+      {
+        "target": "extension/dist/hexView.js (chunk 6/10)",
+        "summary": "This chunk of the `hexView.js` file contains logic for rendering hex data in a VS Code Webview and handling user interactions to navigate between hex offsets and source code positions. The code uses standard VS Code APIs (`vscode.window`, `vscode.workspace`, `panel.webview`) and standard DOM APIs for the webview UI. The static rule engine hits are largely false positives: the 'keylogger' is a specific Enter-key handler for an input field, and the 'exfiltration' is standard Webview IPC. The behavior is proportional to the extension's stated purpose of providing a hex view for decompiled code."
+      },
+      {
+        "target": "extension/dist/hexView.js (chunk 9/10)",
+        "summary": "This chunk of code defines the HTML/CSS/JS template for a read-only hex viewer webview. The logic is straightforward: it allows users to input a byte offset to navigate the pseudocode and highlights specific bytes based on messages from the extension host. All network-like activity is confined to the standard VS Code webview API (`postMessage`), and event listeners are limited to UI interactions (clicks and Enter key presses). No external network calls, file system access, or obfuscation were detected in this segment."
+      },
+      {
+        "target": "extension/dist/metadata.js (chunk 1/5)",
+        "summary": "This chunk of the UniDecompiler extension source code appears benign. It consists of standard module interop helpers generated by the TypeScript compiler and utility functions for parsing pseudocode metadata and calculating SHA-256 hashes. The dependencies and logic are proportional to the extension's stated purpose of providing syntax highlighting and navigation for decompiled pseudocode. No critical or high-risk indicators were found in this specific chunk."
+      },
+      {
+        "target": "extension/dist/metadata.js (chunk 3/5)",
+        "summary": "This chunk of code is primarily responsible for parsing, verifying, and querying metadata associated with UniDecompiler pseudocode files. It uses standard VS Code APIs (`vscode.workspace.fs.readFile`) to load a sidecar JSON file and performs SHA-256 hash verification to ensure data integrity. The logic is deterministic, handles errors gracefully, and does not exhibit obfuscation, network exfiltration, or arbitrary command execution. The behavior is fully consistent with the extension's stated purpose of providing syntax highlighting and navigation for a specific decompiler output format."
+      },
+      {
+        "target": "extension/dist/metadata.js (chunk 4/5)",
+        "summary": "This chunk contains pure data validation and parsing logic for the UniDecompiler metadata. It defines helper functions to filter instructions by range and parse instruction objects, source maps, and control flow graphs (CFG). The code relies on standard type checking (typeof, Array.isArray) and safe integer validation without any side effects, network calls, or file system access. This is consistent with the extension's stated purpose of providing syntax highlighting and navigation for pseudocode."
+      },
+      {
+        "target": "extension/dist/metadata.js (chunk 5/5)",
+        "summary": "The provided code snippet is a single line of standard JavaScript utility code that checks if a value is a non-null, non-array object. It contains no network calls, file system access, child process execution, or obfuscation. This is consistent with the extension's purpose of providing syntax highlighting and language support, which typically involves parsing and manipulating data structures in memory."
+      },
+      {
+        "target": "extension/dist/navigation.js",
+        "summary": "The code is a pure logic module for parsing and navigating pseudocode. It performs array filtering, sorting, and mapping operations on in-memory data structures (parsed functions, metadata, source maps). It uses standard VS Code APIs (Range, Location) to construct UI objects but does not perform any I/O, network requests, or file system access in this file. The behavior is perfectly aligned with the extension's stated purpose of providing syntax highlighting and navigation for UniDecompiler output."
+      },
+      {
+        "target": "extension/dist/parser.js (chunk 1/7)",
+        "summary": "This chunk contains the core parsing logic for the UniDecompiler pseudocode extension. It defines regular expressions to identify functions, labels, and variables, and implements a line-by-line parser to build a symbol table. The code is clean, well-commented, and uses standard JavaScript string manipulation and regex operations. There are no network calls, child process executions, or access to sensitive file system paths in this chunk. The logic is proportional to the extension's stated goal of providing navigation and outline features for a specific decompiler output format."
+      },
+      {
+        "target": "extension/dist/parser.js (chunk 2/7)",
+        "summary": "This chunk of the parser is purely computational, focusing on extracting symbol definitions and references from text lines using regular expressions. There are no signs of obfuscation, network exfiltration, or sensitive file access. The behavior is fully consistent with a language mode extension."
+      },
+      {
+        "target": "extension/dist/parser.js (chunk 3/7)",
+        "summary": "This chunk of the parser.js file contains standard static analysis logic for a language mode extension. It uses regular expressions and character iteration to identify symbols, references, and tokens within text. There are no network requests, file system accesses, child process spawns, or obfuscated code patterns. The behavior is consistent with a lightweight language server or parser component."
+      },
+      {
+        "target": "extension/dist/parser.js (chunk 4/7)",
+        "summary": "This chunk of the UniDecompiler extension contains standard logic for resolving symbol definitions and handling qualified member names in pseudocode. It relies on string slicing, array filtering, and set operations, which are typical for a language mode or linter extension. There are no signs of obfuscation, credential harvesting, or arbitrary code execution."
+      },
+      {
+        "target": "extension/dist/parser.js (chunk 5/7)",
+        "summary": "This chunk of the extension source code contains standard utility functions for parsing text, resolving symbol occurrences, and computing brace pairs. There are no network calls, file system accesses, child process executions, or obfuscated logic. The behavior is strictly consistent with a 'Programming Languages' category extension focused on syntax highlighting and navigation."
+      },
+      {
+        "target": "extension/dist/parser.js (chunk 6/7)",
+        "summary": "This chunk of the UniDecompiler extension contains utility functions for parsing pseudocode text, specifically handling bracket matching, token extraction, and comment masking. The logic is deterministic and stateless, relying only on local variables and input strings. There are no signs of obfuscation, dynamic code execution, or external resource access, which is consistent with a syntax highlighting/navigation extension."
+      },
+      {
+        "target": "extension/dist/parser.js (chunk 7/7)",
+        "summary": "This chunk (7/7) of the UniDecompiler extension contains pure logic for text processing and symbol reference indexing. It handles comment/string whitespace normalization and breaks down dotted member access chains into individual tokens for navigation. There are no external dependencies, network requests, or sensitive file system accesses in this specific file, aligning perfectly with the extension's stated purpose of providing syntax highlighting and lightweight navigation."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a `.postMessage` call as potential data exfiltration. However, in the context of a VS Code Webview, `postMessage` is the standard, secure IPC mechanism used to communicate between the webview's HTML/JS and the extension host. It is not a network exfiltration vector unless the extension host explicitly forwards it to an external server, which is not visible in this chunk.",
+        "code_reference": "view.webview.postMessage({type:'reveal',uri:element.dataset.uri,...})",
+        "line_hint": 102,
+        "target": "extension/dist/views.js (chunk 1/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a `.postMessage` call as potential data exfiltration. However, in the context of a VS Code Webview, `postMessage` is the standard, secure IPC mechanism used to communicate between the webview's DOM and the extension host. The payload contains only UI interaction data (element URI and line ranges) triggered by a user click, not sensitive system data.",
+        "code_reference": ".postMessage({type:'reveal',uri:element.dataset.uri,start:Number(element.dataset.start),end:Number(e",
+        "line_hint": 102,
+        "target": "extension/dist/views.js (chunk 2/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a `.postMessage` call as potential data exfiltration. However, in the context of a VS Code Webview, `postMessage` is the standard, secure IPC mechanism used to communicate between the Webview HTML/JS and the Extension Host. It is not a direct network egress unless the Extension Host explicitly forwards it to a remote server, which is not visible in this chunk. Given the extension's purpose (rendering a call graph), this is likely a UI interaction (e.g., clicking a node to reveal it in the editor).",
+        "code_reference": ".postMessage({type:'reveal',uri:element.dataset.uri,...})",
+        "line_hint": 102,
+        "target": "extension/dist/views.js (chunk 3/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a `.postMessage` call as potential data exfiltration. However, in the context of a VS Code Webview, `postMessage` is the standard mechanism for communicating between the Webview UI and the extension host. The payload contains UI navigation data (URI, start/end positions) for a 'reveal' action, which is consistent with the extension's purpose of providing navigation for decompiled code.",
+        "code_reference": ".postMessage({type:'reveal',uri:element.dataset.uri,start:Number(element.dataset.start),end:Number(e",
+        "line_hint": 102,
+        "target": "extension/dist/views.js (chunk 4/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a `.postMessage` call as potential data exfiltration. However, in the context of a VS Code Webview, `postMessage` is the standard mechanism for communication between the Webview UI and the Extension Host. The payload contains UI navigation data (`type: 'reveal'`, `uri`, `start`, `end`) derived from DOM element attributes, which is consistent with the extension's stated purpose of providing navigation/outline features.",
+        "code_reference": ".postMessage({type:'reveal',uri:element.dataset.uri,start:Number(element.dataset.start),end:Number(e",
+        "line_hint": 102,
+        "target": "extension/dist/views.js (chunk 5/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a `.postMessage` call as potential data exfiltration. However, the code uses `acquireVsCodeApi()` and sends a message of type 'reveal' containing a URI and line numbers. This is the standard mechanism for a VS Code Webview to communicate with the extension host to navigate the editor, not to send data to an external server.",
+        "code_reference": "vscode.postMessage({type:'reveal',uri:element.dataset.uri,start:Number(element.dataset.start),end:Number(element.dataset.end)});",
+        "line_hint": 102,
+        "target": "extension/dist/views.js (chunk 7/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to `addEventListener('keydown')` and `postMessage`. However, the code is inside a Webview HTML string (implied by the context of `HexWebviewViewProvider` and the DOM API usage). The listener specifically checks for `event.key === 'Enter'` to trigger a jump action, which is standard UI behavior for a hex viewer, not a keylogging buffer.",
+        "code_reference": "addEventListener('keydown',(event)=>{if(event.key==='Enter')sendOffset(input.value);});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `postMessage` as data exfiltration. In the context of a VS Code Webview, `postMessage` is the standard IPC mechanism to communicate with the extension host. It is sending a byte offset for navigation, not exfiltrating secrets.",
+        "code_reference": ".postMessage({type:'byteOffset',offset});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is described as a 'language mode' and 'syntax highlighting' tool, but it implements a custom Hex Webview. While this is a 'lightweight navigation' feature, it is slightly beyond the scope of pure syntax highlighting. However, given the name 'UniDecompiler Pseudocode', a hex view is a reasonable companion feature for decompilation workflows, so this is a minor mismatch rather than a major disconnect.",
+        "code_reference": "class HexWebviewViewProvider",
+        "line_hint": 277,
+        "target": "extension/dist/hexView.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged a 'keylogger' pattern due to an `addEventListener('keydown')` call. However, the code specifically listens for the 'Enter' key to trigger a `sendOffset` function, which is standard UI interaction for a hex viewer's jump-to-offset input field, not a general keylogging mechanism.",
+        "code_reference": "document.getElementById('jump').addEventListener('click', ... addEventListener('keydown',(event)=>{if(event.key==='Enter')sendOffset(input.value);});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `postMessage` as potential data exfiltration. In the context of a VS Code Webview, `postMessage` is the standard IPC mechanism to communicate between the extension host and the webview UI. The data being sent (`byteOffset`) is local UI state, not sensitive user data.",
+        "code_reference": ".postMessage({type:'byteOffset',offset});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `createWebviewPanel` as potential C2. The extension creates a webview to display a hex dump of binary artifacts, which is consistent with its stated purpose of providing a 'Hex View' for decompiled pseudocode. The webview content is generated locally via `renderHexPanel`.",
+        "code_reference": "createWebviewPanel(\"unidecompilerHex\", ...",
+        "line_hint": 277,
+        "target": "extension/dist/hexView.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged a 'keylogger' pattern due to `addEventListener('keydown')` and `postMessage`. However, the code is inside a Webview HTML string (implied by `document.getElementById` and `document.addEventListener` usage in a VS Code extension context). The listener specifically checks for `event.key==='Enter'` to trigger a jump action, which is standard UI interaction for a hex viewer, not credential harvesting.",
+        "code_reference": "addEventListener('keydown',(event)=>{if(event.key==='Enter')sendOffset(input.value);});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 4/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `postMessage` as data exfiltration. In the context of a VS Code Webview, `postMessage` is the standard IPC mechanism to communicate with the extension host. It is sending a byte offset for navigation, not user secrets.",
+        "code_reference": ".postMessage({type:'byteOffset',offset});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 4/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension creates a Webview panel (`createWebviewPanel`) to display hex data. This is consistent with the 'Hex View' functionality described in the README and the file name `hexView.js`. The webview is used for local rendering of binary data, not for loading remote C2 content.",
+        "code_reference": "createWebviewPanel(\"unidecompilerHex\", ...)",
+        "line_hint": 277,
+        "target": "extension/dist/hexView.js (chunk 4/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to `addEventListener('keydown')`. However, the code specifically checks for `event.key === 'Enter'` to trigger a jump action in a hex viewer UI. This is standard form submission behavior, not credential harvesting.",
+        "code_reference": "addEventListener('keydown',(event)=>{if(event.key==='Enter')sendOffset(input.value);});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `postMessage` as data exfiltration. In the context of a VS Code Webview, `postMessage` is the standard IPC mechanism to communicate between the webview HTML and the extension host. It is not a direct network egress unless the extension host explicitly forwards it to a remote server, which is not evident in this snippet.",
+        "code_reference": ".postMessage({type:'byteOffset',offset});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `createWebviewPanel` with `enableScripts: true` as a potential C2 channel. While webviews can be risky, this is a standard pattern for interactive UIs (like a hex viewer with jump controls). The risk is mitigated by the use of a nonce for CSP (Content Security Policy), which is visible in the code (`const nonce = ...`).",
+        "code_reference": "const panel = vscode.window.createWebviewPanel(..., { enableScripts: true, ... });",
+        "line_hint": 277,
+        "target": "extension/dist/hexView.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'keylogger' pattern due to an `addEventListener('keydown')` call. However, the code specifically checks for `event.key === 'Enter'` to trigger a navigation action (`sendOffset`), which is standard UI behavior for a hex viewer's jump-to-offset input field, not a general keylogging mechanism.",
+        "code_reference": "document.getElementById('jump').addEventListener('click', ... addEventListener('keydown',(event)=>{if(event.key==='Enter')sendOffset(input.value);});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' due to `.postMessage`. In the context of a VS Code Webview, `postMessage` is the standard IPC mechanism to communicate between the extension host and the webview UI. It is not a direct network exfiltration channel unless the webview itself sends data to an external server, which is not evident in this snippet.",
+        "code_reference": "panel.webview.postMessage({ type: \"highlight\", ... });",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension creates a Webview panel (`createWebviewPanel`) to display hex data. This is consistent with the extension's purpose of providing a 'Hex View' for decompiled pseudocode. The webview is used for rendering and user interaction (jumping to offsets), which aligns with the stated functionality.",
+        "code_reference": "createWebviewPanel(\"unidecompilerHex\", ...)",
+        "line_hint": 277,
+        "target": "extension/dist/hexView.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to `addEventListener('keydown')`. However, the code specifically listens for the 'Enter' key to trigger a form submission (`sendOffset`) within a hex viewer webview. It does not buffer arbitrary keystrokes or send them to a remote server, making this a standard UI interaction pattern.",
+        "code_reference": "input.addEventListener('keydown',(event)=>{if(event.key==='Enter')sendOffset(input.value);});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 9/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `postMessage` as potential data exfiltration. The message is sent to the VS Code extension host via `acquireVsCodeApi()`, which is the standard communication channel for webviews. The payload contains only a numeric byte offset selected by the user, not sensitive system data.",
+        "code_reference": "vscode.postMessage({type:'byteOffset',offset});",
+        "line_hint": 352,
+        "target": "extension/dist/hexView.js (chunk 9/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses a Webview panel to display a read-only hex view with navigation capabilities. This aligns perfectly with the 'UniDecompiler Pseudocode' extension's purpose of providing lightweight navigation and visualization for decompiled code artifacts.",
+        "code_reference": "createWebviewPanel(\"unidecompilerHex\", ...)",
+        "line_hint": 277,
+        "target": "extension/dist/hexView.js (chunk 9/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code chunk contains standard TypeScript compilation helpers (__createBinding, __importStar) and pure utility functions for parsing and hashing metadata. The use of 'node:crypto' for SHA-256 hashing is appropriate for a language extension that needs to verify or index sidecar metadata files. No suspicious network calls, child_process usage, or obfuscation are present in this chunk.",
+        "code_reference": "const crypto = __importStar(require(\"node:crypto\"));",
+        "line_hint": 63,
+        "target": "extension/dist/metadata.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The function `loadPseudocodeMetadataDetailed` reads a sidecar file (`.unidec.json`) from the same directory as the active document. While this is outside the extension's global storage, it is a standard pattern for language extensions that rely on external metadata files generated by a companion tool (UniDecompiler). The path is derived directly from the current document URI, limiting the scope of access.",
+        "code_reference": "const sidecar = vscode.Uri.file(`${document.uri.fsPath}.unidec.json`);",
+        "line_hint": 28,
+        "target": "extension/dist/metadata.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CODE_QUALITY",
+        "description": "Dynamic require('vscode') is used inside functions instead of at the top level. While common in some bundling scenarios, it is slightly unusual for a standard VS Code extension but not inherently suspicious.",
+        "code_reference": "const vscode = require(\"vscode\");",
+        "line_hint": 18,
+        "target": "extension/dist/navigation.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is described as providing 'syntax highlighting' and 'lightweight navigation'. The code chunk shows a custom parser (`parsePseudocode`) which is consistent with 'navigation' (outline/symbols) but implies more logic than a pure TextMate grammar. However, given the VSIX size (0.1 MB) and the specific nature of the 'UniDecompiler' output (VM-neutral pseudocode), a custom parser is a reasonable implementation detail for providing accurate symbol extraction that standard grammars might miss. No major disconnect found in this chunk.",
+        "code_reference": "function parsePseudocode(text)",
+        "line_hint": 38,
+        "target": "extension/dist/parser.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "The code performs standard text parsing and symbol extraction (functions, parameters, labels, variables, gotos) using regex matches and string manipulation. It pushes objects into local arrays (`symbols`, `references`) without any network calls, file system access, or child process execution. This aligns perfectly with the extension's stated purpose of providing syntax highlighting and navigation for pseudocode.",
+        "code_reference": "symbols.push({ id: `${functionId}:parameter:${nextId++}`, ... })",
+        "line_hint": "10",
+        "target": "extension/dist/parser.js (chunk 2/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code performs pure text parsing and symbol extraction (regex matching, tokenization) without any I/O, network calls, or process execution. This is fully proportional to the extension's stated purpose of providing syntax highlighting and navigation for pseudocode.",
+        "code_reference": "pushReference, allMatches, tokenAt",
+        "line_hint": null,
+        "target": "extension/dist/parser.js (chunk 3/7)"
+      }
+    ],
+    "findings_truncated": 4
+  },
+  "ai_summary": "This chunk contains standard TypeScript-to-JavaScript boilerplate (helpers like `__createBinding`, `__importStar`) and the definition of a `DocumentWebviewViewProvider` class. The class manages VS Code Webview views for displaying CFG, structure, and call graphs, which aligns perfectly with the extension's stated purpose of providing navigation and visualization for decompiled pseudocode. The only flagged item is a `postMessage` call, which is a standard VS Code API usage for webview communication, not a network exfiltration. No suspicious network calls, file system accesses, or obfuscation were found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-10T09:01:08.107Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-10T13:20:18.880310+00:00Z"
+}

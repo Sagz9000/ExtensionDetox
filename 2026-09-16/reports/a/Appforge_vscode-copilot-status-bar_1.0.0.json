@@ -1,0 +1,187 @@
+{
+  "extension_id": "Appforge.vscode-copilot-status-bar",
+  "display_name": "Copilot Status Bar",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "Appforge",
+    "verified": false
+  },
+  "vsix_sha256": "56c4051af74fd080e97c2b87c6e5d582330e5de1d299ec2585fabff9ded9a7f5",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2926550781475361,
+    "ai_vibe": 0.15,
+    "static": 0.5106203125901445,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/quotaClient.js",
+        "line": 46,
+        "snippet": "vscode.authentication.getSession"
+      },
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/quotaClient.js",
+        "line": 49,
+        "snippet": "vscode.authentication.getSession"
+      },
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/quotaClient.js",
+        "line": 49,
+        "snippet": "vscode.authentication.getSession(GITHUB_AUTH_PROVIDER_ID, GITHUB_SCOPES, { createIfNone: true"
+      }
+    ],
+    "high": [],
+    "total": 10
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/out/quotaClient.js (chunk 1/2)",
+        "summary": "This chunk of the extension source code appears benign and well-aligned with its stated purpose. It defines helper functions to retrieve a GitHub authentication session and fetch the Copilot quota from the official GitHub API. The use of `vscode.authentication` is appropriate for an extension relying on GitHub sign-in, and the network call targets the correct endpoint for the data required. No obfuscation, local file system access, or child process execution is observed in this chunk."
+      },
+      {
+        "target": "extension/out/quotaClient.js (chunk 2/2)",
+        "summary": "This file contains the tail end of the quota client logic. It retrieves a GitHub authentication session and uses the access token to fetch quota data. Given the extension's purpose (displaying Copilot usage), accessing the GitHub auth session is expected and not indicative of credential harvesting. No obfuscation or suspicious network endpoints were found in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 1/3)",
+        "summary": "This chunk of the 'Copilot Status Bar' extension appears benign. It sets up standard VS Code extension boilerplate, defines configuration reading for refresh intervals, and implements a refresh loop that reads quota data (via a separate module) and updates a status bar item. The logic is straightforward, error handling is present, and there are no signs of obfuscation, arbitrary code execution, or sensitive file access in this portion. The activation event is slightly broad but acceptable for a status bar widget."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/3)",
+        "summary": "This chunk of the 'Copilot Status Bar' extension contains standard logic for managing timers, displaying usage data via QuickPick, handling sign-in, and allowing the user to configure the refresh interval. The code is clean, readable, and uses standard VS Code APIs (`vscode.window`, `vscode.commands`, `vscode.workspace`). The only flagged item is a programmatic update to the extension's own configuration, which is a benign and expected behavior for a settings UI. There are no signs of obfuscation, arbitrary code execution, or sensitive file access in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/3)",
+        "summary": "This chunk (3/3) contains the tail end of the activation logic and the deactivation logic. It registers event listeners for configuration changes and GitHub authentication updates, starts the timers, and cleans up resources on deactivation. The logic is straightforward and consistent with the extension's stated purpose of displaying Copilot quota in the status bar. No obfuscation, network calls, or suspicious file system operations are present in this chunk."
+      },
+      {
+        "target": "extension/out/quotaParser.js",
+        "summary": "The provided source code is a pure data parsing utility (`parseCopilotUserResponse`) that validates and structures JSON responses from the GitHub Copilot API. It contains no network calls, file system access, child process execution, or any other suspicious behavior. The logic is strictly defensive, ensuring that expected fields (like `entitlement`, `percent_remaining`, and `reset_date`) are present and of the correct type before returning a structured object. This aligns perfectly with the extension's advertised purpose of displaying quota information in the status bar."
+      },
+      {
+        "target": "extension/out/statusBar.js (chunk 1/2)",
+        "summary": "The provided code chunk is a standard implementation of a VS Code status bar item for displaying GitHub Copilot quota usage. It utilizes standard VS Code APIs (`vscode.window.createStatusBarItem`) and local formatting utilities. There are no network calls, file system access, process execution, or obfuscated logic in this segment. The behavior is fully consistent with the extension's advertised purpose of visualizing token usage in the status bar."
+      },
+      {
+        "target": "extension/out/statusBar.js (chunk 2/2)",
+        "summary": "The provided code chunk is a benign implementation of a VS Code status bar item. It exclusively uses standard VS Code APIs (vscode.ThemeColor, vscode.MarkdownString) to display quota information and tooltips. There are no network calls, file system access, child process execution, or obfuscated logic in this segment. The behavior is fully consistent with the extension's advertised purpose of visualizing Copilot usage."
+      },
+      {
+        "target": "extension/out/quotaFormatting.js",
+        "summary": "The provided source code consists exclusively of pure utility functions for mathematical calculations and date formatting. It contains no network activity, file system access, process execution, or access to sensitive data. The code is fully aligned with the extension's advertised purpose of displaying quota information in the status bar."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.authentication.getSession` as credential theft. However, the code requests the 'github' provider with the minimal scope 'user:email' and uses the token to call the official GitHub API endpoint (`api.github.com/copilot_internal/user`) to fetch quota data. This is the standard and expected mechanism for a Copilot status bar extension to verify subscription status.",
+        "code_reference": "vscode.authentication.getSession(GITHUB_AUTH_PROVIDER_ID, GITHUB_SCOPES, ...)",
+        "line_hint": 46,
+        "target": "extension/out/quotaClient.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension makes a network request to `https://api.github.com/copilot_internal/user`. While this is a semi-private endpoint, it is the correct source for Copilot quota data. The request includes a custom User-Agent and Editor-Version header, which is consistent with VS Code's internal behavior.",
+        "code_reference": "fetch(QUOTA_URL, ...)",
+        "line_hint": 63,
+        "target": "extension/out/quotaClient.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.authentication.getSession` as credential theft. However, the extension's stated purpose is to display GitHub Copilot quota, which requires the GitHub OAuth token to call the GitHub API. The code retrieves the session to access `session.accessToken` for a specific API call (`fetchQuotaSnapshot`), which is a standard and necessary pattern for this type of extension.",
+        "code_reference": "const session = await getSilentGitHubSession(); ... return fetchQuotaSnapshot(session.accessToken);",
+        "line_hint": "46-49",
+        "target": "extension/out/quotaClient.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While appropriate for a status bar item that needs to be visible immediately, this is a broader activation scope than strictly necessary for a simple visualization tool, though common for this type of extension.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'workspace.getConfiguration' as potential API abuse. However, the code only reads configuration values ('refreshIntervalSeconds', 'countdownUpdateIntervalSeconds') to determine polling intervals, which is standard behavior for a configurable extension. The 'update' call mentioned in the static hit is likely in a later chunk or refers to the status bar item update, not necessarily a write to settings in this specific context, or is a minor self-update of its own config which is low risk.",
+        "code_reference": "vscode.workspace.getConfiguration(\"copilotStatusBar\")",
+        "line_hint": 82,
+        "target": "extension/out/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIG_UPDATE",
+        "description": "The extension programmatically updates its own configuration setting `copilotStatusBar.refreshIntervalSeconds` via `vscode.workspace.getConfiguration().update()`. This is a standard pattern for extensions allowing users to change settings via UI commands, and the target is the extension's own namespace, not a global or sensitive setting.",
+        "code_reference": "await vscode.workspace.getConfiguration(\"copilotStatusBar\").update(\"refreshIntervalSeconds\", seconds, vscode.ConfigurationTarget.Global);",
+        "line_hint": 146,
+        "target": "extension/out/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "VSCode_API_Usage",
+        "description": "The code registers listeners for configuration changes and authentication session changes, and manages timer intervals for the status bar. These are standard, expected behaviors for a status bar extension that needs to react to user settings and login state.",
+        "code_reference": "context.subscriptions.push(vscode.workspace.onDidChangeConfiguration...)",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the extension source code appears benign and well-aligned with its stated purpose. It defines helper functions to retrieve a GitHub authentication session and fetch the Copilot quota from the official GitHub API. The use of `vscode.authentication` is appropriate for an extension relying on GitHub sign-in, and the network call targets the correct endpoint for the data required. No obfuscation, local file system access, or child process execution is observed in this chunk.",
+  "escalation_reasons": [
+    "3 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 5,
+    "published_date": "2026-08-26T20:33:04.033Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T03:14:05.599379+00:00Z"
+}

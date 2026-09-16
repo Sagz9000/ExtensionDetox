@@ -1,0 +1,125 @@
+{
+  "extension_id": "vova4o.codebase-graph",
+  "display_name": "Codebase Graph",
+  "version": "0.2.63",
+  "publisher": {
+    "name": "vova4o",
+    "verified": false
+  },
+  "vsix_sha256": "7e3da6d2e475574db4aaf0615221fe45708850a52fd595f1735c1b314bdd7f6e",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25875,
+    "ai_vibe": 0.15,
+    "static": 0.375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "HIDDEN_EXECUTABLE",
+        "severity": "CRITICAL",
+        "description": "File 'extension/bin/linux-x64/codebase-graph-mcp' has extension '' but contains ELF binary",
+        "file": "extension/bin/linux-x64/codebase-graph-mcp",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "HIDDEN_EXECUTABLE",
+        "severity": "CRITICAL",
+        "description": "File 'extension/bin/linux-arm64/codebase-graph-mcp' has extension '' but contains ELF binary",
+        "file": "extension/bin/linux-arm64/codebase-graph-mcp",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 3,
+        "snippet": "const childProcess = require('node:child_process');"
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "The JavaScript source code is clean and follows standard VS Code extension patterns for registering an MCP server and executing commands. It does not contain any obvious malicious logic such as credential harvesting, network exfiltration, or obfuscated payloads. However, the extension relies heavily on pre-compiled native binaries (`codebase-graph-mcp`) which are opaque to static analysis. The presence of these binaries, combined with the `onStartupFinished` activation event, warrants caution. The risk is primarily derived from the unverified native code rather than the JavaScript wrapper."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "HIDDEN_EXECUTABLE",
+        "description": "The extension bundles pre-compiled native ELF binaries (codebase-graph-mcp) for Linux x64 and arm64. While this is a common pattern for performance-critical tools (like language servers), it prevents static analysis of the core logic. The binary could contain malicious code (e.g., credential theft, data exfiltration) that is not visible in the JavaScript source. The use of `child_process.spawn` to execute this binary confirms it is the primary functional component.",
+        "code_reference": "const binary = bundledBinaryPath(context.extensionPath); ... childProcess.spawn(binary, ...)",
+        "line_hint": "15",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. For an extension that primarily provides an MCP server definition and manual indexing commands, this activation event is aggressive. It forces the extension to load and register its MCP provider immediately upon VS Code startup, even if the user never intends to use the 'Codebase Graph' features. This increases the attack surface and resource usage unnecessarily.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The VSIX package size is 18.4 MB. While large for a simple extension, this is likely due to the inclusion of multiple platform-specific binaries (darwin, linux, win32; x64, arm64). This is proportional to the functionality of bundling a native MCP server, but users should be aware of the disk footprint.",
+        "code_reference": "VSIX Package Size: 18.4 MB",
+        "line_hint": null,
+        "target": "extension/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The JavaScript source code is clean and follows standard VS Code extension patterns for registering an MCP server and executing commands. It does not contain any obvious malicious logic such as credential harvesting, network exfiltration, or obfuscated payloads. However, the extension relies heavily on pre-compiled native binaries (`codebase-graph-mcp`) which are opaque to static analysis. The presence of these binaries, combined with the `onStartupFinished` activation event, warrants caution. The risk is primarily derived from the unverified native code rather than the JavaScript wrapper.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-15T07:47:11.51Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T09:41:04.261871+00:00Z"
+}

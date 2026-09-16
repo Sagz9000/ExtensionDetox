@@ -1,0 +1,230 @@
+{
+  "extension_id": "NodePack.live-test-hr",
+  "display_name": "Live Test \u2014 HR",
+  "version": "0.5.0",
+  "publisher": {
+    "name": "NodePack",
+    "verified": false
+  },
+  "vsix_sha256": "86a182a289745e9171199614b6bd3114e9989bde159aa13872cf23572ff06039",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.21,
+    "ai_vibe": 0.1,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/out/extension.js",
+        "line": 4145,
+        "snippet": "addEventListener('keydown', (e) => { if (e.key === 'Enter') $('send"
+      }
+    ],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 4026,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 5
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "live.nodepack.online",
+      "source_file": "extension/package.json",
+      "line": 38,
+      "context": "\"default\": \"https://live.nodepack.online\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/5)",
+        "summary": "The provided source code (chunk 1/5) contains only bundled third-party library code (specifically the `ws` WebSocket library) and standard module bundler boilerplate. It does not contain any extension-specific logic, network calls to suspicious domains, or malicious patterns. The static scanner hits referenced in the prompt (keylogger, persistence, config harvesting) point to lines outside this chunk or are likely false positives given the extension's stated purpose (Live Test with chat/Live Share). The domain `live.nodepack.online` is documented in the README as the intended backend. Based on the available evidence, the code is benign."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/5)",
+        "summary": "The provided source code chunk consists entirely of the `ws` (WebSocket) npm library implementation, specifically the `Receiver`, `Sender`, and `EventTarget` classes. This is a standard, well-known library used for handling WebSocket connections. The extension's README describes a 'Live Test' HR tool that uses a session server (`live.nodepack.online`) and Live Share, which aligns with the need for WebSocket communication. The static rule engine hits (keylogger, persistence, vscode_api_abuse) are not supported by the code in this specific chunk, as the code contains no DOM event listeners, file system modifications, or VS Code API calls. The code appears to be benign library code."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/5)",
+        "summary": "This source code chunk contains the implementation of the `ws` npm package, a standard library for handling WebSocket connections in Node.js. It includes classes for event handling, extension parsing, and the core WebSocket client logic. There is no evidence of malicious behavior, obfuscation, or capability disconnect in this specific file. The static rule engine hits appear to be false positives resulting from line number mismatches or scanning artifacts, as the code itself is benign and standard."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/5)",
+        "summary": "The provided source code chunk (4/5) consists entirely of the bundled `ws` (WebSocket) library implementation, including client, server, stream, and subprotocol modules, followed by the module export boilerplate for the extension. This is standard, well-known open-source code used for WebSocket communication. The static rule engine hits (keylogger, persistence, config harvesting) reference line numbers and code patterns that are not present in this specific chunk, indicating they are either false positives or refer to other parts of the extension not shown here. The extension's stated purpose (Live Test HR) involves real-time communication (chat, session monitoring), which justifies the use of the WebSocket library. No malicious behavior, obfuscation, or suspicious network exfiltration patterns are observed in this code segment."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/5)",
+        "summary": "The extension is a legitimate HR tool for conducting coding interviews via a custom server. The code implements a WebSocket client to communicate with a session server, manages a webview sidebar for chat and task management, and integrates with VS Code's Live Share feature. All static scanner hits were identified as false positives resulting from standard UI coding patterns (CSS classes, input event listeners) and legitimate configuration access. There is no evidence of malicious intent, data exfiltration, or unauthorized system access."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern at line 4145 (`addEventListener('keydown', ...)`). However, the provided source code (chunk 1/5) consists entirely of bundled `ws` (WebSocket) library internals (constants, buffer-util, limiter, permessage-deflate, validation, receiver). The flagged code is not present in this chunk. Given the extension's purpose (Live Test with chat and Live Share), keyboard listeners are expected for chat input handling. Without evidence of exfiltration or hidden keylogging in the remaining chunks, this is likely a false positive related to legitimate UI interaction.",
+        "code_reference": null,
+        "line_hint": "4145",
+        "target": "extension/out/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'persistence_evasion' at line 4026 (`.hidden`). This code is not present in the provided chunk. In the context of a VS Code extension, `.hidden` is commonly used for UI visibility toggles (e.g., hiding sidebar items or webview elements) rather than file system attribute manipulation. No malicious file system operations are observed in this chunk.",
+        "code_reference": null,
+        "line_hint": "4026",
+        "target": "extension/out/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' at line 4164 regarding `workspace.getConfiguration`. This code is not present in the provided chunk. The extension's README explicitly states it connects to a company-hosted session server (`live.nodepack.online`). Reading configuration to retrieve the server URL is standard and expected behavior for this type of extension. No exfiltration of sensitive data is observed in this chunk.",
+        "code_reference": null,
+        "line_hint": "4164",
+        "target": "extension/out/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'keylogger' pattern at line 4145. However, the provided source code chunk (chunk 2/5) contains only the implementation of the `ws` (WebSocket) library (Receiver, Sender, EventTarget classes). There is no `addEventListener('keydown')` or DOM manipulation code in this chunk. The hit likely originates from a different chunk or is a scanner artifact. The code present is standard WebSocket protocol handling.",
+        "code_reference": "node_modules/ws/lib/receiver.js, node_modules/ws/lib/sender.js",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'persistence_evasion' due to a `.hidden` attribute at line 4026. The provided source code does not contain file system operations or attribute setting logic. This is likely a false positive from the scanner matching a property name in a different context or chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for harvesting configuration at line 4164. The provided source code is purely the `ws` library and does not import or use `vscode` APIs. This hit is not supported by the code in this chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'infostealer_behavior' and 'persistence_evasion' based on line numbers that do not correspond to the provided source code chunk. The provided code consists entirely of the `ws` (WebSocket) library implementation (EventTarget, extension parsing, WebSocket class). There are no keydown listeners, no file attribute modifications, and no credential harvesting logic in this chunk.",
+        "code_reference": "node_modules/ws/lib/event-target.js, node_modules/ws/lib/extension.js, node_modules/ws/lib/websocket.js",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements standard WebSocket client functionality (connection handshake, message sending/receiving, close frames). This is consistent with the extension's stated purpose of communicating with a session server (`live.nodepack.online`) for real-time interview features (chat, task updates). The use of the `ws` library is a standard and expected dependency for this functionality.",
+        "code_reference": "WebSocket2 class, initAsClient function",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'keylogger' pattern at line 4145. However, the provided source code chunk (chunk 4/5) contains only the bundled `ws` (WebSocket) library implementation and the module export boilerplate for the extension. The specific code `addEventListener('keydown', ...)` is not present in this chunk. This is likely a false positive from a scanner that analyzed the entire file or a different chunk, or a misattribution of line numbers. The code in this chunk is standard WebSocket protocol handling.",
+        "code_reference": "node_modules/ws/lib/websocket.js",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'persistence_evasion' due to a `.hidden` attribute at line 4026. This code is not present in the provided chunk. The chunk consists of standard Node.js stream and WebSocket server logic. No file system operations or attribute modifications are visible in this segment.",
+        "code_reference": "node_modules/ws/lib/stream.js",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' regarding `workspace.getConfiguration` at line 4164. This code is not present in the provided chunk. The chunk ends with the export of `activate` and `deactivate` functions from `src/extension.ts`, but the implementation of these functions is not included in this specific text block. The visible code is entirely from the `ws` dependency.",
+        "code_reference": "src/extension.ts",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown listener. Upon review, the listener is attached to a specific chat input element within the extension's webview UI to trigger the 'Send' button on Enter. It does not capture keystrokes globally or buffer them for exfiltration.",
+        "code_reference": "$('chatInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('sendBtn').click(); });",
+        "line_hint": 4145,
+        "target": "extension/out/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'persistence_evasion' due to the string '.hidden'. This is a standard CSS class used in the webview HTML to toggle the visibility of UI sections (e.g., hiding the 'empty' state when a session is active). It does not modify file attributes or system settings.",
+        "code_reference": ".hidden { display: none; }",
+        "line_hint": 4026,
+        "target": "extension/out/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' for reading configuration. The code reads the 'serverUrl' from the extension's own configuration namespace ('liveTestHr') to determine where to connect. This is standard behavior for extensions that allow users to configure backend endpoints, and the data is not exfiltrated to a third party.",
+        "code_reference": "vscode2.workspace.getConfiguration(\"liveTestHr\").get(\"serverUrl\", \"https://live.nodepack.online\")",
+        "line_hint": 4164,
+        "target": "extension/out/extension.js (chunk 5/5)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The provided source code (chunk 1/5) contains only bundled third-party library code (specifically the `ws` WebSocket library) and standard module bundler boilerplate. It does not contain any extension-specific logic, network calls to suspicious domains, or malicious patterns. The static scanner hits referenced in the prompt (keylogger, persistence, config harvesting) point to lines outside this chunk or are likely false positives given the extension's stated purpose (Live Test with chat/Live Share). The domain `live.nodepack.online` is documented in the README as the intended backend. Based on the available evidence, the code is benign.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-13T20:49:18.12Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-13T21:06:28.339346+00:00Z"
+}

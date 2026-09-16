@@ -1,0 +1,173 @@
+{
+  "extension_id": "ujjavala.docgrity",
+  "display_name": "Docgrity \u2014 Doc Integrity for Repos",
+  "version": "0.1.2",
+  "publisher": {
+    "name": "ujjavala",
+    "verified": false
+  },
+  "vsix_sha256": "120541037e3b40673eb66c927ad546bb34fd7a9de7655bd254704f293ada19ec",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.24257753907376806,
+    "ai_vibe": 0.1,
+    "static": 0.38031015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/github/issues.js",
+        "line": 69,
+        "snippet": "vscode.authentication.getSession"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/github/owners.js",
+        "line": 44,
+        "snippet": "const node_child_process_1 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/github/owners.js",
+        "line": 49,
+        "snippet": "(0, node_child_process_1.execFile)('git', args, { cwd, timeout: 10000, maxBuffer: 10 * 1024 * 1024 }, (err, stdout) => {"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/github/owners.js",
+        "line": 63,
+        "snippet": "const child = (0, node_child_process_1.execFile)('git', ['check-ignore', '--stdin', '-z'], { cwd: root, timeout: 10000, maxBuffer: 10 * 1024 * 1024 }, (err, stdout) => {"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 11,
+    "blocks_seen": 11,
+    "summaries": [
+      {
+        "target": "extension/out/github/issues.js (chunk 1/2)",
+        "summary": "The code is a legitimate implementation of a VS Code extension designed to find contradictions in markdown documentation and raise GitHub issues. The use of `vscode.authentication.getSession` is appropriate and necessary for the extension to interact with the GitHub API on behalf of the user. The extension includes a human approval gate (`showInformationMessage` with `modal: true`) before creating any issues, which mitigates the risk of unauthorized actions. The package size (0.4 MB) and dependencies are proportional to its function. No malicious behavior, obfuscation, or capability disconnects were identified."
+      },
+      {
+        "target": "extension/out/github/issues.js (chunk 2/2)",
+        "summary": "The code is a legitimate implementation of the 'Docgrity' extension's core feature: creating GitHub issues. It uses the VS Code Authentication API to securely obtain a GitHub token and sends a POST request to the official GitHub API endpoint. There are no signs of malicious intent, data exfiltration, or capability disconnects. The static rule hits are false positives resulting from the legitimate use of the authentication API."
+      },
+      {
+        "target": "extension/out/agents/assess.js (chunk 1/3)",
+        "summary": "The provided code chunk is a standard TypeScript-compiled module for a VS Code extension named 'Docgrity'. It implements logic to select a language model via the `vscode.lm` API (Language Model Provider), which is the official, secure way for extensions to access LLM capabilities (like Copilot) without handling API keys directly. The code reads configuration settings (`docgrity.model.vendor`) and performs model selection. There are no signs of obfuscation, credential harvesting, arbitrary command execution, network exfiltration, or other malicious behaviors. The capabilities observed are fully proportional to the extension's advertised purpose of analyzing markdown documentation using AI."
+      },
+      {
+        "target": "extension/out/agents/assess.js (chunk 2/3)",
+        "summary": "The code is a benign implementation of an LLM-based document consistency checker. It uses the standard VS Code Language Model API (`vscode.LanguageModelChatMessage`, `model.sendRequest`) to send markdown content to a model for analysis. There are no network exfiltration patterns, credential harvesting, obfuscation, or suspicious system calls. The behavior aligns perfectly with the extension's advertised purpose of finding contradictions in documentation."
+      },
+      {
+        "target": "extension/out/agents/assess.js (chunk 3/3)",
+        "summary": "The provided code chunk is a benign implementation of an AI-assisted documentation analysis feature. It defines functions to assess contradictions and open questions in markdown files and draft GitHub issues based on findings. The code strictly adheres to the extension's advertised purpose (Docgrity) by processing document text and generating structured JSON output via an LLM API. There are no indicators of malicious behavior, such as credential harvesting, arbitrary command execution, network exfiltration to suspicious endpoints, or obfuscation. The use of `completeJson` implies a standard API call to a language model provider, which is consistent with the extension's functionality."
+      },
+      {
+        "target": "extension/out/github/owners.js (chunk 1/2)",
+        "summary": "The code is a standard utility module for a VS Code extension that analyzes Git repositories. It uses `child_process.execFile` to run specific, safe `git` commands (`check-ignore`) with strict timeouts and buffer limits. There are no signs of obfuscation, credential theft, network exfiltration, or malicious behavior. The use of `child_process` is proportional to the extension's stated goal of analyzing repository docs and Git metadata. The VSIX size and dependencies are appropriate for a linter/analysis tool."
+      },
+      {
+        "target": "extension/out/github/owners.js (chunk 2/2)",
+        "summary": "The code is benign and consistent with the extension's stated purpose. It uses the `git` command-line interface to retrieve the last commit author for a file and to parse the GitHub repository slug from the remote origin. These operations are standard for a tool that aims to assign ownership or raise issues in a GitHub repository. There are no network exfiltration attempts, credential harvesting, obfuscation, or suspicious system calls."
+      },
+      {
+        "target": "extension/out/log.js",
+        "summary": "The code is a standard, benign logging utility for a VS Code extension. It utilizes the official `vscode.window.createOutputChannel` API to create a log channel and exposes standard trace/debug/info/warn/error methods. There are no network calls, file system access, process execution, or obfuscation. The behavior is fully proportional to the extension's stated purpose of providing a linter/documentation tool."
+      },
+      {
+        "target": "extension/out/agents/prompts.js (chunk 1/3)",
+        "summary": "The provided code chunk consists entirely of static string definitions for AI prompts used by the Docgrity extension. It contains no executable logic, network calls, file system access, or child process execution. The content aligns perfectly with the extension's advertised purpose of analyzing markdown documentation for contradictions and duplicates. No malicious or suspicious indicators were found."
+      },
+      {
+        "target": "extension/out/agents/prompts.js (chunk 2/3)",
+        "summary": "The provided code snippet consists entirely of static string literals defining system prompts for an AI-based document analysis tool. It contains no executable logic, network calls, file system access, or obfuscation. The content aligns perfectly with the extension's advertised purpose of analyzing markdown documentation for contradictions and duplicates. No malicious or suspicious behavior was detected."
+      },
+      {
+        "target": "extension/out/agents/prompts.js (chunk 3/3)",
+        "summary": "The provided code chunk consists entirely of static string literals defining system prompts for an AI agent. These prompts instruct the AI to identify documentation inconsistencies and draft GitHub issues. There is no executable logic, network communication, file system access, or obfuscation present in this specific file. The behavior is fully aligned with the extension's advertised purpose of checking documentation integrity."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.authentication.getSession` as credential theft. However, the code context indicates this is used to obtain a GitHub token to interact with the GitHub API (creating issues), which is the core advertised functionality of the extension. The extension explicitly states it uses the user's own Copilot/GitHub subscription and requires human approval before posting. This is a legitimate use of the VS Code API for the extension's stated purpose.",
+        "code_reference": "vscode.authentication.getSession",
+        "line_hint": 69,
+        "target": "extension/out/github/issues.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.authentication.getSession` as credential theft. However, the code explicitly requests the 'github' provider with 'repo' scope and uses the token to POST to `api.github.com` to create an issue. This is the standard, secure, and intended method for a VS Code extension to interact with the GitHub API on behalf of the user. It does not exfiltrate credentials to a third party.",
+        "code_reference": "const session = await vscode.authentication.getSession('github', ['repo'], { createIfNone: true });",
+        "line_hint": 69,
+        "target": "extension/out/github/issues.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `child_process.execFile` to execute `git` commands. While this is a standard pattern for VS Code extensions that interact with Git repositories (to get authors, check ignore status, etc.), it is a capability that should be noted. In this specific context, it is used strictly for `git check-ignore` and likely `git log` (implied by the function name `potentialOwner` and the context of finding authors), which aligns with the extension's purpose of analyzing repository documentation and metadata. It does not execute arbitrary user input or shell commands directly.",
+        "code_reference": "const node_child_process_1 = require(\"node:child_process\"); ... (0, node_child_process_1.execFile)('git', args, ...)",
+        "line_hint": 60,
+        "target": "extension/out/github/owners.js (chunk 1/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate implementation of a VS Code extension designed to find contradictions in markdown documentation and raise GitHub issues. The use of `vscode.authentication.getSession` is appropriate and necessary for the extension to interact with the GitHub API on behalf of the user. The extension includes a human approval gate (`showInformationMessage` with `modal: true`) before creating any issues, which mitigates the risk of unauthorized actions. The package size (0.4 MB) and dependencies are proportional to its function. No malicious behavior, obfuscation, or capability disconnects were identified.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-05T02:44:58.003Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T11:36:23.400381+00:00Z"
+}

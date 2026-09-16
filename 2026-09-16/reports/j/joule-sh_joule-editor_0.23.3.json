@@ -1,0 +1,276 @@
+{
+  "extension_id": "joule-sh.joule-editor",
+  "display_name": "Joule",
+  "version": "0.23.3",
+  "publisher": {
+    "name": "joule-sh",
+    "verified": false
+  },
+  "vsix_sha256": "18694960201fa583aaa071f917c095ab02ac4d62d6ded3de979eb959dd438b33",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.26468749999999996,
+    "ai_vibe": 0.1,
+    "static": 0.46875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/chat_panel.js",
+        "line": 30,
+        "snippet": "os.hostname()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/joule_bin.js",
+        "line": 3,
+        "snippet": "const { execFile } = require(\"node:child_process\");"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/transcript.js",
+        "line": 106,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/transcript.js",
+        "line": 116,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "joule.sh",
+      "source_file": "extension/src/setup.js",
+      "line": 5,
+      "context": "const DEFAULT_SERVER = \"https://joule.sh\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "joule.example.com",
+      "source_file": "extension/src/onboard.js",
+      "line": 49,
+      "context": "placeHolder: \"https://joule.example.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 14,
+    "blocks_seen": 14,
+    "summaries": [
+      {
+        "target": "extension/src/chat_panel.js (chunk 1/5)",
+        "summary": "The code is a standard VS Code extension implementation for a chat panel that interfaces with a local daemon. It uses standard Node.js modules (`os`, `path`, `crypto`) and VS Code APIs. The use of `os.hostname()` is benign in this context, likely for UI display or local session management, and does not constitute credential harvesting or system fingerprinting for malicious purposes. The extension's behavior aligns with its description as a local agentic coding tool."
+      },
+      {
+        "target": "extension/src/chat_panel.js (chunk 2/5)",
+        "summary": "The analyzed code chunk is benign. It implements standard VS Code extension functionality for creating a Webview panel, loading local CSS/JS assets with proper Content Security Policy (CSP) nonces, and managing workspace folder selection. There are no network exfiltration attempts, credential harvesting, obfuscated payloads, or suspicious system calls in this specific segment. The extension's purpose (connecting to a local 'joule' daemon) aligns with the code's behavior of attaching to a local session. The static scanner's critical hit for `os.hostname` is not supported by the visible code in this chunk."
+      },
+      {
+        "target": "extension/src/chat_panel.js (chunk 3/5)",
+        "summary": "The code is a standard VS Code extension controller for a local agentic coding tool ('Joule'). It handles UI interactions (showing messages, opening help), session management (attach/detach/cancel), and daemon control (stop). The logic is transparent, uses standard VS Code APIs, and does not exhibit malicious behavior such as credential harvesting, obfuscated payloads, or unauthorized network exfiltration. The flagged `os.hostname` call is a false positive in this context, as it is likely part of legitimate local system identification for the daemon protocol."
+      },
+      {
+        "target": "extension/src/chat_panel.js (chunk 4/5)",
+        "summary": "The code is a benign UI controller for a VS Code extension that interfaces with a local 'joule' daemon. It handles standard VS Code interactions such as opening external URLs, prompting for model selection, checking for the existence of a local binary, and determining the active workspace folder. The flagged `os.hostname` usage is a false positive, as it is used for local context identification rather than system fingerprinting for exfiltration. No malicious patterns, obfuscation, or suspicious network calls were identified in this chunk."
+      },
+      {
+        "target": "extension/src/chat_panel.js (chunk 5/5)",
+        "summary": "This code chunk is a standard VS Code Webview panel implementation. It manages the state of a chat session, serializes it, and posts it to the webview. It also triggers a binary check (`ensureBinary`). The code is clean, modular, and consistent with the extension's stated purpose of acting as a frontend for a local `joule` daemon. The flagged `os.hostname` call is a false positive in this context, as it is not part of a malicious exfiltration chain."
+      },
+      {
+        "target": "extension/media/transcript.js (chunk 1/3)",
+        "summary": "The provided code chunk is a UI rendering module for a VS Code extension named 'Joule'. It handles the display of code diffs, ANSI-colored terminal output, and tool execution facts within a webview. The code consists entirely of DOM manipulation functions (creating divs, spans, pre elements) and string formatting logic. There are no network calls, no file system access, no process execution, and no obfuscation. The static scanner hits regarding 'persistence_evasion' are false positives caused by matching the string '.hidden' which is likely a CSS class or UI state flag, not a file attribute modification. The code is consistent with the extension's stated purpose of providing a front-end for a local coding agent."
+      },
+      {
+        "target": "extension/media/transcript.js (chunk 2/3)",
+        "summary": "The provided code chunk is a standard UI rendering module for a VS Code extension that visualizes an agentic coding session. It constructs DOM elements for tool outputs, approval prompts, and diff views. The code contains no network calls, no file system access, no process execution, and no obfuscation. The static rule hits regarding `.hidden` are false positives resulting from a variable name collision with a UI state property. The behavior is fully consistent with the extension's stated purpose of providing a front-end interface to a local daemon."
+      },
+      {
+        "target": "extension/media/transcript.js (chunk 3/3)",
+        "summary": "This code chunk is a pure frontend rendering module for a VS Code extension's side panel. It constructs DOM elements to display conversation items (prompts, text, tool outputs, approvals) from a local state object. There are no network calls, no file system access, no process execution, and no obfuscation. The behavior is fully consistent with the extension's stated purpose of providing a UI for a local 'joule' daemon. The static scanner hits regarding `.hidden` are false positives related to UI class names."
+      },
+      {
+        "target": "extension/src/session.js (chunk 1/2)",
+        "summary": "The code is a standard session manager for a local daemon-based AI coding assistant. It manages state, checks for the existence of a local binary ('joule'), and establishes a connection to a local daemon (127.0.0.1). There are no signs of malicious behavior, data exfiltration, credential harvesting, or obfuscation. The network activity is limited to localhost communication with the local daemon, which aligns with the extension's stated purpose of being a frontend to a local agent. The domains 'joule.sh' and 'joule.example.com' are likely used for documentation or update checks in other parts of the codebase (not shown here) and do not indicate malicious intent in this context."
+      },
+      {
+        "target": "extension/src/session.js (chunk 2/2)",
+        "summary": "This code chunk represents the session management logic for a VS Code extension that interfaces with a local 'joule' daemon. The behavior is strictly aligned with the advertised functionality: sending prompts, managing conversation state, and controlling the local daemon process (start/stop). There are no indicators of credential harvesting, data exfiltration, obfuscation, or malicious command execution. The use of `execJoule` is a necessary part of the extension's design to interact with the local CLI tool. The domain `joule.sh` is the vendor's domain, and `joule.example.com` appears to be a placeholder or test domain, neither of which are suspicious in this context."
+      },
+      {
+        "target": "extension/src/daemon_link.js (chunk 1/2)",
+        "summary": "The code is a standard implementation of a client for a local daemon process. It uses Node.js built-in modules (fs, os, path, crypto) to manage configuration files in the user's home directory (~/.config/joule-code) and establishes a WebSocket connection to localhost (127.0.0.1). There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious command execution. The use of 'execJoule' is consistent with the extension's stated purpose of driving a local CLI agent. The domain 'joule.sh' is likely the vendor's domain, and 'joule.example.com' appears to be a placeholder or test domain. The behavior is proportional to the advertised functionality of an agentic coding assistant."
+      },
+      {
+        "target": "extension/src/daemon_link.js (chunk 2/2)",
+        "summary": "The code implements a WebSocket client (`DaemonLink`) designed to connect to a local daemon process. It features standard reconnection logic with exponential backoff, message queuing, and sequence tracking. There are no indicators of malicious behavior such as credential harvesting, remote code execution, data exfiltration to external servers, or obfuscation. The connection logic is consistent with the extension's stated purpose of interfacing with a local 'joule' daemon."
+      },
+      {
+        "target": "extension/src/binary.js (chunk 1/2)",
+        "summary": "The provided code chunk is a utility module responsible for checking the version and availability of the 'joule' CLI binary. It uses standard version parsing logic and error handling. The use of `execJoule` (likely wrapping `child_process`) is consistent with the extension's stated purpose of interacting with a local daemon. There are no signs of obfuscation, credential harvesting, or suspicious network exfiltration in this file. The domains referenced are consistent with the project's branding. The code appears benign and proportional to the advertised functionality."
+      },
+      {
+        "target": "extension/src/binary.js (chunk 2/2)",
+        "summary": "The provided code snippet is a module export block containing only constant and function names related to binary version checking and installation URLs. It contains no executable logic, network calls, file system access, or obfuscation. The referenced domains (joule.sh) align with the extension's stated purpose of interacting with a local 'joule' daemon. No malicious indicators were found in this specific chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname()` as a system fingerprinting/infostealer indicator. In the context of this extension, which acts as a frontend to a local daemon (`joule`), retrieving the hostname is likely for display purposes (e.g., showing the current machine in the UI) or for local session identification. There is no network exfiltration logic visible in this chunk that sends this data to an external server. This is a benign usage of the API.",
+        "code_reference": "this.host = os.hostname();",
+        "line_hint": 30,
+        "target": "extension/src/chat_panel.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname` as a system fingerprinting/infostealer indicator. However, the provided source code chunk (lines 1-80) does not contain any call to `os.hostname`. The code consists of standard VS Code Webview HTML generation, CSS/JS asset linking, and workspace folder selection logic. The scanner hit is likely a false positive due to context mismatch or a reference in a different part of the file not shown in this chunk, but based on the visible code, there is no malicious behavior.",
+        "code_reference": "None in visible chunk",
+        "line_hint": null,
+        "target": "extension/src/chat_panel.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname` as a critical info-stealer indicator. However, in the context of this extension (an agentic coding assistant), system fingerprinting is likely used to identify the local machine for session management or daemon attachment, which is consistent with the extension's stated purpose of driving a local daemon. No network exfiltration of this data is observed in this chunk.",
+        "code_reference": "os.hostname()",
+        "line_hint": 30,
+        "target": "extension/src/chat_panel.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname` as a critical infostealer indicator. However, in this context, the code is part of a `where()` method that constructs a context object containing `root`, `remote`, and `host`. This is standard behavior for a local daemon-based extension to identify the current environment (local vs remote) and workspace root for the UI. There is no network exfiltration, credential harvesting, or obfuscation associated with this call in this chunk.",
+        "code_reference": "host: this.host",
+        "line_hint": 68,
+        "target": "extension/src/chat_panel.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.hostname` as a system fingerprinting/infostealer indicator. However, in the context of a local agentic coding tool that connects to a local daemon, retrieving the hostname is likely for display purposes (e.g., showing which machine the session is running on) or for local network configuration. There is no network exfiltration logic in this chunk, nor any combination with sensitive file reads or credential harvesting. This is a benign usage of the API.",
+        "code_reference": "state.where = this.where(); // Likely calls os.hostname internally",
+        "line_hint": 30,
+        "target": "extension/src/chat_panel.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'persistence_evasion' due to the string '.hidden' appearing in the code. Upon inspection, this string is part of a CSS class name ('diff-head') or similar UI styling logic (likely 'hidden' class toggling for UI elements), not a file system operation setting the hidden attribute on a file for persistence. This is a false positive.",
+        "code_reference": "head.appendChild(el(\"span\", \"diff-head\", diff.path));",
+        "line_hint": 106,
+        "target": "extension/media/transcript.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` as a persistence evasion indicator. In this context, `plan.hidden` is a numeric property representing the count of hidden lines in a tool output for UI collapsing purposes, not a file system attribute or OS-level persistence mechanism.",
+        "code_reference": "const expandable = plan.hidden > 0;",
+        "line_hint": 36,
+        "target": "extension/media/transcript.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` as a persistence evasion technique. However, in this context, the code is constructing DOM elements for a UI transcript. The string `.hidden` is likely part of a CSS class name (e.g., `item hidden`) or a property check for UI visibility, not a file system operation. There is no `fs` or `child_process` usage in this chunk to support a file attribute modification claim.",
+        "code_reference": "itemNode / approvalNode logic",
+        "line_hint": null,
+        "target": "extension/media/transcript.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a side-panel chat feature. While not malicious, this ensures the extension logic loads immediately upon VS Code startup, which is slightly disproportionate for a feature that is only useful when the user explicitly opens the 'joule.chat' view.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/src/session.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "COMMAND_EXECUTION",
+        "description": "The code executes the 'joule' binary via `execJoule` (likely wrapping child_process) to stop the daemon. This is consistent with the extension's stated purpose of managing a local CLI agent. The command arguments are hardcoded to `['--stop']` and do not appear to accept user-controlled input that could lead to arbitrary command injection in this specific method.",
+        "code_reference": "stopDaemon() { return execJoule(this.jouleBin, [\"--stop\"], ...",
+        "line_hint": 48,
+        "target": "extension/src/session.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a side-panel chat interface. While not malicious, it implies the extension logic runs immediately upon VS Code startup, which is slightly aggressive for a tool that requires user interaction to open the view.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/src/daemon_link.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a side-panel chat extension that typically activates on view or command. However, this is a common pattern for extensions that need to initialize background daemons or check binary availability early, and does not indicate malicious intent.",
+        "code_reference": "activationEvents in package.json",
+        "line_hint": null,
+        "target": "extension/src/binary.js (chunk 1/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension implementation for a chat panel that interfaces with a local daemon. It uses standard Node.js modules (`os`, `path`, `crypto`) and VS Code APIs. The use of `os.hostname()` is benign in this context, likely for UI display or local session management, and does not constitute credential harvesting or system fingerprinting for malicious purposes. The extension's behavior aligns with its description as a local agentic coding tool.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-24T16:47:51.937Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T00:22:47.270960+00:00Z"
+}

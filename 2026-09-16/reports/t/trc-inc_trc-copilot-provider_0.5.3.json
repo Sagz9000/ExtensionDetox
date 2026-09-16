@@ -1,0 +1,461 @@
+{
+  "extension_id": "trc-inc.trc-copilot-provider",
+  "display_name": "TRC Model Provider",
+  "version": "0.5.3",
+  "publisher": {
+    "name": "trc-inc",
+    "verified": false
+  },
+  "vsix_sha256": "50359284e50a25908e9f4f4316ca81deb741dd6d0b26c24d1eab8a5c43f063bb",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.26337499999999997,
+    "ai_vibe": 0.14,
+    "static": 0.4375,
+    "behavioral": 0.0,
+    "trust_signal": 0.7,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/trc/trcApi.js",
+        "line": 50,
+        "snippet": "SECRET = \"trc.sessionToken\""
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/visualizer.js",
+        "line": 1,
+        "snippet": ".postMessage(null)}):or=function(){vs(Io,0)};var Oo,gs;function Bo(e){ll=e,ul||(ul=!0,or())}function jo(e,t){ur=vs(function(){e(J.unstable_now())},t)}J.unstable_IdlePriority=5;J.unstable_ImmediatePrio"
+      }
+    ],
+    "total": 19
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "www.trc.inc",
+      "source_file": "extension/package.json",
+      "line": 22,
+      "context": "\"homepage\": \"https://www.trc.inc/developer\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.trc.inc",
+      "source_file": "extension/package.json",
+      "line": 153,
+      "context": "\"default\": \"https://api.trc.inc/api/\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "images.unsplash.com",
+      "source_file": "extension/out/extension.js",
+      "line": 261,
+      "context": "url: \"https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&q=60\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "reactjs.org",
+      "source_file": "extension/media/visualizer.js",
+      "line": 631,
+      "context": "for (var t = \"https://reactjs.org/docs/error-decoder.html?invariant=\" + e, n = 1; n < arguments.length; n++) t += \"&args[]=\" + encodeURIComponent(arguments[n]);",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.14,
+    "confidence": 0.68,
+    "blocks_parsed": 24,
+    "blocks_seen": 29,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/7)",
+        "summary": "This chunk appears consistent with a legitimate VS Code language-model provider for a TRC account-backed service. It uses VS Code APIs, its own SecretStorage, and expected network endpoints such as api.trc.inc. No eval, child_process, obfuscation, hardcoded secrets, credential harvesting outside the extension, tunneling, or process-injection indicators are present in the provided code. The login flow and wallet/music UI are plausible for the advertised account and billing model, though the full credential handling should be confirmed in the remaining chunks."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/7)",
+        "summary": "This chunk appears benign. It implements standard VS Code extension activation, registers commands, initializes a TRC model provider, and stores a user-provided API key in the extension's own SecretStorage. The observed SecretStorage access is expected for this extension type, and the referenced TRC domains align with the advertised functionality. No credential harvesting, command execution, obfuscation, C2, persistence, or other malicious patterns were found in the provided source."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/7)",
+        "summary": "This chunk appears to implement legitimate authentication and model-provider registration behavior for the advertised TRC GitHub Copilot model provider. It stores and retrieves the extension's own API key/session token using VS Code SecretStorage, registers a language model chat provider, and provides sign-in/sign-out commands. No eval, child_process, credential harvesting, reverse shell, obfuscation, or suspicious C2 behavior is present in the provided code. The referenced domains are consistent with the extension's stated purpose, though full network behavior cannot be verified from this chunk alone."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 7/7)",
+        "summary": "This chunk implements user-facing commands for opening a TRC wallet, refreshing model discovery, selecting a chat designer, and opening extension settings. It uses standard VS Code APIs and references the extension's own SecretStorage, which is benign. No child_process, eval, filesystem access to sensitive paths, clipboard access, obfuscation, C2, persistence, or credential harvesting is present. The only residual concerns are unknown reputation of TRC domains and an external wallet URL defined elsewhere, which are consistent with the advertised model-provider functionality but warrant full-package review."
+      },
+      {
+        "target": "extension/media/visualizer.js (chunk 6/99)",
+        "summary": "This chunk of extension/media/visualizer.js appears to be minified React scheduler and React runtime code bundled into the extension UI. It contains no credential access, filesystem access, child process execution, eval/Function usage, WebSocket/C2 behavior, clipboard access, persistence mechanisms, or active network exfiltration. The static scanner hits are consistent with false positives caused by minified React internals and generic property names. Based on the provided chunk alone, the code is benign; overall risk remains low, though confidence is limited because only 7% of the file was analyzed."
+      },
+      {
+        "target": "extension/media/visualizer.js (chunk 12/99)",
+        "summary": "The analyzed chunk is minified React DOM code handling form controls, select options, namespaces, and a Microsoft Edge compatibility shim. It contains no secrets, filesystem access, child_process execution, network calls, obfuscated payload staging, or credential harvesting. The static rule hits appear to be false positives caused by generic minified React patterns. Based on the provided chunk, the code is benign; confidence is moderate because only a small portion of the full visualizer bundle is available."
+      },
+      {
+        "target": "extension/media/visualizer.js (chunk 13/99)",
+        "summary": "This file contains standard React library code (likely `react-dom` or a similar rendering engine) used for visualizing data in a webview. The code handles DOM manipulation, CSS property normalization, and SVG rendering. There are no signs of credential harvesting, network exfiltration, command execution, or obfuscation. The static rule hits are false positives caused by the minified nature of the React library code. The extension's purpose (providing LLM models to Copilot) is consistent with using a webview for visualization."
+      },
+      {
+        "target": "extension/media/visualizer.js (chunk 21/99)",
+        "summary": "This file contains standard, minified React library code responsible for normalizing browser DOM events (mouse, keyboard, pointer) into React synthetic events. It includes mappings for key codes, modifier states, and event properties. There is no evidence of malicious intent, data exfiltration, or capability disconnect. The static rule hits are false positives caused by the minified nature of the code and standard DOM API usage."
+      },
+      {
+        "target": "extension/media/visualizer.js (chunk 54/99)",
+        "summary": "This file is a chunk of the React library (specifically the DOM renderer) bundled within the VS Code extension. The code handles standard DOM element creation, event binding, and property updates. The static analysis hits are false positives caused by minified code patterns that resemble malicious signatures but are actually benign React internals. There is no evidence of credential harvesting, C2 communication, or other malicious behavior in this chunk."
+      },
+      {
+        "target": "extension/out/trc/walletPanel.js (chunk 1/5)",
+        "summary": "This code chunk is a standard TypeScript-compiled module for a VS Code Webview panel. It contains only CSS definitions and standard module boilerplate. The use of `createWebviewPanel` with `enableScripts: true` is a standard requirement for interactive UIs in VS Code extensions and is not indicative of malicious intent in this context. The extension's purpose (providing AI models via a wallet) aligns with the code structure (a wallet panel UI). No malicious indicators, obfuscation, or credential harvesting patterns were found in this chunk."
+      },
+      {
+        "target": "extension/out/trc/walletPanel.js (chunk 2/5)",
+        "summary": "This code chunk implements a `WalletPanel` class for a VS Code extension that acts as a model provider bridge. The code is responsible for creating a Webview to display wallet balance and usage statistics. It handles user interactions such as refreshing data, opening external links, and triggering sign-in flows. The use of `enableScripts: true` is necessary for the interactive nature of the wallet UI but is a standard practice for such extensions. No malicious behavior, credential harvesting, or suspicious network exfiltration patterns were observed in this specific chunk. The logic aligns with the extension's stated purpose of managing a 'TRC wallet' for API billing."
+      },
+      {
+        "target": "extension/out/trc/walletPanel.js (chunk 3/5)",
+        "summary": "This file is a UI rendering component for a wallet panel within the TRC Model Provider extension. It contains logic for formatting currency, dates, and percentage values, and constructing HTML strings to display the user's account balance and spending limits. The code is benign, contains no obfuscation, and does not exhibit any malicious behavior such as data exfiltration, credential theft, or arbitrary code execution. The flagged webview script enablement is a standard practice for interactive UIs and does not constitute a security risk in this context."
+      },
+      {
+        "target": "extension/out/trc/walletPanel.js (chunk 4/5)",
+        "summary": "This code chunk represents the HTML/JS template for a 'Wallet' webview panel within the TRC Model Provider extension. The code is responsible for rendering financial data (balance, spend limits, credits) passed from the extension host. The logic is benign, consisting of DOM manipulation to display currency values and progress bars. There are no signs of credential harvesting, data exfiltration, obfuscation, or malicious network activity. The 'wallet' terminology refers to the service's billing mechanism, not cryptocurrency or sensitive local file access. The static rule hit regarding webview scripts is a false positive in the context of a legitimate UI component."
+      },
+      {
+        "target": "extension/out/trc/walletPanel.js (chunk 5/5)",
+        "summary": "This file contains the implementation of a VS Code Webview panel for managing a 'TRC Wallet'. The code is responsible for rendering the UI and handling user interactions (sign-in, refresh, open external links) by communicating with the extension host via standard `vscode.postMessage` APIs. The logic is straightforward, lacks obfuscation, and does not exhibit any malicious behaviors such as credential harvesting, arbitrary command execution, or data exfiltration. The flagged webview script usage is a standard pattern for interactive UIs in VS Code extensions and is not indicative of malicious intent in this context."
+      },
+      {
+        "target": "extension/out/trc/trcApi.js (chunk 1/5)",
+        "summary": "This code chunk is a standard API client for the TRC service. It correctly uses VS Code's SecretStorage to manage authentication tokens (JWT and API keys) without exposing them in plain text. The network calls are directed to the documented API endpoint (api.trc.inc). There are no signs of credential harvesting, obfuscation, or malicious behavior. The static scanner hits are false positives or low-severity behavioral notes."
+      },
+      {
+        "target": "extension/out/trc/trcApi.js (chunk 2/5)",
+        "summary": "The code is a standard API client for the TRC service, handling authentication, wallet balance retrieval, and HTTP requests. It uses VS Code's SecretStorage correctly for token management and does not exhibit any malicious behavior, obfuscation, or credential harvesting patterns. The static scanner hits are false positives related to standard secure storage practices."
+      },
+      {
+        "target": "extension/out/trc/trcApi.js (chunk 3/5)",
+        "summary": "The analyzed code chunk is a standard API client implementation for the TRC service, specifically handling music/audio and playlist endpoints. It uses standard HTTP methods (GET, POST, DELETE) against relative API paths. There are no malicious indicators, obfuscation, credential harvesting, or capability disconnects. The static scanner hits are false positives related to standard VS Code SecretStorage usage."
+      },
+      {
+        "target": "extension/out/trc/trcApi.js (chunk 4/5)",
+        "summary": "This code chunk is a clean, standard implementation of an API client for the TRC service. It handles fetching radio stations and user media assets. The static scanner hits are false positives related to standard VS Code SecretStorage usage. There are no malicious indicators, obfuscation, or capability disconnects."
+      },
+      {
+        "target": "extension/out/trc/trcApi.js (chunk 5/5)",
+        "summary": "This file is the final chunk of the TRC API client module. It contains no executable logic, only the export statement for the TrcApiClient class. The static analysis hits are false positives or benign standard VS Code API usage. The extension's purpose (providing LLM access via a third-party API) aligns with its code behavior (managing API keys via SecretStorage and making network calls to its own API endpoint). No malicious indicators were found."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 1/5)",
+        "summary": "This code chunk is the entry point for a VS Code extension that integrates third-party AI models (TRC) into GitHub Copilot Chat. The code shown is standard boilerplate for module exports and initialization. It defines constants for the vendor ID, API key secret name, and login URL. It includes a helper function to prompt the user to set an API key if one is not configured, which is a legitimate UX feature. There are no signs of malicious behavior, obfuscation, credential theft, or unauthorized network calls in this chunk. The domains referenced (trc.inc) align with the extension's stated purpose. The activation event is slightly broad but not indicative of a supply-chain attack."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 2/5)",
+        "summary": "The analyzed code chunk is part of a legitimate VS Code extension designed to integrate third-party LLM providers (TRC) with GitHub Copilot. The code implements standard VS Code Language Model Provider APIs, including usage reporting, session ID derivation for caching, and HTTP request handling via `undici`. There are no indicators of malicious behavior such as credential theft, obfuscated payloads, reverse shells, or unauthorized data exfiltration. The network activity is proportional to the extension's advertised functionality."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 3/5)",
+        "summary": "The code is a standard implementation of a VS Code language model provider that bridges to an external API (TRC). It correctly uses the `vscode.SecretStorage` API to retrieve credentials, avoiding hardcoded secrets or insecure storage. The network activity is limited to the documented API endpoint (`api.trc.inc`) for the purpose of sending chat completion requests, which aligns perfectly with the extension's stated purpose. There are no indicators of credential harvesting, data exfiltration, obfuscation, or malicious command execution. The use of `AbortController` and timeout handling is standard best practice for network requests."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 4/5)",
+        "summary": "The provided code chunk is a standard implementation of a language model provider for VS Code. It handles API responses, specifically focusing on error handling (e.g., 402 Payment Required), content-type detection, and streaming data consumption (SSE/NDJSON). The logic correctly parses OpenAI-compatible response structures (choices, deltas, tool_calls) and reports progress to the VS Code extension API. There are no indicators of malicious behavior, credential harvesting, obfuscation, or unauthorized network activity. The domain 'trc.inc' is consistent with the extension's stated purpose of connecting to the TRC Model Provider API."
+      },
+      {
+        "target": "extension/out/provider.js (chunk 5/5)",
+        "summary": "The provided code chunk (chunk 5/5) contains standard logic for handling the completion of a language model response. It processes tool calls, reports usage statistics to the VS Code status bar, and constructs response parts (text and thinking/reasoning) using standard VS Code APIs. There are no indicators of malicious behavior, data exfiltration, obfuscation, or capability disconnects in this specific segment. The code aligns perfectly with the extension's stated purpose of acting as a model provider bridge."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "CREDENTIAL_STORAGE",
+        "description": "The extension reads and stores its own SecretStorage entries, including a TRC session JWT. This is scoped to the extension and is consistent with an account-authenticated model provider, not cross-extension credential theft.",
+        "code_reference": "await context.secrets.store(trcApi_js_1.TRC_SESSION_SECRET, token); context.secrets.get(...)",
+        "line_hint": "152, 283, 293, 323, 342, 388",
+        "target": "extension/out/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "AUTHENTICATION_FLOW",
+        "description": "loginWithEmail prompts for a TRC account email and appears to continue into a second modal, likely for a password or verification step. This is expected for account sign-in, but because only chunk 1 of 7 is available, the full credential handling and network destination should be verified in later chunks.",
+        "code_reference": "const email = await vscode.window.showInputBox({ title: \"Sign in to TRC \u2014 step 1 of 2\", prompt: \"Email for your TRC account\", ... });",
+        "line_hint": "31",
+        "target": "extension/out/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK",
+        "description": "The code references api.trc.inc for provisioning and images.unsplash.com for UI assets. These domains align with the advertised TRC service and do not indicate tunneling, C2, or exfiltration in this chunk.",
+        "code_reference": "const PROVISION_URL = \"https://api.trc.inc/api/developer/apps/provision\";",
+        "line_hint": "24",
+        "target": "extension/out/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension includes walletPanel and musicPanel modules, which are broader than a pure model provider. However, the README describes a TRC account, wallet, and dashboard, so this is not clearly disproportionate or malicious.",
+        "code_reference": "const walletPanel_js_1 = require(\"./trc/walletPanel.js\"); const musicPanel_js_1 = require(\"./trc/musicPanel.js\");",
+        "line_hint": "13-14",
+        "target": "extension/out/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "SECRET_STORAGE",
+        "description": "The extension reads and stores its own TRC API key using VS Code SecretStorage via context.secrets.get/store. This is expected for a model provider that requires a user-supplied API key and does not indicate cross-extension credential theft.",
+        "code_reference": "const existing = await context.secrets.get(provider_js_1.TRC_API_KEY_SECRET);",
+        "line_hint": "152",
+        "target": "extension/out/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The package references api.trc.inc and www.trc.inc with unknown reputation. These domains are consistent with the advertised TRC model provider service, and no hardcoded credentials, tunneling services, or suspicious network behavior are visible in this chunk.",
+        "code_reference": "domain: api.trc.inc",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension includes dashboard, wallet, and music player UI components, which are unusual for a model provider but appear to be advertised in the README. No malicious capability is evident in this chunk.",
+        "code_reference": "const musicPanel = new musicPanel_js_1.MusicPlayerPanel(context, trcApi);",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CREDENTIAL_STORAGE",
+        "description": "The extension reads its own VS Code SecretStorage for a TRC API key/session token. This is expected for a model provider that requires user authentication and is scoped to the extension, not cross-extension credential theft.",
+        "code_reference": "context.secrets.get(provider_js_1.TRC_API_KEY_SECRET)",
+        "line_hint": "152, 283, 293, 323, 342, 388",
+        "target": "extension/out/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "EXTERNAL_NETWORK",
+        "description": "The package references domains www.trc.inc and api.trc.inc, which align with the advertised TRC model provider service. Additional references to images.unsplash.com and reactjs.org appear benign asset/documentation references, but unknown domains should be monitored for unexpected data exfiltration.",
+        "code_reference": "www.trc.inc, api.trc.inc, images.unsplash.com, reactjs.org",
+        "line_hint": "package.json:22, package.json:153, extension.js:261, visualizer.js:631",
+        "target": "extension/out/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "EXTERNAL_COMMAND",
+        "description": "The extension opens an external developer console URL via vscode.env.openExternal. This is consistent with the advertised developer API key workflow and is not arbitrary command execution.",
+        "code_reference": "vscode.env.openExternal(vscode.Uri.parse(catalog_js_1.DEVELOPER_CONSOLE_URL))",
+        "line_hint": "around 283",
+        "target": "extension/out/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_RULE",
+        "description": "Static scanner flagged context.secrets.get as credential theft, but this is the extension's own SecretStorage API and is expected for storing provider account/token state. No cross-extension secret access or exfiltration is present in this chunk.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": "152,283,293,323,342,388",
+        "target": "extension/out/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "EXTERNAL_DOMAIN_REPUTATION",
+        "description": "Package references unknown-reputation domains www.trc.inc and api.trc.inc, plus images.unsplash.com and reactjs.org. These are consistent with a TRC model provider bridge and documentation/image assets; no network calls or data exfiltration are visible in this chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "EXTERNAL_URL_OPEN",
+        "description": "The command opens catalog_js_1.WALLET_URL via vscode.env.openExternal. This is consistent with the advertised TRC wallet/account flow, but the URL is defined elsewhere and should be reviewed in the full package for legitimacy.",
+        "code_reference": "vscode.env.openExternal(vscode.Uri.parse(catalog_js_1.WALLET_URL))",
+        "line_hint": "1",
+        "target": "extension/out/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_LIBRARY_CODE",
+        "description": "The analyzed chunk contains minified React scheduler internals, including unstable_scheduleCallback, unstable_next, unstable_runWithPriority, unstable_wrapCallback, and React error decoder URL generation. This is consistent with a bundled React UI dependency and does not indicate malicious behavior.",
+        "code_reference": "J.unstable_scheduleCallback = function(e, t, n) { ... }",
+        "line_hint": null,
+        "target": "extension/media/visualizer.js (chunk 6/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_RULE",
+        "description": "The HIGH static rule hit for data exfiltration appears to be a false positive caused by minified React scheduler/callback code. The visible code does not read sensitive files, collect system information, or transmit data to a remote endpoint.",
+        "code_reference": "postMessage(null)}):or=function(){vs(Io,0)};var Oo,gs;function Bo(e){ll=e,ul||(ul=!0,or())}function",
+        "line_hint": 1,
+        "target": "extension/media/visualizer.js (chunk 6/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_RULE",
+        "description": "The MEDIUM static rule hits for directory traversal/network send and hidden zero-pixel iframe appear to be false positives from minified React context/provider and pointer event property code. No iframe creation, directory traversal, or network send is present in the analyzed chunk.",
+        "code_reference": "globalName:null},e.Provider={$$typeof:nd,_context:e},e.Consumer=e};H.createElement=cs;H.createFactor",
+        "line_hint": 1,
+        "target": "extension/media/visualizer.js (chunk 6/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "EXTERNAL_DOCUMENTATION_URL",
+        "description": "The code constructs a reactjs.org documentation URL for minified React error messages. This is standard React production error handling and is not an active network request or exfiltration channel.",
+        "code_reference": "var t = \"https://reactjs.org/docs/error-decoder.html?invariant=\" + e",
+        "line_hint": null,
+        "target": "extension/media/visualizer.js (chunk 6/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule hits for postMessage, directory traversal with network send, and hidden zero-pixel iframe are not supported by the visible code. This chunk contains minified React DOM form-control and namespace helpers, not network exfiltration or iframe creation.",
+        "code_reference": "function gi(e, t, n) ... function wi(e, t) ...",
+        "line_hint": null,
+        "target": "extension/media/visualizer.js (chunk 12/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "MSApp.execUnsafeLocalFunction is a known React DOM compatibility shim used to execute callbacks in Microsoft Edge/MSApp environments. In this context it is not arbitrary command execution or a stager.",
+        "code_reference": "MSApp.execUnsafeLocalFunction(function() { return e(t, n, r, l) })",
+        "line_hint": null,
+        "target": "extension/media/visualizer.js (chunk 12/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "LIMITED_CONTEXT",
+        "description": "Only chunk 12 of 99 of visualizer.js is provided. The visible code appears benign, but the full bundle and extension.js cannot be fully assessed from this chunk alone.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/media/visualizer.js (chunk 12/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' patterns, but the code is standard React DOM rendering logic (specifically `dangerouslySetInnerHTML` handling and CSS property normalization). The matches are due to minified variable names and standard DOM API usage, not malicious behavior.",
+        "code_reference": "if (e.namespaceURI !== \"http://www.w3.org/2000/svg\" || \"innerHTML\" in e) e.innerHTML = t;",
+        "line_hint": 1,
+        "target": "extension/media/visualizer.js (chunk 13/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' patterns, but the code is standard React synthetic event normalization logic (specifically handling mouse movement, key codes, and modifier states). The matches are due to minified variable names and standard DOM event properties (e.g., `relatedTarget`, `movementX`), not malicious behavior.",
+        "code_reference": "relatedTarget: function(e) { ... }, movementX: function(e) { ... }",
+        "line_hint": 1,
+        "target": "extension/media/visualizer.js (chunk 21/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'Hidden zero-pixel iframe' flag is a false positive. The code contains `width:0,height:0` as part of a default pointer event object structure (likely for touch/pen pressure/tilt defaults), not an HTML iframe element.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0...",
+        "line_hint": 5,
+        "target": "extension/media/visualizer.js (chunk 21/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' patterns, but the code is standard React DOM reconciliation logic (specifically `ReactDOM` internal implementation for creating and updating DOM nodes). The matches are due to minified variable names and standard DOM API usage (e.g., `createElement`, `innerHTML` for script tag creation), not malicious behavior.",
+        "code_reference": "e = i.createElement(\"div\"), e.innerHTML = \"<script><\\/script>\"",
+        "line_hint": 15,
+        "target": "extension/media/visualizer.js (chunk 54/99)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a model provider that should ideally activate on demand (e.g., 'onLanguageModelChatProvider'). However, this is a common pattern for extensions that need to register providers early and is not inherently malicious.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/trc/walletPanel.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The extension creates a Webview panel with `enableScripts: true`. While this is a standard requirement for interactive UIs (like a wallet dashboard), it increases the attack surface if the HTML content is not strictly sanitized. In this chunk, the HTML appears to be generated locally via a template string, which is generally safe, but developers must ensure no user-controlled data is injected into the HTML without proper escaping to prevent XSS.",
+        "code_reference": "vscode.window.createWebviewPanel(\"trcWallet\", \"TRC Wallet\", vscode.ViewColumn.Two, { enableScripts: true, retainContextWhenHidden: true });",
+        "line_hint": 92,
+        "target": "extension/out/trc/walletPanel.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged the use of `createWebviewPanel` with `enableScripts: true` as a potential C2 channel. However, the code in this chunk is purely responsible for generating the HTML structure and formatting financial data (balance, spend limits, dates) for display. There is no evidence of network exfiltration, credential harvesting, or malicious script injection in this specific file. The use of scripts is standard for interactive UI elements in VS Code webviews.",
+        "code_reference": "createWebviewPanel(\"trcWallet\", \"TRC Wallet\", vscode.ViewColumn.Two, { enableScripts: true",
+        "line_hint": 92,
+        "target": "extension/out/trc/walletPanel.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The webview panel is created with `enableScripts: true` and a Content-Security-Policy that allows `connect-src https:`. While this is a standard pattern for interactive webviews, it technically allows the injected script to make network requests to any HTTPS endpoint. However, the script logic shown is purely local (DOM manipulation) and does not contain any network exfiltration code in this chunk.",
+        "code_reference": "createWebviewPanel(\"trcWallet\", \"TRC Wallet\", vscode.ViewColumn.Two, { enableScripts: true",
+        "line_hint": 92,
+        "target": "extension/out/trc/walletPanel.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged the use of `createWebviewPanel` with `enableScripts: true` as a potential C2 channel. However, the code snippet shows standard, benign usage: the webview renders local HTML/JS to display wallet status and sends simple commands (`openExternal`, `signIn`, `refresh`) back to the extension host via `vscode.postMessage`. There is no evidence of remote content loading, data exfiltration, or command execution within this file.",
+        "code_reference": "createWebviewPanel(\"trcWallet\", \"TRC Wallet\", vscode.ViewColumn.Two, { enableScripts: true",
+        "line_hint": 92,
+        "target": "extension/out/trc/walletPanel.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'trc.sessionToken' as a hardcoded secret. This is a false positive; it is a string key used to access the VS Code SecretStorage API, not a credential value itself.",
+        "code_reference": "exports.TRC_SESSION_SECRET = \"trc.sessionToken\";",
+        "line_hint": 50,
+        "target": "extension/out/trc/trcApi.js (chunk 1/5)"
+      }
+    ],
+    "findings_truncated": 12
+  },
+  "ai_summary": "This chunk appears consistent with a legitimate VS Code language-model provider for a TRC account-backed service. It uses VS Code APIs, its own SecretStorage, and expected network endpoints such as api.trc.inc. No eval, child_process, obfuscation, hardcoded secrets, credential harvesting outside the extension, tunneling, or process-injection indicators are present in the provided code. The login flow and wallet/music UI are plausible for the advertised account and billing model, though the full credential handling should be confirmed in the remaining chunks.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-09T04:19:20.19Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-10T02:30:12.709010+00:00Z"
+}

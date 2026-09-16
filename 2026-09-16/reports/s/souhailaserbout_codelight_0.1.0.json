@@ -1,0 +1,237 @@
+{
+  "extension_id": "souhailaserbout.codelight",
+  "display_name": "CodeLight",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "souhailaserbout",
+    "verified": false
+  },
+  "vsix_sha256": "b8996a6e3abbc4e5822773436422006dd4ccc2860e74c77ed9ff44682e757c03",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.15,
+    "static": 0.9,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Accessing VSCode authentication session (GitHub/Azure tokens)",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "authentication.getSession("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Accessing VSCode authentication session (GitHub/Azure tokens)",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "authentication.getSession("
+      }
+    ],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/19)",
+        "summary": "The code appears to be a standard VS Code extension for managing shared code highlights and comments. The static rule hits regarding credential theft and API abuse are likely false positives resulting from the extension's need to identify users (via GitHub auth) and track document state for synchronization. The visible code consists of utility functions for data validation, UUID generation, and range calculation, with no evidence of malicious intent, obfuscation, or unauthorized network activity in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/19)",
+        "summary": "This code chunk is benign and consistent with the extension's stated purpose of managing shared highlights and comments stored in a local '.vscode/codelight.json' file. The static scanner hits for credential theft and network exfiltration are false positives for this specific chunk, as the code only performs local JSON parsing, file path resolution, and clipboard operations. There are no signs of obfuscation, malicious intent, or capability disconnect."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/19)",
+        "summary": "The code in this chunk implements the core logic for adding, editing, and deleting comments within a shared annotation system. It uses VS Code's authentication API to identify the user for attribution purposes, which is consistent with the extension's stated purpose of 'Shared highlights and comments'. The data operations are local file transactions, and there are no signs of malicious network exfiltration, credential harvesting, or obfuscation in this specific segment. The static scanner hits are false positives resulting from legitimate use of VS Code APIs for a collaborative feature."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/19)",
+        "summary": "The code chunk is consistent with the extension's stated purpose of managing shared code highlights and comments. It uses standard VS Code APIs for UI interaction (showWarningMessage, showQuickPick, showInputBox) and document manipulation. The flagged 'credential theft' is a false positive; accessing the authentication session is necessary to identify the user for comment attribution. No malicious patterns, obfuscation, or unauthorized network exfiltration were observed in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 10/19)",
+        "summary": "The code is benign and aligns perfectly with the extension's stated purpose of managing shared highlights and comments. The 'critical' scanner hits are false positives resulting from the legitimate use of the VS Code Authentication API to identify the GitHub user for the collaboration feature. The logic shown involves standard UI interactions (QuickPick, Warning Messages) and local data store transactions. There are no signs of malicious intent, data exfiltration, or unauthorized system access."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 11/19)",
+        "summary": "The code is a standard implementation of a VS Code extension for managing code annotations and comments. It uses the VS Code Authentication API to identify the current GitHub user for attribution purposes, which is a legitimate and expected behavior for a collaborative annotation tool. The 'credential theft' and 'data exfiltration' flags from the static scanner are false positives resulting from the use of standard VS Code APIs for user identification and local document manipulation. No malicious behavior, obfuscation, or suspicious network activity was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 17/19)",
+        "summary": "The analyzed code chunk is benign and consistent with the extension's stated purpose of managing local annotations and highlights. It implements a file-based storage mechanism for '.vscode/codelight.json', including reading, writing, and watching for changes. The critical scanner hits regarding credential theft are not supported by the visible code in this chunk, and the network exfiltration flags appear to be false positives resulting from the scanner misinterpreting local file serialization as data transmission. No malicious behavior, obfuscation, or suspicious API usage is present in this segment."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_credential_theft' due to `authentication.getSession`. In the context of a 'shared highlights' extension, this is likely used to identify the user (GitHub login) for attribution of comments, not to steal tokens. The code snippet shows validation of `login` and `id` fields, consistent with user identification rather than credential exfiltration.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 1/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_api_abuse' for reading document content. The code shows logic for mapping ranges and handling text changes (`onDidChangeTextDocument`), which is standard behavior for an extension that syncs highlights/comments with file content. No network exfiltration logic is visible in this chunk.",
+        "code_reference": "document.getText(),c=r.map(g=>({start:t.document.offsetAt(g.start),end:t.document.offsetAt(g.end)}))",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 1/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_credential_theft' due to the string 'authentication.getSession'. However, this specific code chunk (2/19) does not contain that string. The code shown deals with JSON parsing, file path resolution for '.vscode/codelight.json', and clipboard writing. The flag is likely a false positive from a different part of the bundle or a misinterpretation of the context. Even if present elsewhere, using VS Code's authentication API is a standard, legitimate pattern for extensions that need to interact with GitHub or other services, provided it is documented and scoped correctly. In this specific chunk, there is no evidence of credential theft.",
+        "code_reference": "N/A in this chunk",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' for reading document content and sending it over the network. This chunk contains logic for parsing and serializing 'codelight.json' (annotations/comments) and resolving workspace folders. It does not contain network transmission logic (fetch, http, axios, etc.). The 'document.getText()' match is likely from a different chunk or a misread of the 'annotations' data structure. The code here is purely local file manipulation and data structuring.",
+        "code_reference": "N/A in this chunk",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN",
+        "description": "The code implements standard functionality for a 'shared highlights and comments' extension. It parses a local JSON file ('codelight.json'), validates its structure, sorts annotations, and provides utility functions for file paths and clipboard interaction. The use of 'vscode.env.clipboard.writeText' is consistent with the feature of copying comments to the clipboard, which is a common UX pattern in such tools. No malicious behavior, obfuscation, or suspicious network calls are present in this chunk.",
+        "code_reference": "function ye(o) { ... }, function se(o) { ... }, async function _(o) { ... }",
+        "line_hint": "1-100",
+        "target": "extension/dist/extension.js (chunk 2/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_credential_theft' due to the presence of `authentication.getSession`. However, the code context shows this is used to retrieve the user's GitHub identity (login/id) to attribute comments in a shared collaboration file. This is a standard and expected behavior for a collaborative commenting extension, not credential theft.",
+        "code_reference": "let n = await this.identity.require(); ... login: n.login, id: n.id",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 3/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' regarding document content reading. The code reads document text and offsets to manage local annotations and comments stored in a local file (`.vscode` or similar shared file). There is no evidence of network exfiltration in this chunk; the data is written to a local store (`this.store.transaction`).",
+        "code_reference": "document.getText(), c=r.map(g=>({start:t.document.offsetAt(g.start),end:t.document.offsetAt(g.end)}))",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 3/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_credential_theft' due to the presence of `authentication.getSession`. In the context of a 'shared highlights and comments' extension, this is standard behavior to retrieve the user's GitHub identity (login/ID) to attribute comments correctly. There is no evidence in this chunk of the token being exfiltrated or used for unauthorized API calls.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 4/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' regarding document content and network. The code shows logic for managing local state (`this.store`), updating shared files within the workspace (`.vscode`), and handling UI interactions (QuickPick, InputBox). The 'network' aspect is likely a false positive from the scanner misinterpreting the data flow or referring to the extension's documented feature of syncing via Git/remote, which is consistent with the README.",
+        "code_reference": "document.getText(),c=r.map(g=>({start:t.document.offsetAt(g.start),end:t.document.offsetAt(g.end)}))",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 4/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' due to `authentication.getSession`. However, the code explicitly requests the 'github' provider with 'read:user' scope and uses the result to construct a GitHub avatar URL and user identity for the extension's 'shared highlights' feature. This is standard, documented usage of the VS Code Authentication API for user identification, not credential exfiltration.",
+        "code_reference": "var le = \"github\", Ne = [\"read:user\"]; ... $.authentication.getSession(",
+        "line_hint": "12",
+        "target": "extension/dist/extension.js (chunk 10/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' regarding document content and network. The code in this chunk handles local state management (deleting orphaned highlights, recoloring) and UI interactions. The `document.getText()` reference in the scanner match likely refers to a different part of the minified bundle or a false positive on local serialization for the shared file feature, which is the extension's core purpose. No external network exfiltration is visible in this chunk.",
+        "code_reference": "this.store.forFile(n).filter(...)",
+        "line_hint": "12",
+        "target": "extension/dist/extension.js (chunk 10/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `authentication.getSession` as credential theft. However, the code uses the standard VS Code Authentication API to retrieve a GitHub session for user attribution (displaying the user's login name on annotations). It does not exfiltrate tokens or send them to external servers; it only reads local session metadata (`id`, `login`) to update the UI state.",
+        "code_reference": "e = await $.authentication.getSession(le, Ne, { silent: !0 })",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 11/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged document content reading as potential data exfiltration. The code reads document text and range offsets to manage local annotations (highlights/comments). There is no network transmission of this data in this chunk; it is used for local state management and UI rendering.",
+        "code_reference": "document.getText(),c=r.map(g=>({start:t.document.offsetAt(g.start),end:t.document.offsetAt(g.end)}))",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 11/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_credential_theft' due to the string 'authentication.getSession(' appearing in the file. However, the provided source code chunk (lines 1-60+) does not contain this string. It is likely present in a different chunk or is a false positive from a minified variable name collision. The visible code only handles file I/O for '.vscode/codelight.json'.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 17/19)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' for reading document content and sending it over the network. The code shown reads and writes a local JSON file ('.vscode/codelight.json') using 'b.workspace.fs'. There is no network transmission logic in this chunk. The extension's purpose is to store highlights locally in the workspace, which aligns with the file operations seen.",
+        "code_reference": "b.workspace.fs.writeFile(t, Buffer.from(c, \"utf8\"))",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 17/19)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code appears to be a standard VS Code extension for managing shared code highlights and comments. The static rule hits regarding credential theft and API abuse are likely false positives resulting from the extension's need to identify users (via GitHub auth) and track document state for synchronization. The visible code consists of utility functions for data validation, UUID generation, and range calculation, with no evidence of malicious intent, obfuscation, or unauthorized network activity in this chunk.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-17T14:42:07.757Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:50.502412+00:00Z"
+}

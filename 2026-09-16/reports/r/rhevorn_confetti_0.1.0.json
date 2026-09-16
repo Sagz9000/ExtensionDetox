@@ -1,0 +1,99 @@
+{
+  "extension_id": "rhevorn.confetti",
+  "display_name": "Confetti",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "rhevorn",
+    "verified": false
+  },
+  "vsix_sha256": "c6853ad91b3c8930e9bcd0baad7ecd256685d4c14eccfed6b5307f8dbce66905",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.5,
+  "scores": {
+    "composite": 0.159375,
+    "ai_vibe": 0.0,
+    "static": 0.1875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "SSH key/config file access",
+        "file": "extension/dist/configs/ssh.js",
+        "line": 9,
+        "snippet": "/.ssh/config"
+      }
+    ],
+    "high": [],
+    "total": 4
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.0,
+    "confidence": 0.98,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/dist/configs/ssh.js",
+        "summary": "The code is a benign configuration definition for an SSH config file formatter. It defines file patterns, a detection heuristic based on regex matching of SSH keywords (Host, HostName, etc.), and links to a formatter function. There is no network activity, no file system access outside the workspace, and no credential harvesting. The static rule hit is a false positive caused by the legitimate need to reference the standard SSH config file path for detection purposes."
+      },
+      {
+        "target": "extension/dist/formatters/ssh.js",
+        "summary": "The code is a pure text formatter for SSH configuration files. It performs string manipulation (trimming, indentation) without any network activity, file system access outside the document content, or execution of external commands. The behavior is fully aligned with the extension's advertised purpose of providing formatting support for configuration files."
+      },
+      {
+        "target": "extension/dist/formatters/shared.js",
+        "summary": "The code is a benign utility module containing pure string manipulation functions (`normalizeLines`, `joinLines`, `splitAssignment`) used for parsing configuration files. It contains no network calls, file system access, process execution, or obfuscation. The behavior is fully aligned with the extension's advertised purpose of formatting configuration files."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'credential_harvesting' due to the string '/.ssh/config'. However, this string is used within a `patterns` array and a `detect` function to identify file types for syntax highlighting and formatting. The code does not read, write, or exfiltrate the contents of the SSH config file; it only analyzes the text content of the currently open document to determine if it matches the SSH configuration schema.",
+        "code_reference": "patterns: ['*/.ssh/config', '*/ssh/ssh*_config']",
+        "line_hint": 9,
+        "target": "extension/dist/configs/ssh.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a benign configuration definition for an SSH config file formatter. It defines file patterns, a detection heuristic based on regex matching of SSH keywords (Host, HostName, etc.), and links to a formatter function. There is no network activity, no file system access outside the workspace, and no credential harvesting. The static rule hit is a false positive caused by the legitimate need to reference the standard SSH config file path for detection purposes.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-27T03:06:47.577Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T01:39:23.532238+00:00Z"
+}

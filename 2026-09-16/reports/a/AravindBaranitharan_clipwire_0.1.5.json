@@ -1,0 +1,291 @@
+{
+  "extension_id": "AravindBaranitharan.clipwire",
+  "display_name": "Clipwire",
+  "version": "0.1.5",
+  "publisher": {
+    "name": "AravindBaranitharan",
+    "verified": false
+  },
+  "vsix_sha256": "48f2c7b01dc18229138537acaf92a0b7a589dab3a9b93f5108e13b14b81e8c1b",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.278945019536884,
+    "ai_vibe": 0.15,
+    "static": 0.4557800781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Clipboard content being sent over network",
+        "file": "extension/dist/web/extension.js",
+        "line": 3,
+        "snippet": "clipboard.readText(),\"clipboard text\")}),c(e,\"clipwire.copyLatest\",async()=>{let n=await B();await o.env.clipboard.writeText(n),o.window.setStatusBarMessage(`Clipwire: copied ${n.length.toLocaleString"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/web/extension.js",
+        "line": 1,
+        "snippet": "btoa(t).replace(/\\+/g,\"-\").replace(/\\//g,\"_\").replace(/=+$/,\"\")}function f(e){let t=e.length%4===0?\"\":\"=\".repeat(4-e.length%4),n=atob(e.replace(/-/g,\"+\").replace(/_/g,\"/\")+t),i=new Uint8Array(n.length"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/web/extension.js",
+        "line": 3,
+        "snippet": "method:\"POST\",body:JSON.stringify(await K(e,n,v))})}),o.window.setStatusBarMessage(`Clipwire: sent ${e.length.toLocaleString()} characters`,2500))}async function H(){return(await T(\"/entries\"))?.entri"
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "copyme.aravindbaranitharan.in",
+      "source_file": "extension/package.json",
+      "line": 16,
+      "context": "\"homepage\": \"https://copyme.aravindbaranitharan.in\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "copyme-relay.aravindbaranitharan.in",
+      "source_file": "extension/package.json",
+      "line": 109,
+      "context": "\"default\": \"https://copyme-relay.aravindbaranitharan.in\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.95,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
+    "summaries": [
+      {
+        "target": "extension/dist/web/extension.js (chunk 1/6)",
+        "summary": "The code is a legitimate implementation of an encrypted clipboard synchronization tool. It uses standard Web Crypto APIs (HKDF, SHA-256) for key derivation and encryption, ensuring that the relay server cannot read the clipboard content. The static analysis hits for 'exfiltration' and 'infostealer' are false positives resulting from the extension's core functionality of reading the clipboard and sending it over the network. The use of a personal domain for the relay is a minor transparency concern but not a security vulnerability given the end-to-end encryption. No malicious patterns such as credential harvesting, reverse shells, or obfuscated payloads were found."
+      },
+      {
+        "target": "extension/dist/web/extension.js (chunk 2/6)",
+        "summary": "The code is a legitimate implementation of an encrypted clipboard relay service. It uses standard Web Crypto APIs (AES-GCM, PBKDF2) to encrypt clipboard content before sending it to a relay server. The static scanner hits are false positives caused by the combination of clipboard access and network transmission, which are core to the extension's advertised functionality. The presence of secret-detection regexes further indicates a focus on user safety rather than malicious exfiltration. No malicious indicators such as hardcoded credentials, obfuscated payloads, or unauthorized system access were found in this chunk."
+      },
+      {
+        "target": "extension/dist/web/extension.js (chunk 3/6)",
+        "summary": "The code is a legitimate implementation of a clipboard synchronization tool. The 'suspicious' behaviors flagged by the static scanner (clipboard reading, network transmission, base64 encoding) are core features of the extension as described in its README. The code includes security safeguards such as HTTPS enforcement, secret detection warnings, and user confirmation for large sends. There are no indicators of malicious intent, credential harvesting, or unauthorized data exfiltration."
+      },
+      {
+        "target": "extension/dist/web/extension.js (chunk 4/6)",
+        "summary": "The code is consistent with the extension's advertised purpose: an encrypted clipboard synchronization tool. The 'suspicious' behaviors flagged by the static scanner (clipboard reading, network transmission, base64 encoding) are all core features of the service. The extension uses standard VS Code APIs for secrets storage and command registration. There are no indicators of credential harvesting, system fingerprinting, reverse shells, or other malicious activities. The use of a custom relay server is a privacy consideration but not a security vulnerability in the code itself."
+      },
+      {
+        "target": "extension/dist/web/extension.js (chunk 5/6)",
+        "summary": "The code is a legitimate implementation of a clipboard synchronization tool. All flagged behaviors (clipboard access, network transmission, base64 encoding) are core to its advertised functionality. There are no signs of malicious intent, such as hidden exfiltration of sensitive files, credential theft, or obfuscated payloads. The extension operates as described in its README."
+      },
+      {
+        "target": "extension/dist/web/extension.js (chunk 6/6)",
+        "summary": "The code in this chunk is consistent with the extension's advertised functionality: an encrypted clipboard synchronization tool. The static analysis hits for 'infostealer' and 'exfiltration' are false positives resulting from the legitimate use of clipboard APIs and network transmission for the core feature. The code includes standard health checks and configuration reading. No malicious indicators, obfuscation, or unauthorized behavior were detected in this file."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses a hardcoded relay domain (copyme-relay.aravindbaranitharan.in) which is a personal domain rather than a well-known public service. While this is consistent with the 'encrypted clipboard' functionality described in the README (where the server cannot read the data), users should be aware that the relay infrastructure is controlled by the extension publisher. This is not malicious in itself but warrants transparency.",
+        "code_reference": "workspace.getConfiguration(\"clipwire\").get(\"relayUrl\",\"https://copyme-relay.aravindbaranitharan.in\")",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 1/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'infostealer_behavior' due to clipboard reading and network POST requests. However, the code explicitly implements encryption (HKDF, AES-GCM implied by 'aead' context) before sending data, and the README confirms this is a clipboard synchronization tool. The 'exfiltration' is the intended feature: sending encrypted clipboard content to a peer machine.",
+        "code_reference": "method:\"POST\",body:JSON.stringify(await K(e,n,v))",
+        "line_hint": 3,
+        "target": "extension/dist/web/extension.js (chunk 1/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' and 'infostealer_behavior' due to clipboard reading and network transmission. However, the code explicitly implements AES-GCM encryption (function K) and PBKDF2 key derivation (function M) before sending data. This aligns perfectly with the extension's stated purpose of providing an encrypted clipboard relay. The 'exfiltration' is the intended functionality, not malicious theft.",
+        "code_reference": "async function K(e, t, n) { ... crypto.subtle.encrypt ... }",
+        "line_hint": 3,
+        "target": "extension/dist/web/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Harvesting VSCode configuration' and 'Reading document content'. The code reads `workspace.getConfiguration('clipwire')` to retrieve user-defined settings (like relay URL) and reads clipboard/document text to facilitate the copy-paste feature. This is standard behavior for a clipboard synchronization tool.",
+        "code_reference": "workspace.getConfiguration(\"clipwire\")",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_FEATURE",
+        "description": "The code contains a list of regular expressions (`oe`) designed to detect secrets (AWS keys, GitHub tokens, etc.) in the clipboard content. This is a safety feature (likely to warn users before sending sensitive data), not a harvesting mechanism. The function `z` appears to be a scanner for these patterns.",
+        "code_reference": "var oe = [{ name: \"a private key block\", ... }]",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' and 'data exfiltration' due to clipboard reading and network transmission. However, this behavior is explicitly documented in the README as the core functionality of the extension ('Copy on one machine. Paste on the other.'). The code implements a user-initiated command to send clipboard content to a relay server, which aligns perfectly with the advertised purpose.",
+        "code_reference": "clipboard.readText(), fetch(`${Z()}/v1/channels/...`)",
+        "line_hint": 3,
+        "target": "extension/dist/web/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Base64 encoding data then sending over network'. The code contains a base64url encoding function (`btoa(t).replace...`). This is standard practice for encoding data in URLs or JSON payloads, especially when dealing with binary or special characters in a relay protocol. It is not obfuscation or payload staging.",
+        "code_reference": "btoa(t).replace(/\\+/g,\"-\").replace(/\\//g,\"_\").replace(/=+$/,\"\")",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Harvesting VSCode configuration'. The code reads `workspace.getConfiguration('clipwire')` to retrieve user-defined settings like `relayUrl` and `warnOnSecrets`. This is standard VS Code extension behavior for reading extension-specific settings, not harvesting sensitive user secrets.",
+        "code_reference": "o.workspace.getConfiguration(\"clipwire\").get(\"relayUrl\", ...)",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension includes a 'secret detection' feature (`warnOnSecrets`) that warns the user if they are about to send content that looks like a secret (e.g., API keys). This is a security-positive feature that mitigates the risk of accidental credential leakage, further supporting the benign nature of the extension.",
+        "code_reference": "if (t.get(\"warnOnSecrets\", !0)) { let i = z(e); ... showWarningMessage ... }",
+        "line_hint": 3,
+        "target": "extension/dist/web/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' and 'data exfiltration' due to clipboard reading and network transmission. However, the code context confirms this is the core functionality of the extension (Clipwire), which is designed to sync clipboard content between machines. The data is encrypted locally (implied by 'deriving keys' and channel ID usage) before being sent to the relay server. This is intended behavior, not malicious exfiltration.",
+        "code_reference": "await D(n.document.getText(n.selection), \"selection\")",
+        "line_hint": 3,
+        "target": "extension/dist/web/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Base64 encoding data then sending over network'. The code shows a standard Base64 URL-safe encoding function (`btoa(t).replace...`). This is likely used for encoding keys or identifiers for transmission or storage, which is standard practice for secure messaging or key exchange protocols, not obfuscation of a payload.",
+        "code_reference": "btoa(t).replace(/\\+/g,\"-\").replace(/\\//g,\"_\").replace(/=+$/,\"\")",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses a custom relay server (`copyme-relay.aravindbaranitharan.in`). While this is a third-party endpoint, it is explicitly documented in the README and package.json as the service used for the extension's function. The extension does not attempt to hide this connection or use tunneling services. The risk is inherent to trusting a third-party relay, but the code itself does not exhibit malicious intent beyond its stated purpose.",
+        "code_reference": "workspace.getConfiguration(\"clipwire\").get(\"relayUrl\",\"https://copyme-relay.aravindbaranitharan.in\")",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged clipboard reading and network transmission as credential harvesting/exfiltration. However, the code explicitly implements the extension's documented purpose: syncing clipboard content between devices via an encrypted relay. The data flow is user-initiated (commands like 'clipwire.sendClipboard') and the destination is a user-configurable or default relay server, not a hardcoded C2 endpoint.",
+        "code_reference": "await D(await o.env.clipboard.readText(), \"clipboard text\")",
+        "line_hint": 3,
+        "target": "extension/dist/web/extension.js (chunk 5/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Base64 encoding was flagged as obfuscation/staging. In this context, it is standard practice for encoding binary or text data for safe transmission over HTTP/JSON APIs, especially when dealing with clipboard content that may contain special characters.",
+        "code_reference": "btoa(t).replace(/\\+/g,\"-\").replace(/\\//g,\"_\").replace(/=+$/,\"\")",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 5/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension communicates with 'copyme-relay.aravindbaranitharan.in'. While the domain is not a major CDN or official service, it is consistent with a self-hosted or third-party relay service for a niche utility. The risk is low because the connection is HTTPS, the purpose is transparent, and the user can configure the relay URL.",
+        "code_reference": "workspace.getConfiguration(\"clipwire\").get(\"relayUrl\",\"https://copyme-relay.aravindbaranitharan.in\")",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 5/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged clipboard reading and network transmission as 'infostealer_behavior'. However, this is the core functionality of the extension (Clipwire), which is explicitly designed to sync clipboard content between machines. The data is encrypted locally before transmission, aligning with the extension's stated purpose.",
+        "code_reference": "clipboard.readText(), fetch(...)",
+        "line_hint": 3,
+        "target": "extension/dist/web/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged Base64 encoding followed by network send as 'data exfil'. This is standard practice for transmitting binary or text data over HTTP APIs, especially when using WebSockets or JSON payloads. It is not indicative of malicious staging in this context.",
+        "code_reference": "btoa(t)...",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged reading VS Code configuration as 'harvesting'. The code reads the 'clipwire' configuration namespace to retrieve user-defined settings like 'relayUrl' and 'warnOnSecrets'. This is standard configuration handling, not credential harvesting.",
+        "code_reference": "workspace.getConfiguration(\"clipwire\")",
+        "line_hint": 1,
+        "target": "extension/dist/web/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension connects to a custom relay server (copyme-relay.aravindbaranitharan.in). While this is a third-party endpoint, it is consistent with the extension's design (peer-to-peer or relay-based clipboard sync). The code includes a health check and user confirmation, which are benign behaviors. No malicious payloads, obfuscation, or unauthorized access patterns were found in this chunk.",
+        "code_reference": "fetch(`${n}/healthz`)",
+        "line_hint": 3,
+        "target": "extension/dist/web/extension.js (chunk 6/6)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate implementation of an encrypted clipboard synchronization tool. It uses standard Web Crypto APIs (HKDF, SHA-256) for key derivation and encryption, ensuring that the relay server cannot read the clipboard content. The static analysis hits for 'exfiltration' and 'infostealer' are false positives resulting from the extension's core functionality of reading the clipboard and sending it over the network. The use of a personal domain for the relay is a minor transparency concern but not a security vulnerability given the end-to-end encryption. No malicious patterns such as credential harvesting, reverse shells, or obfuscated payloads were found.",
+  "escalation_reasons": [
+    "2 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 42,
+    "published_date": "2026-08-30T06:42:59.07Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T07:53:07.285170+00:00Z"
+}

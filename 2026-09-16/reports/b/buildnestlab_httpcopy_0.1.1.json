@@ -1,0 +1,186 @@
+{
+  "extension_id": "buildnestlab.httpcopy",
+  "display_name": "HttpCopy",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "buildnestlab",
+    "verified": false
+  },
+  "vsix_sha256": "6409af385aa01ca32e27531b654bf971c4f33263f3b71372a97b301f10cddbc2",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.22749999999999998,
+    "ai_vibe": 0.15,
+    "static": 0.25,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/src/license.js",
+        "line": 5,
+        "snippet": "SECRET = \"httpcopy-dev-not-for-sale\""
+      }
+    ],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "schema.getpostman.com",
+      "source_file": "extension/src/parse.js",
+      "line": 15,
+      "context": "if (schema.includes(\"schema.getpostman.com\") || (doc.info && Array.isArray(doc.item))) {",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "buy.stripe.com",
+      "source_file": "extension/src/messages.js",
+      "line": 3,
+      "context": "const BUY_URL = \"https://buy.stripe.com/fZu9AV2Bsbkg5vLazsaAw08\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
+    "summaries": [
+      {
+        "target": "extension/src/license.js",
+        "summary": "The file implements a simple license verification mechanism using HMAC-SHA256. The code is clean, unobfuscated, and uses standard Node.js crypto APIs. The primary finding is a hardcoded HMAC secret labeled as 'dev', which poses a business logic risk (license bypass) rather than a security risk (data exfiltration or RCE). There are no network calls, child process executions, or access to sensitive file paths in this specific file. The behavior is proportional to the extension's stated purpose of converting JSON collections to .http files with a free/pro tier."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 1/2)",
+        "summary": "The code is a straightforward implementation of a file converter. It reads JSON files from the user's workspace, processes them locally using a `convert` module, and writes output files to a local directory. The use of `fs.readFileSync` and `path` is appropriate for a file-processing tool. The configuration reads are limited to the extension's own namespace. No network calls, child processes, or sensitive path accesses are present in this chunk. The behavior aligns perfectly with the advertised 'offline conversion' feature."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/2)",
+        "summary": "This chunk of the extension source code appears benign and consistent with its advertised functionality. It handles license key persistence within the extension's own configuration scope and provides a file picker for user-selected JSON files. The static rule hits regarding configuration harvesting are likely false positives given the specific namespace used ('httpcopy') and the nature of the data (license key). No obfuscation, child process execution, or suspicious network calls are present in this file."
+      },
+      {
+        "target": "extension/src/convert.js",
+        "summary": "The source file `convert.js` is a straightforward orchestration module that parses JSON input, detects the format (Postman or Thunder Client), applies licensing limits, and formats the collection. It relies on local `require()` calls to sibling modules (`./parse`, `./format`, `./license`) and does not directly execute child processes, access sensitive file paths, or make network requests. The logic is transparent and aligns perfectly with the extension's stated purpose of converting API collections to `.http` files. The only minor anomaly is the reported package size, but the code itself exhibits no malicious patterns."
+      },
+      {
+        "target": "extension/src/write.js",
+        "summary": "The source code for `write.js` is a straightforward file utility module. It handles the creation of directories and writing of text files to disk, which aligns perfectly with the extension's stated purpose of converting Postman/Thunder Client collections into `.http` files. The code includes specific safeguards against path traversal attacks (checking for `..` and resolving paths relative to a root), which is good practice for a tool that writes user-defined filenames. There are no network calls, no execution of child processes, no access to sensitive environment variables or credential stores, and no obfuscation. The behavior is proportional to the advertised functionality."
+      },
+      {
+        "target": "extension/src/messages.js",
+        "summary": "This file (`messages.js`) is a simple utility module responsible for formatting user-facing status messages and defining the 'About Pro' text. It contains no logic for file I/O, network requests, or process execution. The hardcoded Stripe URL and email address are consistent with the extension's description of a one-time purchase model. The code is plain, unobfuscated, and performs exactly what is expected for a message formatting helper in a small utility extension."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "HARD_CODED_SECRET",
+        "description": "The variable `DEV_HMAC_SECRET` is hardcoded with the value 'httpcopy-dev-not-for-sale'. While the name and value suggest this is a development placeholder intended to be replaced in production, it is currently used for license verification. If this value remains in the shipped version, any user could generate their own valid license keys by replicating the `makeDevLicense` logic, effectively bypassing the paid tier. However, it does not leak user credentials or exfiltrate data.",
+        "code_reference": "const DEV_HMAC_SECRET = \"httpcopy-dev-not-for-sale\";",
+        "line_hint": 5,
+        "target": "extension/src/license.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `workspace.getConfiguration` as potential harvesting, but the code only reads extension-specific settings (`httpcopy.licenseKey`, `httpcopy.writeSecrets`, `httpcopy.outputFolder`) to drive local conversion logic. No network transmission of these values is observed in this chunk.",
+        "code_reference": "const cfg = vscode.workspace.getConfiguration(\"httpcopy\");",
+        "line_hint": 48,
+        "target": "extension/src/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `workspace.getConfiguration(...).update` as tampering, but this is standard behavior for saving user input (license key) to the extension's own configuration store.",
+        "code_reference": "workspace.getConfiguration(\"httpcopy\").update(",
+        "line_hint": 78,
+        "target": "extension/src/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "VSCode_API_Abuse",
+        "description": "The code reads and writes to the extension's own configuration namespace ('httpcopy') to store a license key. While the static rule engine flagged this as potential harvesting, the scope is limited to the extension's private settings, and the value is a user-provided license key, not a system secret.",
+        "code_reference": "vscode.workspace.getConfiguration(\"httpcopy\").update(\"licenseKey\", key.trim(), true)",
+        "line_hint": 29,
+        "target": "extension/src/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "Behavioral_Mismatch",
+        "description": "The extension uses a file picker dialog to select JSON files from the user's filesystem. This is consistent with the stated purpose of converting local Postman/Thunder Client exports, though it does grant read access to any JSON file the user selects.",
+        "code_reference": "vscode.window.showOpenDialog",
+        "line_hint": 35,
+        "target": "extension/src/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX package size is reported as 0.0 MB, which is unusually small for a functional extension containing multiple source files (convert.js, parse.js, format.js, license.js, messages.js). While not inherently malicious, this suggests either aggressive minification/bundling or potential packaging anomalies that should be verified.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/src/convert.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The extension writes files to the file system using `fs.writeFileSync`. While this is the core function of the extension (converting JSON to .http files), it does write outside the extension's storage path. However, the code includes robust path traversal protection (`assertInsideRoot`) to ensure files are written within the specified `outputDir`, which mitigates the risk of arbitrary file writes.",
+        "code_reference": "fs.writeFileSync(dest, file.text, \"utf8\");",
+        "line_hint": 48,
+        "target": "extension/src/write.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "HARDcoded_URL",
+        "description": "The extension hardcodes a Stripe payment link (`https://buy.stripe.com/...`) and a personal Gmail address for license verification. While this is a common pattern for small, paid extensions, it relies on the publisher's trustworthiness rather than an automated licensing server. The URL is used for display purposes in this file, not for data exfiltration.",
+        "code_reference": "const BUY_URL = \"https://buy.stripe.com/fZu9AV2Bsbkg5vLazsaAw08\";",
+        "line_hint": 3,
+        "target": "extension/src/messages.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The file implements a simple license verification mechanism using HMAC-SHA256. The code is clean, unobfuscated, and uses standard Node.js crypto APIs. The primary finding is a hardcoded HMAC secret labeled as 'dev', which poses a business logic risk (license bypass) rather than a security risk (data exfiltration or RCE). There are no network calls, child process executions, or access to sensitive file paths in this specific file. The behavior is proportional to the extension's stated purpose of converting JSON collections to .http files with a free/pro tier.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 18,
+    "published_date": "2026-09-01T15:03:07.657Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-02T15:10:11.783633+00:00Z"
+}

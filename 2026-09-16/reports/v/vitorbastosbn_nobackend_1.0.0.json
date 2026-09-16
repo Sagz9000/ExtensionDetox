@@ -1,0 +1,181 @@
+{
+  "extension_id": "vitorbastosbn.nobackend",
+  "display_name": "NoBackend - Mock Server",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "vitorbastosbn",
+    "verified": false
+  },
+  "vsix_sha256": "5a356411f653b60556e4e3c993ce2e2a0debcffde6bb2797c40fec814eb7c2cc",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.274375,
+    "ai_vibe": 0.15,
+    "static": 0.4375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "Token:\"[REDACTED:JWT]\""
+      }
+    ],
+    "high": [
+      {
+        "check": "MAGIC_MISMATCH",
+        "severity": "HIGH",
+        "description": "File 'extension/media/icon.png' claims to be '.png' but magic bytes indicate 'JPEG' (expected: {'PNG'})",
+        "file": "extension/media/icon.png",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "method:\"POST\",description:\"Create new user\",activeResponseId:\"resp_users_create_201\",responses:[{id:\"resp_users_create_201\",name:\"201 Successfully Created\",statusCode:201,delay:150,headers:{\"Content-T"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 10,
+        "snippet": ".postMessage({type:\"configUpdated\",config:u,statusList:this.serverManager.getAllStatus()})},null,this._disposables),this.serverManager.onDidChangeStatus(u=>{this._panel.webview.postMessage({type:\"stat"
+      }
+    ],
+    "total": 9
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/3)",
+        "summary": "The extension 'NoBackend' is a legitimate local mock server tool for VS Code. The code implements standard HTTP server functionality using Node's `http` module, manages configuration via JSON files in the workspace or global storage, and provides a UI via VS Code's Webview API. The flagged 'hardcoded secret' is a dummy JWT token used as sample data in a mock response, not a real credential. The network activity is strictly limited to listening on localhost ports for incoming mock requests, which aligns perfectly with the extension's advertised purpose. No malicious behavior, credential harvesting, or unauthorized data exfiltration was detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/3)",
+        "summary": "The provided source code is a benign implementation of a VS Code extension named 'NoBackend', designed to create local mock HTTP servers. The code handles UI rendering via Webviews, manages local configuration files, and communicates with the extension host using standard VS Code APIs (`postMessage`, `onDidReceiveMessage`). The high-severity findings from the static scanner are false positives: the 'hardcoded secret' is likely mock data or a demo token, and the 'exfiltration' patterns are standard Webview IPC messages. There is no evidence of malicious intent, credential harvesting, or unauthorized network communication."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/3)",
+        "summary": "The provided code is a benign VS Code extension named 'NoBackend' designed to create local mock HTTP servers. The code implements standard VS Code extension patterns: registering commands, managing a tree view, creating webviews for UI, and handling configuration files in the extension's global storage. The 'CRITICAL' and 'HIGH' findings from the static scanner are false positives triggered by mock data (a sample JWT token in a default response) and standard Webview communication APIs. There is no evidence of malicious intent, credential harvesting, C2 communication, or unauthorized system access. The extension's behavior aligns perfectly with its advertised purpose."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a hardcoded JWT token (`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`) as a leaked secret. However, inspection of the code reveals this token is part of the `createDefaultConfig()` method, specifically within the `body` of a mock response for an authentication route (`/auth/login`). It is a dummy value used to simulate a successful login response for developers testing their frontend applications. It is not a real credential used for authentication by the extension itself.",
+        "code_reference": "accessToken: \"[REDACTED:JWT]\"",
+        "line_hint": "approx. line 180",
+        "target": "extension/dist/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `postMessage` and file system operations as potential data exfiltration. The `postMessage` calls are standard VS Code Webview API usage for communicating between the extension host and the UI webview. The file system operations (`readFileSync`, `writeFileSync`) are correctly scoped to the workspace's `.nobackend/servers.json` or the extension's global storage, which is the expected behavior for a configuration-driven mock server.",
+        "code_reference": "postMessage({type:\"configUpdated\",config:u,statusList:this.serverManager.getAllStatus()})",
+        "line_hint": "approx. line 10",
+        "target": "extension/dist/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged a 'Hardcoded secret/password/token' (CRITICAL) and 'data exfiltration' (HIGH). Analysis of the provided code reveals these are false positives. The 'secret' is likely part of a mock data example or a JWT token used for demonstration within the mock server's default configuration (common in mock server extensions). The 'exfiltration' pattern matches `postMessage` calls to the VS Code Webview, which is the standard, secure IPC mechanism for extensions, not network exfiltration.",
+        "code_reference": "Token:\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... (from scanner log, not in visible snippet but inferred context)\nthis._panel.webview.postMessage({ type: \"configUpdated\", ... })",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged 'Directory traversal paired with network send' (MEDIUM). The code uses `g.Uri.joinPath` and `g.workspace.openTextDocument` to manage local configuration files (`servers.json`) within the extension's storage path. This is standard behavior for a configuration-driven extension and does not involve sending data over the network.",
+        "code_reference": "let t = this.configStorage.getConfigFilePath(), s = await g.workspace.openTextDocument(t);",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged 'MAGIC_MISMATCH' for `extension/media/icon.png`. This indicates the icon file is actually a JPEG despite having a .png extension. This is a packaging error/quality issue, not a security risk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a hardcoded JWT token (`Token:\"eyJhbGci...`). This is a false positive. The token is part of a mock data structure (likely a default response body or example) within the extension's logic for creating mock routes. It is not used for authentication with external services or exfiltrated.",
+        "code_reference": "Token:\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6Ik1hcmlhIFNpbHZhIiwiaWF0IjoxNTE2",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `postMessage` as data exfiltration. This is standard VS Code Webview API usage for communicating between the extension host and the webview UI. The data sent (`configUpdated`, `statusList`) is internal state for the UI, not sensitive user data.",
+        "code_reference": ".postMessage({type:\"configUpdated\",config:u,statusList:this.serverManager.getAllStatus()})",
+        "line_hint": "10",
+        "target": "extension/dist/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged directory traversal with network send. The code reads/writes `servers.json` in the extension's global storage path (`globalStorageUri.fsPath`). This is standard behavior for persisting extension configuration. There is no network exfiltration of this file.",
+        "code_reference": "globalStorageUri.fsPath,\"servers.json\")}",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'NoBackend' is a legitimate local mock server tool for VS Code. The code implements standard HTTP server functionality using Node's `http` module, manages configuration via JSON files in the workspace or global storage, and provides a UI via VS Code's Webview API. The flagged 'hardcoded secret' is a dummy JWT token used as sample data in a mock response, not a real credential. The network activity is strictly limited to listening on localhost ports for incoming mock requests, which aligns perfectly with the extension's advertised purpose. No malicious behavior, credential harvesting, or unauthorized data exfiltration was detected.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-15T03:22:05.52Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T03:42:30.606460+00:00Z"
+}

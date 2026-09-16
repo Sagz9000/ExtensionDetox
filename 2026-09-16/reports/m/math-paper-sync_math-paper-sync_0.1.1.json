@@ -1,0 +1,314 @@
+{
+  "extension_id": "math-paper-sync.math-paper-sync",
+  "display_name": "\u6570\u6a21\u8bba\u6587\u540c\u6b65",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "math-paper-sync",
+    "verified": false
+  },
+  "vsix_sha256": "eef5753c3fa2f8ca10f7540346470f2b378e16431f7984afb99232d6c56599f3",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2740625,
+    "ai_vibe": 0.35,
+    "static": 0.15625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/dist/extension.js",
+        "line": 31993,
+        "snippet": "SECRET = \"mathPaperSync.atomGit.accessToken\""
+      }
+    ],
+    "high": [],
+    "total": 6
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "git-scm.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 6667,
+      "context": "// https://git-scm.com/docs/gitignore",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "user.name",
+      "source_file": "extension/dist/extension.js",
+      "line": 12345,
+      "context": "path: \"user.name\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.atomgit.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 28710,
+      "context": "apiOrigin: \"https://api.atomgit.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "oauth.qmhn.top",
+      "source_file": "extension/dist/extension.js",
+      "line": 28711,
+      "context": "brokerUrl: \"https://oauth.qmhn.top\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "atomgit.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 28807,
+      "context": "if (url.protocol !== \"https:\" || url.hostname !== \"atomgit.com\" || url.port !== \"\" || url.username || url.password || url.pathname !== \"/oauth/authorize\" || url.hash) {",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.35,
+    "confidence": 0.8,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 70/383)",
+        "summary": "This chunk (70/383) primarily contains the implementation of a glob-to-regex conversion utility (likely from a library like `micromatch` or `picomatch`), evidenced by the complex regex replacement logic for wildcards and path separators. The specific lines flagged by the static rule engine (31993, 32082, 32169) are not present in this text snippet but are identified in the metadata as standard VS Code SecretStorage key definitions and accesses, which are benign for an extension managing OAuth tokens for AtomGit. The code in this specific chunk shows no obfuscation, network calls, or child_process usage, aligning well with the extension's purpose of managing LaTeX papers via Git."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 130/383)",
+        "summary": "This chunk of code appears to be part of a bundled Git library (likely `isomorphic-git` or similar) handling commit normalization and configuration. The logic is standard for Git operations (reading user.name/email, handling timestamps). The 'leaked secret' and 'credential theft' flags are false positives resulting from the use of VS Code's standard SecretStorage API. The code aligns well with the extension's purpose of syncing papers via Git."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 289/383)",
+        "summary": "This chunk of the extension source code appears largely benign, focusing on data validation, configuration management, and OAuth setup. The primary concern is the hardcoded OAuth broker domain `oauth.qmhn.top`, which is not immediately associated with the primary API domain `api.atomgit.com`. While this could be a legitimate sub-service, it warrants verification to ensure it is not a typosquatting or unauthorized third-party broker. The 'leaked secret' flag is a false positive, as it refers to a storage key name rather than the secret value itself. The code structure is clean, with proper use of VS Code APIs for secure storage."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 290/383)",
+        "summary": "This chunk of code defines an OAuth broker error class and validation functions for URLs and query parameters. The logic is defensive, checking for localhost, HTTPS protocols, and specific path structures. The 'leaked secret' finding is a false positive for a storage key. The network domains align with the extension's stated purpose of integrating with AtomGit. No malicious behavior is evident in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 298/383)",
+        "summary": "The analyzed chunk appears to implement a legitimate AtomGit API client for the extension's advertised paper synchronization workflow. It uses HTTPS, validates base URLs and API paths, and does not show credential harvesting, command execution, obfuscation, or exfiltration. The static secret hit is likely a SecretStorage key name rather than a real hardcoded credential, and reading the extension's own SecretStorage is normal for OAuth token storage. The main concern is the package-level presence of the unknown domain oauth.qmhn.top, which is not clearly explained by the README and could be an authentication endpoint; because only a small chunk was analyzed, the overall verdict is suspicious but not malicious."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 309/383)",
+        "summary": "The analyzed code chunk is part of a legitimate VS Code extension for syncing mathematical modeling papers with AtomGit. The code demonstrates good security practices, including strict validation of Git inputs and proper use of VS Code's SecretStorage API. The static scanner hits regarding 'leaked secrets' and 'credential theft' are false positives resulting from the use of standard secure storage keys and APIs. No malicious behavior, obfuscation, or capability disconnects were identified in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 350/383)",
+        "summary": "The code is a legitimate implementation of a Git synchronization workflow for a specific platform (AtomGit). It handles repository creation, cloning, and pushing with appropriate error handling and atomic operations (staging directories). The network endpoints (api.atomgit.com, oauth.qmhn.top) align with the extension's stated purpose of integrating with AtomGit. The flagged 'secrets' are actually storage keys, and the 'credential theft' flags are false positives resulting from standard VS Code SecretStorage usage. No malicious behavior, obfuscation, or capability disconnects were detected."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993, but the match `SECRET = \"mathPaperSync.atomGit.accessToken\"` is a string key used to access VS Code's SecretStorage API, not a hardcoded credential value. This is standard practice for storing tokens securely.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 70/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged credential theft at lines 32082 and 32169, but the code uses `context.secrets.get()`, which accesses the extension's own isolated SecretStorage scope, not a global or cross-extension store.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 32082,
+        "target": "extension/dist/extension.js (chunk 70/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' for the string 'mathPaperSync.atomGit.accessToken'. However, this is a key name used for VS Code's SecretStorage API, not the secret value itself. The actual token is stored securely by VS Code.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 130/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' for reading `context.secrets`. This is the standard, recommended way for extensions to store user-specific credentials (like the AtomGit token) securely, scoped to this extension.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 32082,
+        "target": "extension/dist/extension.js (chunk 130/383)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'leaked_secrets' for the assignment `SECRET = \"mathPaperSync.atomGit.accessToken\"`. However, this string is a key name used for VS Code's SecretStorage API, not the actual secret value. The actual token is stored securely by VS Code. This is a false positive for a hardcoded secret, though the naming convention is slightly ambiguous.",
+        "code_reference": "var ATOMGIT_ACCESS_TOKEN_SECRET = `mathPaperSync.atomGit.${ATOMGIT_INTEGRATION_CONFIG.tenantId}.accessToken`;",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 289/383)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The extension uses a hardcoded OAuth broker URL `https://oauth.qmhn.top`. The domain `qmhn.top` is a generic top-level domain (not a corporate or well-known service domain like `atomgit.com`). While it may be a legitimate sub-service for the AtomGit integration, it introduces a dependency on a third-party domain that is not immediately obvious from the extension's name or primary API domain. Users should verify if `qmhn.top` is an official AtomGit subdomain or a separate entity.",
+        "code_reference": "brokerUrl: \"https://oauth.qmhn.top\"",
+        "line_hint": 31990,
+        "target": "extension/dist/extension.js (chunk 289/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "INFO",
+        "description": "The extension reads from its own `context.secrets` storage. This is standard practice for VS Code extensions to store user credentials securely. The scanner flagged this as credential theft, but since it is scoped to the extension's own context, it is likely benign.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 32082,
+        "target": "extension/dist/extension.js (chunk 289/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code chunk shows standard data validation and configuration freezing logic. The use of `Object.freeze` on the config object is a good practice to prevent accidental mutation. The validation logic for UUIDs and ISO dates is robust. No significant disconnect between the code's behavior and the extension's stated purpose (math paper sync via AtomGit) is observed in this chunk.",
+        "code_reference": "function sanitizeProjectManifest(value) { ... }",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 289/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a hardcoded secret, but the code `SECRET = \"mathPaperSync.atomGit.accessToken\"` is actually a string key used to access the extension's own SecretStorage, not a hardcoded credential value.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 290/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension connects to `api.atomgit.com` and `oauth.qmhn.top`. Given the extension's purpose is syncing with AtomGit, these are expected endpoints. `qmhn.top` is likely the OAuth provider domain for AtomGit.",
+        "code_reference": "api.atomgit.com, oauth.qmhn.top",
+        "line_hint": 28710,
+        "target": "extension/dist/extension.js (chunk 290/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_RULE",
+        "description": "The static scanner flagged a hardcoded secret assignment matching SECRET = \"mathPaperSync.atomGit.accessToken\". In the context of a VS Code extension that stores an AtomGit OAuth token, this is most likely a SecretStorage key name rather than an actual embedded credential. No literal token value is visible in the provided chunk.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": "31993",
+        "target": "extension/dist/extension.js (chunk 298/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_SECRET_STORAGE_ACCESS",
+        "description": "The extension reads its own VS Code SecretStorage via context.secrets.get(...). This is normal for an extension that stores a user-provided OAuth/access token and does not indicate cross-extension credential theft.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": "32082",
+        "target": "extension/dist/extension.js (chunk 298/383)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "UNKNOWN_AUTH_DOMAIN",
+        "description": "The package-level indicators include oauth.qmhn.top, an unknown domain that may be used for OAuth or authentication. The README only explicitly mentions AtomGit and api.atomgit.com. Without seeing the surrounding code, this domain cannot be confirmed as malicious, but it is a supply-chain concern because authentication endpoints can harvest tokens or redirect users.",
+        "code_reference": "domain: oauth.qmhn.top",
+        "line_hint": "28711",
+        "target": "extension/dist/extension.js (chunk 298/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "EXPECTED_NETWORK_ENDPOINT",
+        "description": "The analyzed chunk defines DEFAULT_BASE_URL = \"https://api.atomgit.com/\" and documented AtomGit API paths. This aligns with the extension's advertised AtomGit paper synchronization functionality and is not suspicious by itself.",
+        "code_reference": "var DEFAULT_BASE_URL = \"https://api.atomgit.com/\";",
+        "line_hint": "chunk 298",
+        "target": "extension/dist/extension.js (chunk 298/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NO_HIGH_RISK_BEHAVIOR_IN_CHUNK",
+        "description": "The provided chunk contains an AtomGit API client with HTTPS URL validation, token validation, path validation, and fetch usage. No eval, Function constructor, child_process, filesystem access to sensitive paths, clipboard access, keylogging, screenshot capture, persistence, DLL loading, or command execution was observed in this chunk.",
+        "code_reference": "class AtomGitApiClient",
+        "line_hint": "chunk 298",
+        "target": "extension/dist/extension.js (chunk 298/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993. The matched string `SECRET = \"mathPaperSync.atomGit.accessToken\"` is a key identifier for VS Code's SecretStorage API, not a hardcoded credential value. This is a standard pattern for storing user-provided tokens securely.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 309/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'credential theft' for reading `context.secrets`. This is the legitimate VS Code API for accessing the extension's own secure storage. The code is retrieving the AtomGit access token previously stored by the user, which is required for the extension's stated functionality (syncing with AtomGit).",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 32082,
+        "target": "extension/dist/extension.js (chunk 309/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code contains robust input validation for Git remote components, refs, and file paths (e.g., `SAFE_REMOTE_COMPONENT`, `validateRef`, `validateGuardFilepath`). This indicates a focus on security and preventing injection attacks, which aligns with a legitimate Git-based synchronization tool.",
+        "code_reference": "var SAFE_REMOTE_COMPONENT = /^(?![.])...",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 309/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993. Upon inspection, the string 'mathPaperSync.atomGit.accessToken' is a key identifier for VS Code's SecretStorage API, not a hardcoded credential value. This is standard practice for storing user-provided tokens securely.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 350/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' due to `context.secrets.get`. This is the legitimate VS Code API for accessing the extension's own isolated secret storage, not a cross-extension or system credential theft.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 32082,
+        "target": "extension/dist/extension.js (chunk 350/383)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk (70/383) primarily contains the implementation of a glob-to-regex conversion utility (likely from a library like `micromatch` or `picomatch`), evidenced by the complex regex replacement logic for wildcards and path separators. The specific lines flagged by the static rule engine (31993, 32082, 32169) are not present in this text snippet but are identified in the metadata as standard VS Code SecretStorage key definitions and accesses, which are benign for an extension managing OAuth tokens for AtomGit. The code in this specific chunk shows no obfuscation, network calls, or child_process usage, aligning well with the extension's purpose of managing LaTeX papers via Git.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-04T16:08:18.107Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T11:58:34.677075+00:00Z"
+}

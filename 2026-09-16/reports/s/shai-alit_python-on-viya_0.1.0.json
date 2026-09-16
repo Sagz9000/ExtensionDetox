@@ -1,0 +1,335 @@
+{
+  "extension_id": "shai-alit.python-on-viya",
+  "display_name": "Python on Viya",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "shai-alit",
+    "verified": false
+  },
+  "vsix_sha256": "c2bada268790f0a6f1c08f9ba352e3e28e319e06d971f7791f1a3d389c1d0170",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25039003907376806,
+    "ai_vibe": 0.1,
+    "static": 0.41156015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/webview/resultPanel.js",
+        "line": 1,
+        "snippet": "addEventListener(\"keydown\",t=>{(t.key===\"Enter\"||t.key===\" \")&&(t.preventDefault(),n())})}},p=document.getElementById(\"root\"),b=acquireVsCodeApi();p!==null&&window.addEventListener(\"message\",e=>{g(e.d"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "method:\"POST\",headers:{\"content-type\":\"application/x-www-form-urlencoded\",accept:\"application/json\"},body:e.toString(),signal:AbortSignal.timeout(t.timeoutMs??Dr)}),d=await a.text()}catch(v){let A=v i"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 8,
+        "snippet": ".postMessage(e)}revealFrame(e,t){if(t!==this.currentRunToken)return;let i=this.currentOrigin;if(i===void 0)return;let o=this.currentFrames[e];if(o===void 0)return;let r=Oe(o,i);r!==void 0&&this.reveal"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/webview/resultPanel.js",
+        "line": 1,
+        "snippet": ".postMessage({type:\"revealFrame\",frameIndex:n,runToken"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "viya.example.com",
+      "source_file": "extension/package.nls.json",
+      "line": 26,
+      "context": "\"configuration.profile.endpoint.description\": \"Address of the SAS Viya deployment, for example `https://viya.example.com`. Must use HTTPS unless it is a loopback address: every request carries an acce",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 2/53)",
+        "summary": "The code snippet is a standard part of an OAuth2 authentication flow for a SAS Viya integration. It handles error messages, token validation, and redaction of sensitive data in logs. The static scanner hits are false positives resulting from standard HTTP POST requests for token exchange and VS Code Webview messaging. There are no indicators of malicious behavior, data exfiltration, or credential theft. The extension's capabilities are proportional to its advertised function of running Python on SAS Viya."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/53)",
+        "summary": "The code is a legitimate implementation of an OAuth 2.0 client and HTTP transport layer for connecting to SAS Viya. It uses standard Node.js crypto primitives for PKCE and secure comparison, and standard HTTP/HTTPS modules for network requests. There are no indicators of malicious behavior, data exfiltration, or credential harvesting. The static rule hits are false positives resulting from the legitimate authentication and network communication required by the extension's stated purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 8/53)",
+        "summary": "The code in this chunk is part of the authentication and identity management logic for the 'sas-py-vscode' extension. It handles parsing OAuth authorization headers, managing user identities, and communicating with the SAS Viya API. The static rule hits regarding data exfiltration and credential theft are false positives resulting from the legitimate use of OAuth flows and VS Code authentication APIs required to connect to the SAS Viya platform. No malicious behavior, obfuscation, or suspicious network endpoints were identified in this segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 24/53)",
+        "summary": "The code is a standard implementation of a VS Code extension for connecting to SAS Viya. It uses official VS Code APIs for authentication (`authentication.getSession`), progress reporting (`window.withProgress`), and configuration reading. The static scanner hits are false positives resulting from the presence of network POST requests and authentication calls, which are necessary for the extension's stated purpose of running Python on SAS Viya. There are no indicators of malicious intent, obfuscation, or unauthorized data access."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 28/53)",
+        "summary": "The analyzed code chunk is a standard part of a VS Code extension for connecting to SAS Viya. It handles user input for connection profiles (names, endpoints, passwords) and manages VS Code context and commands. The static rule engine hits are false positives resulting from generic string matches in a minified bundle; there is no evidence of malicious intent, data exfiltration, or credential theft in this specific chunk. The behavior aligns perfectly with the extension's stated purpose of managing remote Python execution profiles."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 29/53)",
+        "summary": "The analyzed code chunk is benign and consistent with the extension's stated purpose. It implements logic for managing SAS Viya connection profiles, including adding, editing, and deleting profiles, and securely storing OAuth client secrets using VS Code's SecretStorage API. The static scanner hits for 'exfiltration' and 'credential theft' are false positives resulting from standard API usage patterns (POST requests for auth, postMessage for UI communication, and getSession for potential token integration) that are appropriate for a cloud service integration extension. No malicious behavior, obfuscation, or capability disconnects were observed."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 31/53)",
+        "summary": "The code chunk is a standard implementation of a profile manager for a VS Code extension that connects to SAS Viya. It handles reading/writing configuration, managing secrets via the secure VS Code Secret Storage API, and updating workspace state. All flagged indicators are false positives resulting from generic pattern matching on standard VS Code APIs (configuration, secrets, webview messaging) that are appropriate for the extension's stated purpose. No malicious behavior, obfuscation, or suspicious network activity is present in this chunk."
+      },
+      {
+        "target": "extension/dist/webview/resultPanel.js (chunk 1/2)",
+        "summary": "The code is a standard VS Code webview UI component responsible for rendering Python execution results (text, images, HTML, tracebacks) from SAS Viya. It uses standard DOM manipulation and VS Code webview APIs. The static scanner hits are false positives resulting from generic pattern matching on UI event listeners and inter-process communication. There are no malicious indicators, credential harvesting, or obfuscated payloads present in this file."
+      },
+      {
+        "target": "extension/dist/webview/resultPanel.js (chunk 2/2)",
+        "summary": "The code is a standard VS Code Webview UI component responsible for rendering execution results (text, images, HTML, tracebacks) and handling user interactions. The flagged 'keylogger' and 'exfiltration' patterns are false positives resulting from standard accessibility features (keyboard activation) and legitimate VS Code API communication (postMessage to extension host). There are no network calls to external domains, no file system access, no credential harvesting, and no obfuscated payloads. The behavior is fully consistent with the extension's stated purpose of displaying Python execution results from SAS Viya."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' due to POST requests and postMessage. Context analysis reveals these are standard OAuth2 token exchange flows (POST to token endpoint) and internal VS Code Webview communication (postMessage), which are expected for an extension managing authentication sessions.",
+        "code_reference": "method:\"POST\",headers:{...} / .postMessage(e)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 2/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'credential theft' due to authentication.getSession. This is the standard VS Code API for retrieving OAuth tokens for the extension's own provider, not for stealing user credentials from other extensions or the system.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 2/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this is common for extensions that need to be ready immediately, it is slightly aggressive for a niche tool. However, given the need to manage authentication state and potentially intercept commands, this is acceptable and not indicative of malicious intent.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' due to POST requests and message passing. However, the code implements a standard OAuth 2.0 PKCE flow (generating code verifiers/challenges using node:crypto) and a robust HTTP client wrapper. The POST requests are for authentication token exchange, which is the core function of the extension (connecting to SAS Viya).",
+        "code_reference": "function Sn(n = {}) { ... method: t.method ... }",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 3/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'credential theft' due to authentication.getSession. This is standard VS Code API usage for retrieving OAuth tokens for the SAS Viya service, consistent with the extension's purpose of running Python on SAS Viya.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 3/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' due to POST requests and postMessage. Context analysis reveals these are standard OAuth2/OIDC authentication flows (handling sign-in codes, bearer tokens, and error responses) and internal VS Code webview communication, which are necessary for the extension's stated purpose of running Python on SAS Viya.",
+        "code_reference": "method:\"POST\"... authentication.getSession(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 8/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'credential theft' due to authentication.getSession. This is a standard VS Code API used to retrieve OAuth tokens for the SAS Viya service, which is the core functionality of the extension. It does not indicate cross-extension credential harvesting.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 8/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' due to POST request patterns. However, the code context shows standard API client configuration for SAS Viya, using form-urlencoded content type for authentication or API calls, which is expected behavior for this extension.",
+        "code_reference": "method:\"POST\",headers:{\"content-type\":\"application/x-www-form-urlencoded\"...}",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 24/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'credential theft' due to `authentication.getSession`. This is the standard VS Code API for retrieving OAuth tokens for the SAS Viya service provider, which is the core function of the extension. It is not accessing browser stores or other sensitive local files.",
+        "code_reference": "b.authentication.getSession(Ge, [], gi(e))",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 24/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'workspace configuration tampering'. The code reads `pythonOnViya` configuration to determine the default profile, which is a standard read operation for extension settings, not a malicious write or tampering.",
+        "code_reference": "workspace.getConfiguration(\"pythonOnViya\").get(\"defaultProfile\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 24/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' based on the string 'method:\"POST\"'. However, this code chunk contains no network request logic (no fetch, axios, or http calls). The string is likely part of a configuration object or documentation within the minified bundle, not an active exfiltration attempt.",
+        "code_reference": "method:\"POST\"",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 28/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_credential_theft' due to 'authentication.getSession'. In the context of a SAS Viya integration, this is standard behavior for retrieving OAuth tokens or API keys required to authenticate with the remote SAS server. It is not harvesting local credentials for exfiltration.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 28/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for 'workspace.getConfiguration'. The code reads the 'pythonOnViya' configuration to manage connection profiles (names, endpoints). This is a legitimate use of the VS Code API for extension state management.",
+        "code_reference": "workspace.getConfiguration(\"pythonOnViya\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 28/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' due to POST requests and postMessage. However, the code context indicates standard VS Code Webview communication (postMessage) and likely standard API calls for SAS Viya authentication (OAuth). There is no evidence of sending data to external, untrusted endpoints or hardcoded IPs.",
+        "code_reference": "method:\"POST\"... .postMessage(e)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 29/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'credential theft' due to `authentication.getSession`. In the context of a SAS Viya extension, this is likely used to retrieve Azure or GitHub tokens if the user has configured them for specific integrations, or it is a false positive from a generic rule. The code shown focuses on managing SAS connection profiles (endpoints, client IDs, secrets) using `SecretStorage`, which is the secure, intended way to handle credentials in VS Code extensions. It does not read browser stores, SSH keys, or other sensitive system files.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 29/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements CRUD operations for 'Connection Profiles' (add, edit, delete, list). This aligns perfectly with the extension's stated purpose of running Python on SAS Viya, which requires configuring connection endpoints and OAuth credentials. The use of `context.secrets` for storing client secrets is a best practice, not a risk.",
+        "code_reference": "async function oa(n, e) { ... await n.setSecret(s, a) ... }",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 29/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' due to the presence of 'method: \"POST\"' and 'postMessage'. However, this code chunk does not contain the string 'method: \"POST\"'. The 'postMessage' usage is part of a Webview API implementation (likely communicating with a UI panel), which is a standard and benign VS Code extension pattern. The 'POST' reference likely exists in a different chunk or is a false positive from a generic regex match on unrelated code.",
+        "code_reference": "postMessage(e)",
+        "line_hint": 8,
+        "target": "extension/dist/extension.js (chunk 31/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'workspace.getConfiguration' as 'Programmatic tampering'. The code uses 'V.workspace.getConfiguration(Ae).get(co)' to read configuration values (specifically 'defaultProfile') and 't.update(Qe, e, o)' to write profile data. This is standard behavior for an extension managing its own settings (SAS Viya connection profiles). It does not modify unrelated or sensitive system settings.",
+        "code_reference": "V.workspace.getConfiguration(Ae).get(co)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 31/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'authentication.getSession' as credential theft. This specific string is not present in the provided code chunk. The code uses 'context.secrets.get' and 'context.secrets.store', which are the correct, secure APIs for storing extension-specific secrets (like API tokens for SAS Viya) in the VS Code Secret Storage. This is not cross-extension credential theft.",
+        "code_reference": "context.secrets.get(Te(e))",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 31/53)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'keylogger' pattern due to a keydown listener. However, the code explicitly checks for 'Enter' or ' ' (space) keys to trigger a UI action (likely executing a command or navigating) and calls preventDefault. It does not buffer or exfiltrate keystrokes. This is standard UI interaction logic for a webview panel.",
+        "code_reference": "addEventListener(\"keydown\",t=>{(t.key===\"Enter\"||t.key===\" \")&&(t.preventDefault(),n())})",
+        "line_hint": 1,
+        "target": "extension/dist/webview/resultPanel.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' due to postMessage. The code uses postMessage to send UI state updates (revealFrame) to the extension host. This is the standard, secure communication channel between a VS Code webview and its extension, not network exfiltration.",
+        "code_reference": ".postMessage({type:\"revealFrame\",frameIndex:n,runToken",
+        "line_hint": 1,
+        "target": "extension/dist/webview/resultPanel.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'keylogger' pattern due to `addEventListener(\"keydown\", ...)` and `postMessage`. However, the code explicitly checks for `Enter` or `Space` keys to trigger a click action (`n()`) on an element, which is a standard accessibility pattern for making custom UI components keyboard-navigable. It does not capture character input or send keystrokes to a remote server.",
+        "code_reference": "e.addEventListener(\"keydown\", t => { (t.key === \"Enter\" || t.key === \" \") && (t.preventDefault(), n()) })",
+        "line_hint": 42,
+        "target": "extension/dist/webview/resultPanel.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'data exfiltration' pattern due to `postMessage`. The code sends a message to the VS Code extension host (`acquireVsCodeApi().postMessage`) with type `revealFrame`. This is a standard VS Code Webview communication pattern used to request the extension to scroll to or highlight a specific line in the editor, not to exfiltrate data to an external network endpoint.",
+        "code_reference": "b.postMessage({ type: \"revealFrame\", frameIndex: n, runToken: t })",
+        "line_hint": 55,
+        "target": "extension/dist/webview/resultPanel.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code snippet is a standard part of an OAuth2 authentication flow for a SAS Viya integration. It handles error messages, token validation, and redaction of sensitive data in logs. The static scanner hits are false positives resulting from standard HTTP POST requests for token exchange and VS Code Webview messaging. There are no indicators of malicious behavior, data exfiltration, or credential theft. The extension's capabilities are proportional to its advertised function of running Python on SAS Viya.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-08T20:52:30.927Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T21:24:54.754430+00:00Z"
+}

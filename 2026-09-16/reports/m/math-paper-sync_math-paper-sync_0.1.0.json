@@ -1,0 +1,273 @@
+{
+  "extension_id": "math-paper-sync.math-paper-sync",
+  "display_name": "\u6570\u6a21\u8bba\u6587\u540c\u6b65",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "math-paper-sync",
+    "verified": false
+  },
+  "vsix_sha256": "85fd89461ebba98f41e53e1f3f96718b8e0c33490eb0ed82a7a8d041b8b04eba",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.20406249999999998,
+    "ai_vibe": 0.15,
+    "static": 0.15625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/dist/extension.js",
+        "line": 31993,
+        "snippet": "SECRET = \"mathPaperSync.atomGit.accessToken\""
+      }
+    ],
+    "high": [],
+    "total": 6
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "git-scm.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 6667,
+      "context": "// https://git-scm.com/docs/gitignore",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "user.name",
+      "source_file": "extension/dist/extension.js",
+      "line": 12345,
+      "context": "path: \"user.name\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.atomgit.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 28710,
+      "context": "apiOrigin: \"https://api.atomgit.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "math-paper-oauth-broker.mgliz.workers.dev",
+      "source_file": "extension/dist/extension.js",
+      "line": 28711,
+      "context": "brokerUrl: \"https://math-paper-oauth-broker.mgliz.workers.dev\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "atomgit.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 28807,
+      "context": "if (url.protocol !== \"https:\" || url.hostname !== \"atomgit.com\" || url.port !== \"\" || url.username || url.password || url.pathname !== \"/oauth/authorize\" || url.hash) {",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 70/383)",
+        "summary": "This chunk (70/383) contains standard glob pattern matching logic (likely from a library like `micromatch` or `minimatch`) used for file filtering. The code is well-commented and follows standard regex transformation patterns. The static rule hits regarding secrets are false positives caused by the scanner misidentifying storage keys as values. The extension's purpose (Git/LaTeX sync) aligns with the presence of git-related domains and secret storage for tokens."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 130/383)",
+        "summary": "The analyzed code chunk consists of standard Git library logic (likely from `isomorphic-git` or a similar dependency) for handling commit author/committer normalization and object resolution. The static rule hits regarding secrets are false positives caused by the scanner misidentifying a SecretStorage key name as a hardcoded value. The extension's behavior aligns with its stated purpose of managing Git repositories for math papers on AtomGit. No malicious indicators were found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 289/383)",
+        "summary": "The code snippet is benign and consistent with the extension's stated purpose of synchronizing math modeling papers via AtomGit. The 'leaked secret' alert is a false positive caused by the scanner misidentifying a SecretStorage key name as a hardcoded credential. The network endpoints (api.atomgit.com and the OAuth broker) align with the documented functionality. No malicious behavior, obfuscation, or capability disconnects were observed in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 290/383)",
+        "summary": "The analyzed code chunk is part of an OAuth client implementation for AtomGit. It contains robust input validation (URL parsing, regex checks for sensitive keys, size limits) and uses the VS Code SecretStorage API correctly to manage access tokens. The flagged 'secret' is a storage key, not a credential. The network endpoints align with the extension's documented functionality (AtomGit integration). No malicious behavior, obfuscation, or credential harvesting patterns were detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 298/383)",
+        "summary": "The analyzed code chunk is part of an API client for AtomGit, a code hosting service. It implements standard HTTP request handling, URL validation, and token verification. The 'critical' findings from the static scanner are false positives resulting from the use of VS Code's SecretStorage API keys and standard secure storage practices. The network endpoints align with the extension's documented functionality (Git synchronization). No malicious behavior, obfuscation, or capability disconnects were identified in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 309/383)",
+        "summary": "The analyzed code chunk is part of a legitimate VS Code extension for mathematical modeling paper synchronization. It implements strict input validation for Git repository components and references, preventing injection attacks. The use of VS Code's SecretStorage for managing AtomGit access tokens is standard and secure practice. The flagged 'leaked secret' is a false positive (a storage key, not a value). The presence of an OAuth broker worker is consistent with the extension's functionality. No malicious behavior, credential theft, or obfuscation was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 350/383)",
+        "summary": "The code is a legitimate implementation of a VS Code extension for syncing mathematical modeling papers to AtomGit. It uses standard VS Code APIs for secret storage and file system operations. The static scanner hits are false positives resulting from the use of string keys for secret storage and standard API calls. The network endpoints (atomgit.com, workers.dev) align with the extension's documented purpose of interacting with the AtomGit service and its OAuth broker. No malicious behavior, obfuscation, or capability disconnect was found."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993, but the match `SECRET = \"mathPaperSync.atomGit.accessToken\"` is a string key used for VS Code's SecretStorage API, not the actual secret value. This is a standard pattern for storing credentials securely.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 70/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged credential theft, but the code reads from `context.secrets`, which is the extension's own isolated storage scope, not a global or cross-extension store.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 32082,
+        "target": "extension/dist/extension.js (chunk 70/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993. The matched string 'mathPaperSync.atomGit.accessToken' is a key identifier for VS Code's SecretStorage API, not a hardcoded credential value. This is standard practice for storing user-provided tokens securely.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 130/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' for reading `context.secrets`. This is the extension accessing its own scoped secret storage to retrieve the AtomGit access token it previously stored. This is the intended and secure way to handle OAuth tokens in VS Code extensions, not cross-extension theft.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 32082,
+        "target": "extension/dist/extension.js (chunk 130/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993. However, the string 'mathPaperSync.atomGit.accessToken' is a key identifier for VS Code's SecretStorage API, not a hardcoded credential value. It is used to store/retrieve the user's token securely within the extension's isolated storage.",
+        "code_reference": "var ATOMGIT_ACCESS_TOKEN_SECRET = `mathPaperSync.atomGit.${ATOMGIT_INTEGRATION_CONFIG.tenantId}.accessToken`;",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 289/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension communicates with 'math-paper-oauth-broker.mgliz.workers.dev'. While this is a non-standard domain (Cloudflare Workers), it is explicitly defined in the configuration as the OAuth broker for the AtomGit integration described in the README. This is consistent with the extension's purpose of facilitating login to AtomGit.",
+        "code_reference": "brokerUrl: \"https://math-paper-oauth-broker.mgliz.workers.dev\"",
+        "line_hint": 31985,
+        "target": "extension/dist/extension.js (chunk 289/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993, but the code shows `SECRET = \"mathPaperSync.atomGit.accessToken\"`. This is a string key used to access the VS Code SecretStorage API, not a hardcoded credential value. It is a standard pattern for storing user tokens securely.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 290/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension connects to `math-paper-oauth-broker.mgliz.workers.dev`. While this is a third-party domain (Cloudflare Workers), it is explicitly used as an OAuth broker for AtomGit, which aligns with the extension's stated purpose of syncing papers via AtomGit. The code includes strict validation of URLs and response sizes, indicating defensive coding practices rather than malicious intent.",
+        "code_reference": "domain: math-paper-oauth-broker.mgliz.workers.dev",
+        "line_hint": 28711,
+        "target": "extension/dist/extension.js (chunk 290/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993, but the code `SECRET = \"mathPaperSync.atomGit.accessToken\"` is a string key used for VS Code's SecretStorage API, not a hardcoded credential value. This is standard practice for storing user-provided tokens securely.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 298/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft', but the code uses `context.secrets.get()` which accesses the extension's own isolated SecretStorage. This is the secure, recommended way to handle tokens in VS Code extensions and does not constitute credential theft.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 32082,
+        "target": "extension/dist/extension.js (chunk 298/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension communicates with `api.atomgit.com` and `math-paper-oauth-broker.mgliz.workers.dev`. These domains align with the extension's stated purpose of syncing papers with AtomGit. The use of a Cloudflare Worker for OAuth brokering is a common and legitimate pattern for handling authentication flows in browser-based or extension-based apps.",
+        "code_reference": "DEFAULT_BASE_URL = \"https://api.atomgit.com/\"",
+        "line_hint": 28710,
+        "target": "extension/dist/extension.js (chunk 298/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993, but the code `SECRET = \"mathPaperSync.atomGit.accessToken\"` is merely a string key used to access the VS Code SecretStorage API. It is not a hardcoded credential or token value.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 309/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses a Cloudflare Worker (`math-paper-oauth-broker.mgliz.workers.dev`) as an OAuth broker. While this is a third-party endpoint, it is consistent with the extension's stated purpose of facilitating login to AtomGit (a Git hosting service) via a browser-based flow. The code validates inputs strictly (regex for remote components, refs, and credentials) and does not exhibit exfiltration patterns to this endpoint beyond the expected OAuth flow.",
+        "code_reference": "domain: math-paper-oauth-broker.mgliz.workers.dev",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 309/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'leaked secret' at line 31993, but the code `SECRET = \"mathPaperSync.atomGit.accessToken\"` is merely a string key used to access the VS Code SecretStorage API. It is not a hardcoded credential or API key.",
+        "code_reference": "SECRET = \"mathPaperSync.atomGit.accessToken\"",
+        "line_hint": 31993,
+        "target": "extension/dist/extension.js (chunk 350/383)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'credential theft' for reading `context.secrets`. This is standard, secure usage of the VS Code SecretStorage API to retrieve the extension's own stored tokens (e.g., for AtomGit authentication). It does not access other extensions' secrets or system credential stores.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 32082,
+        "target": "extension/dist/extension.js (chunk 350/383)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk (70/383) contains standard glob pattern matching logic (likely from a library like `micromatch` or `minimatch`) used for file filtering. The code is well-commented and follows standard regex transformation patterns. The static rule hits regarding secrets are false positives caused by the scanner misidentifying storage keys as values. The extension's purpose (Git/LaTeX sync) aligns with the presence of git-related domains and secret storage for tokens.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-04T16:08:18.107Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T10:55:26.674467+00:00Z"
+}

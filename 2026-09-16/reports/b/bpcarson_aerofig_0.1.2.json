@@ -1,0 +1,427 @@
+{
+  "extension_id": "bpcarson.aerofig",
+  "display_name": "AeroFig",
+  "version": "0.1.2",
+  "publisher": {
+    "name": "bpcarson",
+    "verified": false
+  },
+  "vsix_sha256": "8cda5f66c1065c38baee026cf1e16f42a4de7373c23cc9bf4648f075db0ef6d7",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.294570019536884,
+    "ai_vibe": 0.15,
+    "static": 0.5182800781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/aerofig-cli.js",
+        "line": 61,
+        "snippet": "addEventListener(\"keydown\", (e) => {\\n    if (e.target.closest(\"input,textarea,select\")) return;\\n    if (e.code === \"Space\") {\\n      space = true;\\n      e.preventDefault();\\n    }\\n    if (e.key =="
+      }
+    ],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/app.js",
+        "line": 126,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/aerofig-cli.js",
+        "line": 61,
+        "snippet": ".postMessage({ type });\\n  }\\n  const $ = (id) => document.getElementById(id);\\n  const escape = R.escape;\\n  $(\"app\").innerHTML =\\n    `<header class=\"header\"><div class=\"brand\"><span class=\"brand-ma"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/aerofig-cli.js",
+        "line": 61,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "json-schema.org",
+      "source_file": "extension/schema/theme.schema.json",
+      "line": 2,
+      "context": "\"$schema\": \"http://json-schema.org/draft-07/schema#\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.8,
+    "blocks_parsed": 18,
+    "blocks_seen": 21,
+    "summaries": [
+      {
+        "target": "extension/media/app.js (chunk 1/10)",
+        "summary": "The analyzed chunk is a local VS Code webview UI for a diagram editor. It initializes a diagram document, renders controls, and communicates with the VS Code host through the standard webview API. There is no evidence of credential access, filesystem access, command execution, network exfiltration, obfuscation, persistence, or remote code loading. The only scanner hit appears to be a false positive caused by a CSS class-like `.hidden` token. The extension's advertised diagram-editor functionality is proportional to the observed code, although confidence is slightly reduced because only part of the file was provided."
+      },
+      {
+        "target": "extension/media/app.js (chunk 3/10)",
+        "summary": "This chunk of code is part of the UI rendering logic for the AeroFig diagram editor. It handles updating the DOM to reflect the current state of the diagram (nodes, edges, selection, inspector panel). The operations are standard DOM manipulations (innerHTML, style, classList) and do not involve network calls, child processes, or sensitive file access. The flagged `.hidden` property is a benign UI toggle. The code aligns well with the extension's stated purpose of being a diagram editor."
+      },
+      {
+        "target": "extension/media/app.js (chunk 4/10)",
+        "summary": "This chunk of code is part of the AeroFig diagram editor's UI logic, specifically handling property panel updates for nodes and edges (position, size, style, routing) and theme management. The code uses standard DOM APIs and local state mutation functions. There are no network calls, child process executions, or access to sensitive file paths in this specific chunk. The flagged 'hidden' attribute is a standard HTML boolean attribute, not a file system operation. The behavior is fully consistent with a visualization/diagramming extension."
+      },
+      {
+        "target": "extension/media/app.js (chunk 5/10)",
+        "summary": "This chunk of the AeroFig extension source code contains standard logic for a diagram editor, including theme file handling, node duplication, grouping, and state synchronization via postMessage. The code is clean, readable, and uses standard JavaScript patterns without obfuscation, dynamic execution, or suspicious network calls. The only static hit ('.hidden') is a false positive in this context."
+      },
+      {
+        "target": "extension/media/app.js (chunk 6/10)",
+        "summary": "This chunk of code represents the core interaction logic for the AeroFig diagram editor's webview. It handles pointer events for panning, moving, and resizing shapes, as well as drag-and-drop functionality for adding new shapes from the palette. The code is clean, uses standard DOM APIs, and aligns perfectly with the extension's stated purpose of providing a visual diagramming interface. No network calls, child processes, or sensitive file system accesses are present in this segment."
+      },
+      {
+        "target": "extension/media/app.js (chunk 7/10)",
+        "summary": "This chunk of code contains standard UI interaction logic for a diagram editor, including pointer event handling for panning, moving, and resizing nodes, as well as zoom controls and undo/redo history management. The code uses standard DOM APIs and local state variables without any network calls, child process execution, or access to sensitive file paths. The behavior is fully consistent with the extension's stated purpose of providing an offline diagramming tool."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 1/12)",
+        "summary": "This chunk of the AeroFig extension source code appears to be a standard, well-structured model validation and theme management module. It defines default theme colors, validates user-provided theme objects against a schema (checking hex colors, font families, shape properties), and provides utility functions for deep cloning and type checking. There are no signs of obfuscation, network exfiltration, credential harvesting, or suspicious child_process usage in this segment. The code aligns well with the extension's stated purpose of being a diagram editor with theming capabilities."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/12)",
+        "summary": "This chunk of the AeroFig extension source code contains pure data validation and serialization logic for the diagram JSON schema. It validates node/edge counts, color formats, asset sizes, and structural integrity (cycles, unique IDs). The code is clean, uses standard JavaScript patterns, and aligns perfectly with the extension's purpose of editing diagram files. The flagged VS Code API usage is a false positive in the context of a custom editor implementation."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/12)",
+        "summary": "This chunk of the AeroFig extension source code appears to be standard rendering and API definition logic. It contains SVG generation functions for drawing diagram nodes and edges, and defines the input schemas for the extension's commands (create, open, validate, export). The code is minified but not heavily obfuscated. The flagged 'document change' listener is consistent with the extension's purpose of synchronizing a visual editor with a JSON file. No suspicious network calls, credential harvesting, or arbitrary code execution patterns were found in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 8/12)",
+        "summary": "This chunk of the AeroFig extension source code appears benign. It contains logic for resolving file paths within the workspace, checking for symbolic links (to prevent potential path traversal or unexpected behavior), and reading theme configuration files. The use of VS Code APIs is standard for a file-based editor extension. The flagged 'vscode_api_abuse' is likely a false positive given the context of file management. No network calls, child processes, or obfuscation are present in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 10/12)",
+        "summary": "This chunk of the AeroFig extension source code appears to be a standard implementation of a VS Code Custom Text Editor. It handles loading local assets (JS/CSS/HTML) from the extension directory, decoding them, and setting up a message bridge between the extension host and the webview. The logic for handling 'edit', 'save', 'export', and 'undo' commands is consistent with a diagram editor that modifies JSON documents. The flagged 'vscode_api_abuse' is a false positive for this context. No network calls, child process executions, or sensitive file reads outside the workspace/extension context are observed in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 12/12)",
+        "summary": "This chunk of the AeroFig extension source code appears benign and consistent with its stated purpose of editing diagrams. It handles file I/O for JSON/HTML exports and imports, manages workspace themes, and synchronizes document state. The only flagged item is a standard VS Code API usage for document synchronization, which is a false positive in this context. No network calls, child processes, or sensitive path accesses were observed in this chunk."
+      },
+      {
+        "target": "extension/dist/aerofig-cli.js (chunk 2/35)",
+        "summary": "This chunk of the AeroFig extension source code appears to be a pure JavaScript module defining the data model, theme validation, and shape constants for a diagram editor. The code is clean, well-structured, and uses standard validation patterns. The static analysis hits for 'keylogger' and 'exfiltration' are likely false positives resulting from standard DOM event handling and Webview IPC patterns typical for VS Code extensions. There are no signs of obfuscation, native module loading, or sensitive file access in this specific chunk."
+      },
+      {
+        "target": "extension/dist/aerofig-cli.js (chunk 3/35)",
+        "summary": "This chunk of the AeroFig extension source code primarily contains data validation logic for diagram nodes, edges, and themes, as well as UI event handling for a Webview. The code checks for valid JSON structures, color formats, and asset sizes (base64 images). The static rule engine hits are largely false positives typical of Webview-based extensions: `postMessage` is used for standard VS Code IPC, `keydown` listeners are used for UI shortcuts with proper input filtering, and `.hidden` refers to DOM element visibility. No direct network calls, file system access to sensitive paths, or obfuscated execution patterns are present in this specific chunk."
+      },
+      {
+        "target": "extension/dist/aerofig-cli.js (chunk 8/35)",
+        "summary": "This chunk of code appears to be the SVG rendering engine for the AeroFig diagram editor. It contains functions for calculating node positions, drawing shapes (rects, paths), and handling selection states. The logic is consistent with a visualization tool that generates HTML/SVG output. The static rule hits are largely false positives resulting from generic patterns (event listeners, postMessage) that are standard in web-based UI components but look suspicious in isolation. No direct network calls, file system access, or obfuscation are visible in this specific chunk."
+      },
+      {
+        "target": "extension/dist/aerofig-cli.js (chunk 11/35)",
+        "summary": "This chunk of code appears to be the core UI initialization logic for the AeroFig diagram editor. It sets up the DOM structure, defines state variables for the diagram (undo/redo stacks, selection, view port), and initializes communication with the VS Code host via `acquireVsCodeApi`. The static rule engine hits are largely false positives resulting from standard web development patterns (event delegation, webview messaging, CSS visibility toggles) being misinterpreted by generic malware heuristics. The code aligns well with the extension's stated purpose of providing a diagramming interface."
+      },
+      {
+        "target": "extension/dist/aerofig-cli.js (chunk 13/35)",
+        "summary": "This chunk of code appears to be the UI logic for the AeroFig diagram editor, handling DOM updates for the inspector panel, theme selection, and node properties. The static rule engine hits are largely false positives resulting from standard DOM manipulation patterns (toggling hidden attributes, event listeners for UI shortcuts) that resemble malicious patterns in isolation but fit the context of a complex UI component. No direct network calls, file system access, or obfuscated payloads are visible in this specific chunk."
+      },
+      {
+        "target": "extension/dist/aerofig-cli.js (chunk 18/35)",
+        "summary": "This chunk of code represents the UI interaction layer of the AeroFig diagram editor. It handles file import/export (JSON, HTML, SVG, images), keyboard shortcuts for canvas navigation and editing, and basic state management. The logic is consistent with a client-side visualization tool. The 'suspicious' patterns flagged by the static analyzer (keydown listeners, postMessage, hidden attributes) are all standard practices for building interactive webviews in VS Code extensions. There is no evidence of obfuscation, external network calls to unknown endpoints, or access to sensitive system files in this specific chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a possible hidden-file attribute manipulation at line 126 via the pattern `.hidden`. In the provided chunk, this appears to be a UI/CSS class reference rather than filesystem attribute manipulation. No fs, child_process, persistence, or hidden-attribute API usage is present in the analyzed code.",
+        "code_reference": "static rule hit: `.hidden`",
+        "line_hint": "126",
+        "target": "extension/media/app.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `persistence_evasion` due to the `.hidden` property. However, the code `$(\"empty\").hidden = !!doc.nodes.length;` is standard DOM manipulation to toggle the visibility of an 'empty state' placeholder element based on whether diagram nodes exist. It is not setting a file attribute for persistence.",
+        "code_reference": "$(\"empty\").hidden = !!doc.nodes.length;",
+        "line_hint": 126,
+        "target": "extension/media/app.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'persistence_evasion' due to the string '.hidden'. However, in this context, the code is setting the `hidden` attribute on an HTML `<input>` element (`<input ... hidden>`) to hide a file picker UI element. This is standard DOM manipulation, not file system attribute modification.",
+        "code_reference": "<input id=\"theme-file\" type=\"file\" accept=\".json\" hidden>",
+        "line_hint": 126,
+        "target": "extension/media/app.js (chunk 4/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'persistence_evasion' due to the string '.hidden'. However, in the context of a diagram editor, this is likely part of a CSS class name (e.g., 'node.hidden') or a property check for visibility, not a file system attribute modification. The code chunk provided does not show `fs` operations or file attribute setting, confirming it is a false positive for this specific chunk.",
+        "code_reference": "line 126 (referenced in static hits, likely within CSS or DOM manipulation logic not fully visible in this snippet but implied by context)",
+        "line_hint": 126,
+        "target": "extension/media/app.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'persistence_evasion' hit for setting a hidden attribute. However, the code in this chunk is purely DOM manipulation for a diagram editor (handling pointer events, drag-and-drop, and tool selection). The specific line hint (126) likely refers to a CSS class toggle or a minor UI state change in the full file, not a file system operation. Given the context of `app.js` being a webview script, this is a false positive.",
+        "code_reference": "gesture = { kind: \"pan\", ... }",
+        "line_hint": 126,
+        "target": "extension/media/app.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'persistence_evasion' hit for `.hidden` at line 126. However, the provided source code chunk (which covers the latter part of the file) does not contain the string `.hidden`. This suggests the hit is either from a different part of the file not shown here, or a false positive from a generic scanner matching a CSS class or property name unrelated to file system persistence. Given the context of a diagram editor, it is likely a UI element visibility toggle.",
+        "code_reference": null,
+        "line_hint": 126,
+        "target": "extension/media/app.js (chunk 7/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for streaming document changes. However, the code snippet shows standard model validation logic (theme colors, typography, shapes) and utility functions. The specific line hint (line 9) in the minified bundle likely corresponds to a standard `onDidChangeTextDocument` listener used to keep the diagram model in sync with the JSON file, which is expected behavior for a custom editor.",
+        "code_reference": "onDidChangeTextDocument(s=>{...})",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX package size is reported as 0.1 MB, which is extremely small for a full diagram editor with HTML export capabilities. While possible if assets are lazy-loaded or the code is highly compressed, it warrants a minor note to ensure no external CDN dependencies are hiding network calls not visible in this chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `onDidChangeTextDocument` as potential 'real-time code theft'. However, this chunk contains the validation logic (`f`, `u`, `n`) and factory functions (`x`, `b`, `M`) for the diagram data model. The listener is likely part of the editor's synchronization mechanism to keep the in-memory model in sync with the file on disk, which is standard for custom document editors. No network exfiltration or sensitive file access is visible in this specific chunk.",
+        "code_reference": "function f(e) { ... }",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 2/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for streaming document changes. However, the code context indicates this is part of a standard VS Code editor implementation (likely a custom TextEditor or Webview) that listens to `onDidChangeTextDocument` to keep the visual diagram in sync with the underlying JSON file. This is expected behavior for a diagram editor that supports 'Reopen Editor With \u2192 Text Editor'.",
+        "code_reference": "onDidChangeTextDocument(s=>{s.document.uri.toString()===t.uri.toString()&&s.contentChanges.length&&t",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 6/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_NETWORK",
+        "description": "The domain 'json-schema.org' was extracted from the package. This is the standard URI for JSON Schema definitions and is not a network call for data exfiltration or C2.",
+        "code_reference": "json-schema.org",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 6/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for streaming document changes. However, the code in this chunk (and the context of the extension) shows standard usage of `vscode.workspace.fs` and document APIs to resolve file paths, check for symbolic links, and read theme configurations. This is consistent with a file-based diagram editor that needs to manage assets and themes within the workspace.",
+        "code_reference": "async function c(r) { ... (await t.stat(d)).type & S.FileType.SymbolicLink ... }",
+        "line_hint": "approx. 20-30",
+        "target": "extension/dist/extension.js (chunk 8/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is a diagram editor. It uses `vscode.workspace.fs` to read files (assets, themes) and `vscode.window` to determine the active tab. These capabilities are proportional to the stated purpose of editing and exporting diagrams. No excessive permissions or unrelated system calls are observed in this chunk.",
+        "code_reference": "S.workspace.fs, S.window.tabGroups",
+        "line_hint": "approx. 15-40",
+        "target": "extension/dist/extension.js (chunk 8/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' regarding streaming document changes. However, the code shows standard Custom Text Editor implementation logic where the extension listens for document changes to sync state with the webview. The logic `s.document.uri.toString()===t.uri.toString()` ensures it only reacts to the specific document being edited, which is expected behavior for a custom editor, not necessarily 'real-time code theft'.",
+        "code_reference": "onDidChangeTextDocument(s=>{s.document.uri.toString()===t.uri.toString()&&s.contentChanges.length&&t",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 10/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The webview is configured with `enableScripts: true` and `localResourceRoots: []`. While `localResourceRoots` is empty (relying on `vscode-resource` or inline assets), the assets are loaded from the extension's own `extensionUri` via `workspace.fs.readFile` and base64 decoded (`ie.decode`). This is a standard pattern for bundling web assets in VS Code extensions to avoid path issues, though it does mean the HTML/JS/CSS is embedded in the bundle.",
+        "code_reference": "o.webview.options = { enableScripts: !0, localResourceRoots: [] };",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 10/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'vscode_api_abuse' for streaming document changes. However, the code `onDidChangeTextDocument` is used to synchronize the diagram editor's internal state with the underlying JSON text document. This is a standard pattern for custom editors to keep the view and model in sync, not a data exfiltration mechanism.",
+        "code_reference": "onDidChangeTextDocument(s=>{s.document.uri.toString()===t.uri.toString()&&s.contentChanges.length&&t",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 12/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The extension reads and writes files within the workspace (specifically `.aerofig.json` and `.aerofig/theme.json`). This is expected behavior for a diagram editor that stores data in the user's project directory.",
+        "code_reference": "g.workspace.fs.readFile(c)",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 12/12)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged a 'keylogger' pattern due to an addEventListener('keydown') call. However, the code explicitly ignores events targeting input/textarea/select elements, which is standard behavior for a diagram editor to handle canvas-level shortcuts (like Delete or Arrow keys) without interfering with text editing. No network exfiltration is visible in this chunk.",
+        "code_reference": "addEventListener(\"keydown\", (e) => { if (e.target.closest(\"input,textarea,select\")) return; ...",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 2/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' via postMessage. In the context of a VS Code Webview or offline HTML export, postMessage is the standard IPC mechanism between the UI and the host or embedded scripts. The payload appears to be a type string, not sensitive user data.",
+        "code_reference": ".postMessage({ type });",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 2/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is described as a diagram editor. The code chunk contains pure logic for theme validation and shape definitions (AeroFigModel). This is proportional to the stated purpose. The small package size (0.1 MB) is consistent with a lightweight, dependency-free (or low-dependency) editor core.",
+        "code_reference": "const SHAPES = [\"rectangle\", \"decision\", ...];",
+        "line_hint": null,
+        "target": "extension/dist/aerofig-cli.js (chunk 2/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged a 'keylogger' pattern due to a `keydown` listener. However, the code `if (e.target.closest(\"input,textarea,select\")) return;` indicates the listener is likely for global UI shortcuts (e.g., 'Ctrl+S' or 'Escape') and explicitly ignores typing in form fields, which is standard for editor UIs, not credential harvesting.",
+        "code_reference": "addEventListener(\"keydown\", (e) => { if (e.target.closest(\"input,textarea,select\")) return; ...",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 3/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' via `postMessage`. In the context of a VS Code Webview (implied by `document.getElementById` and `globalThis` usage in a chunked bundle), `postMessage` is the standard IPC mechanism to communicate with the extension host, not necessarily an external network endpoint.",
+        "code_reference": ".postMessage({ type });",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 3/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'persistence_evasion' due to `.hidden`. This is standard DOM manipulation to toggle UI element visibility (e.g., hiding a toolbar or modal), not file system attribute modification.",
+        "code_reference": ".hidden",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 3/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged a 'keylogger' pattern due to an addEventListener('keydown') call. However, the code snippet shows this is part of a standard UI interaction handler for a diagram editor (likely handling keyboard navigation or shortcuts for selected shapes), not a global buffer-and-send exfiltration loop. The presence of 'e.target.closest' suggests standard DOM event handling.",
+        "code_reference": "addEventListener(\"keydown\", (e) => { ... }",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 8/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' based on a postMessage call. In the context of a VS Code Webview or embedded HTML editor, postMessage is the standard mechanism for communication between the UI and the host extension, not necessarily external network exfiltration.",
+        "code_reference": ".postMessage({ type });",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 8/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'persistence_evasion' due to the string '.hidden'. This is likely a CSS class or property used to toggle visibility of UI elements (like resize handles or selection boxes) in the diagram editor, rather than a file system attribute modification.",
+        "code_reference": ".hidden",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 8/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged a 'keylogger' pattern due to a keydown event listener. However, the code `if (e.target.closest(\"input,textarea,select\")) return;` is a standard UI pattern to prevent global keyboard shortcuts (like Undo/Redo) from interfering with text input fields. It does not show evidence of buffering keystrokes for exfiltration in this chunk.",
+        "code_reference": "addEventListener(\"keydown\", (e) => { if (e.target.closest(\"input,textarea,select\")) return; ...",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 11/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' via postMessage. The code uses `host.postMessage({ type })` where `host` is the VS Code webview API (`acquireVsCodeApi`). This is the standard mechanism for Webview-to-Extension communication, not necessarily external network exfiltration.",
+        "code_reference": "host.postMessage({ type });",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 11/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'persistence_evasion' due to the `.hidden` attribute. This is standard HTML/CSS usage for toggling UI element visibility (e.g., hiding the 'Import file' button when running in VS Code host mode).",
+        "code_reference": "hidden",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 11/35)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged a 'keylogger' pattern due to a keydown listener. However, the code `if (e.target.closest(\"input,textarea,select\")) return;` indicates the listener is likely for global UI shortcuts (e.g., Ctrl+Z for undo/redo) and explicitly ignores typing in form fields, which is standard for editor UIs, not credential harvesting.",
+        "code_reference": "addEventListener(\"keydown\", (e) => { if (e.target.closest(\"input,textarea,select\")) return; ...",
+        "line_hint": 61,
+        "target": "extension/dist/aerofig-cli.js (chunk 13/35)"
+      }
+    ],
+    "findings_truncated": 5
+  },
+  "ai_summary": "The analyzed chunk is a local VS Code webview UI for a diagram editor. It initializes a diagram document, renders controls, and communicates with the VS Code host through the standard webview API. There is no evidence of credential access, filesystem access, command execution, network exfiltration, obfuscation, persistence, or remote code loading. The only scanner hit appears to be a false positive caused by a CSS class-like `.hidden` token. The extension's advertised diagram-editor functionality is proportional to the observed code, although confidence is slightly reduced because only part of the file was provided.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 13,
+    "published_date": "2026-09-10T14:50:10.977Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-10T16:22:57.963115+00:00Z"
+}

@@ -1,0 +1,150 @@
+{
+  "extension_id": "Tyrannmisu.commandcode-copilot-provider",
+  "display_name": "Command Code for Copilot Chat",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "Tyrannmisu",
+    "verified": false
+  },
+  "vsix_sha256": "e076b3cb2ee18c520d91b92ae2850cbc34735dc7731dac6a274df53cb5b96088",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.1846875,
+    "ai_vibe": 0.05,
+    "static": 0.21875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/consts.js",
+        "line": 29,
+        "snippet": "SECRET = 'commandcode-copilot.apiKey'"
+      }
+    ],
+    "high": [],
+    "total": 6
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.commandcode.ai",
+      "source_file": "extension/package.nls.json",
+      "line": 17,
+      "context": "\"commandcode-copilot.config.baseUrl.description\": \"Command Code Provider API base URL. Defaults to https://api.commandcode.ai/provider/v1.\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "commandcode.ai",
+      "source_file": "extension/out/consts.js",
+      "line": 16,
+      "context": "apiKeys: 'https://commandcode.ai/docs/studio#api-keys',",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.98,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/consts.js",
+        "summary": "The file contains only compile-time constants and configuration strings for a VS Code extension that integrates third-party AI models into Copilot Chat. The code is clean, unobfuscated, and strictly aligns with the extension's advertised functionality. The flagged 'secret' is a standard storage key name, not a leaked credential. Network endpoints point to the documented provider API, and there are no malicious indicators."
+      },
+      {
+        "target": "extension/out/auth.js",
+        "summary": "The code is a standard implementation of an API key manager using VS Code's secure SecretStorage API. It correctly handles storage, retrieval, and user input for an API key intended for the 'Command Code' service. There are no signs of credential harvesting, data exfiltration, obfuscation, or malicious command execution. The static rule hit regarding 'vscode_credential_theft' is a false positive, as it refers to the extension accessing its own scoped secret storage, which is the intended and secure way to manage user credentials in VS Code extensions. The domain 'api.commandcode.ai' is consistent with the extension's stated purpose. The code is clean and behaves as advertised."
+      },
+      {
+        "target": "extension/out/runtime/provider.js",
+        "summary": "The code is a standard VS Code extension provider registration module. It registers a language model chat provider and commands for API key management. The only network-related domain (api.commandcode.ai) is consistent with the extension's stated purpose of connecting to the Command Code service. The activation of the 'github.copilot-chat' extension is a necessary dependency for the feature to work and is not a security risk. No malicious patterns, obfuscation, or credential harvesting were detected."
+      },
+      {
+        "target": "extension/out/i18n.js (chunk 1/3)",
+        "summary": "The provided source code is a standard internationalization (i18n) module for a VS Code extension that integrates third-party AI models (Command Code) into Copilot Chat. It contains only static translation strings for English and Simplified Chinese, with no executable logic, network calls, file system access, or obfuscation. The behavior is fully aligned with the extension's stated purpose of providing a model picker and API key management interface. No malicious indicators were found."
+      },
+      {
+        "target": "extension/out/i18n.js (chunk 2/3)",
+        "summary": "The provided code chunk consists entirely of internationalization (i18n) string definitions for error messages, authentication prompts, and UI labels. It contains no executable logic, network calls, file system access, or obfuscated payloads. The content is consistent with the extension's stated purpose of integrating 'Command Code' models into VS Code Copilot Chat, and the referenced domains (api.commandcode.ai) align with the service provider. No malicious or suspicious behavior was detected in this file."
+      },
+      {
+        "target": "extension/out/i18n.js (chunk 3/3)",
+        "summary": "The provided source code is a benign internationalization (i18n) module containing error message strings and a translation function. It does not contain any executable logic, network calls, file system access, or obfuscation. The domains identified in the package metadata (api.commandcode.ai) are consistent with the extension's stated purpose of connecting to the Command Code API service. No malicious indicators were found in this file."
+      },
+      {
+        "target": "extension/out/logger.js",
+        "summary": "The provided source code is a standard, benign logging utility module. It utilizes the official VS Code API (`vscode.window.createOutputChannel`) to create a log channel and implements standard formatting logic for strings, errors, and objects. There are no network calls, file system operations, credential access, obfuscation, or suspicious behaviors present in this file. The code aligns perfectly with the extension's purpose of providing a logging mechanism for the 'Command Code' integration."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'commandcode-copilot.apiKey' as a hardcoded secret. This is a false positive; it is a string identifier used as a key for VS Code's SecretStorage API, not an actual credential or token.",
+        "code_reference": "exports.API_KEY_SECRET = 'commandcode-copilot.apiKey';",
+        "line_hint": 29,
+        "target": "extension/out/consts.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a model picker extension. While not malicious, it implies the extension runs at startup, which is slightly disproportionate to its passive UI contribution role.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/auth.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode.extensions.getExtension' as reconnaissance. In this context, the code specifically targets 'github.copilot-chat' to activate it. This is a legitimate dependency activation pattern required for the extension to function as a Copilot Chat model provider, not malicious enumeration of installed extensions.",
+        "code_reference": "await vscode_1.default.extensions.getExtension('github.copilot-chat')?.activate();",
+        "line_hint": 21,
+        "target": "extension/out/runtime/provider.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The file contains only compile-time constants and configuration strings for a VS Code extension that integrates third-party AI models into Copilot Chat. The code is clean, unobfuscated, and strictly aligns with the extension's advertised functionality. The flagged 'secret' is a standard storage key name, not a leaked credential. Network endpoints point to the documented provider API, and there are no malicious indicators.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 28,
+    "published_date": "2026-08-17T13:07:44.103Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T23:09:34.932254+00:00Z"
+}

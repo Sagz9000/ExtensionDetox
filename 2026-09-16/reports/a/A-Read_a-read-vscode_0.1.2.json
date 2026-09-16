@@ -1,0 +1,365 @@
+{
+  "extension_id": "A-Read.a-read-vscode",
+  "display_name": "A-Read EPUB Reader",
+  "version": "0.1.2",
+  "publisher": {
+    "name": "A-Read",
+    "verified": false
+  },
+  "vsix_sha256": "db7f2ec5cc641bb5be7d6b988214a0fcf94a599c5679356d0fe5be0559803626",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2895473809857251,
+    "ai_vibe": 0.05,
+    "static": 0.6381895239429004,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/out/extension.js",
+        "line": 15,
+        "snippet": "addEventListener('keydown',event=>{if(event.key==='Escape'&&!noteOverlay.hidden){event.preventDefault();closeNote();}});reader.addEventListener('wheel',event=>{if(!book)return;event.preventDefault();l"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/out/extension.js",
+        "line": 15,
+        "snippet": ".postMessage({type:'openBook',path:decodeURIComponent(button.dataset.path)});});}function updateStatus(){status.textContent=book?'\\u7B2C '+(chapter+1)+' / '+book.chapters.length+' \\u7AE0 \\xB7 \\u7B2C '"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 15,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 15,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 15,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 35,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 35,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 35,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/extension.js",
+        "line": 35,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 20
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 2/16)",
+        "summary": "The code is a benign implementation of a local EPUB reader. It includes robust HTML sanitization (stripping scripts, iframes, and event handlers) which aligns with the README's claim of filtering interactive content for security. The static scanner hits are false positives caused by standard UI patterns (Escape key handling, DOM hidden property) and legitimate local file access for the reader's core function. No malicious behavior, exfiltration, or capability disconnect was found."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/16)",
+        "summary": "The code is a benign implementation of a local EPUB reader. It parses EPUB structures (OPF, Spine), extracts metadata, and sanitizes HTML content (stripping scripts and external resources) for safe rendering in a VS Code webview. All static scanner hits are false positives resulting from standard DOM manipulation and local file system access required for the extension's stated purpose. No malicious behavior, network exfiltration, or credential harvesting was detected."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/16)",
+        "summary": "The code is a benign implementation of a local EPUB reader. It parses EPUB files, extracts chapters, and manages reading progress using VS Code's global state. All flagged indicators are false positives resulting from standard Webview UI interactions (DOM visibility, keydown for UI controls) and legitimate file system operations for the stated purpose (scanning for EPUB files, reading user preferences). There is no evidence of malicious intent, data exfiltration, or unauthorized access."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 8/16)",
+        "summary": "The code is a standard VS Code Webview implementation for an EPUB reader. It handles UI layout, renders book content, and communicates with the extension host via the secure `acquireVsCodeApi` bridge. All static scanner hits are false positives resulting from misinterpreting standard DOM manipulation (`.hidden`, `keydown` for UI) and legitimate VS Code Webview communication patterns as malicious behavior. There is no evidence of network exfiltration, credential harvesting, or arbitrary code execution."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 10/16)",
+        "summary": "The code is a benign implementation of a local EPUB reader. It handles UI interactions (closing notes, pagination), reads local file paths from VS Code configuration, and communicates with the Webview via postMessage. All static scanner hits are false positives resulting from standard DOM manipulation and VS Code API usage that aligns with the extension's documented functionality. There is no evidence of malicious intent, data exfiltration, or credential harvesting."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 11/16)",
+        "summary": "The code is a benign implementation of a local EPUB reader. It handles UI interactions (closing overlays with Escape, wheel scrolling for pagination) and communicates with the VS Code extension host via standard postMessage APIs. All static scanner hits are false positives resulting from standard DOM manipulation and VS Code Webview communication patterns. There is no evidence of malicious intent, data exfiltration, or credential harvesting."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 15/16)",
+        "summary": "The code is a benign VS Code extension for reading local EPUB files. It implements a settings webview that allows users to configure typography and select a local directory for their book library. All static scanner hits are false positives resulting from standard Webview DOM manipulation (hiding elements, handling Escape key) and legitimate VS Code API usage (reading configuration, posting messages to webview). There is no evidence of network exfiltration, credential harvesting, or malicious behavior."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'keydown' listener as a keylogger. The code listens for the 'Escape' key specifically to close a UI overlay (note popup). This is standard UI interaction, not credential harvesting.",
+        "code_reference": "addEventListener('keydown',event=>{if(event.key==='Escape'...",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged '.hidden' as persistence evasion. The code uses the standard HTML DOM property 'hidden' to toggle the visibility of UI elements (overlays/panels). This is not file system attribute manipulation.",
+        "code_reference": "noteOverlay.hidden",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged directory traversal and configuration reading as data exfiltration. The code reads 'libraryPath' from VS Code configuration and scans for local EPUB files to display in a local reader. No network exfiltration of this data is present in this chunk.",
+        "code_reference": "workspace.getConfiguration(f).get(\"libraryPath\",\"\")",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'keydown' listener as a keylogger. The code listens for the 'Escape' key to close a footnote overlay, which is standard UI behavior for a reader interface, not credential harvesting.",
+        "code_reference": "addEventListener('keydown',event=>{if(event.key==='Escape'...",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged '.hidden' property access as persistence evasion. The code uses the standard HTML DOM property 'hidden' to toggle the visibility of UI elements (overlays/panels), which is benign.",
+        "code_reference": "noteOverlay.hidden",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged directory traversal and configuration reads as exfiltration. The code reads local EPUB files and extension configuration (library path, theme) to render content in a local webview. No network exfiltration endpoints are present in this chunk.",
+        "code_reference": "workspace.getConfiguration(f).get(\"libraryPath\",\"\")",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 3/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'keylogger' patterns. The code `postMessage({type:'openBook',...})` is standard VS Code Webview communication to open a local file, not network exfiltration. The `keydown` listener is for the 'Escape' key to close a UI overlay (footnote/note), not for logging keystrokes.",
+        "code_reference": "postMessage({type:'openBook',...}); addEventListener('keydown',...)",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 4/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'persistence_evasion' due to `.hidden` property usage. This is standard DOM manipulation to toggle the visibility of UI elements (overlays/panels) in the Webview, not file system attribute modification.",
+        "code_reference": "noteOverlay.hidden",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 4/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_api_abuse' for directory traversal and configuration harvesting. The code recursively scans a user-specified directory for `.epub` files (library feature) and reads user-defined typography settings (font size, theme) to render the reader. This is consistent with the extension's stated purpose of being a local EPUB reader.",
+        "code_reference": "workspace.fs.readDirectory, workspace.getConfiguration",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 4/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'keydown' listener as a keylogger. The code listens for the 'Escape' key specifically to close a footnote overlay (`noteOverlay`). This is standard UI interaction logic, not credential harvesting.",
+        "code_reference": "addEventListener('keydown',event=>{if(event.key==='Escape'&&!noteOverlay.hidden){event.preventDefaul",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 8/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `.hidden` property usage as persistence evasion. In this context, `.hidden` is a standard HTML DOM property used to toggle the visibility of UI elements (like the note overlay or directory panel), not a file system attribute.",
+        "code_reference": ".hidden",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 8/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `postMessage` as data exfiltration. The code uses `acquireVsCodeApi().postMessage` to communicate with the extension host (Node.js side) to open a book or save progress. This is the standard, secure communication channel for VS Code Webviews and does not send data to external networks.",
+        "code_reference": "api.postMessage({type:'openBook',path:decodeURIComponent(button.dataset.path)});",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 8/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'keydown' listener as a keylogger. The code listens for the 'Escape' key specifically to close a footnote/note overlay UI element. This is standard UI interaction, not credential harvesting.",
+        "code_reference": "addEventListener('keydown',event=>{if(event.key==='Escape'&&!noteOverlay.hidden){event.preventDefaul",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged '.hidden' property usage as persistence evasion. The code uses the standard HTML DOM property 'hidden' to toggle the visibility of UI overlays (note popups). This is benign UI logic.",
+        "code_reference": "noteOverlay.hidden=true",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'postMessage' as data exfiltration. The code uses 'postMessage' to communicate between the VS Code extension host and the Webview UI (e.g., opening a book). This is the standard and secure way to handle IPC in VS Code extensions.",
+        "code_reference": ".postMessage({type:'openBook',path:decodeURIComponent(button.dataset.path)});",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged directory traversal and configuration reading as malicious. The code reads the 'libraryPath' from VS Code configuration and scans for local EPUB files. This aligns perfectly with the extension's stated purpose of being a local EPUB reader.",
+        "code_reference": "workspace.getConfiguration(f).get(\"libraryPath\",\"\")",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'keydown' listener as a keylogger. The code listens for the 'Escape' key specifically to close a UI overlay (noteOverlay). This is standard UI interaction, not credential harvesting.",
+        "code_reference": "document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!noteOverlay.hidden){event.preventDefault();closeNote();}});",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 11/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged '.hidden' property access as persistence evasion. The code uses the standard DOM property 'hidden' to toggle the visibility of a UI element (noteOverlay). This is benign UI logic.",
+        "code_reference": "if(event.key==='Escape'&&!noteOverlay.hidden)",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 11/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'postMessage' as data exfiltration. The code sends messages to the VS Code extension host (api.postMessage) to trigger UI actions like opening settings or books. This is the standard secure communication channel for VS Code Webviews.",
+        "code_reference": "api.postMessage({type:'openSettings'})",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 11/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'workspace.getConfiguration' as harvesting. The code reads user-defined settings (theme, fontSize, libraryPath) to configure the local EPUB reader. This is expected behavior for a reader extension.",
+        "code_reference": "workspace.getConfiguration(f).get(\"libraryPath\",\"\")",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 11/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' due to postMessage containing a path. This is standard VS Code Webview communication to open a local file, not network exfiltration.",
+        "code_reference": "api.postMessage({type:'openBook',path:decodeURIComponent(button.dataset.path)});",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 15/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'keylogger' due to a keydown listener. The code only listens for the 'Escape' key to close a UI overlay (noteOverlay), which is a standard UI interaction pattern, not credential harvesting.",
+        "code_reference": "addEventListener('keydown',event=>{if(event.key==='Escape'&&!noteOverlay.hidden){event.preventDefaul",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 15/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'persistence_evasion' due to '.hidden' property. This refers to the DOM element property used to toggle visibility of the custom font input field, not file system attributes.",
+        "code_reference": "fontFamily.hidden=true;",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 15/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_api_abuse' for reading configuration. The code reads 'libraryPath' and typography settings to populate the settings UI, which is consistent with the extension's purpose of managing local EPUB libraries.",
+        "code_reference": "s.workspace.getConfiguration(f).get(\"libraryPath\", \"\")",
+        "line_hint": 35,
+        "target": "extension/out/extension.js (chunk 15/16)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a benign implementation of a local EPUB reader. It includes robust HTML sanitization (stripping scripts, iframes, and event handlers) which aligns with the README's claim of filtering interactive content for security. The static scanner hits are false positives caused by standard UI patterns (Escape key handling, DOM hidden property) and legitimate local file access for the reader's core function. No malicious behavior, exfiltration, or capability disconnect was found.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "8 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-07T02:49:55.943Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T16:12:35.322806+00:00Z"
+}

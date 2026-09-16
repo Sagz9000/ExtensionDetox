@@ -1,0 +1,180 @@
+{
+  "extension_id": "Mehrshad.claude-code-meter",
+  "display_name": "Claude Code Meter - Usage & Limits",
+  "version": "0.9.2",
+  "publisher": {
+    "name": "Mehrshad",
+    "verified": false
+  },
+  "vsix_sha256": "c11056fb9408449ffb29387df16ae7a1065793db6c0763259c8c42a63cc57a33",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.29593749999999996,
+    "ai_vibe": 0.1,
+    "static": 0.59375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/out/extension.js",
+        "line": 41,
+        "snippet": "readFile(de.join(s,\".credentials.json\"),\"utf8\"))}catch{return}}function Pe(s){if(s){if(!s.startsWith(\"{\"))return s;try{let e=JSON.parse(s),n=e.claudeAiOauth??e,t=n?.accessToken??n?.access_token;return"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 40,
+        "snippet": "$(graph) Click to open the dashboard`),t}dispose(){this.stopSpinner(),this.item?.dispose()}};function Ce(s){return{totals:s.totals,percent:s.percent,limit:s.limit,hasPercent:s.hasPercent,estimated:s.e"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 40,
+        "snippet": "$(graph) Click to open the dashboard`),t}dispose(){this.stopSpinner(),this.item?.dispose()}};function Ce(s){return{totals:s.totals,percent:s.percent,limit:s.limit,hasPercent:s.hasPercent,estimated:s.e"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/out/extension.js",
+        "line": 41,
+        "snippet": "readFile(de.join(s,\".credentials.json\"),\"utf8\"))}catch{return}}function Pe(s){if(s){if(!s.startsWith(\"{\"))return s;try{let e=JSON.parse(s),n=e.claudeAiOauth??e,t=n?.accessToken??n?.access_token;return"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/out/extension.js",
+        "line": 3,
+        "snippet": ".post(),this.postSettings(),this.view?.webview.postMessage({type:\"view\",view:this.settingsOpen?\"settings\":\"meter\"});return}if(n?.type===\"command\"&&typeof n.id==\"string\"&&n.id.startsWith(\"claudeUsage.\""
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 40,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "claude.ai",
+      "source_file": "extension/out/extension.js",
+      "line": 1029,
+      "context": "usage: \"https://claude.ai/settings/usage\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.anthropic.com",
+      "source_file": "extension/out/extension.js",
+      "line": 1310,
+      "context": "Ze = \"https://api.anthropic.com/api/oauth/usage\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/2)",
+        "summary": "The code is a legitimate VS Code extension for monitoring Claude Code usage. It reads local transcript files from `~/.claude/projects` to calculate token usage and cost, and optionally polls the Anthropic API for account limits. The static scanner hits for credential theft and command execution are not supported by the provided source code chunk, which contains only standard file reading, data aggregation, and VS Code UI logic. The network calls are to official Anthropic domains. No malicious behavior was detected."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/2)",
+        "summary": "The code is benign and aligns perfectly with the extension's stated purpose of monitoring Claude Code usage. The 'suspicious' behaviors flagged by the static analyzer (reading credentials, using child_process, network calls) are all legitimate and necessary for the extension to function. It reads local Claude Code transcripts and OAuth tokens to calculate usage metrics and calls the official Anthropic API to fetch rate limit data. There is no evidence of data exfiltration to third parties, malicious command execution, or deceptive behavior."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a read of `.credentials.json` and `child_process` usage. However, the provided source code (chunk 1/2) does not contain these strings or logic. The code only reads `~/.claude/projects` transcripts (JSONL files) and uses `fs`/`path`/`os` for local file parsing. The `child_process` hit is likely from chunk 2 or a false positive on a different file. The `.credentials.json` hit is not present in this chunk. The network hits (`claude.ai`, `api.anthropic.com`) are consistent with the extension's purpose of fetching account usage limits.",
+        "code_reference": "var We = v(require(\"fs\")), l = v(require(\"vscode\")); ... function $(s) { ... te.join(ge.homedir(), \".claude\") ... }",
+        "line_hint": 41,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'infostealer_behavior' and 'credential harvesting' due to the reading of `~/.claude/.credentials.json` and macOS Keychain. This is a false positive. The extension is a 'Claude Code Usage Meter' and explicitly documents that it reads local transcripts and credentials to calculate usage. The token is used exclusively to call the official `api.anthropic.com` endpoint to fetch usage statistics. There is no exfiltration of this data to third parties.",
+        "code_reference": "async function nt() { ... readFile(de.join(s, \".credentials.json\"), \"utf8\") ... }",
+        "line_hint": 41,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Direct command / shell execution' for `require(\"child_process\")`. This is a false positive. The `child_process` module is used via `execFile` to run `security find-generic-password` on macOS to retrieve the OAuth token from the Keychain. This is a standard and necessary operation for the extension to function on macOS without requiring the user to manually paste tokens, and it targets a specific, known binary with fixed arguments.",
+        "code_reference": "var Te = require(\"child_process\") ... Xe = (0, Be.promisify)(Te.execFile) ... await Xe(\"security\", [\"find-generic-password\", \"-s\", et, \"-w\"]);",
+        "line_hint": 40,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'data exfiltration' and 'vscode_api_abuse'. The network calls are made to `https://api.anthropic.com/api/oauth/usage`, which is the official API for the service the extension monitors. The configuration reads/writes are for the extension's own settings (`claudeUsage`), not for harvesting user secrets or tampering with unrelated settings.",
+        "code_reference": "Ze = \"https://api.anthropic.com/api/oauth/usage\" ... fetch(Ze, ...)",
+        "line_hint": 1310,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate VS Code extension for monitoring Claude Code usage. It reads local transcript files from `~/.claude/projects` to calculate token usage and cost, and optionally polls the Anthropic API for account limits. The static scanner hits for credential theft and command execution are not supported by the provided source code chunk, which contains only standard file reading, data aggregation, and VS Code UI logic. The network calls are to official Anthropic domains. No malicious behavior was detected.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "5 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-09-14T19:48:07.96Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T17:42:31.951798+00:00Z"
+}

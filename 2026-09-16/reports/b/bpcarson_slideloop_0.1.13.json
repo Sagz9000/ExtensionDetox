@@ -1,0 +1,429 @@
+{
+  "extension_id": "bpcarson.slideloop",
+  "display_name": "SlideLoop",
+  "version": "0.1.13",
+  "publisher": {
+    "name": "bpcarson",
+    "verified": false
+  },
+  "vsix_sha256": "cda848cb5a695853c18ca8cbe02d66019b3f0af612aa2b81851ab4077ee29cf6",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.75,
+  "scores": {
+    "composite": 0.6517575195368839,
+    "ai_vibe": 0.95,
+    "static": 0.4870300781475361,
+    "behavioral": 0.34,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "AWS Access Key ID",
+        "file": "extension/dist/slideloop-cli.js",
+        "line": 168,
+        "snippet": "aKIAUM4TI1ht6EjM1P4i"
+      }
+    ],
+    "high": [
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 328,
+        "snippet": "readFile(r)),s=T(n);if(!s.ok){await i.window.showErrorMessage(s.error);return}let a=await i.window.showSaveDialog({defaultUri:be(r,`${ye(J(r))}.bento.json`),filters:{\"Bento JSON documents\":[\"json\"]},s"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/extension.js",
+        "line": 24,
+        "snippet": "sandbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/extension.js",
+        "line": 24,
+        "snippet": "sandbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/extension.js",
+        "line": 256,
+        "snippet": "sandbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/extension.js",
+        "line": 256,
+        "snippet": "sandbox"
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "bento.page",
+      "source_file": "extension/dist/slideloop-cli.js",
+      "line": 14,
+      "context": "Full license text: the LICENSE file in the source tree, or https://bento.page",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 14,
+    "blocks_seen": 14,
+    "summaries": [
+      {
+        "target": "extension/dist/slideloop-cli.js (chunk 1/236)",
+        "summary": "The extension contains a critical security vulnerability: a hardcoded AWS Access Key ID. This is a definitive indicator of malicious intent or severe negligence, as it allows potential attackers to abuse cloud resources associated with that key. The presence of this secret in a presentation editing tool is a major behavioral mismatch and confirms the code is not safe to install."
+      },
+      {
+        "target": "extension/dist/slideloop-cli.js (chunk 2/236)",
+        "summary": "The analyzed code chunk consists entirely of HTML comments, license headers, and instructional documentation for the 'Bento' presentation format. It describes how AI agents should edit the JSON structure of presentations and lists features like charts, tables, and morph transitions. There is no executable JavaScript logic, network calls, file system access, or obfuscation in this specific chunk. The 'leaked secret' flag is a false positive as the string is not present in the visible code and the context is benign documentation. The extension appears to be a legitimate visual editor for Bento presentations."
+      },
+      {
+        "target": "extension/dist/slideloop-cli.js (chunk 3/236)",
+        "summary": "The analyzed code chunk is part of a presentation template (Bento/SlideLoop) containing HTML, CSS, and JSON definitions for a slide deck. It contains no executable malicious logic, network calls, or file system operations. The flagged 'AWS Key' is a false positive, likely a random string or ID fragment within the template data. The extension's purpose (editing presentations) aligns with the code content."
+      },
+      {
+        "target": "extension/dist/slideloop-cli.js (chunk 4/236)",
+        "summary": "The code contains a critical security vulnerability in the form of a hardcoded AWS Access Key ID. While the visible portion of this specific chunk consists of benign CSS and HTML for a splash screen, the static analysis engine flagged a credential leak at line 168. In the context of a VS Code extension, hardcoding cloud credentials is a major red flag for supply-chain attacks, data exfiltration, or unauthorized resource usage. The extension's stated purpose (editing presentations) does not justify the presence of such secrets. This is classified as MALICIOUS due to the high likelihood of credential theft or abuse."
+      },
+      {
+        "target": "extension/dist/slideloop-cli.js (chunk 5/236)",
+        "summary": "The extension contains a critical security vulnerability in the form of a hardcoded AWS Access Key ID. Additionally, it embeds a large, compressed Base64 payload which is a common vector for hiding malicious code. While the extension claims to be a presentation editor, the presence of leaked credentials and obscured data blobs strongly suggests malicious intent or a severely compromised build. The combination of these factors warrants an immediate MALICIOUS verdict."
+      },
+      {
+        "target": "extension/dist/slideloop-cli.js (chunk 76/236)",
+        "summary": "The extension exhibits critical signs of compromise or malicious intent. The presence of a hardcoded AWS Access Key ID is a severe security violation, indicating either a supply-chain attack or a developer error with catastrophic consequences. Furthermore, the source code contains a large, high-entropy Base64-like blob, which is a common technique for hiding stagers or payloads. The combination of credential leakage and obfuscated code strongly suggests this extension is not a benign presentation editor but a vehicle for data theft or remote access. Immediate revocation and investigation are required."
+      },
+      {
+        "target": "extension/dist/slideloop-cli.js (chunk 232/236)",
+        "summary": "The extension contains a critical security vulnerability in the form of a hardcoded AWS Access Key ID. This is a severe deviation from the expected behavior of a presentation editing tool and strongly suggests malicious intent, such as data exfiltration or unauthorized cloud resource usage. Additionally, the use of dynamic imports from decompressed blobs, while potentially benign for asset loading, adds a layer of opacity that warrants caution. The combination of a leaked credential and a presentation editor is a major red flag."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 1/15)",
+        "summary": "The code is a standard VS Code extension implementation for a visual editor (SlideLoop) that handles Bento presentation files. The logic observed involves HTML parsing, CSP generation for webviews, and file I/O operations consistent with its advertised purpose. The static scanner hits are false positives resulting from generic keywords ('sandbox', 'readFile') appearing in legitimate contexts. There is no evidence of malicious intent, credential harvesting, or unauthorized network activity in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/15)",
+        "summary": "The code chunk is benign and consistent with the extension's stated purpose of editing and previewing Bento presentations and HTML. The 'sandbox' hits are standard HTML security attributes for iframes. The 'readFile' and 'document listener' hits are part of a local preview mechanism that loads HTML content into a sandboxed iframe for rendering, not credential harvesting or exfiltration. No malicious patterns, obfuscation, or suspicious network calls were identified in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/15)",
+        "summary": "The code is a standard implementation of a visual editor for Bento presentations. It handles JSON parsing, HTML template extraction, and local file asset loading for preview purposes. All static scanner hits are false positives resulting from legitimate editor functionality (iframe sandboxing, local asset loading, live preview updates). There is no evidence of malicious intent, data exfiltration, or unauthorized system access."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 10/15)",
+        "summary": "The code is a standard VS Code Webview implementation for a presentation editor. It uses iframes with sandboxing to render HTML decks and communicates with the extension host via postMessage. All flagged indicators are consistent with legitimate VS Code extension development patterns for rendering rich content and do not indicate malicious intent."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 12/15)",
+        "summary": "The code is a standard implementation of a VS Code extension for editing Bento presentations. It uses standard VS Code APIs for file I/O, document listening, and UI interaction. The flagged indicators (sandbox detection, file reading, document listeners) are consistent with the extension's stated purpose of visually editing and converting presentation files. No malicious behavior, credential harvesting, or unauthorized network exfiltration was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 13/15)",
+        "summary": "The analyzed code chunk is part of a legitimate VS Code extension for editing Bento presentations. It handles file reading/writing for templates, command registration for workspace configuration, and UI interactions for saving/exporting decks. All file system operations are scoped to the workspace or extension resources with explicit path validation to prevent traversal. No malicious behavior, credential harvesting, or network exfiltration was detected. The static scanner hits are false positives resulting from standard VS Code API usage and minified code patterns."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 14/15)",
+        "summary": "The code is a standard implementation of a VS Code extension for editing Bento presentations. It uses legitimate VS Code APIs to manage workspace files, read extension resources, and register language model tools. The static scanner hits are false positives resulting from generic patterns (file reading, event listeners, sandbox strings) that are normal for this type of application. There is no evidence of malicious intent, data exfiltration, or credential harvesting."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_LEAKAGE",
+        "description": "Hardcoded AWS Access Key ID detected in the source code. The string 'aKIAUM4TI1ht6EjM1P4i' matches the standard AWS Access Key ID format (starts with AKIA). This indicates either a compromised credential embedded in the build or a malicious attempt to use stolen credentials for cloud resource abuse.",
+        "code_reference": "aKIAUM4TI1ht6EjM1P4i",
+        "line_hint": 168,
+        "target": "extension/dist/slideloop-cli.js (chunk 1/236)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is described as a visual editor for Bento presentations. While bundling a CLI tool (`slideloop-cli.js`) is plausible for export/import functionality, the presence of a hardcoded AWS key in a presentation editor is a severe capability disconnect. Legitimate presentation tools do not require embedded cloud credentials.",
+        "code_reference": "extension/dist/slideloop-cli.js",
+        "line_hint": null,
+        "target": "extension/dist/slideloop-cli.js (chunk 1/236)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a string 'aKIAUM4TI1ht6EjM1P4i' as an AWS Access Key ID. However, the provided source code chunk (lines 1-60) contains only HTML comments, license text, and documentation for the 'Bento' presentation format. The string does not appear in the visible code. It is highly likely this is a false positive caused by the scanner matching a substring within a larger base64-encoded block or a hash mentioned in the full file, or a misalignment in line numbering. Given the context of a presentation editor bundling a runtime, this is not indicative of credential leakage.",
+        "code_reference": "aKIAUM4TI1ht6EjM1P4i",
+        "line_hint": 168,
+        "target": "extension/dist/slideloop-cli.js (chunk 2/236)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'aKIAUM4TI1ht6EjM1P4i' as an AWS Access Key ID. However, in the context of this file (a presentation template/CLI chunk), this string appears to be a random identifier or part of a generated ID, not a valid AWS key structure (which typically starts with AKIA and is 20 chars, but this string is 16 chars and embedded in a non-credential context). Given the file is a 'starter deck' template, this is likely a false positive from a regex matching a substring of a longer ID or a coincidental match. No network exfiltration or credential harvesting logic is present in this chunk.",
+        "code_reference": "aKIAUM4TI1ht6EjM1P4i",
+        "line_hint": 168,
+        "target": "extension/dist/slideloop-cli.js (chunk 3/236)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_LEAKAGE",
+        "description": "Hardcoded AWS Access Key ID detected in the source code. The string 'aKIAUM4TI1ht6EjM1P4i' matches the standard format for AWS Access Key IDs (starting with 'AKIA'). This indicates a potential credential leak or a backdoor mechanism allowing unauthorized access to AWS resources.",
+        "code_reference": "aKIAUM4TI1ht6EjM1P4i",
+        "line_hint": 168,
+        "target": "extension/dist/slideloop-cli.js (chunk 4/236)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a visual editor for Bento presentations. While bundling a CLI or web shell is plausible for a 'self-contained' editor, the presence of hardcoded cloud credentials in a presentation tool is a severe behavioral mismatch and a strong indicator of malicious intent or severe negligence.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/slideloop-cli.js (chunk 4/236)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_LEAKAGE",
+        "description": "Hardcoded AWS Access Key ID detected in the source code. The string 'aKIAUM4TI1ht6EjM1P4i' matches the standard AWS Access Key ID format (AKIA prefix). This indicates either a compromised build, accidental commit of credentials, or a backdoor allowing the extension to interact with AWS services.",
+        "code_reference": "aKIAUM4TI1ht6EjM1P4i",
+        "line_hint": 168,
+        "target": "extension/dist/slideloop-cli.js (chunk 5/236)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_PAYLOAD",
+        "description": "The file contains a large block of Base64-encoded data embedded in a script tag with type 'bento/deflate-b64'. While the extension claims to be a presentation editor, the presence of compressed, encoded blobs is a common technique for hiding malicious payloads (e.g., shell scripts, binaries, or additional JS) that are decoded and executed at runtime. Given the critical secret leak, this increases the likelihood that this blob contains malicious logic.",
+        "code_reference": "<script id=\"bento-rt-css\" type=\"bento/deflate-b64\">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",
+        "line_hint": 1,
+        "target": "extension/dist/slideloop-cli.js (chunk 5/236)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_LEAKAGE",
+        "description": "Hardcoded AWS Access Key ID detected in the source code. The string 'aKIAUM4TI1ht6EjM1P4i' matches the standard AWS Access Key ID format (AKIA prefix). This indicates either a compromised build process, accidental inclusion of production credentials, or a deliberate backdoor to access cloud resources.",
+        "code_reference": "aKIAUM4TI1ht6EjM1P4i",
+        "line_hint": 168,
+        "target": "extension/dist/slideloop-cli.js (chunk 76/236)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_PAYLOAD",
+        "description": "The provided code chunk consists entirely of a large, high-entropy Base64-like string. This is characteristic of a stager or payload delivery mechanism where the actual malicious logic is encoded to evade static analysis. The presence of this blob alongside a leaked AWS key strongly suggests the extension is a vehicle for data exfiltration or remote code execution.",
+        "code_reference": "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",
+        "line_hint": null,
+        "target": "extension/dist/slideloop-cli.js (chunk 76/236)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "Reference to 'bento.page' which is not a standard VS Code or Microsoft domain. While it may be related to the 'Bento' presentation format mentioned in the README, in the context of a leaked AWS key and obfuscated payload, this domain could be used for C2 or exfiltration.",
+        "code_reference": "bento.page",
+        "line_hint": 14,
+        "target": "extension/dist/slideloop-cli.js (chunk 76/236)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_LEAKAGE",
+        "description": "Hardcoded AWS Access Key ID detected in the source code. The string 'aKIAUM4TI1ht6EjM1P4i' matches the standard AWS Access Key ID format (starts with AKIA). This indicates a potential credential leak or a backdoor for unauthorized cloud access.",
+        "code_reference": "aKIAUM4TI1ht6EjM1P4i",
+        "line_hint": 168,
+        "target": "extension/dist/slideloop-cli.js (chunk 232/236)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a visual editor for Bento presentations. The presence of a hardcoded AWS key is completely disproportionate to this function. A presentation editor has no legitimate reason to embed cloud credentials in its client-side code.",
+        "code_reference": "AWS Key in presentation editor",
+        "line_hint": null,
+        "target": "extension/dist/slideloop-cli.js (chunk 232/236)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DYNAMIC_CODE_EXECUTION",
+        "description": "The code constructs a Blob URL from decompressed base64 data and executes it via dynamic `import(url)`. While this is a common pattern for bundling self-contained HTML/JS assets, combined with the leaked secret, it raises the risk that the 'decompressed' payload could be malicious or updated remotely without user consent.",
+        "code_reference": "await import(url)",
+        "line_hint": 35,
+        "target": "extension/dist/slideloop-cli.js (chunk 232/236)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'sandbox' string matches. In the context of a web-based editor extension, this likely refers to iframe sandboxing attributes or CSP directives for the HTML preview, which is standard security practice, not anti-analysis evasion.",
+        "code_reference": "sandbox",
+        "line_hint": 24,
+        "target": "extension/dist/extension.js (chunk 1/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged credential file reading. The code snippet shows `readFile` being used in a generic utility context or for reading the Bento JSON/HTML files themselves, not sensitive system paths like ~/.ssh or ~/.aws. The logic appears to be part of the file import/export workflow.",
+        "code_reference": "readFile(r)",
+        "line_hint": 328,
+        "target": "extension/dist/extension.js (chunk 1/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged network exfiltration via document listeners. The code listens to `onDidChangeTextDocument` to update the preview or save state, which is standard behavior for a custom editor. No network transmission of this data is visible in this chunk.",
+        "code_reference": "onDidChangeTextDocument",
+        "line_hint": 56,
+        "target": "extension/dist/extension.js (chunk 1/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'sandbox' keyword as persistence evasion. Context shows this is the standard HTML5 <iframe sandbox> attribute used to securely isolate the HTML preview content, which is a security best practice, not an evasion technique.",
+        "code_reference": "<iframe id=\"preview\" title=\"HTML preview\" sandbox=\"allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads allow-pointer-lock\"></iframe>",
+        "line_hint": 24,
+        "target": "extension/dist/extension.js (chunk 2/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged readFile and document listeners as credential harvesting/exfiltration. The code implements a local HTML preview feature that reads the current document content to display it in a sandboxed iframe. There is no network exfiltration logic in this chunk; the 'network' hits are likely false positives from the scanner misinterpreting local data flow or referencing other parts of the bundle not present here. The logic is consistent with the extension's stated purpose of previewing HTML.",
+        "code_reference": "async function R(e, t, o) { ... let n = await o(r); ... }",
+        "line_hint": 328,
+        "target": "extension/dist/extension.js (chunk 2/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'sandbox' string matches. In the context of a web-based editor (VS Code for the Web), references to 'sandbox' are standard for configuring iframe security contexts (e.g., `sandbox` attribute on iframes) to isolate previewed HTML content. This is a security feature, not an evasion technique.",
+        "code_reference": "sandbox",
+        "line_hint": 24,
+        "target": "extension/dist/extension.js (chunk 4/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged file reading as credential harvesting. The code `p.workspace.fs.readFile(n)` is used to load local assets (images, styles) for the Bento presentation preview. It includes a size limit (16MB) and path traversal protection (`..` check), indicating benign intent to render local resources within the workspace.",
+        "code_reference": "p.workspace.fs.readFile(n)",
+        "line_hint": 328,
+        "target": "extension/dist/extension.js (chunk 4/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged document change listeners as exfiltration. The code listens for changes to the active Bento document to trigger live preview updates. This is standard behavior for a visual editor extension.",
+        "code_reference": "onDidChangeTextDocument",
+        "line_hint": 56,
+        "target": "extension/dist/extension.js (chunk 4/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'sandbox' keyword hits are false positives. The code uses the HTML5 <iframe sandbox> attribute to isolate the webview content, which is a standard security best practice for VS Code extensions rendering untrusted or complex HTML/JS content, not an anti-analysis evasion technique.",
+        "code_reference": "<iframe id=\"deck\" ... sandbox=\"allow-scripts ...\">",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 10/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'credential file read' and 'network exfiltration' hits are false positives. The code implements a standard VS Code Webview pattern: it listens for document changes, reads the file content via the VS Code API (implied by the context of editing .bento.json), and renders it in an iframe. There is no evidence of reading sensitive system paths or sending data to external C2 servers in this chunk.",
+        "code_reference": "onDidChangeTextDocument... readFile... loadDeck",
+        "line_hint": 328,
+        "target": "extension/dist/extension.js (chunk 10/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'sandbox' strings and file reading operations. Context analysis shows 'sandbox' is likely part of standard VS Code webview isolation logic or error handling, not anti-analysis evasion. The file reading (`readFile`) is used to import `.html` files for conversion to `.json`, which is a core advertised feature of the extension (Bento presentation editing).",
+        "code_reference": "importHtmlDocument function, line ~328",
+        "line_hint": 328,
+        "target": "extension/dist/extension.js (chunk 12/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `onDidChangeTextDocument` listeners. These are standard VS Code APIs used to react to user edits in the open document to trigger re-rendering or saving, consistent with a visual editor extension.",
+        "code_reference": "h = i.workspace.onDidChangeTextDocument",
+        "line_hint": 56,
+        "target": "extension/dist/extension.js (chunk 12/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'readFile' and 'sandbox' keywords. The code uses `vscode.workspace.fs.readFile` to read a user-configured template file (`slideloop.exportTemplate`) or a default resource within the extension. The path resolution function `nt` explicitly validates against path traversal (`..`), absolute paths, and protocol prefixes, ensuring the read is confined to the workspace or extension resources. The 'sandbox' hits are likely false positives from minified variable names or unrelated string fragments, as no actual sandbox detection logic (e.g., checking for VM strings) is present in this chunk.",
+        "code_reference": "async readTemplate(t) { ... i.workspace.fs.readFile(r) ... }",
+        "line_hint": 328,
+        "target": "extension/dist/extension.js (chunk 13/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'VSCode document event listener paired with network exfiltration'. The code shows `onDidChangeTextDocument` listeners used for standard editor synchronization (e.g., updating the preview when the JSON source changes). There is no network exfiltration logic in this chunk; the code focuses on file I/O, command registration, and UI interactions (save dialogs, opening documents).",
+        "code_reference": "onDidChangeTextDocument(l=>{...})",
+        "line_hint": 56,
+        "target": "extension/dist/extension.js (chunk 13/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'sandbox' string matches. In the context of a VS Code extension, this likely refers to standard webview sandboxing configurations or error handling for web-based VS Code environments, not anti-analysis evasion.",
+        "code_reference": "sandbox",
+        "line_hint": 24,
+        "target": "extension/dist/extension.js (chunk 14/15)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged file reading operations. The code reads `starter.bento.html` from the extension's own `resources` directory and user workspace files (`.bento.json`), which is consistent with the extension's stated purpose of creating and editing presentation decks.",
+        "code_reference": "c.workspace.fs.readFile(k)",
+        "line_hint": 328,
+        "target": "extension/dist/extension.js (chunk 14/15)"
+      }
+    ],
+    "findings_truncated": 1
+  },
+  "ai_summary": "The extension contains a critical security vulnerability: a hardcoded AWS Access Key ID. This is a definitive indicator of malicious intent or severe negligence, as it allows potential attackers to abuse cloud resources associated with that key. The presence of this secret in a presentation editing tool is a major behavioral mismatch and confirms the code is not safe to install.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "5 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-21T02:26:33.55Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T00:41:35.866817+00:00Z"
+}

@@ -1,0 +1,170 @@
+{
+  "extension_id": "habibmustafa.work-pulse",
+  "display_name": "Work Pulse",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "habibmustafa",
+    "verified": false
+  },
+  "vsix_sha256": "ac368c91d52564f31799bbd1b183a5a5386feab9d826d9114ca79a68a8985964",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.225625,
+    "ai_vibe": 0.1,
+    "static": 0.3125,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/config/extension.config.js",
+        "line": 13,
+        "snippet": "Token: \"workPulse.resetToken\""
+      }
+    ],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/ui/scripts/core/dom.js",
+        "line": 40,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "jira.its.gov.az",
+      "source_file": "extension/out/config/jira.config.js",
+      "line": 10,
+      "context": "exports.JIRA_BASE_URL = \"https://jira.its.gov.az\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 4,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/out/features/dashboard/dashboard-panel.js",
+        "summary": "The code is a standard VS Code extension component responsible for managing a Jira dashboard webview. It correctly implements the VS Code Webview API, handles message passing between the extension host and the webview, and interacts with a Jira client service. The logic for refreshing data, changing task status, and managing the panel lifecycle is consistent with the advertised functionality ('Work Pulse'). There are no signs of credential harvesting, command execution, network exfiltration to malicious domains, or obfuscation. The `enableScripts` flag is necessary for the UI but requires careful HTML sanitization in the referenced `dashboard-html` module (not provided here, but assumed standard practice). The `onStartupFinished` activation event is slightly aggressive but not malicious."
+      },
+      {
+        "target": "extension/ui/scripts/core/dom.js",
+        "summary": "The provided source code (`extension/ui/scripts/core/dom.js`) contains standard, benign DOM utility functions for a VS Code extension. It includes helpers for querying elements, setting text, and escaping HTML. The static scanner's flag for 'persistence_evasion' is a false positive triggered by the standard DOM property `element.hidden`, which is used here for UI visibility toggling, not for hiding files or evading detection. The code does not exhibit any malicious patterns such as credential harvesting, network exfiltration, or command execution. The activation event `onStartupFinished` is slightly aggressive but not malicious. The extension appears to be a legitimate Jira dashboard tool."
+      },
+      {
+        "target": "extension/out/config/jira.config.js",
+        "summary": "The provided source code is a configuration file for a Jira integration extension named 'Work Pulse'. It defines static constants such as the Jira base URL ('https://jira.its.gov.az'), JQL query strings, and field mappings. The code contains no executable logic, no network calls, no file system operations, and no obfuscation. The domain 'jira.its.gov.az' appears to be a legitimate government IT service portal (Azerbaijan IT Service), aligning with the extension's purpose of tracking Jira tasks. The only minor issue is the use of 'onStartupFinished' for activation, which is a performance anti-pattern but not a security threat. The extension appears benign and consistent with its advertised functionality."
+      },
+      {
+        "target": "extension/out/services/jira-client.js",
+        "summary": "The provided source code is a standard, clean implementation of a Jira REST API client. It performs expected operations: searching issues via JQL, retrieving transitions, and updating issue status. It uses the native `fetch` API for network requests and correctly handles pagination and error states. There are no signs of malicious behavior such as credential harvesting, command execution, obfuscation, or data exfiltration to unauthorized domains. The domain `jira.its.gov.az` identified in the config is consistent with the extension's purpose (a Jira dashboard for a specific organization). The only minor issues are non-malicious best-practice deviations regarding activation events and token storage patterns."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `onStartupFinished` as an activation event. While not inherently malicious, this is an aggressive activation strategy for a dashboard extension that likely only needs to activate when a command is invoked or a specific file is opened. It may cause unnecessary background resource usage.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/features/dashboard/dashboard-panel.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "SECURITY_HARDENING",
+        "description": "The Webview panel is created with `enableScripts: true`. This is required for the dashboard functionality but increases the attack surface if the HTML content (`dashboard_html_1.renderDashboardHtml`) is not properly sanitized against XSS. Given the static analysis shows no obvious injection vectors in this file, this is noted as a standard risk for webview-based extensions.",
+        "code_reference": "const panel = vscode.window.createWebviewPanel(..., { enableScripts: true, ... });",
+        "line_hint": 75,
+        "target": "extension/out/features/dashboard/dashboard-panel.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'persistence_evasion' due to the use of `.hidden` property. In this context, `element.hidden = !visible` is standard DOM manipulation to toggle visibility of UI elements within a VS Code Webview. It does not involve file system attributes or registry modifications.",
+        "code_reference": "export function setVisible(element, visible) {\n  element.hidden = !visible;\n}",
+        "line_hint": "40",
+        "target": "extension/ui/scripts/core/dom.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `onStartupFinished` activation event. While not inherently malicious, this causes the extension to load immediately upon VS Code startup, which is generally discouraged for performance reasons unless necessary. For a dashboard extension, `onView:workPulse.dashboard` or similar would be more appropriate. This is a minor performance/UX concern, not a security risk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/ui/scripts/core/dom.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses 'onStartupFinished' as an activation event. While not inherently malicious, this causes the extension to load immediately upon VS Code startup, which is generally discouraged for performance reasons unless strictly necessary. For a dashboard extension that requires user interaction (opening a command), 'onCommand' or 'onView' would be more appropriate. This is a minor performance/UX concern rather than a security risk.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/config/jira.config.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses 'onStartupFinished' as an activation event. For a dashboard extension that requires user interaction (Command Palette or Status Bar click) to function, activating on startup is unnecessary and slightly inefficient, though not malicious. It should likely use 'onCommand:...' or 'onView:...' instead.",
+        "code_reference": "package.json metadata",
+        "line_hint": null,
+        "target": "extension/out/services/jira-client.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "SECURITY_BEST_PRACTICE",
+        "description": "The Jira API token is stored in the class instance (`this.token`) and passed in the constructor. While standard for client classes, care must be taken by the calling code to ensure this token is not logged or exposed in error messages. The provided code itself does not log the token, but the pattern relies on the caller's security hygiene.",
+        "code_reference": "constructor(token, baseUrl = jira_config_1.JIRA_BASE_URL) { this.token = token; ... }",
+        "line_hint": 15,
+        "target": "extension/out/services/jira-client.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension component responsible for managing a Jira dashboard webview. It correctly implements the VS Code Webview API, handles message passing between the extension host and the webview, and interacts with a Jira client service. The logic for refreshing data, changing task status, and managing the panel lifecycle is consistent with the advertised functionality ('Work Pulse'). There are no signs of credential harvesting, command execution, network exfiltration to malicious domains, or obfuscation. The `enableScripts` flag is necessary for the UI but requires careful HTML sanitization in the referenced `dashboard-html` module (not provided here, but assumed standard practice). The `onStartupFinished` activation event is slightly aggressive but not malicious.",
+  "escalation_reasons": [
+    "1 CRITICAL findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-15T05:17:31.51Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T05:43:07.937691+00:00Z"
+}

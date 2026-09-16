@@ -1,0 +1,311 @@
+{
+  "extension_id": "veoper.fluent-icons-explorer",
+  "display_name": "Fluenticon",
+  "version": "0.8.0",
+  "publisher": {
+    "name": "veoper",
+    "verified": false
+  },
+  "vsix_sha256": "0082ba4c618d42c629b173bab39e7fcdb5b3c6a9a09a7af106523e58ed4b6f5b",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.261905126482615,
+    "ai_vibe": 0.1,
+    "static": 0.4576205059304601,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "readFile(e),l=new TextDecoder().decode(c);return this.memory.set(t,l),l}catch{}let i=`https://cdn.jsdelivr.net/npm/${this.pkg}/icons/${t}.svg`,n=await fetch("
+      }
+    ],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/panel.js",
+        "line": 148,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/panel.js",
+        "line": 220,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/panel.js",
+        "line": 222,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/panel.js",
+        "line": 366,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/panel.js",
+        "line": 366,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "fetch(i);if(!n.ok)throw new Error(n.status===404?`No SVG published for this variant: ${t}`:`Could not fetch SVG (${n.status}): ${t}`);let r=await n.text();return await f.workspace.fs.createDirectory(t"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "fluenticon.com",
+      "source_file": "extension/package.json",
+      "line": 66,
+      "context": "\"homepage\": \"https://fluenticon.com\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 11,
+    "blocks_seen": 11,
+    "summaries": [
+      {
+        "target": "extension/media/panel.js (chunk 1/8)",
+        "summary": "The code is a standard Webview UI script for a VS Code extension that inserts icons. It uses standard DOM manipulation and VS Code Webview APIs (`acquireVsCodeApi`). There are no network calls, no file system access, no child process execution, and no obfuscation. The static scanner hits for '.hidden' are false positives related to DOM element visibility. The extension's capabilities are fully proportional to its advertised function (icon insertion)."
+      },
+      {
+        "target": "extension/media/panel.js (chunk 2/8)",
+        "summary": "The code is a standard UI implementation for a VS Code extension that displays and filters icons. It uses standard DOM manipulation APIs (addEventListener, classList, dataset) to manage the visibility of popovers and render icon grids. There are no network calls, no file system access, no child process execution, and no obfuscation. The 'persistence evasion' alerts from the static scanner are false positives resulting from the use of the word 'hidden' in a UI context (likely toggling element visibility). The behavior is fully consistent with the extension's stated purpose of browsing and inserting icons."
+      },
+      {
+        "target": "extension/media/panel.js (chunk 3/8)",
+        "summary": "The code is a standard UI implementation for a VS Code Webview panel. It handles DOM manipulation for displaying icons, managing user preferences (like component prefixes and output formats), and toggling visibility of UI elements. The flagged '.hidden' attributes are standard HTML/DOM properties used for UI state management, not malicious file operations. There are no network calls, credential access, or obfuscated logic in this chunk. The extension's behavior aligns perfectly with its stated purpose of providing an icon picker."
+      },
+      {
+        "target": "extension/media/panel.js (chunk 4/8)",
+        "summary": "The code is a standard UI implementation for a VS Code Webview panel. It handles user preferences (prefix, auto-import, density), favorites management, and search/filtering logic for an icon library. The flagged `.hidden` properties are legitimate DOM manipulations for showing/hiding UI elements, not malicious persistence attempts. There are no network calls, file system access, or suspicious behaviors in this chunk."
+      },
+      {
+        "target": "extension/media/panel.js (chunk 5/8)",
+        "summary": "The code is a benign UI component for a VS Code extension that inserts icons. It handles user preferences for icon size (px/rem) and color (HSV/Hex). The logic involves standard DOM manipulation, event listeners for input changes, and color conversion math. The static rule hits for 'persistence_evasion' are false positives caused by the use of the CSS/DOM 'hidden' property for UI visibility, not file system manipulation. There are no network calls, no child process execution, and no access to sensitive system paths. The behavior is fully aligned with the extension's stated purpose of providing an icon picker."
+      },
+      {
+        "target": "extension/media/panel.js (chunk 6/8)",
+        "summary": "The provided code chunk is a standard implementation of a color picker UI component, featuring HSV to Hex conversion logic and drag-and-drop event handling for saturation/value and hue sliders. The behavior is fully consistent with the extension's stated purpose of providing a visual interface for selecting icon colors. The static rule hits regarding 'persistence_evasion' are false positives resulting from the scanner misinterpreting DOM style manipulation (hiding/showing UI elements) as file system attribute modification. No malicious indicators, network exfiltration, or credential harvesting patterns were found."
+      },
+      {
+        "target": "extension/media/panel.js (chunk 7/8)",
+        "summary": "The analyzed code chunk is a standard UI implementation for a VS Code extension's webview panel. It handles DOM manipulation for color pickers, swatch rendering, and category filtering. The 'persistence_evasion' alerts from the static scanner are false positives caused by the use of the HTML `hidden` attribute for UI visibility toggling. There are no indicators of malicious behavior, credential harvesting, or capability disconnects relative to the extension's stated purpose of inserting icons."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 1/4)",
+        "summary": "The code is a standard, minified VS Code extension for browsing and inserting Fluent System Icons. The static scanner hits for 'exfiltration' and 'infostealer' are false positives resulting from the combination of asset fetching (`fetch`) and local file reading (`readFile`) for caching purposes, which are legitimate operations for this type of extension. The code logic aligns perfectly with the README description, and no malicious patterns, obfuscation, or capability disconnects were found."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/4)",
+        "summary": "The code is a standard implementation of a VS Code extension that manages a local cache of SVG icons. It reads from the extension's global storage and falls back to fetching from a well-known CDN (jsdelivr.net) if the icon is not cached locally. The static scanner hits are false positives resulting from the combination of file I/O and network requests, which are legitimate for this use case. No malicious behavior, obfuscation, or credential access was detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/4)",
+        "summary": "The code is a standard implementation of a VS Code extension that provides a UI for browsing and inserting Microsoft Fluent Icons. The static scanner hits are false positives caused by minified code patterns that resemble malicious behavior (e.g., `fetch` and `readFile` appearing close together) but are actually used for legitimate asset loading and UI rendering. The extension's capabilities (clipboard access, webview creation, file reading for assets) are fully aligned with its advertised purpose. No malicious indicators, credential harvesting, or unauthorized network exfiltration were found."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/4)",
+        "summary": "The provided code chunk is the tail end of a minified bundle for the 'Fluenticon' extension. It contains standard command registration logic and module export boilerplate. The static analysis hits regarding network activity and file reading are false positives resulting from the minification of legitimate logic that fetches and caches SVG icons from a CDN. There are no indicators of malicious intent, credential harvesting, or unauthorized system access in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged '.hidden' as persistence evasion. In this context, the code is a Webview UI script (using `document.createElement` and `acquireVsCodeApi`). The `.hidden` property is standard DOM API usage to toggle visibility of UI elements (like popovers or panels), not file system attribute manipulation. This is a false positive.",
+        "code_reference": "pop.dataset.open = \"false\"; ... (context implies UI state management)",
+        "line_hint": "148",
+        "target": "extension/media/panel.js (chunk 1/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `.hidden` as persistence evasion. In this context, the code is manipulating DOM element properties (likely `element.hidden` or CSS classes) to toggle UI visibility for dropdowns and popovers. This is standard web UI behavior and not related to file system persistence or OS-level hidden attributes.",
+        "code_reference": "pop.dataset.open = String(open); ... cell.classList.add('faved')",
+        "line_hint": null,
+        "target": "extension/media/panel.js (chunk 2/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged usage of the '.hidden' property as 'persistence_evasion'. In this context, the code is manipulating the DOM (Document Object Model) to toggle the visibility of UI elements (badges and settings panels) within a Webview. This is standard frontend behavior and not related to file system persistence or malware evasion.",
+        "code_reference": "badge.hidden = favs.size === 0;",
+        "line_hint": 148,
+        "target": "extension/media/panel.js (chunk 3/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged usage of the `.hidden` property as 'persistence_evasion'. In this context, `settings.hidden` is a standard DOM property used to toggle the visibility of the settings panel within the Webview UI. It does not modify file system attributes or OS-level persistence mechanisms.",
+        "code_reference": "settings.hidden = !open;",
+        "line_hint": 148,
+        "target": "extension/media/panel.js (chunk 4/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged '.hidden' as a persistence evasion indicator. In the context of this UI code, 'hidden' is a standard CSS property or DOM attribute used to toggle the visibility of UI elements (like popovers or badges) within the Webview. It does not refer to setting file system attributes for persistence.",
+        "code_reference": "sizeBadge.textContent = prefs.includeSize ? `${prefs.size}${prefs.unit}` : \"auto\";",
+        "line_hint": 148,
+        "target": "extension/media/panel.js (chunk 5/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `.hidden` as a persistence evasion indicator. In this context, the code is manipulating DOM element styles (likely `style.display` or CSS classes) for a color picker UI component. This is standard web development practice for toggling visibility of UI elements and does not involve file system attributes or OS-level persistence.",
+        "code_reference": "const paintPicker = () => { ... sv.style.background ... }",
+        "line_hint": null,
+        "target": "extension/media/panel.js (chunk 6/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged the use of the `.hidden` property as a persistence evasion indicator. In this context, the code is manipulating the DOM `hidden` attribute (e.g., `recentHead.hidden = ...`) to toggle the visibility of UI elements (swatches, headers) based on user interaction and state. This is standard, benign web development practice for UI rendering and does not involve file system operations or OS-level persistence.",
+        "code_reference": "recentHead.hidden = recents.hidden = recent.length === 0;",
+        "line_hint": 148,
+        "target": "extension/media/panel.js (chunk 7/8)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `fetch` and `readFile` in the minified code. However, the code context indicates that `fetch` is used to download SVG assets from a CDN (fluenticon.com) and `readFile` is used to load local package data into memory. There is no network transmission of user data, credentials, or sensitive file contents. The logic is consistent with the extension's purpose of fetching and caching icon assets.",
+        "code_reference": "fetch(i);if(!n.ok)throw new Error...",
+        "line_hint": 2,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension's capabilities (fetching SVGs, inserting snippets, managing imports) are proportional to its advertised function (Fluenticon icon browser). The VSIX size (1.6 MB) is reasonable for an extension bundling 2,962 icons. No suspicious dependencies or hidden capabilities were identified in this chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' and 'infostealer_behavior' due to the pattern of reading a file and then making a network request. However, the code explicitly reads local SVG files from the extension's global storage cache (`this.cacheDir`) and only fetches from `cdn.jsdelivr.net` (a trusted CDN) if the local file is missing. This is a standard caching mechanism for an icon library, not credential harvesting or exfiltration.",
+        "code_reference": "async get(t) { ... let e = f.Uri.joinPath(this.cacheDir, `${t}.svg`); ... let i = `https://cdn.jsdelivr.net/npm/${this.pkg}/icons/${t}.svg`, n = await fetch(i); ... }",
+        "line_hint": 2,
+        "target": "extension/dist/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' regarding directory traversal. The code uses `f.Uri.joinPath` with `this.ctx.globalStorageUri` and `this.ctx.extensionUri`, which are safe, sandboxed paths provided by the VS Code API. There is no user-controlled input leading to arbitrary path traversal.",
+        "code_reference": "let e = f.Uri.joinPath(this.cacheDir, `${t}.svg`);",
+        "line_hint": 2,
+        "target": "extension/dist/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `fetch` and `readFile` in the minified code. However, the code context shows `fetch` is used to retrieve SVG assets from a CDN (likely `cdn.jsdelivr.net` or similar, truncated in the snippet) and `readFile` is used to load local assets into memory for the webview. There is no network transmission of sensitive user data, credentials, or file contents outside the workspace.",
+        "code_reference": "fetch(i);if(!n.ok)throw new Error...",
+        "line_hint": 2,
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `vscode.env.clipboard.writeText` to copy icon code to the clipboard. This is explicitly documented in the README ('code lands at your cursor... or copied to clipboard') and is a core feature of the extension, not a malicious exfiltration vector.",
+        "code_reference": "await a.env.clipboard.writeText(l)",
+        "line_hint": 45,
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "SECURITY_PRACTICE",
+        "description": "The webview HTML generation includes a Content Security Policy (CSP) with a nonce for scripts and restricted sources for images/fonts. This is a positive security indicator, showing the developer is aware of webview security best practices.",
+        "code_reference": "meta http-equiv=\"Content-Security-Policy\" content=\"...\"",
+        "line_hint": 60,
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'infostealer_behavior' based on the presence of `fetch` and `readFile` in the minified code. However, the context indicates these operations are used to fetch SVG assets from a CDN (`https://cdn.js...`) and cache them in `globalStorage`. This is consistent with the extension's stated purpose of providing icons and is not malicious exfiltration.",
+        "code_reference": "fetch(i);if(!n.ok)throw new Error...",
+        "line_hint": 2,
+        "target": "extension/dist/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code registers a command `fluentIcons.focus` which executes `fluentIcons.browser.focus`. This is standard VS Code API usage for managing UI focus within the extension's webview or panel, aligning with the 'icon browser' functionality described in the README.",
+        "code_reference": "a.commands.registerCommand(\"fluentIcons.focus\", ...)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 4/4)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard Webview UI script for a VS Code extension that inserts icons. It uses standard DOM manipulation and VS Code Webview APIs (`acquireVsCodeApi`). There are no network calls, no file system access, no child process execution, and no obfuscation. The static scanner hits for '.hidden' are false positives related to DOM element visibility. The extension's capabilities are fully proportional to its advertised function (icon insertion).",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "6 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-07T22:21:38.44Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T01:11:05.958825+00:00Z"
+}

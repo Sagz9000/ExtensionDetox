@@ -1,0 +1,96 @@
+{
+  "extension_id": "XDeveloper0.X-Script",
+  "display_name": "X Script",
+  "version": "0.0.1",
+  "publisher": {
+    "name": "XDeveloper0",
+    "verified": false
+  },
+  "vsix_sha256": "ee7a76040c0739320ec22b419b18ad37e4292b2cdc82e2c2c224f9bc6aa52035",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 3
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": null,
+        "summary": "This extension exhibits strong indicators of a supply-chain attack. Despite being marketed as a simple custom language for fun, it bundles and executes a Python script (`script.py`) via the VS Code terminal API. This behavior is completely disproportionate to the stated purpose of providing syntax highlighting and basic language support. The execution of an external interpreter script is a common technique for delivering malware, as it allows the attacker to run arbitrary code outside the Node.js extension context. The presence of a 'run' command that triggers this execution confirms the malicious intent to run hidden logic when the user interacts with the extension."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises itself as a simple custom language definition ('A custom language i made all by myself just for fun') with basic syntax highlighting and grammar. However, the code executes an external Python script (`script.py`) located within the extension's own directory. A standard language extension should not bundle and execute arbitrary interpreter scripts. This is a classic supply-chain attack vector where the 'language' is a trojan for executing hidden payloads.",
+        "code_reference": "const interpreterPath = path.join(context.extensionPath, 'script.py'); ... xTerminal.sendText(`python \"${interpreterPath}\" \"${targetFilePath}\"`);",
+        "line_hint": 10,
+        "target": null
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension uses `vscode.window.createTerminal` and `sendText` to execute a system command (`python`). While using the terminal API is technically allowed, using it to run a bundled script that is not part of the standard VS Code extension runtime (Node.js) is highly suspicious. It bypasses standard extension sandboxing expectations and relies on the user having Python installed, or potentially bundling a malicious Python environment.",
+        "code_reference": "xTerminal.sendText(`python \"${interpreterPath}\" \"${targetFilePath}\"`);",
+        "line_hint": 42,
+        "target": null
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX size is 0.7 MB. For a simple language definition (grammar + keywords), this is relatively large, suggesting the presence of the `script.py` file and potentially other hidden assets. The activation event `onLanguage:x` is appropriate for a language, but the behavior (executing external binaries) is not.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": null
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension exhibits strong indicators of a supply-chain attack. Despite being marketed as a simple custom language for fun, it bundles and executes a Python script (`script.py`) via the VS Code terminal API. This behavior is completely disproportionate to the stated purpose of providing syntax highlighting and basic language support. The execution of an external interpreter script is a common technique for delivering malware, as it allows the attacker to run arbitrary code outside the Node.js extension context. The presence of a 'run' command that triggers this execution confirms the malicious intent to run hidden logic when the user interacts with the extension.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-20T17:18:56.36Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-20T17:43:44.475845+00:00Z"
+}

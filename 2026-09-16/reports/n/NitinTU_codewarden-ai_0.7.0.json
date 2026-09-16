@@ -1,0 +1,395 @@
+{
+  "extension_id": "NitinTU.codewarden-ai",
+  "display_name": "CodeWarden AI",
+  "version": "0.7.0",
+  "publisher": {
+    "name": "NitinTU",
+    "verified": false
+  },
+  "vsix_sha256": "0881c003208d1133c4bd7edf46b877063cde50efd2a69712d116b9b0e9793b42",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.25039003907376806,
+    "ai_vibe": 0.1,
+    "static": 0.41156015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/dbWorker.js",
+        "line": 1,
+        "snippet": "readFileSync(e,t?void 0:\"utf8\")),Ie=e=>(e=Ve(e,!0),e.buffer||(e=new Uint8Array(e)),e),ke=(e,t,r,n=!0)=>{e=Se(e)?new URL(e):Xe.normalize(e),Ye.readFile(e,n?void 0:\"utf8\",(i,s)=>{i?r(i):t(n?s.buffer:s)}"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/dbWorker.js",
+        "line": 1,
+        "snippet": ".postRun=G.postRun||[],G.postRun.push(function(){g(G)}),ne=void 0;var o;o||=typeof G<\"u\"?G:{},o.onRuntimeInitialized=function(){function e(a,f){switch(typeof f){case\"boolean\":ln(a,f?1:0);break;case\"nu"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/dbWorker.js",
+        "line": 3,
+        "snippet": ".postRun)for(typeof o.postRun==\"function\"&&(o.postRun=[o.postRun]);o.postRun.length;){var t=o.postRun.shift();Mt.unshift(t)}rt(Mt)}}if(!(0<X)){if(o.preRun)for(typeof o.preRun==\"function\"&&(o.preRun=[o"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/webview/main.js",
+        "line": 44,
+        "snippet": ".postMessage(e)}function Uf(e){const t=n=>e(n.data);return window.addEventListener(\"message\",t),()=>window.removeEventListener(\"message\",t)}const Wf={connection:null,kase:null,mapSummary:null,mapResul"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "reactjs.org",
+      "source_file": "extension/dist/webview/main.js",
+      "line": 650,
+      "context": "for (var t = \"https://reactjs.org/docs/error-decoder.html?invariant=\" + e, n = 1; n < arguments.length; n++) t += \"&args[]=\" + encodeURIComponent(arguments[n]);",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 14,
+    "blocks_seen": 14,
+    "summaries": [
+      {
+        "target": "extension/dist/dbWorker.js (chunk 1/29)",
+        "summary": "The code is a standard WebAssembly initialization wrapper, likely for a local database (such as sql.js) used to store code analysis data. The static analysis hits for 'exfiltration' and 'infostealer' are false positives resulting from minified code patterns that resemble network/file operations but are actually internal WASM memory management. The extension's behavior aligns with its description of being a local-first AI code review tool. No malicious indicators were found in this chunk."
+      },
+      {
+        "target": "extension/dist/dbWorker.js (chunk 2/29)",
+        "summary": "The analyzed code chunk is part of a WebAssembly-based SQLite3 implementation used by the 'CodeWarden AI' extension. The static rule engine hits for 'data exfiltration' and 'infostealer_behavior' are false positives resulting from the WASM glue code that loads database files into memory and manages internal state. The code does not exhibit any malicious behavior such as credential harvesting, C2 communication, or obfuscated payload execution. It is consistent with the extension's advertised functionality of local code analysis using a local database."
+      },
+      {
+        "target": "extension/dist/dbWorker.js (chunk 3/29)",
+        "summary": "This file is a chunk of a bundled SQLite3 database driver, likely part of the `sqlite3` npm package used by the extension to store local code analysis data. The static scanner hits are false positives triggered by generic file I/O and function binding patterns typical of database libraries. The code aligns with the extension's 'local-first' claim and does not exhibit malicious behavior."
+      },
+      {
+        "target": "extension/dist/dbWorker.js (chunk 4/29)",
+        "summary": "The analyzed code chunk is part of a SQLite database driver (likely WASM-based) used for local data storage. The static analysis hits for 'data exfiltration' and 'infostealer_behavior' are false positives caused by the scanner misinterpreting standard database file loading (`readFileSync`) and internal memory management logic as malicious network activity. The code aligns with the extension's stated purpose of 'local-first' AI code review, which requires local database operations. No malicious behavior, credential harvesting, or unauthorized network exfiltration was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/dbWorker.js (chunk 5/29)",
+        "summary": "This code chunk is a standard WebAssembly binding for a SQLite database engine, used for local data storage. The extension 'CodeWarden AI' claims to be a local-first AI code review tool that uses Ollama, which aligns with the need for local database storage for codebase mapping. The static scanner hits for 'exfiltration' and 'infostealer' are false positives resulting from the minified WASM glue code and standard database operations. There is no evidence of malicious intent, credential theft, or unauthorized network activity in this specific file chunk."
+      },
+      {
+        "target": "extension/dist/dbWorker.js (chunk 7/29)",
+        "summary": "This file is a chunk of a WebAssembly (WASM) runtime generated by Emscripten. The static analysis hits for 'data exfiltration' and 'infostealer behavior' are false positives caused by the standard Emscripten file loading mechanisms (`readFileSync` for loading the WASM binary) and lifecycle hooks (`postRun`). The code does not exhibit malicious behavior such as credential harvesting, C2 communication, or obfuscated payload execution. It is consistent with a local-first AI extension that bundles native code via WASM."
+      },
+      {
+        "target": "extension/dist/dbWorker.js (chunk 9/29)",
+        "summary": "The analyzed code chunk is a standard, minified implementation of Node.js `path` utilities (resolve, normalize, basename) and a Web Worker initialization hook. The static scanner hits for 'exfiltration' and 'infostealer' are false positives caused by the proximity of `readFileSync` (likely for local file access) and `postRun` (worker lifecycle) in the minified bundle. The code aligns with the extension's stated purpose of local code analysis and does not exhibit malicious behavior, network exfiltration, or credential harvesting."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 7/97)",
+        "summary": "This chunk contains standard React DOM production code (react-dom.production.min.js). All static scanner hits are false positives from legitimate React internals. The code shows no malicious behavior, no credential harvesting, no obfuscation, and no suspicious network calls. The extension's stated purpose (local AI code review via Ollama) is consistent with using React for its webview UI. The 3.8MB package size is reasonable for a React-based webview extension. No capability disconnect or behavioral mismatch detected in this chunk."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 8/97)",
+        "summary": "The provided code chunk is a standard part of the React DOM library (specifically the property normalization and event handling modules). It contains no malicious logic, network exfiltration, or credential harvesting. The static rule engine hits are false positives resulting from the scanner misinterpreting standard React webview communication patterns and event normalization code as malicious. The extension's stated purpose (local AI code review) is consistent with the use of a React-based webview UI."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 9/97)",
+        "summary": "This file chunk contains standard, minified React library code used for rendering the VS Code extension's webview UI. The static rule engine hits are false positives caused by the minified nature of the React bundle and standard DOM event handling patterns. There is no evidence of malicious behavior, credential harvesting, or data exfiltration in this specific chunk. The extension's stated purpose (local AI code review) aligns with the use of a React-based webview for displaying results."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 12/97)",
+        "summary": "This code chunk is standard React DOM library code (likely from react-dom or a similar bundled library) used for rendering form elements and handling SVG/MathML namespaces. It contains no malicious logic, no network exfiltration, no credential harvesting, and no obfuscation. The static scanner hits are false positives resulting from pattern matching on common web API names within a legitimate UI framework context. The extension's stated purpose (local AI code review) is consistent with the presence of a React-based webview UI."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 13/97)",
+        "summary": "This code chunk is standard React/React-DOM library code, specifically handling DOM manipulation, CSS property normalization, and event delegation. The static scanner hits are false positives caused by pattern matching on common web development APIs (postMessage, innerHTML, pointer event properties) that are part of the React framework's internal implementation. There is no evidence of malicious behavior, credential harvesting, or data exfiltration in this chunk. The extension's stated purpose (local AI code review) is consistent with using a React-based webview for its UI."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 20/97)",
+        "summary": "This file chunk contains standard, minified React library code responsible for DOM event normalization and handling (SyntheticEvent, MouseEvent, KeyboardEvent). It does not contain any malicious logic, network exfiltration, credential harvesting, or obfuscated payloads. The static rule engine hits are false positives resulting from pattern matching on common React internal structures. The extension's stated purpose (local AI code review) is consistent with the presence of a React-based webview UI."
+      },
+      {
+        "target": "extension/dist/webview/main.js (chunk 51/97)",
+        "summary": "This code chunk is a standard part of the React DOM library (likely react-dom.production.min.js or similar) bundled within the extension's webview. It handles DOM node creation, hydration, and event binding for standard HTML elements. The static scanner hits are false positives resulting from pattern matching on common web APIs (postMessage, addEventListener) within a large, minified library. There are no indicators of malicious behavior, credential harvesting, or unauthorized network activity in this specific file segment."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'infostealer' patterns. Upon review, these are false positives caused by the bundler/minifier. The code is a standard WebAssembly (WASM) initialization wrapper (likely for sql.js or similar) that handles memory allocation, type conversion, and promise resolution. The 'readFileSync' and network-like patterns are part of the WASM runtime's internal memory management and callback handling, not actual data exfiltration or credential theft.",
+        "code_reference": "var Be = void 0, Ce = function(b) { return Be || (Be = new Promise(function(g, L) { ... }",
+        "line_hint": 1,
+        "target": "extension/dist/dbWorker.js (chunk 1/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is described as a 'Local-first AI code review' tool using Ollama. The code chunk shows a WASM module initialization, which is consistent with running local database operations (e.g., storing code analysis results) or local AI inference components. The activation event 'onStartupFinished' is appropriate for a tool that needs to index the workspace. The package size (3.8 MB) is reasonable for a tool including WASM binaries and UI components. No capability disconnect found.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/dbWorker.js (chunk 1/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `readFileSync` and network-like patterns. However, the code context reveals this is a WebAssembly (WASM) module for SQLite3. The `readFileSync` is used to load the SQLite database file into memory for the WASM environment, and the 'network' patterns are likely internal memory management or standard WASM glue code, not actual HTTP exfiltration. This aligns with the extension's 'local-first' claim.",
+        "code_reference": "readFileSync(e,t?void 0:\"utf8\"),Ie=e=>(e=Ve(e,!0),e.buffer||(e=new Uint8Array(e)),e)",
+        "line_hint": 1,
+        "target": "extension/dist/dbWorker.js (chunk 2/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "The code contains standard SQLite3 API bindings (e.g., `sqlite3_open`, `sqlite3_exec`, `sqlite3_bind_text`) wrapped in a WebAssembly interface. This is a common and legitimate pattern for using SQLite in Node.js or browser environments without native C++ compilation issues. It does not indicate malicious intent.",
+        "code_reference": "u(\"sqlite3_open\", \"number\", [\"string\", \"number\"])",
+        "line_hint": 15,
+        "target": "extension/dist/dbWorker.js (chunk 2/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `readFileSync` and network-like patterns. However, the code context reveals this is a standard SQLite3 database driver implementation (bindings for `sqlite3_value_blob`, `sqlite3_result_text`, etc.). The `readFileSync` is likely part of the database initialization or file handling logic within the `sqlite3` npm package, not a malicious attempt to steal credentials. The extension's stated purpose is 'Local-first AI code review' using a local database, which aligns with using SQLite.",
+        "code_reference": "on = u(\"sqlite3_value_blob\", \"number\", [\"number\"]), ...",
+        "line_hint": 1,
+        "target": "extension/dist/dbWorker.js (chunk 3/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements standard SQLite3 statement binding, stepping, and result retrieval. This is consistent with the extension's description of building a 'deep map of your codebase' locally. No network exfiltration, credential harvesting, or obfuscated payloads are present in this chunk.",
+        "code_reference": "r.prototype.bind = function(a) { ... }",
+        "line_hint": 10,
+        "target": "extension/dist/dbWorker.js (chunk 3/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `readFileSync` and network-like patterns. However, the code context reveals this is a standard SQLite database driver implementation (likely `sql.js` or similar WASM-based library). The `readFileSync` is used to load the database file into memory for processing, and the 'network' patterns are actually internal memory management and binding logic for the SQL engine. There is no evidence of sending data to external endpoints.",
+        "code_reference": "readFileSync(e,t?void 0:\"utf8\")),Ie=e=>(e=Ve(e,!0),e.buffer||(e=new Uint8Array(e)),e)",
+        "line_hint": 1,
+        "target": "extension/dist/dbWorker.js (chunk 4/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'postRun' patterns flagged as exfiltration are standard lifecycle hooks for the database connection object, used to manage state after query execution. This is typical for database abstraction layers.",
+        "code_reference": ".postRun=G.postRun||[],G.postRun.push(function(){g(G)})",
+        "line_hint": 1,
+        "target": "extension/dist/dbWorker.js (chunk 4/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' and 'infostealer_behavior' patterns. Upon review, the code is a standard WebAssembly (WASM) binding for a SQLite database library (likely sql.js or similar). The functions `run`, `exec`, `prepare`, and `iterateStatements` are standard database API methods. The 'readFileSync' and network patterns flagged by the scanner are likely false positives caused by the minified/obfuscated nature of the WASM glue code or unrelated utility functions in the same chunk, not actual malicious logic in this specific segment. The code does not show evidence of credential harvesting, C2 communication, or arbitrary command execution.",
+        "code_reference": "i.prototype.run = function(a, f) { ... }",
+        "line_hint": 1,
+        "target": "extension/dist/dbWorker.js (chunk 5/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'infostealer_behavior' due to the presence of `readFileSync` and `postRun` hooks. However, the code context reveals this is a standard Emscripten (WebAssembly) runtime bootstrap. The `readFileSync` calls are used to load the `.wasm` binary and associated assets from the local filesystem into memory for execution, not to read sensitive user data (like SSH keys or credentials) for network transmission. The `postRun` hooks are standard lifecycle events for the WASM module.",
+        "code_reference": "Ve = (e, t) => (e = Se(e) ? new URL(e) : Xe.normalize(e), Ye.readFileSync(e, t ? void 0 : \"utf8\"))",
+        "line_hint": 1,
+        "target": "extension/dist/dbWorker.js (chunk 7/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is described as 'Local-first AI code review' using Ollama. The presence of WebAssembly (Emscripten) code is consistent with running local AI models or complex parsing logic locally without cloud dependencies. The code does not show network exfiltration of user secrets, which aligns with the 'no cloud, no telemetry' claim.",
+        "code_reference": "typeof WebAssembly != \"object\" && z(\"no native wasm support detected\")",
+        "line_hint": 45,
+        "target": "extension/dist/dbWorker.js (chunk 7/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'infostealer' patterns due to the presence of `readFileSync` and `postRun` in minified code. However, the context reveals this is a standard Node.js `path` module polyfill (handling path resolution, normalization, and UTF-8 decoding) and a Web Worker lifecycle hook (`postRun`). There is no network exfiltration logic, credential harvesting, or obfuscated payload execution in this chunk. The `readFileSync` reference is likely part of a utility function for reading file metadata or content for local processing, consistent with the extension's 'local-first' claim.",
+        "code_reference": "var St = typeof TextDecoder < \"u\" ? new TextDecoder(\"utf8\") : void 0, x = (e, t, r) => { ... }",
+        "line_hint": 1,
+        "target": "extension/dist/dbWorker.js (chunk 9/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'postMessage' and 'window.addEventListener' as potential data exfiltration. This is standard React DOM internal code for handling window messages and event listeners, not malicious exfiltration.",
+        "code_reference": "window.addEventListener(\"message\",t)",
+        "line_hint": 44,
+        "target": "extension/dist/webview/main.js (chunk 7/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'GLOBAL_HOOK__' and React DevTools integration as directory traversal/network abuse. This is standard React development tools hooking mechanism, not malicious.",
+        "code_reference": "__REACT_DEVTOOLS_GLOBAL_HOOK__",
+        "line_hint": 44,
+        "target": "extension/dist/webview/main.js (chunk 7/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged zero-pixel iframe pattern. This is actually React's pointer event handling code (pressure, tiltX, etc.), not a tracking beacon.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0",
+        "line_hint": 41,
+        "target": "extension/dist/webview/main.js (chunk 7/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'postMessage' and 'addEventListener' as potential data exfiltration. In this context, the code is part of the React DOM library's event handling system (specifically the `Uf` function which wraps `window.addEventListener` for message events). This is standard behavior for a webview UI framework to handle communication between the webview and the extension host, not malicious exfiltration.",
+        "code_reference": "function Uf(e){const t=n=>e(n.data);return window.addEventListener(\"message\",t),()=>",
+        "line_hint": 44,
+        "target": "extension/dist/webview/main.js (chunk 8/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'zero-pixel iframe' and 'directory traversal'. The matched string `width:0,height:0...` is part of React's internal pointer event normalization logic (handling touch/pointer coordinates), not a hidden tracking beacon. The 'directory traversal' match is a false positive on React DevTools global hook checks.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0",
+        "line_hint": 41,
+        "target": "extension/dist/webview/main.js (chunk 8/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' due to the presence of `postMessage` and React internal symbols. However, the code is standard React DOM library code (specifically `react-dom` or a similar bundling of React) used for rendering the webview UI. The `postMessage` usage is part of the standard React event handling or communication bridge, not malicious exfiltration. The 'directory traversal' hit is a false positive on React's internal property handling logic.",
+        "code_reference": "function Uf(e){const t=n=>e(n.data);return window.addEventListener(\"message\",t),()=>",
+        "line_hint": 44,
+        "target": "extension/dist/webview/main.js (chunk 9/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a 'hidden zero-pixel iframe'. The match `width:0,height:0...` is actually part of a React synthetic event object definition (pointer event properties like `pressure`, `tiltX`, etc.), not an HTML iframe element. This is standard React internal code for handling pointer events.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0",
+        "line_hint": 41,
+        "target": "extension/dist/webview/main.js (chunk 9/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'postMessage' and 'message' event listeners as potential data exfiltration. However, the code context shows standard React DOM reconciliation logic (handling input values, select options, and SVG namespaces). The 'postMessage' reference is likely part of a standard webview bridge or React internal communication, not malicious exfiltration.",
+        "code_reference": "function Uf(e){const t=n=>e(n.data);return window.addEventListener(\"message\",t),()=>",
+        "line_hint": 44,
+        "target": "extension/dist/webview/main.js (chunk 12/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'zero-pixel iframe' and 'directory traversal'. The code snippet contains standard React DOM property setters for form elements (input, select, textarea) and SVG namespace resolution. There is no evidence of iframe creation, directory traversal, or network sending in this chunk.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0",
+        "line_hint": 41,
+        "target": "extension/dist/webview/main.js (chunk 12/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'postMessage' and 'message' listener as potential data exfiltration. This is standard React/React-DOM internal code for handling window messages and event delegation, not malicious exfiltration.",
+        "code_reference": "window.addEventListener(\"message\",t)",
+        "line_hint": 44,
+        "target": "extension/dist/webview/main.js (chunk 13/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'innerHTML' usage as directory traversal/network send. This is standard React DOM manipulation code for setting SVG content, not a security vulnerability in this context.",
+        "code_reference": "e.innerHTML = t",
+        "line_hint": 44,
+        "target": "extension/dist/webview/main.js (chunk 13/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged zero-pixel iframe properties. These are standard PointerEvent interface properties (pressure, tangentialPressure, etc.) in React's synthetic event system, not a hidden tracking beacon.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0",
+        "line_hint": 41,
+        "target": "extension/dist/webview/main.js (chunk 13/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' patterns, but the code is standard React DOM event handling (SyntheticEvent, MouseEvent, KeyboardEvent). The `postMessage` usage is part of the React webview communication bridge, not malicious exfiltration. The 'directory traversal' match is a false positive on React DevTools hook initialization code.",
+        "code_reference": "function t(n, r, l, i, s) { ... }",
+        "line_hint": 1,
+        "target": "extension/dist/webview/main.js (chunk 20/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'hidden zero-pixel iframe' flag is a false positive. The matched string `width:0,height:0...` is part of the default initialization of pointer/touch event properties in React's event system, not an actual DOM element creation for tracking.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0",
+        "line_hint": 41,
+        "target": "extension/dist/webview/main.js (chunk 20/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'postMessage' and 'window.addEventListener' as potential data exfiltration. However, the code context shows standard React DOM event binding logic (specifically for hydration and event delegation). The 'postMessage' reference is likely part of a standard webview communication bridge or React's internal event system, not malicious exfiltration.",
+        "code_reference": "window.addEventListener(\"message\",t)",
+        "line_hint": 44,
+        "target": "extension/dist/webview/main.js (chunk 51/97)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'zero-pixel iframe' and 'directory traversal'. The code snippet contains standard React DOM element creation logic (createElement, createElementNS) and event handler assignments for standard HTML elements like 'dialog', 'iframe', 'video', 'input'. There is no evidence of directory traversal or hidden tracking beacons in this specific chunk.",
+        "code_reference": "s.createElement(n)",
+        "line_hint": 41,
+        "target": "extension/dist/webview/main.js (chunk 51/97)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard WebAssembly initialization wrapper, likely for a local database (such as sql.js) used to store code analysis data. The static analysis hits for 'exfiltration' and 'infostealer' are false positives resulting from minified code patterns that resemble network/file operations but are actually internal WASM memory management. The extension's behavior aligns with its description of being a local-first AI code review tool. No malicious indicators were found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-08T11:05:27.61Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T19:25:40.292489+00:00Z"
+}

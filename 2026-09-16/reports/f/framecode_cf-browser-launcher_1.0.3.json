@@ -1,0 +1,161 @@
+{
+  "extension_id": "framecode.cf-browser-launcher",
+  "display_name": "ColdFusion Browser Launcher",
+  "version": "1.0.3",
+  "publisher": {
+    "name": "framecode",
+    "verified": false
+  },
+  "vsix_sha256": "d53b039a784aeb5cc4835235b07452ddf1d8d5ce39a221465d6aeb08a0966b45",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.2490625,
+    "ai_vibe": 0.1,
+    "static": 0.40625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/out/extension.js",
+        "line": 73,
+        "snippet": "os.platform()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 41,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 41,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 64,
+        "snippet": "(0, child_process_1.execFile)(browserPath, [url], (err) => {"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 90,
+        "snippet": "(0, child_process_1.execFile)(command, args, (err) => {"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 41,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/2)",
+        "summary": "The extension 'ColdFusion Browser Launcher' is benign. It is designed to open .cfm files in a user-specified browser by constructing a URL and executing the browser binary. The use of `child_process` and `os` modules is appropriate for its stated purpose of launching external applications. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious network activity. The static analysis hits are false positives resulting from the legitimate need to interact with the operating system to launch a browser."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/2)",
+        "summary": "The code is a benign VS Code extension designed to open ColdFusion files in a user-selected browser. It uses standard Node.js APIs (`child_process.execFile`) to launch browser executables based on the operating system. The static analysis hits for 'system fingerprinting' and 'command execution' are false positives resulting from the legitimate need to detect the OS and launch external applications. There are no indicators of malware, data exfiltration, or malicious intent."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process.execFile` is flagged as high risk, but in this context, it is used to launch a specific browser executable with a URL argument. This is the core functionality of the extension (opening files in a browser) and does not involve arbitrary command execution or shell injection, as `execFile` does not invoke a shell by default.",
+        "code_reference": "const child_process_1 = require(\"child_process\"); ... (0, child_process_1.execFile)(browserPath, [url], ...)",
+        "line_hint": 41,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The call to `os.platform()` is flagged as system fingerprinting. However, it is used solely to determine the correct command and arguments to open the default browser on Windows, macOS, or Linux. This is standard behavior for cross-platform file opening utilities and does not constitute malicious fingerprinting or exfiltration.",
+        "code_reference": "const platform = os.platform();",
+        "line_hint": 73,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `os.platform()` as system fingerprinting. In this context, it is used solely to determine the correct command (`cmd`, `open`, or `xdg-open`) to launch a browser on the user's operating system. This is standard behavior for a cross-platform launcher and does not constitute malicious fingerprinting.",
+        "code_reference": "os.platform()",
+        "line_hint": 73,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` as direct command execution. The code uses `execFile` to launch a browser application with a URL argument. This is the intended functionality of the extension (opening files in a browser) and does not involve arbitrary shell command injection or execution of malicious payloads.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 41,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'ColdFusion Browser Launcher' is benign. It is designed to open .cfm files in a user-specified browser by constructing a URL and executing the browser binary. The use of `child_process` and `os` modules is appropriate for its stated purpose of launching external applications. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious network activity. The static analysis hits are false positives resulting from the legitimate need to interact with the operating system to launch a browser.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "5 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 21,
+    "published_date": "2026-08-28T20:52:17.81Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T05:40:28.200576+00:00Z"
+}

@@ -1,0 +1,253 @@
+{
+  "extension_id": "Rive.rive-vscode",
+  "display_name": "Rive",
+  "version": "0.1.2",
+  "publisher": {
+    "name": "Rive",
+    "verified": false
+  },
+  "vsix_sha256": "bdd230e746ca07cbd61d2f836f9c92644602ebf4901eb08bbf6603cc92a74ebe",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.285342626482615,
+    "ai_vibe": 0.1,
+    "static": 0.5513705059304601,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.js",
+        "line": 17843,
+        "snippet": "Object.keys(process.env)"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 16421,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 16421,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 16443,
+        "snippet": "var result = cp.spawnSync(cmd, [process2.pid.toString()]);"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 17683,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 17683,
+        "snippet": "var cp = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 16421,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 17683,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 42/277)",
+        "summary": "The analyzed code chunk is part of the `vscode-jsonrpc` library, which is a standard and legitimate dependency for VS Code extensions that communicate with external language servers. The flagged indicators (child_process, process.env) are false positives in this context, as they are used for standard IPC and process management required to run the `rive-cli` language server. There is no evidence of malicious intent, credential harvesting, or exfiltration. The extension's behavior aligns with its documented purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 217/277)",
+        "summary": "The analyzed code chunk is part of the LSP client implementation for the 'Rive for VS Code' extension. It handles file operation events (create, delete, rename) by filtering them based on patterns and sending notifications to the language server. The code uses standard VS Code APIs (workspace.fs.stat) and LSP protocol structures. The static scanner hits for child_process and environment variable serialization are likely false positives for this specific chunk or refer to legitimate functionality elsewhere in the bundle (spawning the rive-cli process). There are no signs of malicious behavior, credential harvesting, or obfuscation in this segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 249/277)",
+        "summary": "The analyzed code chunk is part of the `vscode-languageclient` library, which is a standard, well-known dependency for VS Code extensions that interact with Language Server Protocol (LSP) servers. The extension 'Rive for VS Code' is a linter/debugger that relies on an external CLI tool (`rive-cli`) acting as the language server. The use of `child_process` to manage the lifecycle of this server process (specifically terminating it) is expected and benign. The flagged environment variable access does not show signs of malicious intent or exfiltration in this context. The code aligns perfectly with the extension's stated purpose of providing diagnostics and debugging for Rive projects."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 250/277)",
+        "summary": "The analyzed code chunk is part of the `semver` library, a widely used and trusted npm package for semantic versioning. It contains no malicious logic, network calls, or credential harvesting. The static rule engine hits referenced in the prompt do not correspond to the code provided in this specific chunk, indicating they are either false positives or located in other parts of the bundle not shown here. Given the extension's purpose (Rive diagnostics/debugging) and the benign nature of this specific code segment, no malicious behavior is detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 264/277)",
+        "summary": "The code is a standard implementation of a VS Code Language Client for the Rive language server. It uses `child_process` to spawn the external `rive-cli` binary, which is the documented and expected behavior for this type of extension. The flagged environment variable access is consistent with passing configuration to the child process. No malicious indicators, obfuscation, or capability disconnects were found."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 266/277)",
+        "summary": "The code snippet is from a standard Language Client implementation (likely `vscode-languageclient` or a similar library) used to communicate with a language server. The flagged behaviors (spawning child processes, copying environment variables) are necessary and standard for this architecture. There is no evidence of malicious intent, credential exfiltration, or obfuscation. The extension's behavior is proportional to its advertised function of providing diagnostics for Rive projects."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 267/277)",
+        "summary": "The code is a standard implementation of a VS Code Language Client, specifically for the Rive language server. The flagged indicators (child_process and environment variable access) are necessary and expected behaviors for launching an external language server process. There is no evidence of malicious intent, data exfiltration, or capability disconnect. The extension's behavior aligns perfectly with its stated purpose of providing diagnostics and debugging for Rive projects."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `Object.keys(process.env)` as high/critical risks. However, the code context indicates this is part of the `vscode-jsonrpc` library (evidenced by `PortMessageReader`, `SocketMessageWriter`, and `generateRandomPipeName`). This library is a standard dependency for VS Code extensions to communicate with language servers (like `rive-cli`). The use of `process.env` is likely for standard IPC path generation (e.g., `XDG_RUNTIME_DIR`) or platform detection, not credential harvesting. The `child_process` usage is likely for spawning the language server process, which is the core function of this extension.",
+        "code_reference": "var XDG_RUNTIME_DIR = process.env[\"XDG_RUNTIME_DIR\"];",
+        "line_hint": 17843,
+        "target": "extension/dist/extension.js (chunk 42/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension's capabilities (IPC communication, socket handling) are proportional to its stated purpose of acting as a client for the `rive-cli` language server. The VSIX size (0.1 MB) is appropriate for a thin client wrapper. Activation events are appropriate for a language server/debugger extension.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 42/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'require(\"child_process\")' and 'Object.keys(process.env)' as high/critical risks. However, the provided code chunk (217/277) contains only LSP (Language Server Protocol) client logic for file operation filtering (FileOperationFeature, NotificationFileOperationFeature). It does not contain the flagged lines. The extension is a 'thin client' for rive-cli, which legitimately requires spawning the CLI process and passing environment variables for the language server to function. This is standard behavior for a language server client extension.",
+        "code_reference": "FileOperationFeature.filter",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 217/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `Object.keys(process.env)` as high/critical risk. However, the code context reveals these are part of the standard `vscode-languageclient` library implementation. The `child_process` usage is strictly for terminating the language server process (using `taskkill` on Windows or `SIGKILL` on Unix), which is a required and benign behavior for LSP clients. The `process.env` reference is likely part of standard environment variable handling within the LSP protocol or dependency resolution, not credential harvesting, as no network exfiltration or sensitive file access is observed in this chunk.",
+        "code_reference": "var cp = require(\"child_process\"); ... cp.execFileSync(\"taskkill\", ...)",
+        "line_hint": 16421,
+        "target": "extension/dist/extension.js (chunk 249/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `Object.keys(process.env)` as high/critical risks. However, the provided code chunk (250/277) consists entirely of the `semver` library (a standard npm package for version parsing). The specific lines cited in the static evidence (16421, 17683, 17843) are not present in this chunk. The code shown is benign, standard library code used for version checking, which is a common and legitimate dependency for VS Code extensions.",
+        "code_reference": "node_modules/semver/internal/constants.js",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 250/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `require('child_process')` is a standard and necessary pattern for VS Code extensions that act as clients to external language servers (in this case, `rive-cli`). It is used to spawn the language server process, not for arbitrary command execution or malicious purposes.",
+        "code_reference": "var cp = require(\"child_process\");",
+        "line_hint": 16421,
+        "target": "extension/dist/extension.js (chunk 264/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule hit for `Object.keys(process.env)` is likely a false positive or refers to standard environment variable handling required to pass configuration to the spawned language server process. In the context of a language server client, accessing environment variables is normal behavior to ensure the server inherits the correct runtime context (e.g., PATH, API keys for the service). There is no evidence of exfiltration or credential harvesting in this snippet.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 17843,
+        "target": "extension/dist/extension.js (chunk 264/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `Object.keys(process.env)` as credential harvesting. However, the code context shows this is part of the `getEnvironment` function within a standard Language Client library (likely `vscode-languageclient`). It copies environment variables to pass them to a child process (the language server). This is standard behavior for spawning processes with the correct environment context, not exfiltration.",
+        "code_reference": "Object.keys(process.env).forEach((key) => result[key] = process.env[key]);",
+        "line_hint": 17843,
+        "target": "extension/dist/extension.js (chunk 266/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")`. This is expected for a VS Code extension that acts as a client to a language server (rive-cli). The extension needs to spawn the `rive-cli` process to communicate with it via stdio. This aligns with the extension's stated purpose of running diagnostics via rive-cli.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 16421,
+        "target": "extension/dist/extension.js (chunk 266/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process.spawn` is standard behavior for a Language Client extension. It is used to launch the external `rive-cli` language server process, which is explicitly documented in the extension's README and package.json. This is not arbitrary command execution but a controlled launch of a known binary.",
+        "code_reference": "const serverProcess = cp.spawn(runtime, args, execOptions);",
+        "line_hint": 16421,
+        "target": "extension/dist/extension.js (chunk 267/277)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The reference to `Object.keys(process.env)` is part of the `getEnvironment` utility function within the LSP client library. This function is used to construct the environment variables for the spawned language server process, typically to pass through specific variables or inherit the parent environment. It does not serialize the entire environment for exfiltration or logging in this context; it is a standard mechanism for process spawning.",
+        "code_reference": "execOptions.env = getEnvironment(options.env, false);",
+        "line_hint": 17843,
+        "target": "extension/dist/extension.js (chunk 267/277)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The analyzed code chunk is part of the `vscode-jsonrpc` library, which is a standard and legitimate dependency for VS Code extensions that communicate with external language servers. The flagged indicators (child_process, process.env) are false positives in this context, as they are used for standard IPC and process management required to run the `rive-cli` language server. There is no evidence of malicious intent, credential harvesting, or exfiltration. The extension's behavior aligns with its documented purpose.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "7 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 11,
+    "published_date": "2026-09-10T21:48:41.467Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T01:26:02.837951+00:00Z"
+}

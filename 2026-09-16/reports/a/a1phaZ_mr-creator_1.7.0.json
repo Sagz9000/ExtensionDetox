@@ -1,0 +1,298 @@
+{
+  "extension_id": "a1phaZ.mr-creator",
+  "display_name": "MR Creator",
+  "version": "1.7.0",
+  "publisher": {
+    "name": "a1phaZ",
+    "verified": false
+  },
+  "vsix_sha256": "14fa24a8c5712d63b87145de2430d467a80a008fd8bbd125f1813b67f89f6dcb",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.65,
+    "static": 0.4375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/out/extension.cjs",
+        "line": 1,
+        "snippet": "['push'](k['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/out/extension.cjs",
+        "line": 1,
+        "snippet": "['push'](k['shift']())"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.cjs",
+        "line": 1,
+        "snippet": "(function(j,m){const Fb={j:'@5DO',m:0x499,k:0x579,W:'R)e@',Z:0xb7b,M:0xd10,r:0x92f,w:'1XM$',E:0x89a,s:'2Ra0',S:0x34c,V:0x683,J:0xc8a,d:'o#5e',n:0xb2f,D:0x732,T:'PbPG',o:0x798,U:0xb9a,Q:'X2pe',y:0x98d,"
+      },
+      {
+        "check": "crypto_mining",
+        "severity": "HIGH",
+        "description": "Mining algorithm reference",
+        "file": "extension/out/extension.cjs",
+        "line": 1,
+        "snippet": "etHash"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "bot.mr",
+      "source_file": "extension/package.json",
+      "line": 123,
+      "context": "\"default\": \"https://bot.mr-creator.ru\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "or.ru",
+      "source_file": "extension/out/extension.cjs",
+      "line": 15206,
+      "context": "m['mQRIl'] = F4(wV.T, wV.d, 0xc8d, wV.o) + F4(wV.U, wV.Q, wV.y, wV.b) + 'or.ru';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.65,
+    "confidence": 0.85,
+    "blocks_parsed": 5,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.cjs (chunk 86/190)",
+        "summary": "The extension 'MR Creator' is heavily obfuscated using a string-array rotation decoder, which is a significant red flag for a simple SCM extension. It uses `child_process` to execute Git commands, which is expected but risky if not carefully managed. The presence of unknown domains and the high level of obfuscation warrant further investigation, but the core functionality (Git/MR creation) aligns with the stated purpose. The 'crypto mining' hit is likely a false positive."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 117/190)",
+        "summary": "This chunk of the extension source code exhibits moderate obfuscation typical of tools like obfuscator.io, which reduces transparency but is not inherently malicious. The logic visible in this chunk focuses on UI interactions (showQuickPick) and provider configuration (Bitbucket/GitLab URLs), which aligns with the extension's advertised SCM features. The 'crypto mining' flag appears to be a false positive based on string fragments. The overall risk is low-to-medium, primarily driven by the difficulty of auditing obfuscated code rather than specific suspicious behaviors found in this chunk."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 166/190)",
+        "summary": "This chunk of the MR Creator extension exhibits moderate obfuscation typical of bundled/minified code but also contains specific cryptographic utilities for license management. The 'crypto_mining' flag is likely a false positive related to hash algorithms. The main risk is the obfuscation itself, which hinders full static verification of network calls and file access. The behavior aligns with the advertised 'license management' feature, but the high obfuscation score warrants caution."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 167/190)",
+        "summary": "This chunk of the MR Creator extension focuses on license verification using ECDSA P-256 signatures. The code is heavily obfuscated with a string-array rotation decoder, which is typical for commercial extensions protecting their licensing logic but makes static analysis challenging. The 'crypto_mining' flag is likely a false positive for 'Hash' or 'HMAC' related strings. The main concern is the disconnect between a simple SCM tool and the complexity of its obfuscated license check, which could potentially hide telemetry or stricter feature gating. No direct credential harvesting or child_process execution is visible in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 173/190)",
+        "summary": "The code chunk is heavily obfuscated using a standard commercial obfuscator, making it hard to verify exact behavior. The primary function appears to be license validation involving a device report and hash calculation, which aligns with the extension's stated features. However, the high level of obfuscation for a simple license check is a mild red flag, and the 'secrets' access combined with network egress requires careful review of the deobfuscated endpoints to ensure no sensitive data is leaked beyond the license key."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code uses a heavy string-array rotation decoder (obfuscator.io signature) with local helper functions (p8, p9, Ie, IG, pH, pI, pq) to resolve property names and string literals. This makes static analysis difficult and is a common technique to hide network endpoints or file paths.",
+        "code_reference": "['push'](k['shift']())",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 86/190)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension imports `node:child_process` and uses `promisify(exec)` to run shell commands. While likely used for `git` CLI operations (e.g., `git rev-parse`), this is a powerful primitive that could be abused for arbitrary command execution if the input is not strictly sanitized. Given the obfuscation, it's hard to verify all call sites in this chunk.",
+        "code_reference": "import_node_child_process = require(...), execAsync = (0x0, import_node_util['promisify'])(import_node_child_process[...])",
+        "line_hint": 45,
+        "target": "extension/out/extension.cjs (chunk 86/190)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'etHash' as a crypto mining reference. In the context of `BranchService` and Git operations, this is likely part of a variable name or string related to 'Git Hash' or 'Commit Hash', not a mining algorithm like EthHash.",
+        "code_reference": "match=`etHash`",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 86/190)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION_RISK",
+        "description": "The package contains references to unknown domains `bot.mr` and `or.ru`. `bot.mr` is likely the Telegram bot mentioned in the README for license management. `or.ru` is less clear but could be a CDN or API endpoint. Without seeing the full network logic, these are potential exfiltration or C2 channels.",
+        "code_reference": "domain: bot.mr, domain: or.ru",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 86/190)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code utilizes a string-array rotation decoder pattern (obfuscator.io signature) with hex-encoded offsets and helper functions (z7, z8, z9, zI) to resolve string literals at runtime. While common in bundled/minified code, the high density of indirection makes static analysis difficult and can hide malicious logic.",
+        "code_reference": "function z7(j, m, k, W) { return Ie(j - lr.j, m - 0x8e, W - -lr.m, j); }",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 117/190)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'etHash' as a crypto mining reference. In the context of the object keys (M9, MI, MH...), this is likely a fragment of a variable name or string (e.g., 'getHash' or 'methodHash') rather than a reference to the Ethereum mining algorithm.",
+        "code_reference": "M9: 0x1606, MI: 0xee5...",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 117/190)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code constructs URLs for Bitbucket and GitLab (e.g., 'https://bitbucket.ex...', 'https://gitlab.examp...'). This aligns with the extension's stated purpose of connecting to Git providers. The use of 'example.com' suggests placeholder or default configuration logic.",
+        "code_reference": "'ajOdG': 'https://bi' + 'tbucket.ex' + z7(lb.n, lb.D, lb.T, lb.o)",
+        "line_hint": 45,
+        "target": "extension/out/extension.cjs (chunk 117/190)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBFUSCATION",
+        "description": "The code uses a string-array rotation decoder (obfuscator.io signature) with heavy indirection via helper functions (RS, Rs, Ie, IG, RV, RJ, Rd). This makes static analysis difficult and is a common pattern in both minified commercial code and malicious payloads. Given the extension's complexity (license management, multi-provider support), some obfuscation is expected, but the density is high.",
+        "code_reference": "['push'](k['shift']())",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 166/190)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'etHash' as a crypto mining reference. In the context of `import_node_crypto4` and `ALGORITHM`, this is likely part of a string like 'sha256' or 'hash' related to the ECDSA license verification, not a mining pool.",
+        "code_reference": "etHash",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 166/190)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as an SCM provider (Merge Request creator). However, this chunk reveals significant cryptographic logic (`fromBase64url`, `toPem`, `node:crypto`, `ALGORITHM`). While the README mentions 'ECDSA P-256 signed licenses', the presence of PEM conversion and base64url decoding suggests local key handling or license file parsing. This is consistent with the stated feature but adds complexity that could hide other logic.",
+        "code_reference": "function fromBase64url(m) ... function toPem(m)",
+        "line_hint": 15,
+        "target": "extension/out/extension.cjs (chunk 166/190)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK",
+        "description": "The extracted indicator 'bot.mr' (likely a Telegram bot domain) is mentioned in the README for license purchase. The domain 'or.ru' is unknown but could be a CDN or API endpoint. Without seeing the actual fetch/axios calls in this chunk, these are noted as potential C2 or API endpoints.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 166/190)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code uses a string-array rotation decoder pattern (obfuscator.io signature) with heavy use of hex offsets and indirect property access. While common in bundled code, the density of obfuscation in a 'License Verification' module makes static analysis difficult and hides potential logic flaws or hidden side effects.",
+        "code_reference": "function RD(j, m, k, W) { return IG(j - rC.j, j - rC.m, k, W - rC.k); }",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 167/190)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'etHash' as a mining algorithm reference. In this context, it is likely part of a variable name or string fragment related to 'HMAC' or 'Hash' within the license verification logic (e.g., checking license integrity), not a crypto-mining pool connection.",
+        "code_reference": "match=`etHash`",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 167/190)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as an SCM provider (Merge Request creator). However, this chunk contains complex cryptographic license verification logic (`verifyLicense`, `createVerify`, `ECDSA P-256`). While the README mentions a license system, the heavy obfuscation of the verification logic is disproportionate for a simple license check and could hide telemetry or stricter feature-gating logic than advertised.",
+        "code_reference": "function verifyLicense(j, m)",
+        "line_hint": 10,
+        "target": "extension/out/extension.cjs (chunk 167/190)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The extracted indicator 'or.ru' (likely a fragment of a domain like 'gitlab.com' or a self-hosted instance URL, or potentially a Russian domain) appears in the full file. Without seeing the full context of the network call, it's hard to determine if it's a default config or a hardcoded C2, but 'or.ru' is not a standard Git provider domain, warranting caution.",
+        "code_reference": "domain: or.ru",
+        "line_hint": 15206,
+        "target": "extension/out/extension.cjs (chunk 167/190)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code uses a string-array rotation decoder (obfuscator.io signature) with heavy use of computed property names and local variable shadowing. This makes static analysis difficult and is a common technique to hide network endpoints or logic flow.",
+        "code_reference": "['push'](k['shift']())",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 173/190)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'etHash' as a mining algorithm reference. In this context, it is part of the string 'getHash' (likely `crypto.getHash` or similar), which is standard for the extension's advertised ECDSA license verification feature.",
+        "code_reference": "getHash",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 173/190)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension accesses `this['secrets']` to retrieve a `LICENSE_KEY`. While license management is advertised, the heavy obfuscation surrounding this access and the subsequent network call (`reportDevice`) suggests the license check might be a vector for telemetry or exfiltration, which is not explicitly detailed in the README.",
+        "code_reference": "k = await this['secrets'][...](LICENSE_KEY)",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 173/190)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ACTIVITY",
+        "description": "The code calls a method that appears to be `reportDevice` (via obfuscated property access). This implies sending device information to a remote server, which is consistent with license validation but warrants monitoring for data minimization.",
+        "code_reference": "reportDevice",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 173/190)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'MR Creator' is heavily obfuscated using a string-array rotation decoder, which is a significant red flag for a simple SCM extension. It uses `child_process` to execute Git commands, which is expected but risky if not carefully managed. The presence of unknown domains and the high level of obfuscation warrant further investigation, but the core functionality (Git/MR creation) aligns with the stated purpose. The 'crypto mining' hit is likely a false positive.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-10T06:13:02.547Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T19:42:52.855244+00:00Z"
+}
