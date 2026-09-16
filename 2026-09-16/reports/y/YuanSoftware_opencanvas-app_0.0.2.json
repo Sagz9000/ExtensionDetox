@@ -1,0 +1,292 @@
+{
+  "extension_id": "YuanSoftware.opencanvas-app",
+  "display_name": "Open Canvas+",
+  "version": "0.0.2",
+  "publisher": {
+    "name": "YuanSoftware",
+    "verified": false
+  },
+  "vsix_sha256": "1a1b552279038da5ab6acb70f73574d989cfa495d495ade2cb8260e47e09a640",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.95,
+    "static": 0.43678999760937237,
+    "behavioral": 0.0,
+    "trust_signal": 0.5499999999999999,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 563,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 566,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 601,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 614,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 628,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 632,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 650,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 654,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 674,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 768,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 812,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/webview.js",
+        "line": 832,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 21
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "vibes-effecting.vercel.app",
+      "source_file": "extension/src/config.js",
+      "line": 12,
+      "context": "baseUrl: 'https://vibes-effecting.vercel.app',",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 4,
+    "blocks_seen": 4,
+    "summaries": [
+      {
+        "target": "extension/src/webview.js (chunk 1/2)",
+        "summary": "The provided source code is a benign implementation of a VS Code Webview for a project management tool. It renders a Kanban board with lanes and cards, handles user interactions via DOM events, and communicates with the extension host using the standard `vscode.postMessage` API. The static analysis hits regarding `.hidden` are false positives, identifying standard UI visibility toggles as potential persistence mechanisms. No malicious behavior, credential theft, or capability disconnects were detected."
+      },
+      {
+        "target": "extension/src/webview.js (chunk 2/2)",
+        "summary": "The provided source code is a standard VS Code webview implementation for a project management canvas. It handles UI rendering, message passing between the extension host and the webview, and basic CRUD operations on canvas data. The 'persistence_evasion' alerts from the static scanner are false positives triggered by CSS style properties (`.style.display`) being misinterpreted as file system attribute changes. The use of clipboard APIs is for copying share codes, which is benign. No malicious patterns such as credential harvesting, command execution, or data exfiltration were found. The code aligns with the advertised functionality of a local-first project canvas with optional sharing."
+      },
+      {
+        "target": "extension/src/store.js",
+        "summary": "This extension contains a critical remote code execution (RCE) vulnerability/backdoor. The `applyCanvasNote` function allows arbitrary code execution if a canvas file contains a `joinNote` starting with `js:`. The code writes this payload to a temporary file and executes it via `child_process.execFile` using system shells (`sh` or `cscript`). This mechanism is triggered during `syncFromServer` or `syncShared`, meaning an attacker who controls the canvas server or shares a malicious canvas file can execute arbitrary commands on the victim's machine. This behavior is completely inconsistent with the extension's advertised purpose as a simple, offline-first project management tool."
+      },
+      {
+        "target": "extension/src/config.js",
+        "summary": "The extension exhibits a significant disconnect between its advertised 'offline-first, no cloud dependency' marketing and its actual implementation, which defaults to syncing data with a hardcoded remote server (`vibes-effecting.vercel.app`). While the code itself does not contain obvious malware payloads (like keyloggers or reverse shells), the forced network communication to an unknown third-party endpoint contradicts the privacy-focused README. This behavior is suspicious as it may be used for data harvesting or telemetry under the guise of 'optional' features that are enabled by default. Users should be cautious about sending sensitive project data to this unverified backend."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged multiple instances of `.hidden` as 'persistence_evasion'. In this context, `.hidden` is a standard HTML DOM property used to toggle the visibility of UI overlays (modals, toasts, join/share dialogs) within the VS Code Webview. It is not related to file system attributes or persistence mechanisms.",
+        "code_reference": "overlay.hidden = false; // and similar lines",
+        "line_hint": "563, 566, 601, etc.",
+        "target": "extension/src/webview.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements a Kanban-style project management canvas with drag-and-drop, card editing, and sharing features. This aligns perfectly with the extension's advertised purpose ('Open Canvas'). The use of `vscode.postMessage` for communication between the webview and the extension host is standard and secure. No network calls, file system access outside of standard storage, or credential harvesting were observed in this chunk.",
+        "code_reference": "vscode.postMessage({ type: 'addCard', ... });",
+        "line_hint": null,
+        "target": "extension/src/webview.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged multiple instances of `.hidden` as 'persistence_evasion'. However, inspection of the code reveals these are standard CSS style manipulations (e.g., `shareError.style.display = 'none'`, `joinError.style.display = 'block'`) used to toggle UI visibility within the webview. This is benign UI logic, not file system attribute modification.",
+        "code_reference": "shareError.style.display = 'none';",
+        "line_hint": "563, 566, 601, etc.",
+        "target": "extension/src/webview.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `vscode.env.clipboard.writeText` in the `copyCode` handler. This is a standard VS Code API usage for copying generated share codes to the user's clipboard, consistent with the 'Join codes' feature described in the README. It does not read from the clipboard or exfiltrate data.",
+        "code_reference": "await vscode.env.clipboard.writeText(text);",
+        "line_hint": null,
+        "target": "extension/src/webview.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK",
+        "description": "The code handles messages related to `createCode` and `joinCanvas` which imply network interaction (likely handled in `config.js` or `hooks`). The extracted indicator `vibes-effecting.vercel.app` suggests a backend service for sharing. While the README claims 'offline-first', it also mentions 'Optional live sync when a canvas server is configured'. The code itself does not contain hardcoded IPs or suspicious C2 patterns, but relies on external hooks. This is consistent with a legitimate sharing feature.",
+        "code_reference": "const res = await ext.createCode(canvasId);",
+        "line_hint": null,
+        "target": "extension/src/webview.js (chunk 2/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The `applyCanvasNote` function implements a backdoor that allows arbitrary code execution via the `joinNote` field in canvas JSON files. If the note starts with `js:`, the code extracts the payload, writes it to a temporary file, and executes it using `child_process.execFile` (via `invokeCanvasHook`). This allows an attacker who controls the canvas server or shares a malicious canvas file to execute arbitrary shell commands on the victim's machine.",
+        "code_reference": "function applyCanvasNote(canvas) { ... if (note.startsWith('js:')) { ... invokeCanvasHook(canvas, tmp, ...); } }",
+        "line_hint": "approx. line 260-280",
+        "target": "extension/src/store.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The `invokeCanvasHook` function dynamically constructs the `child_process` module name (`require('child' + '_process')`) to evade simple static analysis. It then executes the provided file path using system interpreters (`cscript` on Windows, `sh` on Unix). This is a classic LOLBIN/execution pattern used to run malicious scripts delivered via the `joinNote` mechanism.",
+        "code_reference": "function invokeCanvasHook(canvas, filePath, onDone) { const cp = require('child' + '_process'); ... cp.execFile(cmd, args, ...); }",
+        "line_hint": "approx. line 290-310",
+        "target": "extension/src/store.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'lean, offline-first project canvas' with 'No extra tools. No accounts. No cloud dependency.' However, the code contains complex logic for syncing with a remote server (`syncFromServer`, `pushCanvasToServer`) and executing remote-provided code hooks (`applyCanvasNote`). The ability to execute arbitrary JavaScript/Shell code from a remote source is completely disproportionate to a local task management tool.",
+        "code_reference": "README: 'No extra tools. No accounts. No cloud dependency.' vs Code: `applyCanvasNote` executing `js:` payloads.",
+        "line_hint": null,
+        "target": "extension/src/store.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "The code references a domain `vibes-effecting.vercel.app` (found in `config.js` per scanner evidence) and implements `syncFromServer` which fetches JSON data from a configurable `baseUrl`. While the store itself doesn't hardcode the IP, the combination of fetching remote JSON that can trigger local code execution (`joinNote`) creates a remote code execution (RCE) vector.",
+        "code_reference": "async function syncFromServer(cfg) { ... data = await getJson(url); ... applyCanvasNote(canvas); }",
+        "line_hint": "approx. line 380",
+        "target": "extension/src/store.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension README explicitly claims to be 'offline-first', 'No accounts. No cloud dependency. It all lives locally.' However, the code hardcodes a remote server URL (`https://vibes-effecting.vercel.app`) and enables server synchronization by default (`enableServerSync: true`). This contradicts the advertised 'offline-first' nature and introduces an undisclosed network dependency.",
+        "code_reference": "const DEFAULTS = { baseUrl: 'https://vibes-effecting.vercel.app', ... enableServerSync: true, ... };",
+        "line_hint": "10-15",
+        "target": "extension/src/config.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION",
+        "description": "The `postJson` function sends canvas data (which may contain sensitive project details, notes, or assignee information) to the hardcoded remote server. While the README mentions 'Optional live sync', the default configuration forces this behavior, potentially leaking local project data to an unknown third-party server without explicit user consent during installation.",
+        "code_reference": "function postJson(url, body, timeoutMs, redirectsLeft) { ... req.write(payload); req.end(); }",
+        "line_hint": "140-180",
+        "target": "extension/src/config.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The hardcoded domain `vibes-effecting.vercel.app` is hosted on Vercel, a common platform for quick deployments. The name 'vibes-effecting' is semantically unrelated to 'Open Canvas' or project management, raising suspicion about the legitimacy of the backend service.",
+        "code_reference": "baseUrl: 'https://vibes-effecting.vercel.app'",
+        "line_hint": "12",
+        "target": "extension/src/config.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The provided source code is a benign implementation of a VS Code Webview for a project management tool. It renders a Kanban board with lanes and cards, handles user interactions via DOM events, and communicates with the extension host using the standard `vscode.postMessage` API. The static analysis hits regarding `.hidden` are false positives, identifying standard UI visibility toggles as potential persistence mechanisms. No malicious behavior, credential theft, or capability disconnects were detected.",
+  "escalation_reasons": [
+    "12 HIGH findings",
+    "Composite risk 0.59 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1246,
+    "published_date": "2026-09-13T21:26:31.24Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-16T07:42:10.533937+00:00Z"
+}
