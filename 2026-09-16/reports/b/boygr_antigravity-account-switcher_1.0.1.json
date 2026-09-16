@@ -12,11 +12,11 @@
     "composite_score",
     "critical_static_finding"
   ],
-  "confidence": 0.65,
+  "confidence": 0.75,
   "scores": {
-    "composite": 0.8525926596887546,
-    "ai_vibe": 0.0,
-    "static": 0.8167409151907624,
+    "composite": 0.8594977287976906,
+    "ai_vibe": 0.85,
+    "static": 0.8479909151907624,
     "behavioral": 0.95,
     "trust_signal": 0.75,
     "campaign": 0.0
@@ -122,7 +122,7 @@
         "snippet": ".hidden"
       }
     ],
-    "total": 22
+    "total": 24
   },
   "extracted_references": [
     {
@@ -170,9 +170,273 @@
   },
   "ioc_enrichment": [],
   "shared_infrastructure": {},
-  "ai_analysis": null,
-  "ai_summary": null,
-  "escalation_reasons": [],
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 8,
+    "blocks_seen": 8,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/4)",
+        "summary": "The extension 'Antigravity Account Switcher' is a utility designed to manage Google accounts for the local Antigravity backend. The code operates exclusively on localhost (127.0.0.1) to interact with the Antigravity process via HTTP/gRPC-like protocols. It uses child_process to locate and restart the local Antigravity service, which is consistent with its functionality. All static scanner alerts regarding exfiltration, shell execution, and file traversal are false positives resulting from the extension's legitimate need to manage local processes and state. No malicious behavior, credential harvesting, or external communication was detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/4)",
+        "summary": "The code is a legitimate VS Code extension designed to manage Google Antigravity accounts. It features a sidebar dashboard, account switching, and diagnostic tools. The static analysis hits are false positives resulting from standard VS Code API usage (reading global state, checking extension presence) and local process/network interactions required to communicate with the Antigravity backend. There is no evidence of credential theft, external data exfiltration, or malicious command execution. The extension explicitly states in its output channels that it does not modify credentials or access secret storage."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/4)",
+        "summary": "The provided code chunk implements the core logic for an 'Antigravity Account Switcher' extension. It manages local state for Google accounts, tracks quota usage, handles UI interactions (status bar, quick picks), and manages the lifecycle of a local backend process ('Antigravity Hub'). The use of `child_process` is restricted to terminating and restarting this specific local process, which is a legitimate and necessary capability for this type of extension. There are no signs of credential theft, remote command execution, or data exfiltration to external servers. The static analysis hits are false positives resulting from standard process management and local state persistence patterns."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/4)",
+        "summary": "The extension exhibits high-risk behavior by directly accessing the Windows Credential Manager via PowerShell and P/Invoke to read and write credentials for 'gemini:antigravity'. While this functionality is likely implemented to facilitate the advertised 'instant account switching' feature by caching tokens, it constitutes a significant security risk. The use of `child_process` to execute PowerShell with bypassed execution policies and the creation of a secondary credential store within VS Code's secrets storage are patterns frequently seen in malware. Although no immediate external exfiltration endpoint is visible in this chunk, the capability to harvest and manipulate OS-level credentials warrants a SUSPICIOUS verdict."
+      },
+      {
+        "target": "extension/dist/media/account-switcher.js (chunk 1/4)",
+        "summary": "The provided source code is a benign UI component for a VS Code extension designed to manage Google accounts for the 'Antigravity' tool. The static analysis flags (keylogger, exfiltration) are false positives resulting from standard Webview communication patterns (`postMessage`) and standard UI event handling (`keydown` for Escape). The code structure, variable names, and logic are consistent with a legitimate account management dashboard. No malicious behavior, credential harvesting, or unauthorized network activity was detected."
+      },
+      {
+        "target": "extension/dist/media/account-switcher.js (chunk 2/4)",
+        "summary": "The provided source code is a benign UI rendering module for a VS Code extension designed to manage Google account quotas. The code consists entirely of HTML template generation functions (using template literals) and utility functions for formatting dates, percentages, and sorting data. The static analysis flags (keylogger, exfiltration, persistence) are clear false positives resulting from generic pattern matching on standard web development practices (Escape key handling, postMessage for webview communication, and DOM visibility toggling). There is no evidence of malicious intent, credential harvesting, or unauthorized network activity in this chunk."
+      },
+      {
+        "target": "extension/dist/media/account-switcher.js (chunk 3/4)",
+        "summary": "The provided source code is a benign UI rendering module for a VS Code extension. It generates HTML strings for modals (Settings, Quota Matrix, Runtime Status) and handles standard UI interactions like sorting, filtering, and closing dialogs via the Escape key. The static analysis hits are false positives: the 'keylogger' is a standard Escape-key handler, the 'exfiltration' is standard webview messaging, and the 'persistence' flag is likely a CSS/HTML attribute reference. No malicious behavior, network exfiltration, or credential harvesting is present in this chunk."
+      },
+      {
+        "target": "extension/dist/media/account-switcher.js (chunk 4/4)",
+        "summary": "The provided source code is a benign frontend script for a VS Code extension's webview UI. It handles user interactions such as clicking buttons, editing labels, and managing settings, communicating with the extension host via the standard `postMessage` API. The keylogger and exfiltration alerts from the static scanner are false positives triggered by standard UI event listeners (`keydown` for Escape/Enter) and internal IPC mechanisms (`postMessage`). There is no evidence of malicious behavior, credential harvesting, or external network communication in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' due to POST requests and rejectUnauthorized:!1. Analysis confirms these requests are strictly directed to 127.0.0.1 (localhost) to communicate with the local Antigravity backend process. No external network exfiltration occurs.",
+        "code_reference": "function J(n, t, e, o = {}) { ... hostname: \"127.0.0.1\" ... }",
+        "line_hint": 21,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Direct command / shell execution'. The code uses child_process.execFile to run powershell.exe and taskkill. This is necessary for the extension's stated purpose of locating the local Antigravity process (agy.exe) and restarting it to apply account switches. The commands are hardcoded and do not accept user input for execution.",
+        "code_reference": "async function tt(n) { ... await pn(\"powershell.exe\", [...]) ... }",
+        "line_hint": 21,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Directory traversal' and 'Harvesting VSCode configuration'. The code accesses globalStorage paths and workspace configuration only to manage its own extension state (account metadata) and read its own settings (e.g., enableInstantSwitch). It does not read sensitive user files like ~/.ssh or browser credentials.",
+        "code_reference": "workspace.getConfiguration(\"boygr.antigravityAccountSwitcher\")",
+        "line_hint": 30,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Enumerating installed extensions'. The code checks for the presence of 'google.google-antigravity' to verify compatibility and locate the backend. This is a standard dependency check, not reconnaissance.",
+        "code_reference": "function Sn() { let n = at.extensions.getExtension(bn); ... }",
+        "line_hint": 21,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'command execution' due to `require('child_process')` and network patterns. However, the code in this chunk primarily uses `child_process` (implied by context of other chunks or standard usage) for checking process status (AGY backend) and `fs` for read-only diagnostics. The network calls are local IPC/HTTP to the Antigravity backend (localhost), not external exfiltration. The `rejectUnauthorized: !1` is likely for local self-signed certificates or internal service communication, not malicious C2.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 21,
+        "target": "extension/dist/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'directory traversal' and 'harvesting configuration'. The code reads `globalStorage` paths and `workspace.getConfiguration` to manage the extension's own state (account labels, quota summaries) and check for the presence of the Antigravity extension. This is standard behavior for a VS Code extension managing user data in `globalState` and reading its own configuration keys.",
+        "code_reference": "globalState.get(he)",
+        "line_hint": 30,
+        "target": "extension/dist/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'enumerating installed extensions'. The function `yt()` iterates through `vscode.extensions.all` to find extensions with 'antigravity' in the name. This is a legitimate feature to detect the companion 'Google Antigravity' extension to ensure compatibility and locate its storage paths.",
+        "code_reference": "vt.extensions.all",
+        "line_hint": 21,
+        "target": "extension/dist/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged `require('child_process')` and `execFile` usage as HIGH risk. However, the code uses this strictly for legitimate process management of the 'Antigravity' backend service (e.g., killing a specific PID via `taskkill` on Windows or `process.kill` on Unix to restart the local hub). This is standard behavior for extensions that manage local language servers or backend daemons.",
+        "code_reference": "process.platform === \"win32\" ? await ao(\"taskkill\", [\"/PID\", String(r.pid), \"/T\", \"/F\"]) : process.kill(r.pid, \"SIGTERM\")",
+        "line_hint": "approx line 140",
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The scanner flagged 'Directory traversal paired with network send' and 'Harvesting VSCode configuration'. The code accesses `globalState` and `workspace.getConfiguration` to manage its own internal state (saved accounts, quota history, workspace-specific account links). There is no evidence of this data being sent to an external network endpoint in this chunk; it is used for local UI rendering and logic decisions.",
+        "code_reference": "let t = O.workspace.getConfiguration(\"boygr.antigravityAccountSwitcher\")",
+        "line_hint": "approx line 280",
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The scanner flagged 'Data exfiltration' due to POST patterns. The visible code in this chunk does not contain explicit `fetch` or `http.request` calls sending data out. The logic focuses on local state management (`globalState.update`) and UI updates. The 'exfiltration' pattern likely triggered on internal API calls to the local Antigravity hub or false positives on JSON serialization for local storage.",
+        "code_reference": "await n.globalState.update(he, a)",
+        "line_hint": "approx line 5",
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The extension implements a `TokenVault` class that directly accesses the Windows Credential Manager via PowerShell and P/Invoke (`Advapi32.dll`). It reads (`CredReadW`) and writes (`CredWriteW`) credentials for the target `gemini:antigravity`. While this may be intended for 'instant switching', it constitutes direct access to the OS credential store, which is a high-risk behavior often associated with credential theft.",
+        "code_reference": "class Re { ... async readSystemCredential() { ... [WinCredVaultInterop]::CredRead ... } ... async writeSystemCredential() { ... [WinCredVaultInterop]::CredWrite ... } }",
+        "line_hint": "Lines 210-280 (approximate based on class definition)",
+        "target": "extension/dist/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension uses `child_process.execFile` to execute `powershell.exe` with `-ExecutionPolicy Bypass` to run inline C# code for interacting with the Windows API. This bypasses standard security controls and allows arbitrary code execution within the context of the extension.",
+        "code_reference": "var Zt = require(\"node:child_process\"), ... async runPowerShell(t) { let { stdout: e } = await fo(\"powershell.exe\", [\"-NoProfile\", \"-NonInteractive\", \"-ExecutionPolicy\", \"Bypass\", \"-Command\", t], ...)",
+        "line_hint": "Lines 195-205",
+        "target": "extension/dist/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION",
+        "description": "The `postState` method collects sensitive data including `accounts` (emails), `usage` (quota data), and `vaultedEmails`, and sends it to the webview. While the webview is local, the CSP allows `https://googleusercontent.com`. If the webview script (`account-switcher.js`) contains malicious logic, this data could be exfiltrated. The static scanner flagged potential exfiltration patterns here.",
+        "code_reference": "async postState(t) { ... let e = { ... accounts: this.snapshot.accounts, ... vaultedEmails: l, ... }; await this.view.webview.postMessage({ type: \"state\", state: e }) }",
+        "line_hint": "Lines 100-115",
+        "target": "extension/dist/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be an 'Account Switcher' for Google Antigravity. However, it implements a full credential vaulting system that copies credentials from the OS Credential Manager into VS Code's `SecretStorage` and back. This 'shadow vault' behavior is not strictly necessary for simple account switching (which usually just triggers the auth flow) and increases the attack surface for credential theft.",
+        "code_reference": "class Re { ... async captureActiveCredential(t) { ... await this.secrets.store(this.getVaultKey(e), JSON.stringify(i)) ... } ... async applyCredential(t) { ... await this.writeSystemCredential(i.userName, i.blobBase64, i.persist) ... } }",
+        "line_hint": "Lines 240-260",
+        "target": "extension/dist/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_KEYLOGGER",
+        "description": "The static scanner flagged a 'keydown' event listener as a keylogger. Analysis of the code context reveals this is a standard UI interaction handler for closing modals or menus when the 'Escape' key is pressed. It does not buffer keystrokes or exfiltrate data.",
+        "code_reference": "addEventListener(\"keydown\",e=>{if(e.key===\"Escape\")...",
+        "line_hint": "1591",
+        "target": "extension/dist/media/account-switcher.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_EXFILTRATION",
+        "description": "The static scanner flagged 'postMessage' with email data as potential exfiltration. In VS Code Webview extensions, `vscode.postMessage` is the standard, secure mechanism for communicating between the Webview (UI) and the Extension Host (backend). The data sent (email, label, color) is user-entered metadata for the account switcher UI, not stolen credentials.",
+        "code_reference": ".postMessage({type:\"updateLabel\",email:s.email,label:o.editValue,colorTag:o.editColorTag,group:o.edi",
+        "line_hint": "1591",
+        "target": "extension/dist/media/account-switcher.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_PERSISTENCE",
+        "description": "The scanner flagged setting a file to 'hidden'. This is likely related to UI state persistence (e.g., hiding sections in the sidebar) or standard file system operations within the extension's storage path, not malicious persistence mechanisms like Registry Run keys or Startup folders.",
+        "code_reference": ".hidden",
+        "line_hint": "484",
+        "target": "extension/dist/media/account-switcher.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension's code aligns perfectly with its advertised purpose: managing Google accounts for 'Antigravity'. It includes UI components for account switching, quota tracking, and settings. The dependencies and activation events are appropriate for a UI-heavy extension. No capability disconnects were found.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/media/account-switcher.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_KEYLOGGER",
+        "description": "The static scanner flagged a 'keydown' event listener as a keylogger. However, the code snippet `addEventListener(\"keydown\",e=>{if(e.key===\"Escape\")...` is a standard UI pattern for closing modals or menus when the Escape key is pressed. It does not capture, buffer, or exfiltrate keystrokes.",
+        "code_reference": "addEventListener(\"keydown\",e=>{if(e.key===\"Escape\")...",
+        "line_hint": "1591",
+        "target": "extension/dist/media/account-switcher.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_EXFILTRATION",
+        "description": "The static scanner flagged `postMessage` as data exfiltration. In VS Code extensions, `window.postMessage` (or `vscode.postMessage`) is the standard, secure mechanism for communication between the extension host and the webview UI. The payload contains UI state (labels, colors), not sensitive credentials.",
+        "code_reference": ".postMessage({type:\"updateLabel\",email:s.email,label:o.editValue,colorTag:o.editColorTag,group:o.edi",
+        "line_hint": "1591",
+        "target": "extension/dist/media/account-switcher.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_PERSISTENCE",
+        "description": "The static scanner flagged `.hidden` as persistence evasion. This is a standard DOM property used to hide elements (e.g., hiding broken avatar images via `e.hidden = !0`). It is not related to file system attributes or registry persistence.",
+        "code_reference": ".hidden",
+        "line_hint": "484",
+        "target": "extension/dist/media/account-switcher.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_KEYLOGGER",
+        "description": "The static scanner flagged a `keydown` event listener as a keylogger. However, the code snippet shows `addEventListener(\"keydown\", e => { if (e.key === \"Escape\") ... })`. This is a standard UI pattern for closing modals or dialogs when the Escape key is pressed. It does not capture keystrokes for exfiltration.",
+        "code_reference": "addEventListener(\"keydown\",e=>{if(e.key===\"Escape\")...",
+        "line_hint": "1591",
+        "target": "extension/dist/media/account-switcher.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_EXFILTRATION",
+        "description": "The static scanner flagged `postMessage` as data exfiltration. In VS Code extensions, `postMessage` is the standard API for communication between the extension host and the webview UI. The payload contains UI state (labels, colors, groups), not sensitive credentials or system info.",
+        "code_reference": ".postMessage({type:\"updateLabel\",email:s.email,label:o.editValue,colorTag:o.editColorTag,group:o.edi",
+        "line_hint": "1591",
+        "target": "extension/dist/media/account-switcher.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_PERSISTENCE",
+        "description": "The static scanner flagged `.hidden` as persistence evasion. In the context of the provided HTML template strings, this likely refers to CSS classes or HTML attributes (e.g., `hidden` attribute or `.hidden` class) used to toggle visibility of UI elements, not file system attributes.",
+        "code_reference": ".hidden",
+        "line_hint": "484",
+        "target": "extension/dist/media/account-switcher.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_KEYLOGGER",
+        "description": "The static scanner flagged a 'keydown' event listener as a keylogger. However, the code explicitly checks for `e.key === \"Escape\"` and `e.key === \"Enter\"` to close modals or save labels. It does not buffer keystrokes or exfiltrate them. This is standard UI interaction handling.",
+        "code_reference": "window.addEventListener(\"keydown\", e => { if (e.key === \"Escape\") { ... } if (e.key === \"Enter\" && o.editingEmail && !A) { ... } })",
+        "line_hint": "approx line 1591 (in original context)",
+        "target": "extension/dist/media/account-switcher.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_EXFILTRATION",
+        "description": "The static scanner flagged `postMessage` as data exfiltration. In VS Code extensions, `postMessage` is the standard API for communication between the Webview (UI) and the Extension Host (backend). The messages sent (`updateLabel`, `saveSettings`, `switchAccount`) are internal control signals, not data exfiltration to external servers.",
+        "code_reference": "f.postMessage({ type: \"updateLabel\", email: s.email, label: o.editValue, ... })",
+        "line_hint": "approx line 1591 (in original context)",
+        "target": "extension/dist/media/account-switcher.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_PERSISTENCE",
+        "description": "The static scanner flagged `.hidden` as persistence evasion. In this context, it is likely part of CSS class manipulation or DOM visibility toggling for UI elements (e.g., hiding modals or sections), not setting file system attributes.",
+        "code_reference": "N/A (Scanner hit on generic pattern)",
+        "line_hint": "approx line 484 (in original context)",
+        "target": "extension/dist/media/account-switcher.js (chunk 4/4)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'Antigravity Account Switcher' is a utility designed to manage Google accounts for the local Antigravity backend. The code operates exclusively on localhost (127.0.0.1) to interact with the Antigravity process via HTTP/gRPC-like protocols. It uses child_process to locate and restart the local Antigravity service, which is consistent with its functionality. All static scanner alerts regarding exfiltration, shell execution, and file traversal are false positives resulting from the extension's legitimate need to manage local processes and state. No malicious behavior, credential harvesting, or external communication was detected.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "11 HIGH findings",
+    "Composite risk 0.60 >= 0.45",
+    "AI verdict: SUSPICIOUS"
+  ],
   "virustotal": {
     "malicious": 0,
     "total_engines": 0,
@@ -187,7 +451,7 @@
   "analysis_coverage": {
     "partial": false,
     "excluded_phases": [],
-    "ai_phase_ran": false
+    "ai_phase_ran": true
   },
-  "scanned_at": "2026-09-16T01:58:56.278018+00:00Z"
+  "scanned_at": "2026-09-16T04:18:07.066535+00:00"
 }
