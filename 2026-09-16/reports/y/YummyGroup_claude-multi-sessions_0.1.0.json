@@ -1,0 +1,117 @@
+{
+  "extension_id": "YummyGroup.claude-multi-sessions",
+  "display_name": "MultiClaude",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "YummyGroup",
+    "verified": false
+  },
+  "vsix_sha256": "5ac8afbc821aefe50c7292e8cd161deafa035263757edaea78897aa0b120c001",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.85,
+    "static": 0.15625,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js",
+        "summary": "This extension is malicious. It masquerades as a UI enhancement for Claude Code but actually performs a supply-chain attack by reading, patching, and overwriting the source code of the legitimate 'Anthropic.claude-code' extension. This allows the attacker to inject arbitrary code into a trusted extension, potentially leading to credential theft, data exfiltration, or further system compromise. The presence of a 'restore' command suggests the author is aware of the destructive nature of the modification and provides a way to revert it, likely to avoid detection or user complaints, but the core behavior is unequivocally malicious."
+      },
+      {
+        "target": "extension/out/patch.js",
+        "summary": "The code is a utility module designed to patch the source code of the 'Claude Code' VS Code extension. It uses a regex to locate the registration of the 'claudeVSCodeSidebar' webview provider and injects a global variable reference to allow the MultiClaude extension to manage multiple instances. The code contains no network calls, no file system access to sensitive locations, no credential harvesting, no obfuscation, and no execution of arbitrary commands. The behavior is consistent with the advertised functionality of managing multiple Claude Code sessions. The activation event is appropriate for the technical requirement of patching another extension at startup."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a UI wrapper for Claude Code sessions ('MultiClaude'), but the code actively modifies the source code of another installed extension (Anthropic.claude-code) by overwriting its 'extension.js' file. This is a supply-chain attack pattern where a benign-looking extension is used to inject arbitrary code into a trusted, high-privilege extension.",
+        "code_reference": "ensurePatched((0, node_path_1.join)(claude.extensionPath, \"extension.js\"))",
+        "line_hint": 24,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUPPLY_CHAIN_ATTACK",
+        "description": "The extension writes a patched version of the Claude Code extension's bundle to disk, replacing the original. This allows the attacker to execute arbitrary code within the context of the Claude Code extension, which likely has access to user credentials, API keys, and sensitive data. The 'patch' module is imported but its contents are not visible, implying hidden malicious logic.",
+        "code_reference": "(0, node_fs_1.writeFileSync)(bundle, patched);",
+        "line_hint": 48,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "UNAUTHORIZED_FILE_MODIFICATION",
+        "description": "The extension modifies files outside its own storage path (context.globalStoragePath). It writes to the extension path of 'Anthropic.claude-code', which is a violation of VS Code extension isolation principles and indicates malicious intent to persist or alter other software.",
+        "code_reference": "node_fs_1.copyFileSync(bundle, `${bundle}.multiclaude.bak`); node_fs_1.writeFileSync(bundle, patched);",
+        "line_hint": 47,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is appropriate for a UI extension, but the behavior of patching another extension's code is completely disproportionate to its advertised function of 'separate icons in the VS Code side bar'.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses the 'onStartupFinished' activation event. While this is necessary for the extension to intercept and patch the Claude Code extension's source code before it initializes, it is a broader activation scope than strictly required for a UI-only extension. However, given the extension's purpose of modifying another extension's behavior, this is functionally proportional and not indicative of malicious intent.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/patch.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is malicious. It masquerades as a UI enhancement for Claude Code but actually performs a supply-chain attack by reading, patching, and overwriting the source code of the legitimate 'Anthropic.claude-code' extension. This allows the attacker to inject arbitrary code into a trusted extension, potentially leading to credential theft, data exfiltration, or further system compromise. The presence of a 'restore' command suggests the author is aware of the destructive nature of the modification and provides a way to revert it, likely to avoid detection or user complaints, but the core behavior is unequivocally malicious.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-29T01:19:43.763Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T15:55:59.083962+00:00Z"
+}

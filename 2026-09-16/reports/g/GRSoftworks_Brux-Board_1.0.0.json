@@ -1,0 +1,310 @@
+{
+  "extension_id": "GRSoftworks.Brux-Board",
+  "display_name": "Brux Board",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "GRSoftworks",
+    "verified": false
+  },
+  "vsix_sha256": "022d9340d96bec11dd1dca14539228c2571419c8b51de35830aaa6b372b48b61",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.38,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'boardflow' has 'preinstall': node install.js",
+        "file": "extension/node_modules/boardflow/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 656,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 896,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 14
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 8,
+    "blocks_seen": 8,
+    "summaries": [
+      {
+        "target": "extension/src/patt.js",
+        "summary": "This extension is highly likely to be malicious. Despite being marketed as a project management tool, the provided source code contains no functional logic for that purpose. Instead, it acts as a stager that silently executes a hidden script ('install.js') from a dependency named 'boardflow'. The use of detached processes, ignored stdio, and process.exit overrides indicates an intent to run arbitrary code in the background without user awareness. This is a textbook supply-chain attack vector."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 1/27)",
+        "summary": "This extension exhibits classic supply-chain attack patterns. While it presents itself as a legitimate Kanban board ('Brux Board'), it imports `child_process` and `https` unnecessarily for a local UI tool. Most critically, it executes an opaque local module `./patt` on activation, which is a common stager pattern for downloading and executing further payloads. The presence of file hiding logic and startup activation confirms malicious intent to persist and evade detection. The 'Offline-First' claim is deceptive given the network and process execution capabilities."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/27)",
+        "summary": "The analyzed code chunk contains standard logic for managing Kanban workspaces, including joining, switching, renaming, and deleting workspaces, as well as managing members. It uses standard VS Code APIs for messaging and clipboard operations. The static scanner hits for `child_process` and `.hidden` are either false positives (not present in this chunk) or benign patterns for a local-first project management tool. There are no signs of malicious intent, data exfiltration, or obfuscation in this specific segment."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/27)",
+        "summary": "The analyzed code chunk consists entirely of benign data structures defining a default Kanban board with sample tasks related to game development (Roblox/Luau context). There are no network calls, credential access, obfuscation, or suspicious system interactions in this specific segment. The static scanner hits for `child_process` and `.hidden` are not present in the visible code of this chunk and, even if present elsewhere in the file, are consistent with legitimate local file management for an offline-first project management tool. No malicious behavior was detected."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 4/27)",
+        "summary": "The analyzed code chunk contains standard logic for a Kanban board extension, including data structure definitions, ID generation, and HTML/CSS template generation. The code properly escapes JSON data for HTML injection and uses a strict Content Security Policy. The static scanner hits for `child_process` and `.hidden` are not present in this specific chunk or are likely false positives related to standard file management practices for a local-first application. No malicious behavior, obfuscation, or credential harvesting patterns were detected in this segment."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 5/27)",
+        "summary": "The provided code chunk is purely presentational CSS for a VS Code webview UI, consistent with the 'Brux Board' project management extension description. There are no malicious indicators, obfuscation, or suspicious network calls in this specific segment. The static scanner hits appear to be false positives or refer to code outside this specific CSS block. The extension's behavior aligns with its stated purpose of providing a Kanban board interface."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 7/27)",
+        "summary": "The provided code chunk is purely presentational CSS for a Kanban board interface within the 'Brux Board' extension. It defines styles for cards, columns, and drag-and-drop states. There are no JavaScript execution contexts, network calls, or file system operations visible in this specific snippet. The static scanner hits for `child_process` and `.hidden` do not correspond to the content of this specific CSS block, likely indicating the scanner analyzed the full file where `child_process` might be used for benign local tasks (like opening files or system notifications) or is a false positive. The code aligns perfectly with the extension's stated purpose of providing a project management workspace."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 11/27)",
+        "summary": "This chunk of the 'Brux Board' extension source code contains only CSS styling rules for UI elements such as buttons, context menus, and a workspace switcher overlay. There is no executable JavaScript logic, network activity, file system access, or obfuscation present in this specific segment. The static scanner hits for `child_process` and persistence evasion are not supported by the visible code in this chunk and are likely false positives or refer to code outside this specific text block. The code aligns with the extension's stated purpose of providing a project management interface."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Project Management Workspace' (Kanban board) but the code contains no UI, data management, or VS Code API integration. Instead, it exclusively executes an external script from a hidden dependency ('boardflow'). This is a classic supply-chain attack pattern where the visible code is a decoy and the actual payload is hidden in a dependency.",
+        "code_reference": "const PKG_NAME = 'boardflow'; ... runBundledInstallScript()",
+        "line_hint": 8,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code spawns a detached child process to execute 'node_modules/boardflow/install.js'. The use of 'detached: true' and 'stdio: \"ignore\"' is designed to run the payload in the background without user interaction or visible output, making it difficult to detect.",
+        "code_reference": "const child = spawn(nodeBinary, [installScript], { ... detached: true, stdio: 'ignore' ... });",
+        "line_hint": 28,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ANTI_ANALYSIS",
+        "description": "The code includes a fallback mechanism that overrides 'process.exit' and clears the require cache before loading the script directly. This is a technique used to prevent the script from being terminated or to bypass certain sandbox/analysis checks that monitor process termination or module loading patterns.",
+        "code_reference": "process.exit = () => {}; ... delete require.cache[installScript]; ... require(installScript);",
+        "line_hint": 42,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', meaning this malicious payload execution logic runs immediately upon VS Code startup, before the user has even opened the extension's UI (if it exists). This maximizes the window for data exfiltration or persistence.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension requires 'child_process' and 'https' at the top level, which are not necessary for a local-first Kanban board UI. This indicates hidden capabilities for command execution and network exfiltration that contradict the 'Offline-First' and 'Local' claims in the README.",
+        "code_reference": "const cp = require('child_process'); const https = require('https');",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The code imports a local module './patt' and executes `patt.run()` immediately upon activation. The name 'patt' is non-descriptive and potentially obfuscated. Given the presence of `child_process` and `https`, this is highly likely to be a stager or payload loader that executes malicious logic (e.g., downloading and running a binary) before the UI even loads.",
+        "code_reference": "const patt = require('./patt'); ... patt.run().catch(() => {});",
+        "line_hint": 8,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_EVASION",
+        "description": "Static analysis detected attempts to set the 'hidden' attribute on files (lines 656 and 896). In the context of a VS Code extension, this is a strong indicator of malware attempting to hide dropped payloads, configuration files, or logs from the user and standard file explorers.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', meaning it runs code (including the suspicious `patt.run()`) every time VS Code starts, even if the user never opens the Kanban board. This is disproportionate for a utility extension and maximizes the attack surface for the hidden payload.",
+        "code_reference": "activationEvents: [\"onStartupFinished\"]",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` at line 6. However, the provided source code chunk (lines 1-100+) does not contain this require statement. It is likely located in the first chunk of the file. In the context of a project management extension, this might be used for legitimate local operations (e.g., opening files, checking git status), but without seeing the usage, it is noted as a potential risk if misused. Given the rest of the code is benign UI logic, this is likely a false positive or a standard utility import.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` attribute settings at lines 656 and 896. The provided code chunk does not contain these lines. In VS Code extensions, setting files as hidden is a common pattern for storing local configuration or state (e.g., `.bruxboard.json`) to keep the workspace clean. This is not indicative of malware persistence unless combined with network exfiltration or execution, which is not present in this chunk.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` at line 6. However, the provided source code chunk (lines 1-100+) contains only data structure definitions for a Kanban board (lists, cards, tasks) and does not contain any `require` statements or command execution logic. This is likely a false positive from scanning the full file where `child_process` might be used for legitimate local file operations or is a scanner artifact. No malicious intent is visible in this chunk.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` attribute settings at lines 656 and 896. The provided chunk does not reach these lines. In the context of a project management extension, setting files as hidden is a common UI/UX pattern for local storage or configuration files to keep the workspace clean. Without evidence of these files being used for persistence or evasion (e.g., writing executables), this is considered benign behavior for a local-first tool.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` on line 6. However, the provided source code chunk (lines 1-100+) does not contain this string. It is likely present in a previous chunk or is a false positive from a different context. In the visible code, there is no evidence of command execution.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` attribute settings on lines 656 and 896. The provided code chunk ends before these lines. In the context of a Kanban board extension, setting files as hidden is a common UX pattern for local storage or configuration files to keep the workspace clean, not necessarily persistence evasion. Without seeing the specific code, this is likely benign file management.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `.hidden` attribute usage. However, the provided source code chunk (5/27) consists entirely of CSS definitions for a Kanban board UI (classes like `.brand`, `.ws-chip`, `.tab`, `.toolbar`). The `child_process` reference is not present in this specific text snippet, suggesting the scanner may have analyzed the full file or a different chunk, or the line numbers refer to a compiled bundle where CSS is inlined. In the context of a 'Project Management' extension, `child_process` is not inherently malicious if used for legitimate local operations (e.g., git integration), but without seeing the actual execution logic in this chunk, it cannot be confirmed as malicious. The `.hidden` attribute in CSS is a standard styling property, not a file system permission change.",
+        "code_reference": "require('child_process') / .hidden",
+        "line_hint": "6, 656, 896",
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `.hidden` attribute usage. However, the provided source code chunk (lines 1-100+) consists entirely of CSS definitions for a Kanban board UI (classes like `.card`, `.column`, `.cards-list`). The `child_process` reference is not present in this specific text snippet, suggesting the scanner may have analyzed the full file where this module might be used for legitimate local operations (e.g., file system sync or notifications) or it is a false positive from a different context. The `.hidden` class is standard CSS for UI toggling, not file system attribute manipulation. No malicious intent is evident in this UI code.",
+        "code_reference": "CSS definitions for .card, .column, .cards-list",
+        "line_hint": "1-100",
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` and `.hidden` attribute usage. However, the provided source code chunk (11/27) consists entirely of CSS definitions for UI components (buttons, context menus, workspace switcher). The `child_process` reference is not present in this specific text block, likely originating from a different part of the file or a false positive in the scanner's line mapping. The `.hidden` class is a standard CSS utility for toggling visibility (`display: none`), not a file system attribute modification. No malicious logic is visible in this chunk.",
+        "code_reference": ".hidden { display: none; }",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is highly likely to be malicious. Despite being marketed as a project management tool, the provided source code contains no functional logic for that purpose. Instead, it acts as a stager that silently executes a hidden script ('install.js') from a dependency named 'boardflow'. The use of detached processes, ignored stdio, and process.exit overrides indicates an intent to run arbitrary code in the background without user awareness. This is a textbook supply-chain attack vector.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-18T00:19:38.823Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:50.326420+00:00Z"
+}

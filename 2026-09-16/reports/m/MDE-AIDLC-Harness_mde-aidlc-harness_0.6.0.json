@@ -1,0 +1,429 @@
+{
+  "extension_id": "MDE-AIDLC-Harness.mde-aidlc-harness",
+  "display_name": "MDE AI-DLC Harness",
+  "version": "0.6.0",
+  "publisher": {
+    "name": "MDE-AIDLC-Harness",
+    "verified": false
+  },
+  "vsix_sha256": "cd0e1c91e14ab0c952d76c1e7ab313b7a0317bcd0d836f2c395e2ca4ebf94f6e",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6599999999999999,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 1,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/media/webview.js",
+        "line": 1,
+        "snippet": "addEventListener(\"keydown\",h=>{(h.key===\"Enter\"||h.key===\" \")&&(h.preventDefault(),s.onOpenDetails(e.id))}),v}var oe=[{id:\"all\",label:\"tabAll\"},{id:\"workflow\",label:\"tabWorkflows\"},{id:\"agent\",label:\""
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 1,
+        "snippet": "\"use strict\";var oe=Object.create;var U=Object.defineProperty;var ne=Object.getOwnPropertyDescriptor;var ae=Object.getOwnPropertyNames;var ce=Object.getPrototypeOf,le=Object.prototype.hasOwnProperty;v"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 16,
+        "snippet": "</html>`}nonce(){let e=\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";return Array.from({length:32},()=>e[Math.floor(Math.random()*e.length)]).join(\"\")}};var E=class s{constructor(e,"
+      },
+      {
+        "check": "rmm_tool_abuse",
+        "severity": "HIGH",
+        "description": "Downloading MSI/EXE installer (potential RMM deployment)",
+        "file": "extension/out/extension.js",
+        "line": 1,
+        "snippet": "fetch(`${this.host()}/api/v4/user`,{headers:{\"PRIVATE-TOKEN\":e}});if(t.status===401)return;if(!t.ok)throw new Error(`GitLab user validation failed (${t.status}).`);let r=await t.json();return{username"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/webview.js",
+        "line": 1,
+        "snippet": ".postMessage(e)}function o(e,...t){return(Z[e]??String(e)).replace(/\\{(\\d+)\\}/g,(a,i)=>{let r=t[Number(i)];return r===void 0?a:String(r)})}var ee={workflow:\"type-hierarchy\",agent:\"hubot\",tool:\"tools\","
+      }
+    ],
+    "total": 15
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "git3.fsoft.com.vn",
+      "source_file": "extension/package.json",
+      "line": 10,
+      "context": "\"url\": \"https://git3.fsoft.com.vn/GROUP/FJPMDE/mde-ai/mde-aidlc-harness.git\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 14,
+    "blocks_seen": 14,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/16)",
+        "summary": "The code is a standard VS Code extension client for an internal GitLab instance. It uses `vscode.SecretStorage` correctly to manage user-provided tokens and makes expected API calls to validate those tokens. The scanner hits for credential theft and RMM abuse are false positives resulting from the legitimate use of the SecretStorage API and standard HTTP requests for authentication. The extension's behavior is proportional to its advertised function of managing GitLab connections and workflows."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/16)",
+        "summary": "The code appears to be a legitimate internal tool for connecting to a corporate GitLab instance. The 'critical' and 'high' scanner hits are false positives resulting from standard, secure usage of VS Code APIs (SecretStorage for token management, Configuration for host settings) and legitimate network calls to the configured GitLab endpoint. The behavior is proportional to the extension's stated purpose of browsing and exporting resources from a specific internal repository."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 6/16)",
+        "summary": "The code is a legitimate VS Code extension acting as a GUI client for an internal Python-based tool ('mde-aidlc-harness'). It interacts with a specific internal GitLab instance (git3.fsoft.com.vn) and spawns a local Python process to manage workflows. All flagged indicators (credential access, child_process, config reading) are consistent with the extension's documented functionality and do not exhibit malicious intent such as data exfiltration to external C2 servers, arbitrary code execution, or credential theft."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 10/16)",
+        "summary": "The code in this chunk is consistent with the extension's stated purpose: a GUI client for a Python-based GitLab harness. It handles UI state, file existence checks, and adapter requests. The static scanner hits are largely false positives resulting from the extension's legitimate need to manage GitLab tokens (via SecretStorage), validate them against a corporate GitLab instance, and manage local file state. There are no indicators of malicious intent, data exfiltration to external parties, or unauthorized system access in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 13/16)",
+        "summary": "The code is a legitimate VS Code extension client for an internal GitLab-based AI-DLC harness. It uses standard VS Code APIs for webviews, secret storage, and global storage. The use of `child_process` is limited to running `git` commands for repository synchronization, which is appropriate for its stated purpose. All scanner hits are false positives resulting from pattern-matching on legitimate authentication and file management operations. The domain `git3.fsoft.com.vn` is an internal corporate host, consistent with the extension's description."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 14/16)",
+        "summary": "This extension exhibits multiple high-risk behaviors that are disproportionate to its stated purpose of a 'harness' for GitLab workflows. It accesses VS Code's SecretStorage API to retrieve credentials, writes executable batch scripts to disk for git authentication, and makes network requests to an internal GitLab host using these credentials. The combination of credential access, script execution, and network egress creates a significant risk of credential theft and data exfiltration. The hardcoded internal domain and the use of environment variables for secrets further increase the risk. While some behaviors (like cloning repos) are expected, the overall pattern suggests a potential supply-chain attack or a poorly secured internal tool that could be abused."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 16/16)",
+        "summary": "The code is a standard VS Code extension implementation for an internal GitLab integration tool. It uses the SecretStorage API correctly to manage user credentials, communicates with a specific internal GitLab host to validate tokens, and manages local file state in the global storage directory. All scanner hits are false positives resulting from the legitimate use of VS Code APIs for authentication and file management. There is no evidence of malicious intent, data exfiltration to external parties, or unauthorized system access."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 1/10)",
+        "summary": "The code is a standard VS Code webview UI implementation for a GitLab integration extension. It uses standard DOM manipulation, VS Code webview APIs (`acquireVsCodeApi`, `postMessage`), and localization logic. The static scanner hits are false positives resulting from generic pattern matching on standard UI event handling and inter-process communication. No malicious behavior, credential harvesting, or obfuscation is present in this chunk."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 2/10)",
+        "summary": "The provided code chunk is a standard UI rendering module for a VS Code Webview. It constructs DOM elements for a catalog grid (cards for workflows, agents, tools, skills) and handles basic user interactions like selection and filtering. The 'keylogger' and 'exfiltration' flags from the static scanner are false positives resulting from standard accessibility event handling and internal Webview messaging. The code aligns perfectly with the extension's stated purpose of providing a graphical dashboard for the MDE AI-DLC Harness."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 3/10)",
+        "summary": "The provided code chunk is a standard UI rendering module for a VS Code Webview. It implements search filtering, tab navigation, category/author filters, and skeleton loading states. The logic is purely client-side DOM manipulation and state management. The static scanner hits are false positives resulting from generic pattern matching on `keydown` listeners (used for UI navigation) and `postMessage` (used for standard VS Code IPC). There is no evidence of malicious intent, data exfiltration, or credential harvesting in this file."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 4/10)",
+        "summary": "The provided code chunk is a standard UI rendering module for a VS Code Webview. It handles DOM manipulation for a catalog grid, selection lists, and detail drawers. The static scanner hits are false positives: the 'keylogger' detection is a simple UI shortcut handler, and the 'exfiltration' detection is standard postMessage communication between the Webview and the extension host. The code aligns with the extension's stated purpose of providing a graphical dashboard for managing GitLab-based workflows. No malicious behavior, obfuscation, or suspicious network activity is present in this file."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 5/10)",
+        "summary": "The code is a standard UI rendering module for a VS Code webview. It constructs DOM elements for a dashboard interface, including detail drawers, status pills, and action buttons. The static scanner hits are false positives resulting from generic pattern matching on UI event listeners and IPC calls. The code aligns with the extension's stated purpose of providing a graphical client for a GitLab-based harness. No malicious behavior, obfuscation, or suspicious network activity was detected in this chunk."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 6/10)",
+        "summary": "The provided code chunk is a standard UI rendering module for a VS Code webview. It constructs DOM elements for a dashboard interface, including headers, step-by-step onboarding guides, and input fields. The logic is purely presentational and interactive (handling clicks and input changes). The static scanner hits are false positives: the 'keylogger' detection is a standard UI keyboard handler for accessibility, and the 'exfiltration' detection is the legitimate use of `postMessage` for VS Code IPC. There are no signs of malicious intent, obfuscation, or unauthorized network activity in this file."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 7/10)",
+        "summary": "The code is a standard VS Code Webview UI implementation for a GitLab integration tool. The static scanner hits for 'keylogger' and 'exfiltration' are false positives resulting from standard UI event handling and Webview IPC patterns. The hardcoded domain is an internal corporate resource consistent with the extension's documented functionality. No malicious behavior, obfuscation, or credential harvesting was detected."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' due to `context.secrets.get`. However, the code explicitly uses `vscode.SecretStorage` to store a user-provided GitLab Personal Access Token (PAT) for the purpose of authenticating with the configured GitLab instance. This is a standard and secure pattern for VS Code extensions requiring external API authentication, not credential theft.",
+        "code_reference": "this.context.secrets.store($, JSON.stringify({ accessToken: r }))",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 1/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'rmm_tool_abuse' and 'vscode_api_abuse' regarding network calls and configuration reading. The code reads a GitLab host from VS Code settings (`mdeAiaHarness.gitlab`) and makes a standard REST API call to `/api/v4/user` to validate the token. This is consistent with the extension's stated purpose of connecting to an internal GitLab instance.",
+        "code_reference": "fetch(`${this.host()}/api/v4/user`,{headers:{\"PRIVATE-TOKEN\":e}})",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 1/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension connects to a hardcoded internal domain `git3.fsoft.com.vn` by default. While this indicates the extension is likely for internal corporate use (F-Soft), it is not malicious. Users outside this organization would need to change the host setting. This is a configuration detail, not a security threat.",
+        "code_reference": "this.configuration.get(\"host\", \"https://git3.fsoft.com.vn\")",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 1/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' due to `context.secrets.get`. However, the code explicitly parses the result as a JSON object containing an `accessToken` and uses it to validate against a GitLab API endpoint (`/api/v4/user`). This is standard, secure usage of the VS Code SecretStorage API for managing user-provided credentials, not theft.",
+        "code_reference": "let e = await this.context.secrets.get($); ... JSON.parse(e) ... accessToken",
+        "line_hint": 5,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'rmm_tool_abuse' and 'vscode_api_abuse' regarding network calls and configuration reads. The code reads a GitLab host and token from VS Code configuration and uses them to make a legitimate API call to validate the token. The domain `git3.fsoft.com.vn` is an internal corporate GitLab instance, consistent with the extension's purpose of connecting to a specific internal harness repository.",
+        "code_reference": "fetch(`${this.host()}/api/v4/user`, { headers: { \"PRIVATE-TOKEN\": e } })",
+        "line_hint": 14,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'WebView panel combined with external HTTP'. The code creates a WebView panel for the dashboard UI. While it makes HTTP requests, they are for the specific GitLab API defined in the configuration, which is the core function of the extension. There is no evidence of phishing overlays or malicious content injection in this chunk.",
+        "code_reference": "createWebviewPanel(s.viewType,\"MDE AI-DLC Harness\",r,{enableScripts:!0,retainContextWhenHidden:!0});",
+        "line_hint": 16,
+        "target": "extension/out/extension.js (chunk 2/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'rmm_tool_abuse' and 'credential_theft' based on string matches for 'PRIVATE-TOKEN' and 'secrets.get'. Context analysis reveals this is a legitimate GitLab integration. The extension uses VS Code's SecretStorage API to securely store a user-provided GitLab Personal Access Token, which is standard practice for extensions requiring authentication to external services. It does not exfiltrate these secrets to third-party servers; it sends them to the configured GitLab host (git3.fsoft.com.vn) for API validation.",
+        "code_reference": "fetch(`${this.host()}/api/v4/user`,{headers:{\"PRIVATE-TOKEN\":e}})",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 6/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'child_process' usage as high risk. The code spawns a Python process (`python -m mde_aidlc_harness.adapter`) to communicate with a local Python package. This is consistent with the extension's stated purpose of being a 'graphical client for the mde-aidlc-harness Python package'. The command is hardcoded to a specific module and does not accept arbitrary user input for command execution, mitigating command injection risks.",
+        "code_reference": "(0, V.spawn)(this.pythonPath, [\"-m\", \"mde_aidlc_harness.adapter\"]",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 6/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' regarding configuration harvesting. The code reads `mdeAiaHarness.gitlab` and `mdeAiaHarness` configurations to determine the GitLab host and repository URL. This is necessary for the extension to function as a client for the specified internal GitLab instance. No data is sent to unauthorized endpoints.",
+        "code_reference": "workspace.getConfiguration(\"mdeAiaHarness.gitlab\")",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 6/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' due to `context.secrets.get`. In the context of this extension, which explicitly manages GitLab Personal Access Tokens (PATs) as described in the README, using VS Code's SecretStorage API is the standard and secure way to handle user-provided credentials. This is not theft, but proper credential management.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'rmm_tool_abuse' and 'vscode_api_abuse' regarding network calls and configuration reading. The code reads `mdeAiaHarness.gitlab` configuration to determine the host and sends a request to `/api/v4/user` to validate the token. This aligns perfectly with the stated purpose of validating a GitLab token against an internal host. The domain `git3.fsoft.com.vn` is an internal corporate domain, not a public C2 server.",
+        "code_reference": "fetch(`${this.host()}/api/v4/user`...",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Directory traversal paired with network send'. The code uses `path.join` and `fs.stat` to check for the existence of a `.mde-aidlc-harness` directory within the user's selected target project folder. This is local file system management for the extension's state, not exfiltration.",
+        "code_reference": "this.exists(j.join(e, ke))",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 10/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'rmm_tool_abuse' due to a regex match on 'fetch' and 'PRIVATE-TOKEN'. However, the code explicitly validates a GitLab Personal Access Token against a user-configured internal host (`git3.fsoft.com.vn`) to authenticate for cloning a specific repository. This is consistent with the extension's stated purpose of acting as a client for an internal GitLab harness, not RMM deployment.",
+        "code_reference": "fetch(`${this.host()}/api/v4/user`,{headers:{\"PRIVATE-TOKEN\":e}})",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 13/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' for reading from `context.secrets`. The code uses `this.auth.getAccessToken()` which likely retrieves a token stored in VS Code's SecretStorage. This is the standard, secure way for VS Code extensions to manage user credentials (like GitLab PATs) and is not credential theft, especially given the context of authenticating to a user-provided GitLab instance.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 13/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' for directory traversal and network send. The code reads/writes to `context.globalStorageUri` (the extension's private storage) and uses `child_process` to run `git` commands for cloning/syncing a repository. This is expected behavior for an extension that manages a local source checkout in its global storage.",
+        "code_reference": "this.sourceRoot = x.Uri.joinPath(e.globalStorageUri, \"source\")",
+        "line_hint": 16,
+        "target": "extension/out/extension.js (chunk 13/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_api_abuse' for harvesting configuration. The code reads `workspace.getConfiguration(\"mdeAiaHarness.gitlab\")` to get the GitLab host and repository URL. This is standard configuration reading for the extension's functionality, not malicious harvesting.",
+        "code_reference": "workspace.getConfiguration(\"mdeAiaHarness.gitlab\")",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 13/16)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses `context.secrets.get()`, which is the VS Code SecretStorage API. This is typically used to retrieve sensitive credentials (like the GitLab token mentioned in the README) to use in subsequent network requests or git commands. While the README claims this is for validating a user-provided token, the combination of reading secrets and executing git commands with network access creates a high risk of credential exfiltration if the 'internal' host is compromised or if the code is modified to send these secrets elsewhere. The static scanner flagged this as credential theft.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 14/16)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The function `createAskpass` writes a Windows batch script (`askpass.cmd`) to a temporary directory. This script is designed to be used by Git to handle authentication prompts. It reads an environment variable `MDE_GIT_TOKEN` and outputs it. While this is a common pattern for non-interactive git auth, writing executable scripts to disk and relying on environment variables for secrets is a significant security risk. If the environment variable is set globally or if the temp directory is writable by other processes, this could lead to credential leakage or execution of malicious code if the script is tampered with.",
+        "code_reference": "async createAskpass() { ... await m.promises.writeFile(t, r, { ... }) ... }",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 14/16)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION_RISK",
+        "description": "The code performs network requests to a hardcoded internal GitLab host (`git3.fsoft.com.vn`) using a private token. It also clones repositories from this host. If the 'internal' host is not strictly controlled or if the token is valid for broader access, this could be used to exfiltrate data or access sensitive repositories. The use of `fetch` with `PRIVATE-TOKEN` header confirms active credential usage in network calls.",
+        "code_reference": "fetch(`${this.host()}/api/v4/user`,{headers:{\"PRIVATE-TOKEN\":e}})",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 14/16)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "WEBSOCKET_PHISHING_RISK",
+        "description": "The code creates a WebView panel with `enableScripts: true`. While this is common for dashboard UIs, combined with the network activity and credential handling, it increases the attack surface for potential phishing or XSS if the content served is not strictly sanitized. The static scanner flagged this as a potential phishing overlay.",
+        "code_reference": "createWebviewPanel(s.viewType,\"MDE AI-DLC Harness\",r,{enableScripts:!0,retainContextWhenHidden:!0})",
+        "line_hint": 16,
+        "target": "extension/out/extension.js (chunk 14/16)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CONFIGURATION_MANIPULATION",
+        "description": "The code reads and potentially writes to VS Code workspace configuration (`workspace.getConfiguration`). It retrieves `repositoryUrl` and `repositoryRef` from settings. While this is expected for a tool that clones repositories, it allows the extension to modify user settings, which could be abused to point the user to malicious repositories if the extension is compromised.",
+        "code_reference": "x.workspace.getConfiguration(\"mdeAiaHarness\").get(\"repositoryUrl\", ...)",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 14/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' due to `context.secrets.get`. In this context, the extension is using the standard VS Code SecretStorage API to retrieve a user-provided GitLab Personal Access Token (PAT) for authentication against an internal GitLab instance. This is the correct and secure way to handle credentials in VS Code extensions, not theft.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 16/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'rmm_tool_abuse' and 'vscode_api_abuse' regarding network calls and configuration reading. The code reads `mdeAiaHarness.gitlab` configuration to determine the host and sends a request to `/api/v4/user` to validate the token. This aligns perfectly with the README description of validating a GitLab token. The domain `git3.fsoft.com.vn` is an internal corporate host, consistent with the 'MDE' (likely Mobile/Desktop Engineering) internal tool context.",
+        "code_reference": "fetch(`${this.host()}/api/v4/user`",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 16/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Directory traversal paired with network send'. The code uses `path.resolve` and `fs.stat` to check for the existence of files within the global storage path (`.mde-aidlc-harness`). This is standard file management for the extension's local state and source checkout, not malicious traversal.",
+        "code_reference": "I.Uri.file(W.resolve(e, r))",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 16/16)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'keylogger' patterns. The 'exfiltration' match is a false positive on the standard VS Code webview API `postMessage` used for UI-to-extension communication. The 'keylogger' match is a false positive on a `keydown` listener that only handles 'Enter' and 'Space' keys to trigger UI actions (opening details), with no data buffering or network transmission.",
+        "code_reference": "L.postMessage(e) ... addEventListener(\"keydown\",h=>{(h.key===\"Enter\"||h.key===\" \")&&(h.preventDefault(),s.onOpenDetails(e`",
+        "line_hint": 1,
+        "target": "extension/media/webview.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged a keydown listener as a keylogger. The code `v.addEventListener(\"keydown\", h => { (h.key === \"Enter\" || h.key === \" \") && (h.preventDefault(), s.onOpenDetails(e.id)) })` is a standard accessibility pattern for making a div/article element act as a button (triggering action on Enter/Space). It does not buffer keystrokes or send them to a network endpoint.",
+        "code_reference": "v.addEventListener(\"keydown\", h => { (h.key === \"Enter\" || h.key === \" \") && (h.preventDefault(), s.onOpenDetails(e.id)) })",
+        "line_hint": "1",
+        "target": "extension/media/webview.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged a pattern as data exfiltration. The code snippet `postMessage(e)` is standard Webview-to-Extension communication in VS Code, used to send UI state changes (like 'install' or 'open details') to the extension host. It is not sending sensitive data to an external server.",
+        "code_reference": "postMessage(e)",
+        "line_hint": "1",
+        "target": "extension/media/webview.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged a 'keylogger' pattern due to `addEventListener(\"keydown\", ...)` and `postMessage`. However, the code explicitly checks for `Enter` or `Space` keys to trigger `onOpenDetails`, which is standard UI interaction for accessibility and list navigation, not credential harvesting or keystroke logging.",
+        "code_reference": "addEventListener(\"keydown\",h=>{(h.key===\"Enter\"||h.key===\" \")&&(h.preventDefault(),s.onOpenDetails(e`",
+        "line_hint": 1,
+        "target": "extension/media/webview.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' due to `.postMessage`. In the context of a VS Code Webview, `postMessage` is the standard, secure IPC mechanism for communicating between the webview UI and the extension host. It does not send data to external networks directly.",
+        "code_reference": ".postMessage(e)}function o(e,...t){return(Z[e]??String(e)).replace(/\\{(\\d+)\\}/g,(a,i)=>{let r=t[Numb",
+        "line_hint": 1,
+        "target": "extension/media/webview.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged a 'keylogger' pattern due to a keydown listener. However, the code explicitly checks for 'Enter' or ' ' (space) keys to trigger UI actions (opening details) and calls preventDefault. This is standard accessibility/UI interaction logic, not credential harvesting.",
+        "code_reference": "addEventListener(\"keydown\",h=>{(h.key===\"Enter\"||h.key===\" \")&&(h.preventDefault(),s.onOpenDetails(e",
+        "line_hint": 1,
+        "target": "extension/media/webview.js (chunk 4/10)"
+      }
+    ],
+    "findings_truncated": 8
+  },
+  "ai_summary": "The code is a standard VS Code extension client for an internal GitLab instance. It uses `vscode.SecretStorage` correctly to manage user-provided tokens and makes expected API calls to validate those tokens. The scanner hits for credential theft and RMM abuse are false positives resulting from the legitimate use of the SecretStorage API and standard HTTP requests for authentication. The extension's behavior is proportional to its advertised function of managing GitLab connections and workflows.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "4 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-19T05:04:11.64Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-19T05:23:03.164370+00:00Z"
+}

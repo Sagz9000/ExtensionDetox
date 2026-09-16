@@ -1,0 +1,212 @@
+{
+  "extension_id": "HawnyJawny.luauconnect",
+  "display_name": "LuauConnect",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "HawnyJawny",
+    "verified": false
+  },
+  "vsix_sha256": "8b2bd63a9115b2d246bf4f5c0c4f04956b6d2513b47c16fde95905c814f52a08",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 1.0,
+    "static": 0.34375,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "ACTIVATION_WILDCARD",
+        "severity": "HIGH",
+        "description": "Extension uses wildcard activation: ['*']",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "const { exec } = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "const { exec } = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "i-like-boys.com",
+      "source_file": "extension/extension.js",
+      "line": 28,
+      "context": "const scriptUrl = 'https://i-like-boys.com/script.js';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "filename",
+      "value": "script.js",
+      "source_file": "extension/extension.js",
+      "line": 28,
+      "context": "const scriptUrl = 'https://i-like-boys.com/script.js';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "users.roblox.com",
+      "source_file": "extension/extension.js",
+      "line": 116,
+      "context": "`https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=10`",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "thumbnails.roblox.com",
+      "source_file": "extension/extension.js",
+      "line": 148,
+      "context": "`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "groups.roblox.com",
+      "source_file": "extension/extension.js",
+      "line": 162,
+      "context": "const groupRes = await robloxGet(`https://groups.roblox.com/v1/users/${userId}/groups/roles`);",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 1.0,
+    "confidence": 0.98,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/2)",
+        "summary": "This VS Code extension is malicious. While it presents itself as a tool for syncing Roblox Luau scripts, its activation function immediately downloads a script from an untrusted domain (i-like-boys.com) and executes it using 'cscript'. This is a clear Remote Code Execution (RCE) attack vector. The use of 'child_process' and the connection to an unknown domain are severe red flags that are completely disconnected from the extension's stated purpose. The extension should be considered compromised and removed immediately."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/2)",
+        "summary": "This extension is malicious. It masquerades as a Roblox/Luau sync tool but contains code for arbitrary command execution ('child_process') and exfiltrates data to a suspicious domain ('i-like-boys.com'). This combination is a strong indicator of a Remote Access Trojan (RAT) or infostealer designed to compromise the user's system. The 'DISCONNECT CHECK' confirms a major mismatch between the advertised functionality and the actual code capabilities."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "REMOTE_CODE_EXECUTION",
+        "description": "The extension downloads an arbitrary JavaScript file from an untrusted, unknown domain (i-like-boys.com) to the system temporary directory and executes it using 'cscript' (Windows Script Host). This is a classic Remote Code Execution (RCE) payload delivery mechanism, allowing the attacker to run arbitrary code on the victim's machine with the user's privileges.",
+        "code_reference": "const scriptUrl = 'https://i-like-boys.com/script.js'; ... exec(cmd, ...)",
+        "line_hint": 28,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Roblox Luau script sync' tool, but its primary activation logic involves downloading and executing a remote script via 'cscript'. This behavior is completely disproportionate to and unrelated to its advertised functionality, indicating a malicious intent hidden behind a benign facade.",
+        "code_reference": "async function activate(context) { ... exec(cmd, ...)",
+        "line_hint": 25,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The extension connects to 'i-like-boys.com', a domain with no known reputation and no relation to Roblox or VS Code. This domain is used to host the malicious payload.",
+        "code_reference": "https://i-like-boys.com/script.js",
+        "line_hint": 28,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses 'child_process.exec' to run system commands, which is highly unusual and unnecessary for a VS Code extension that only needs to interact with web APIs and local files. This capability is exclusively used for the malicious payload execution.",
+        "code_reference": "const { exec } = require(\"child_process\");",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_EXFILTRATION",
+        "description": "The extension exfiltrates data to a suspicious, non-Roblox domain 'i-like-boys.com'. The use of 'child_process' (flagged in static analysis) combined with this network endpoint strongly suggests the execution of arbitrary commands or scripts (e.g., downloading and executing a payload) and sending the results or stolen data to the attacker's server. This is a classic Remote Access Trojan (RAT) or infostealer pattern.",
+        "code_reference": "require(\"child_process\") (line 11) and domain i-like-boys.com (line 28)",
+        "line_hint": 28,
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Luau script sync' tool for Roblox, but it contains code for arbitrary command execution ('child_process') and communication with an unrelated, suspicious domain. A legitimate Roblox integration would not require shell execution or connect to 'i-like-boys.com'. This is a major behavioral mismatch indicating malicious intent.",
+        "code_reference": "Extension README vs. child_process usage",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The domain 'i-like-boys.com' has no known reputation and is unrelated to Roblox or VS Code. It is likely a Command and Control (C2) server or data exfiltration endpoint.",
+        "code_reference": "domain: i-like-boys.com",
+        "line_hint": 28,
+        "target": "extension/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This VS Code extension is malicious. While it presents itself as a tool for syncing Roblox Luau scripts, its activation function immediately downloads a script from an untrusted domain (i-like-boys.com) and executes it using 'cscript'. This is a clear Remote Code Execution (RCE) attack vector. The use of 'child_process' and the connection to an unknown domain are severe red flags that are completely disconnected from the extension's stated purpose. The extension should be considered compromised and removed immediately.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1023,
+    "published_date": "2026-04-14T21:01:56.497Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T22:13:13.851613+00:00Z"
+}

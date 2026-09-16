@@ -1,0 +1,198 @@
+{
+  "extension_id": "LuaStyle.luastyle",
+  "display_name": "Luastyle",
+  "version": "1.2.1",
+  "publisher": {
+    "name": "LuaStyle",
+    "verified": false
+  },
+  "vsix_sha256": "0af45223d3e6b2996901572be5e3492610a6c82873d91cf47ec0c24c48b61726",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.1,
+    "static": 0.4932698389236725,
+    "behavioral": 0.85,
+    "trust_signal": 0.6,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/rojoProcess.js",
+        "line": 6,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/rojoProcess.js",
+        "line": 6,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/rojoProcess.js",
+        "line": 14,
+        "snippet": "/** @type {import('child_process').ChildProcess|undefined} */"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/linter.js",
+        "line": 6,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/linter.js",
+        "line": 6,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/formatter.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/formatter.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/rojoProcess.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/linter.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/formatter.js",
+        "line": 5,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 15
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 4,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/src/linter.js",
+        "summary": "The code implements a standard VS Code linter integration for the 'selene' Lua linter. It correctly uses `child_process.spawn` to execute the external CLI tool, parses the JSON output, and maps it to VS Code Diagnostics. The use of `child_process` is justified by the extension's stated purpose of driving CLI tools, and there are no signs of malicious behavior such as credential theft, network exfiltration, or arbitrary code execution. The static rule hit for `child_process` is a false positive in this context."
+      },
+      {
+        "target": "extension/src/formatter.js",
+        "summary": "The code is a legitimate implementation of a VS Code document formatter for Lua/Luau files using the external `stylua` CLI tool. The use of `child_process.spawn` is expected and necessary for invoking external CLI tools, aligning perfectly with the extension's stated purpose ('drives the CLI tools you already have installed'). There are no signs of malicious behavior, data exfiltration, or credential harvesting. The only minor concern is the automatic modification of global editor settings, which is a common but slightly intrusive convenience feature."
+      },
+      {
+        "target": "extension/src/extension.js",
+        "summary": "The extension code is benign and aligns perfectly with its advertised functionality as a utility for Rojo/Luau projects. It correctly utilizes VS Code APIs for tree views, file watching, and command registration. The code delegates heavy lifting (formatting, linting, building) to external CLI tools (`stylua`, `selene`, `rojo`) via a `RojoController` and `SeleneLinter` (not shown but referenced), which is a standard and safe pattern for such extensions. There are no signs of credential harvesting, network exfiltration, obfuscation, or arbitrary code execution. The only minor issue is the use of `onStartupFinished` for activation, which is a performance anti-pattern but not a security threat."
+      },
+      {
+        "target": "extension/src/rojoTree.js",
+        "summary": "The provided source code implements a TreeDataProvider for a VS Code extension focused on Rojo/Luau projects. It reads local project configuration files (`*.project.json`) and directory structures to render a visual tree in the VS Code UI. The code uses standard Node.js `fs` and `path` modules for file system access within the workspace context and standard VS Code APIs for UI rendering. There are no network calls, no execution of child processes, no obfuscation, and no access to sensitive system paths or credentials. The behavior is fully aligned with the advertised functionality of a project tree viewer."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `child_process.spawn` to execute the `selene` CLI tool. While this triggers a static rule for command execution, it is explicitly documented in the README ('shells out to them') and is the standard mechanism for VS Code extensions to integrate external linters/formatters. The arguments are constructed from user configuration and file paths, with no evidence of arbitrary command injection or exfiltration.",
+        "code_reference": "const { spawn } = require('child_process'); ... const child = spawn(selenePath, ['--display-style', 'json', ...args], { cwd });",
+        "line_hint": "6",
+        "target": "extension/src/linter.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension modifies global VS Code settings (`editor.formatOnSave`) without explicit user confirmation if the `luastyle.formatOnSave` configuration is enabled. While this is a common pattern for formatter extensions to ensure their feature works, it is a side-effect that users might not expect from a simple 'utility belt'.",
+        "code_reference": "vscode.workspace.getConfiguration('editor', { languageId: 'lua' }).update('formatOnSave', true, vscode.ConfigurationTarget.Global);",
+        "line_hint": "approx. line 85",
+        "target": "extension/src/formatter.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `onStartupFinished` as an activation event. While not inherently malicious, this is generally discouraged in VS Code extensions as it forces the extension to load immediately upon startup, potentially impacting performance. For a utility extension like this, `workspaceContains:**/*.project.json` is sufficient and more efficient. This is a minor best-practice violation rather than a security risk.",
+        "code_reference": "Activation Events: workspaceContains:**/*.project.json, onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "STATIC_RULE_FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.findFiles('**/*.project.json', ...)` as a potential abuse of broad glob patterns. However, this usage is contextually appropriate for the extension's stated purpose of managing Rojo projects, which are defined by `*.project.json` files. The search is scoped to the workspace and limited to 50 results, preventing excessive resource consumption.",
+        "code_reference": "const files = await vscode.workspace.findFiles('**/*.project.json', '**/node_modules/**', 50);",
+        "line_hint": "75",
+        "target": "extension/src/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code implements a standard VS Code linter integration for the 'selene' Lua linter. It correctly uses `child_process.spawn` to execute the external CLI tool, parses the JSON output, and maps it to VS Code Diagnostics. The use of `child_process` is justified by the extension's stated purpose of driving CLI tools, and there are no signs of malicious behavior such as credential theft, network exfiltration, or arbitrary code execution. The static rule hit for `child_process` is a false positive in this context.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1637,
+    "published_date": "2026-09-15T00:43:44.42Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T22:01:43.176195+00:00Z"
+}

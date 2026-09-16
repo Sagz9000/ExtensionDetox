@@ -1,0 +1,346 @@
+{
+  "extension_id": "Nyisulya.bongocode-ai",
+  "display_name": "BongoCode AI \u2014 Msaidizi Mahiri wa Kuandika Code",
+  "version": "1.0.4",
+  "publisher": {
+    "name": "Nyisulya",
+    "verified": false
+  },
+  "vsix_sha256": "52076ab2a7807a9d6410ca022b5ffb070699fe6c2f1d74105f8f95dd46a2fc7d",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.65,
+    "static": 0.49928999760937237,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/agent/ToolExecutor.js",
+        "line": 39,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/agent/ToolExecutor.js",
+        "line": 39,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/agent/ToolExecutor.js",
+        "line": 212,
+        "snippet": "(0, child_process_1.exec)(command, { cwd: workingDir, timeout: 60000, maxBuffer: 1024 * 1024 * 5 }, (error, stdout, stderr) => {"
+      },
+      {
+        "check": "MAGIC_MISMATCH",
+        "severity": "HIGH",
+        "description": "File 'extension/assets/icon.png' claims to be '.png' but magic bytes indicate 'JPEG' (expected: {'PNG'})",
+        "file": "extension/assets/icon.png",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/agent/ToolExecutor.js",
+        "line": 39,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 16
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.deepseek.com",
+      "source_file": "extension/dist/agent/AgentEngine.js",
+      "line": 123,
+      "context": "url: 'https://api.deepseek.com/chat/completions',",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.bongocode.tz",
+      "source_file": "extension/dist/constants.js",
+      "line": 11,
+      "context": "exports.PRODUCTION_SERVER_URL = 'https://api.bongocode.tz';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "796185427774-uio46jold9bk7q2ki9eqpe452r8smh73.apps.googleusercontent.com",
+      "source_file": "extension/dist/services/authService.js",
+      "line": 99,
+      "context": "const clientId = '[REDACTED:GOOGLE_OAUTH_CLIENT_ID]';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.45,
+    "confidence": 0.85,
+    "blocks_parsed": 8,
+    "blocks_seen": 8,
+    "summaries": [
+      {
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 1/5)",
+        "summary": "This file contains the `ToolExecutor` class, which is the core engine for an AI coding agent. It allows the AI to read/write files and execute shell commands. The use of `child_process` is a high-risk indicator in isolation, but it is proportional to the 'AI Coding Assistant' category (similar to GitHub Copilot or Cursor). The primary concern is whether the user is aware that the AI can execute arbitrary commands. The code structure is clean, standard TypeScript compiled to JS, with no obvious obfuscation or hidden payloads in this chunk. The verdict is SUSPICIOUS primarily due to the broad permissions implied by the tool executor, which requires user trust, rather than overt malicious code in this specific file."
+      },
+      {
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 2/5)",
+        "summary": "This chunk of the BongoCode AI extension implements file reading and writing tools for an AI agent. The code appears clean and well-structured, using standard VS Code APIs (`vscode.workspace.fs`) for file operations. The primary risk stems from the extension's nature as an AI agent that can modify files and potentially execute commands (via `child_process` found elsewhere in the package). The `child_process` usage is a high-risk indicator if not carefully constrained, as it allows the AI to run arbitrary shell commands. The network calls to custom domains are expected for an AI service. Overall, the code is suspicious not due to obfuscation or obvious malware patterns, but due to the powerful capabilities granted to an AI agent that may act autonomously."
+      },
+      {
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 3/5)",
+        "summary": "This chunk of the BongoCode AI extension implements core agent tools: file replacement and terminal command execution. The use of `child_process.exec` is a high-risk indicator because it allows the remote AI model to trigger arbitrary shell commands, effectively giving the LLM provider root-level access to the workspace environment. While this is a standard capability for 'AI Coding Agents' (like Copilot Workspace or Cursor), it significantly increases the attack surface. The extension also connects to a custom domain (`api.bongocode.tz`), which is a common pattern for newer or less established AI extensions. The code itself is clean and well-structured, but the inherent capabilities granted to the AI engine make it SUSPICIOUS from a strict security standpoint, requiring user trust in the AI provider's integrity."
+      },
+      {
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 4/5)",
+        "summary": "This chunk of the BongoCode AI extension implements tool execution logic for an AI agent, specifically directory listing and grep search. The code appears functionally consistent with an AI coding assistant that can read workspace files and potentially execute commands. The primary risk is the inherent power of the 'run_terminal_command' tool, which allows the AI to execute shell commands. The network calls to custom domains are expected for an AI service. No obvious obfuscation or credential harvesting is visible in this specific chunk, but the overall extension relies on the AI agent's behavior, which is a larger attack surface than a static linter or theme."
+      },
+      {
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 5/5)",
+        "summary": "This file is the final chunk of the `ToolExecutor` module, which implements a `grep_search` tool for the AI agent. The code itself is straightforward, handling search results and errors. The primary risk stems from the extension's architecture: it is an AI coding assistant that likely uses `child_process` to execute shell commands (like `grep`) to search files. This is a standard but powerful capability that, if not strictly sandboxed or validated, could be exploited via prompt injection. The extension also connects to custom API endpoints (`api.bongocode.tz`), which is typical for such services but warrants user trust. The code in this specific chunk is benign, but the overall extension behavior is high-risk due to the combination of AI-driven logic and shell execution."
+      },
+      {
+        "target": "extension/dist/services/workspaceContextService.js (chunk 1/3)",
+        "summary": "This chunk of the `WorkspaceContextService` appears benign and consistent with the extension's advertised purpose of providing AI context. It reads the active editor's content and enumerates workspace files to build a prompt context. The use of `workspace.findFiles` is a standard pattern for this type of extension. No obfuscation, credential harvesting, or suspicious network calls are present in this specific file. The overall package has some unknown domains (DeepSeek API, custom backend), which is expected for an AI extension, but this specific file is clean."
+      },
+      {
+        "target": "extension/dist/services/workspaceContextService.js (chunk 2/3)",
+        "summary": "This chunk of code is responsible for gathering workspace context (file tree, project type, manifest content) to feed into an AI prompt. The logic is straightforward and typical for AI-powered VS Code extensions. The primary risk is not in the local collection logic itself, but in where this collected data is sent. The extension uses a custom domain (api.bongocode.tz) and DeepSeek API, meaning user code structure and dependency lists are sent to third-party servers. Without a clear privacy policy or local processing option, this is a moderate privacy concern but not necessarily malicious code execution."
+      },
+      {
+        "target": "extension/dist/services/workspaceContextService.js (chunk 3/3)",
+        "summary": "The provided code chunk is the tail end of a `WorkspaceContextService` class, which is responsible for constructing prompts for an AI agent. The code shown is benign, consisting of string concatenation and class export logic. The static analysis hits are either false positives (workspace file enumeration for AI context) or minor packaging issues (icon file type mismatch). The domains identified in the full package (`api.deepseek.com`, `api.bongocode.tz`) are consistent with an AI extension that uses a third-party LLM provider and a custom backend. There are no indicators of credential theft, obfuscation, or malicious execution in this file."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension uses `child_process` to execute arbitrary terminal commands (`run_terminal_command`). While this is a core feature of AI coding agents (like Copilot/Cursor), the README focuses heavily on 'writing code' and 'reading images/PDFs' in Swahili, without explicitly warning users that the AI can execute shell commands. For a user expecting a simple assistant, the ability to run `bash` commands is a significant capability that warrants explicit documentation and trust.",
+        "code_reference": "const child_process_1 = require(\"child_process\"); ... case 'run_terminal_command': return await this.runCommand(args.command, args.cwd);",
+        "line_hint": 39,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 1/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. For an AI assistant that requires user interaction (chat panel), this is acceptable but slightly aggressive compared to `onCommand` or `onView`. It ensures the agent is ready immediately, which is common for AI extensions but increases startup overhead.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension communicates with `api.bongocode.tz` (custom domain) and `api.deepseek.com` (known AI provider). The custom domain `bongocode.tz` is a country-code TLD (Tanzania), which aligns with the extension's origin but is less common for global infrastructure. The reputation is 'unknown', which is typical for new services.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The `ToolExecutor` class provides methods to read, write, and replace file contents within the workspace. This is expected for a code-editing AI agent. The paths are resolved relative to the workspace root, which is a standard security boundary.",
+        "code_reference": "async executeTool(name, args) { ... case 'read_file': ... case 'write_to_file': ... }",
+        "line_hint": 55,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 1/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as an AI coding assistant (BongoCode AI) that helps write, review, and fix code. While file reading/writing is expected for such tools, the use of `child_process` (flagged in static analysis) implies the ability to execute arbitrary shell commands. If the AI agent can invoke shell commands without strict sandboxing or user confirmation, this is a significant capability disconnect for a 'code helper' extension, potentially allowing arbitrary code execution on the user's machine.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 39,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The `readFile` and `writeFile` methods use `vscode.workspace.fs` to access files. While this is standard for code assistants, the `resolveUri` method (not fully visible but implied) determines the scope. If it resolves relative to the workspace root, it is benign. If it allows absolute paths or traversal, it could read/write sensitive files outside the project. Given the context of an AI agent, this is a necessary but powerful capability.",
+        "code_reference": "vscode.workspace.fs.readFile(fileUri)",
+        "line_hint": 15,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The package connects to `api.bongocode.tz` and `api.deepseek.com`. These are likely the backend services for the AI model and authentication. The domain `api.bongocode.tz` is a custom domain, which is common for SaaS extensions but requires trust in the vendor. The Google OAuth client ID is standard for authentication.",
+        "code_reference": "api.bongocode.tz",
+        "line_hint": null,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 2/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension uses `child_process.exec()` to run arbitrary commands. While this is a core feature of an AI coding agent (allowing the AI to run tests/builds), it grants the AI model (and thus the remote LLM provider) the ability to execute any shell command in the user's workspace. If the AI is compromised or hallucinates, this leads to arbitrary code execution. The command is passed directly from the AI tool call.",
+        "code_reference": "child_process_1.exec(command, { cwd: workingDir, ... })",
+        "line_hint": 39,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 3/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The extension communicates with `api.bongocode.tz` (a custom domain) and `api.deepseek.com`. Since the AI agent can read files and execute commands, it can potentially exfiltrate sensitive data (like `.env` files or source code containing secrets) to these endpoints via the AI's context or direct tool outputs. The domain `bongocode.tz` is not a major established vendor, increasing supply chain risk.",
+        "code_reference": "api.bongocode.tz, api.deepseek.com",
+        "line_hint": null,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The `replaceFileContent` method reads and writes files within the workspace. This is expected for a code editing extension, but combined with the AI agent's ability to determine `relPath`, it could potentially write to unexpected locations if path traversal is not strictly handled in `resolveUri` (not visible in this chunk but implied).",
+        "code_reference": "vscode.workspace.fs.readFile(fileUri)",
+        "line_hint": 10,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 3/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is an AI coding assistant that exposes a 'run_terminal_command' tool. This implies the AI agent can execute arbitrary shell commands within the user's workspace. While `child_process` is flagged by static analysis, the specific implementation in this chunk is not visible (likely in a previous chunk), but the capability itself is a significant security surface for an AI extension unless strictly sandboxed or user-approved per command.",
+        "code_reference": "toolName: 'run_terminal_command'",
+        "line_hint": 39,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 4/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension communicates with `api.bongocode.tz` (a custom domain) and `api.deepseek.com`. For an AI extension, this is expected, but the custom domain `bongocode.tz` is not a well-known corporate domain, requiring trust in the vendor's infrastructure. The use of a `.tz` (Tanzania) TLD is consistent with the README's mention of TZS payments, but adds a layer of geographic specificity that may be less scrutinized than major US/EU domains.",
+        "code_reference": "domain: api.bongocode.tz",
+        "line_hint": null,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The `grep_search` and `list_directory` tools read files within the workspace. This is standard for a code assistant, but it does mean the AI can potentially read sensitive files (like `.env`) if they are in the workspace root and not ignored by the glob patterns (which do ignore node_modules, .git, etc., but not necessarily .env).",
+        "code_reference": "vscode.workspace.fs.readFile(uri)",
+        "line_hint": 65,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 4/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension uses `require('child_process')` (likely for the `grep_search` tool implementation) to execute shell commands. While this is a common pattern for AI coding assistants to perform file searches, it represents a significant capability disconnect for a standard VS Code extension. If the AI agent is instructed by an LLM to run arbitrary commands, a prompt injection could lead to arbitrary code execution. The specific line in this chunk is the tail end of the file, but the dependency is confirmed by static analysis.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 39,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 5/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension communicates with `api.bongocode.tz` and `api.deepseek.com`. These are third-party AI backend services. While expected for an AI extension, they represent potential data exfiltration vectors if the user's code or context is sent to these servers without clear privacy guarantees. The domain `api.bongocode.tz` is a custom domain, which is less transparent than major providers like OpenAI or Anthropic.",
+        "code_reference": "api.bongocode.tz, api.deepseek.com",
+        "line_hint": null,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "ASSET_INTEGRITY",
+        "description": "The extension icon `icon.png` has magic bytes indicating it is a JPEG file, not a PNG. This is a minor packaging error but suggests a lack of rigorous build process or asset verification.",
+        "code_reference": "extension/assets/icon.png",
+        "line_hint": null,
+        "target": "extension/dist/agent/ToolExecutor.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a code assistant that typically activates on user interaction or specific language modes. While common for AI extensions to be ready immediately, it does consume resources at startup.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/services/workspaceContextService.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "Uses `workspace.findFiles('**')` to enumerate workspace files. This is standard for building context for an AI assistant but can be performance-heavy in large monorepos. The code indicates a cap (60 files) is applied later, mitigating the risk.",
+        "code_reference": "workspace.findFiles('**'",
+        "line_hint": 78,
+        "target": "extension/dist/services/workspaceContextService.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension collects a broad sample of the workspace file tree (up to 60 files) and the content of project manifest files (up to 2500 chars). This data is formatted into a 'context prompt' which, given the extension's AI nature, is likely sent to an external API (api.bongocode.tz or api.deepseek.com). While common for AI assistants, this constitutes potential code/data exfiltration to a third-party server.",
+        "code_reference": "const uris = await vscode.workspace.findFiles('**/*', ...); ... projectManifest = `${mf.name}:\\n${text.slice(0, 2500)}`;",
+        "line_hint": "78",
+        "target": "extension/dist/services/workspaceContextService.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is an AI coding assistant. Collecting workspace context (file names, manifest contents) is proportional to its function of understanding the codebase to generate code. However, the destination of this data (api.bongocode.tz) is a custom domain, not a major cloud provider, which warrants user scrutiny regarding data privacy.",
+        "code_reference": "formatContextPrompt(ws)",
+        "line_hint": "110",
+        "target": "extension/dist/services/workspaceContextService.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged a broad glob pattern `workspace.findFiles('**')` as potential API abuse. However, in the context of an AI coding assistant (BongoCode AI), enumerating workspace files to build context for the LLM is a core, expected functionality. This is not malicious behavior.",
+        "code_reference": "workspace.findFiles('**')",
+        "line_hint": 78,
+        "target": "extension/dist/services/workspaceContextService.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "PACKAGING_ANOMALY",
+        "description": "The extension icon file `extension/assets/icon.png` has JPEG magic bytes despite the .png extension. This is a minor packaging error or misconfiguration and does not indicate malicious intent or code execution risk.",
+        "code_reference": "extension/assets/icon.png",
+        "line_hint": null,
+        "target": "extension/dist/services/workspaceContextService.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This file contains the `ToolExecutor` class, which is the core engine for an AI coding agent. It allows the AI to read/write files and execute shell commands. The use of `child_process` is a high-risk indicator in isolation, but it is proportional to the 'AI Coding Assistant' category (similar to GitHub Copilot or Cursor). The primary concern is whether the user is aware that the AI can execute arbitrary commands. The code structure is clean, standard TypeScript compiled to JS, with no obvious obfuscation or hidden payloads in this chunk. The verdict is SUSPICIOUS primarily due to the broad permissions implied by the tool executor, which requires user trust, rather than overt malicious code in this specific file.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-08-26T13:09:38.64Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T01:16:38.781335+00:00Z"
+}

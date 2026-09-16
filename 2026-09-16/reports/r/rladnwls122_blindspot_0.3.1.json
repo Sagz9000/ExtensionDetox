@@ -1,0 +1,218 @@
+{
+  "extension_id": "rladnwls122.blindspot",
+  "display_name": "Blindspot",
+  "version": "0.3.1",
+  "publisher": {
+    "name": "rladnwls122",
+    "verified": false
+  },
+  "vsix_sha256": "87b5f519c13f7b52bd57bf56d9879b11ccd236e075d3a86569b7cf8a55d18af6",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.15,
+    "static": 0.40625,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/src/core/config.js",
+        "line": 45,
+        "snippet": "{ pattern: '\\\\b(eval|exec|execSync|spawnSync|child_process|Function\\\\s*\\\\()', level: 'critical', reason: 'dynamic code execution' },"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/out/src/core/config.js",
+        "line": 45,
+        "snippet": "{ pattern: '\\\\b(eval|exec|execSync|spawnSync|child_process|Function\\\\s*\\\\()', level: 'critical', reason: 'dynamic code execution' },"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/out/src/core/config.js",
+        "line": 45,
+        "snippet": "{ pattern: '\\\\b(eval|exec|execSync|spawnSync|child_process|Function\\\\s*\\\\()', level: 'critical', reason: 'dynamic code execution' },"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/src/cli/index.js",
+        "line": 38,
+        "snippet": "const node_child_process_1 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/src/cli/index.js",
+        "line": 279,
+        "snippet": "return (0, node_child_process_1.execFileSync)('git', ['show', `:${file}`], {"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/src/extension/git.js",
+        "line": 43,
+        "snippet": "const node_child_process_1 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/src/extension/git.js",
+        "line": 48,
+        "snippet": "const run = (0, node_util_1.promisify)(node_child_process_1.execFile);"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/src/core/risk.js",
+        "line": 70,
+        "snippet": "*  - otherwise the higher of the two signals wins, because a `child_process`"
+      }
+    ],
+    "total": 14
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.8,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/out/src/extension/panel.js (chunk 1/2)",
+        "summary": "The visible code implements a local VS Code webview panel for the Blindspot extension, loading a bundled HTML page from the extension's own media directory and using standard VS Code APIs. There are no hardcoded secrets, credential-store reads, child-process execution, network exfiltration, remote code loading, obfuscation, or suspicious native/FFI usage in this chunk. The enabled webview scripts are consistent with an interactive review UI and are scoped to local extension resources. Overall, the code appears proportional to the advertised diff-review/attention-tracking purpose, with only minor low-risk notes around webview scripting and broad activation."
+      },
+      {
+        "target": "extension/out/src/extension/panel.js (chunk 2/2)",
+        "summary": "This code chunk implements the UI panel for the 'Blindspot' extension, which tracks code review coverage. The implementation is clean and follows best practices for VS Code webviews, including the use of a nonce-based Content Security Policy (CSP) to prevent XSS and proper disposal of resources. The only external network calls are for Google Fonts, which is benign for a UI component. There are no signs of obfuscation, credential harvesting, or suspicious command execution. The static rule hit regarding 'Webview panel with scripts enabled' is a standard pattern for interactive VS Code panels and is mitigated by the strict CSP."
+      },
+      {
+        "target": "extension/out/src/extension/commitwatch.js (chunk 1/2)",
+        "summary": "This chunk of the 'Blindspot' extension source code is benign. It defines a `CommitWatcher` class that hooks into the built-in VS Code Git extension API to detect when files are staged for commit. The logic is defensive, checking for the existence of the Git extension and repository state before attaching listeners. The use of `vscode.extensions.getExtension` is appropriate for its stated purpose of monitoring Git operations. No network calls, file system access to sensitive paths, or obfuscation are present in this chunk."
+      },
+      {
+        "target": "extension/out/src/extension/commitwatch.js (chunk 2/2)",
+        "summary": "This chunk of the 'Blindspot' extension source code appears benign. It contains standard VS Code API interactions for managing disposables, listening to Git repository events, and normalizing file paths. The static rule hit for `extensions.getExtension` is a false positive in the context of a Git-dependent extension, as it is required to access the Git API. No obfuscation, credential harvesting, or suspicious network activity was detected in this portion of the code."
+      },
+      {
+        "target": "extension/out/src/core/score.js",
+        "summary": "This file contains pure utility functions for calculating a 'review score' based on coverage, critical code, new code, and AI-generated code metrics. It performs no I/O, network calls, or system access. The logic is deterministic and mathematically sound for its stated purpose. The only minor concern is the activation event, but given the extension's need to track user attention (likely via cursor/selection events), early activation is reasonable. No obfuscation or suspicious patterns were found."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_SCRIPTS",
+        "description": "The extension creates a VS Code webview panel with enableScripts enabled. This is common for interactive UI panels and is mitigated here by localResourceRoots being limited to the extension URI and the HTML being loaded from the extension's own media/page.html. No remote webview content, network calls, or message-based command execution are visible in this chunk.",
+        "code_reference": "vscode.window.createWebviewPanel(ReportPanel.viewType, 'Blindspot', { viewColumn: column, preserveFocus: true }, { enableScripts: true, retainContextWhenHidden: true, localResourceRoots: [extensionUri] });",
+        "line_hint": "65",
+        "target": "extension/out/src/extension/panel.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "ACTIVATION_SCOPE",
+        "description": "The marketplace metadata lists activation on onStartupFinished, which is broader than necessary for many extensions. For an attention-tracking/commit-time review tool, startup activation may be plausible, but it is worth noting as a broad activation surface rather than a malicious indicator.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/src/extension/panel.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The webview panel loads external fonts from Google Fonts (fonts.googleapis.com and fonts.gstatic.com). While this is a common practice for UI styling, it introduces a minor external dependency and potential network egress for font assets. The CSP is correctly configured to allow these specific origins.",
+        "code_reference": "style-src 'unsafe-inline' https://fonts.googleapis.com, font-src https://fonts.gstatic.com",
+        "line_hint": 65,
+        "target": "extension/out/src/extension/panel.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While common for productivity tools, a 'blindspot' detector that relies on Git staging events could arguably use 'onCommand' or specific Git events to reduce startup overhead. However, it is not strictly malicious.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/src/extension/commitwatch.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.extensions.getExtension('vscode.git')` as reconnaissance. This is a standard and necessary pattern for accessing the internal Git API to monitor staging changes, which is the core function of the extension.",
+        "code_reference": "vscode.extensions.getExtension('vscode.git')",
+        "line_hint": 62,
+        "target": "extension/out/src/extension/commitwatch.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "VSCode API Usage",
+        "description": "The code uses `vscode.extensions.getExtension` (referenced in the static evidence as line 62, likely in the preceding chunk or context) to locate the Git extension. This is a standard pattern for extensions that depend on the built-in Git provider to access repository state. While technically 'reconnaissance', it is necessary for the extension's core function of tracking commits.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": 62,
+        "target": "extension/out/src/extension/commitwatch.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "Behavioral Alignment",
+        "description": "The code chunk shows standard lifecycle management (`dispose`, `onDidOpenRepository`) and utility functions (`findRepo`, `normalize`). The logic aligns perfectly with the extension's stated purpose of monitoring Git repositories to track review coverage. No hidden network calls, file system access outside the workspace, or process spawning are observed in this chunk.",
+        "code_reference": "CommitWatcher class methods",
+        "line_hint": null,
+        "target": "extension/out/src/extension/commitwatch.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a code review tool that should ideally activate on specific SCM events or when the user invokes a command. However, this is a common pattern for extensions that need to track IDE events (like cursor movement) globally to calculate 'attention' metrics, so it is not strictly malicious, just slightly aggressive.",
+        "code_reference": "activationEvents: [\"onStartupFinished\"]",
+        "line_hint": null,
+        "target": "extension/out/src/core/score.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The visible code implements a local VS Code webview panel for the Blindspot extension, loading a bundled HTML page from the extension's own media directory and using standard VS Code APIs. There are no hardcoded secrets, credential-store reads, child-process execution, network exfiltration, remote code loading, obfuscation, or suspicious native/FFI usage in this chunk. The enabled webview scripts are consistent with an interactive review UI and are scoped to local extension resources. Overall, the code appears proportional to the advertised diff-review/attention-tracking purpose, with only minor low-risk notes around webview scripting and broad activation.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 8,
+    "published_date": "2026-09-04T12:19:21.18Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T19:20:49.296879+00:00Z"
+}

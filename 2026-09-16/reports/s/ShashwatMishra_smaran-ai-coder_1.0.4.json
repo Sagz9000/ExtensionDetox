@@ -1,0 +1,233 @@
+{
+  "extension_id": "ShashwatMishra.smaran-ai-coder",
+  "display_name": "SMARAN.AI Coder",
+  "version": "1.0.4",
+  "publisher": {
+    "name": "ShashwatMishra",
+    "verified": false
+  },
+  "vsix_sha256": "fc65a63a6859c6971306e9111fa8b9ec1849ccfd0043920b772d9fbd8aa4880e",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/out/SmaranAgentProvider.js",
+        "line": 940,
+        "snippet": ".postMessage({ type: 'getApiKey"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/out/SmaranAgentProvider.js",
+        "line": 1037,
+        "snippet": ".postMessage({ type: 'saveApiKeys', key"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/SmaranAgentProvider.js (chunk 1/13)",
+        "summary": "The code snippet represents a standard VS Code Webview provider for an AI assistant extension. It handles UI interactions (sending prompts, applying code) and manages local configuration for API keys. The static analysis hits for 'exfiltration' are false positives resulting from the extension communicating with its own webview to save user-provided keys to VS Code's local settings. There is no evidence of network exfiltration, credential harvesting from system stores, or malicious behavior in this chunk. The extension's capabilities align with its description as an AI pair programmer."
+      },
+      {
+        "target": "extension/out/SmaranAgentProvider.js (chunk 2/13)",
+        "summary": "The code snippet represents standard functionality for an AI pair programmer extension. It handles local configuration of API keys, reads file contents from the user's workspace to provide context to the LLM, and manages UI interactions via webview postMessage. The flagged 'exfiltration' patterns are false positives resulting from the legitimate need to manage user-provided API keys and workspace context. No malicious behavior, obfuscation, or unauthorized network exfiltration is observed in this chunk."
+      },
+      {
+        "target": "extension/out/SmaranAgentProvider.js (chunk 3/13)",
+        "summary": "This extension exhibits high-risk behavior by enumerating and transmitting workspace file structures to an external backend. The combination of broad file enumeration, potential API key handling, and opaque backend communication ('OmniRoute') strongly suggests data exfiltration or unauthorized data collection. The 'AI Assistant' label is likely a cover for harvesting project metadata and potentially sensitive code context."
+      },
+      {
+        "target": "extension/out/SmaranAgentProvider.js (chunk 4/13)",
+        "summary": "The analyzed code chunk consists primarily of standard VS Code Webview HTML/CSS generation and context update logic. The 'suspicious' patterns flagged by the static scanner (API key handling via postMessage and workspace file indexing) are core functional requirements for an AI coding assistant extension and do not exhibit malicious intent in this context. No obfuscation, network exfiltration, or credential harvesting patterns were observed in this chunk."
+      },
+      {
+        "target": "extension/out/SmaranAgentProvider.js (chunk 8/13)",
+        "summary": "The analyzed code chunk consists of HTML/JS for a VS Code Webview UI. It displays settings for various LLM API keys and chat history. The static scanner hits are false positives resulting from the extension's legitimate functionality of managing user-provided API keys and indexing workspace files for AI context. No malicious patterns, obfuscation, or credential theft mechanisms were identified in this specific chunk."
+      },
+      {
+        "target": "extension/out/SmaranAgentProvider.js (chunk 11/13)",
+        "summary": "The analyzed code chunk is a Webview UI script for an AI coding assistant. It handles DOM manipulation, session management, and IPC communication with the extension host. The flagged 'exfiltration' patterns are standard VS Code Webview IPC calls for managing user-provided API keys, which is a legitimate and expected feature for this type of extension. There are no signs of malicious network activity, credential theft, or obfuscation in this specific chunk."
+      },
+      {
+        "target": "extension/out/SmaranAgentProvider.js (chunk 12/13)",
+        "summary": "The code snippet is from a Webview HTML/JS file for an AI coding assistant. It handles local session management via localStorage and communicates with the extension host via postMessage to save/load API keys. The flagged patterns are standard VS Code extension development practices for UI-to-host communication and workspace context gathering. There is no evidence of external network exfiltration, credential theft, or malicious behavior in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'postMessage' calls for 'getApiKey' and 'saveApiKeys' as data exfiltration. However, the code shows these messages are handled by the extension host to update VS Code's local configuration (`vscode.workspace.getConfiguration`), not to send data over the network. This is standard behavior for an extension managing user-provided API keys locally.",
+        "code_reference": "case 'saveApiKeys': { const config = vscode.workspace.getConfiguration('smaran'); ... await config.update('apiKeys', data.keys, vscode.ConfigurationTarget.Global);",
+        "line_hint": 1037,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 1/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.findFiles('**')` as broad enumeration. In the context of an AI coding assistant, scanning workspace files is a core feature to provide context to the LLM. While it accesses files, it is consistent with the advertised 'Autonomous Code Synthesis' capability.",
+        "code_reference": "workspace.findFiles('**'",
+        "line_hint": 161,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 1/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'getApiKey' and 'saveApiKeys' as data exfiltration. However, the code shows these messages are used to retrieve and save configuration values within the VS Code extension settings (`vscode.workspace.getConfiguration`). This is standard behavior for an AI assistant extension that allows users to configure their own LLM API keys locally. There is no evidence of these keys being sent to an external, untrusted server in this snippet; they are managed via the extension's configuration API.",
+        "code_reference": "case 'getApiKeys': { const config = vscode.workspace.getConfiguration('smaran'); ... }",
+        "line_hint": 940,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 2/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.findFiles('**')` as broad enumeration. In the context of an AI coding assistant, scanning the workspace structure to provide context to the LLM is a core, advertised feature. While it reads file paths, it is limited to the active workspace and is necessary for the 'Autonomous Code Synthesis' functionality described in the README.",
+        "code_reference": "workspace.findFiles('**'",
+        "line_hint": 161,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 2/13)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension enumerates up to 60 workspace files using `vscode.workspace.findFiles('**/*', ...)` and constructs a manifest containing the project name, absolute file path, and a list of relative file paths. This data is packaged into `contextFiles` and sent to the backend via `this._client.askAgent()`. For an AI assistant, sending the entire directory structure is a significant privacy risk and a common precursor to targeted attacks or data theft.",
+        "code_reference": "const foundFiles = await vscode.workspace.findFiles('**/*', '**/node_modules/**', 60); ... contextFiles.push({ path: 'workspace://directory_manifest.txt', content: `Project / Workspace: ${rootFolder.name}\\nPath: ${rootFolder.uri.fsPath}...` });",
+        "line_hint": 161,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 3/13)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code contains logic to handle API keys via postMessage events (`getApiKey`, `saveApiKeys`). While the specific implementation of reading/writing is in other chunks, the presence of these handlers combined with the data exfiltration pattern suggests the extension may be harvesting or managing sensitive credentials for the 'OmniRoute' backend, which is not a standard or trusted VS Code service.",
+        "code_reference": ".postMessage({ type: 'getApiKey` and `.postMessage({ type: 'saveApiKeys', key`",
+        "line_hint": 940,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 3/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension claims to be an 'Autonomous AI Pair Programmer'. However, the aggressive collection of workspace file manifests and the use of non-standard backend names ('OmniRoute', 'Headroom') without clear documentation of data handling policies is disproportionate to a simple code assistant. The 'Headroom Compression' and 'OmniRoute' branding appears to be marketing fluff for a data collection pipeline.",
+        "code_reference": "Connecting to OmniRoute Multi-LLM & Headroom Engine...",
+        "line_hint": 175,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 3/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `postMessage` calls for 'getApiKey' and 'saveApiKeys' as data exfiltration. However, in the context of a VS Code extension, `webview.postMessage` is the standard, secure IPC mechanism for communicating between the extension host and the webview UI. This is necessary for the extension to function as an AI assistant that requires user-provided API keys. It does not indicate exfiltration to an external server.",
+        "code_reference": "this._view.webview.postMessage({ type: 'getApiKey' ... })",
+        "line_hint": 940,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 4/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.findFiles('**')` as broad enumeration. While this pattern can be used for malicious scanning, it is a common and legitimate pattern for AI coding assistants to index workspace files for context retrieval (RAG). Given the extension's stated purpose ('Autonomous AI Pair Programmer'), this behavior is proportional and expected.",
+        "code_reference": "workspace.findFiles('**')",
+        "line_hint": 161,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 4/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'postMessage' calls for 'getApiKey' and 'saveApiKeys' as data exfiltration. However, the code context shows these are standard IPC messages between a VS Code Webview and the extension host to manage user-provided API keys for legitimate LLM providers (OpenRouter, Groq, etc.). This is a core feature of the extension, not malicious behavior.",
+        "code_reference": "postMessage({ type: 'getApiKey' ... } / postMessage({ type: 'saveApiKeys' ... })",
+        "line_hint": "940, 1037",
+        "target": "extension/out/SmaranAgentProvider.js (chunk 8/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `workspace.findFiles('**')` was flagged as broad enumeration. For an AI coding assistant that needs to understand project context, scanning workspace files is a standard and expected capability. It is not indicative of malicious file harvesting unless combined with exfiltration, which is not present in this chunk.",
+        "code_reference": "workspace.findFiles('**')",
+        "line_hint": "161",
+        "target": "extension/out/SmaranAgentProvider.js (chunk 8/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `postMessage({ type: 'getApiKey' })` and `postMessage({ type: 'saveApiKeys' })` as data exfiltration. However, in the context of a VS Code Webview, `postMessage` is the standard, secure IPC mechanism for communicating between the Webview UI and the Extension Host. This code is requesting the user's API keys to display them in the settings drawer, which is a standard feature for AI extensions that allow users to bring their own keys (BYOK). It is not sending data to an external network endpoint.",
+        "code_reference": "vscode.postMessage({ type: 'getApiKeys' });",
+        "line_hint": 940,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 11/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.findFiles('**')` as broad enumeration. While this pattern can be used for malicious scanning, in the context of an AI coding assistant, it is likely used to index or provide context about the project structure to the LLM. Without evidence of the results being sent to an unauthorized external server, this is a functional requirement for a code-aware AI agent.",
+        "code_reference": "workspace.findFiles('**')",
+        "line_hint": 161,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 11/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `postMessage` calls for 'data exfiltration'. However, the code shows `vscode.postMessage` being used to send API keys from the Webview UI to the extension host for local storage. This is a standard VS Code extension pattern for persisting user preferences and is not exfiltration to an external server.",
+        "code_reference": "vscode.postMessage({ type: 'saveApiKeys', keys });",
+        "line_hint": 1037,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 12/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.findFiles('**')` as broad enumeration. In the context of an AI coding assistant, scanning workspace files to build context for the LLM is a core, expected feature, not malicious reconnaissance.",
+        "code_reference": "workspace.findFiles('**')",
+        "line_hint": 161,
+        "target": "extension/out/SmaranAgentProvider.js (chunk 12/13)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code snippet represents a standard VS Code Webview provider for an AI assistant extension. It handles UI interactions (sending prompts, applying code) and manages local configuration for API keys. The static analysis hits for 'exfiltration' are false positives resulting from the extension communicating with its own webview to save user-provided keys to VS Code's local settings. There is no evidence of network exfiltration, credential harvesting from system stores, or malicious behavior in this chunk. The extension's capabilities align with its description as an AI pair programmer.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-16T17:10:58.243Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-16T18:04:16.428759+00:00Z"
+}

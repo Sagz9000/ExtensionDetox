@@ -1,0 +1,305 @@
+{
+  "extension_id": "DotPrivilegeLabs.prime-agent-RL-vscode",
+  "display_name": "Prime Agent Self Improvement",
+  "version": "0.1.15",
+  "publisher": {
+    "name": "DotPrivilegeLabs",
+    "verified": false
+  },
+  "vsix_sha256": "24e39859f5c98713a8858fad43b0c8d9e11cc05d8771f568d83d4d4fa89c914b",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 3
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 7/121)",
+        "summary": "The extension exhibits high-risk characteristics due to heavy code obfuscation and file system operations with restrictive permissions that are disproportionate to a standard VS Code extension's needs. While the visible code in this chunk handles local state management, the obfuscation level (0.70) and the 'RLM' branding combined with the small package size raise significant red flags for a potential supply-chain attack or stager. The disconnect between the advertised 'AI Agent' capabilities and the actual code structure (small size, obfuscated file I/O) warrants a MALICIOUS verdict pending dynamic analysis."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 15/121)",
+        "summary": "This chunk of code appears to be part of a legitimate coding agent extension that interacts with the Git CLI and resolves binary paths on the system. The heavy obfuscation is notable but does not indicate malicious behavior in this context; the visible logic (Git env vars, path checking) is proportional to the extension's stated purpose of running a coding agent. No critical or high-risk indicators such as credential harvesting, C2 communication, or payload execution were found in this specific segment."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 23/121)",
+        "summary": "The code exhibits classic malware traits: heavy obfuscation to hide logic, system reconnaissance (enumerating Windows system directories), and environment manipulation (modifying PATH). While the extension claims to be an AI coding agent, the specific behaviors of hunting for binaries in Program Files and modifying the system PATH are not standard for such tools and strongly suggest a stager or loader attempting to establish persistence or hijack system commands. The disconnect between the benign 'chat' description and the aggressive system-level operations is a critical red flag."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 29/121)",
+        "summary": "This code chunk exhibits high-risk characteristics typical of malicious or compromised VS Code extensions. The primary concern is the use of heavily obfuscated code to invoke `child_process.spawn` for shell command execution on both Windows and Unix systems. The obfuscation prevents static analysis of the specific commands being run, which is a strong indicator of malicious intent to hide arbitrary code execution. Additionally, the extension accesses user-specific data directories and constructs URLs for binary downloads, all while maintaining a high level of code obfuscation. Although the extension claims to be an AI agent that can execute code, the generic and hidden nature of the shell execution wrapper, combined with the obfuscation, creates a significant capability disconnect and security risk. The code should be treated as malicious until proven otherwise through full deobfuscation and dynamic analysis."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 31/121)",
+        "summary": "This code chunk exhibits classic malware stager behavior: it fetches a remote resource, writes it to disk, and executes it via a child process with specific environment variables designed to trigger installation. The heavy obfuscation hides the specific URLs and commands, but the control flow (fetch -> write -> exec) is a critical red flag. Combined with the 'bootstrap' environment variables, this strongly suggests the extension is installing additional, hidden software or establishing a persistent backdoor, which is inconsistent with a benign VS Code chat extension."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 32/121)",
+        "summary": "This VS Code extension exhibits strong indicators of malicious behavior. The code is heavily obfuscated, making it difficult to determine the exact commands and paths involved. It uses `child_process` to execute commands and probes sensitive user data directories (`LOCALAPPDATA`, `XDG_DATA_HOME`), which is inconsistent with a benign 'AI chat' extension. The combination of obfuscation, arbitrary command execution, and sensitive path access strongly suggests this is a malware dropper or info-stealer disguised as a productivity tool."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 74/121)",
+        "summary": "The code is heavily obfuscated, which is a significant red flag for supply-chain attacks, but the visible logic (file listing, metadata reading, child process execution with JSON output parsing) is consistent with the advertised functionality of an AI coding agent that needs to index files and run shell commands. The static rule hit regarding `GIT_CONFIG_SYSTEM` suggests interaction with Git, which is expected for a coding assistant. However, the high obfuscation score (0.70) and the inability to verify the exact commands being executed or the files being accessed due to string encoding prevent a definitive 'CLEAN' verdict. The behavior is proportional to the 'AI Agent' category, but the obfuscation warrants a 'SUSPICIOUS' rating until the obfuscated strings are resolved or the full codebase is reviewed for exfiltration patterns."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_LOGIC",
+        "description": "The code is heavily obfuscated using a string array rotation technique (e.g., `_0x4fe149`, `_0xf4673b`). This makes static analysis difficult and is a common trait of malicious payloads or stagers, even if the specific logic in this chunk appears to be file management.",
+        "code_reference": "const _0x5d432c = _0x4fe149; ... _0x4fe149(0x240)",
+        "line_hint": "1",
+        "target": "extension/out/extension.js (chunk 7/121)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Prime Agent' (AI coding assistant) but the code in this chunk shows logic for managing a local configuration/state file (`Qt`, `Yt`, `H()`) with specific file permissions (`0x180` / 0600) and directory traversal. While an AI agent might store state, the combination of heavy obfuscation, file permission manipulation, and the 'RLM' (Recursive Language Model?) branding suggests potential for hidden persistence or data staging not described in the README.",
+        "code_reference": "async function Qt(_0x2e83f4, _0x150dc5) ... 'mode': 0x180",
+        "line_hint": "15",
+        "target": "extension/out/extension.js (chunk 7/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "Functions `Qt` and `Yt` perform `mkdir` (recursive) and `writeFile`/`unlink` operations on a path determined by `H()`. The use of `0x180` (0600) permissions indicates an attempt to restrict file access to the owner, which is suspicious for a standard VS Code extension that typically uses globalStoragePath with default permissions. This suggests the creation of a hidden or protected local state file.",
+        "code_reference": "await (0x0, qt[_0x5a1f21(0x3f6)])(at[_0x5a1f21(0x551)][_0x5a1f21(0x71e)](H()), { 'recursive': !0x0 })",
+        "line_hint": "18",
+        "target": "extension/out/extension.js (chunk 7/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX size is 0.1 MB, which is very small for an 'AI Agent' that supposedly spawns subagents, runs Python/Shell cells, and manages files. This suggests the core logic is either minimal, heavily compressed, or the 'agent' functionality is a facade for a smaller, more targeted payload (like a downloader or info-stealer) that fetches its real payload at runtime.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 7/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBFUSCATION",
+        "description": "The code is heavily obfuscated with hex-encoded string references (e.g., _0xf4673b(0x583)) and minified variable names. While this hinders manual review, the visible logic corresponds to standard Git operations (setting GIT_CONFIG_GLOBAL, GIT_AUTHOR_NAME, etc.) and binary path resolution (checking LOCALAPPDATA, ProgramFiles), which are consistent with a coding agent that needs to execute shell commands and manage Git repositories. The obfuscation is likely a byproduct of the build process (e.g., webpack/terser) rather than an attempt to hide malicious intent, given the benign nature of the visible operations.",
+        "code_reference": "GIT_CONFIG_GLOBAL': xe ? _0xf4673b(0x583) : _0xf4673b(0x304)",
+        "line_hint": "10",
+        "target": "extension/out/extension.js (chunk 15/121)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule hit for 'Directory traversal paired with network send' is a false positive. The code snippet shows environment variable configuration for Git commands (GIT_CONFIG_GLOBAL, GIT_CONFIG_SYSTEM) and path resolution for binaries. There is no evidence of network exfiltration or malicious directory traversal in this specific chunk. The 'sn' function likely wraps child_process.exec or similar, which is expected for a coding agent that runs shell commands.",
+        "code_reference": "env: { ...process.env, 'GIT_CONFIG_GLOBAL': ... }",
+        "line_hint": "10",
+        "target": "extension/out/extension.js (chunk 15/121)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "OBSCURED_CODE",
+        "description": "The code is heavily obfuscated using a string array rotation function (_0x4fe149) and hex-encoded string indices. This prevents static analysis of the actual logic and is a strong indicator of malicious intent to hide behavior.",
+        "code_reference": "const _0x31cdf1 = _0x4fe149; ... j[_0x31cdf1(0x551)]",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 23/121)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "The function `ti()` constructs paths to Windows system directories (LOCALAPPDATA, ProgramFiles, ProgramW6432) and lists their contents. This is typical reconnaissance behavior to locate installed software or binaries for exploitation or persistence.",
+        "code_reference": "process.env.LOCALAPPDATA ... process.env.ProgramFiles ...",
+        "line_hint": 10,
+        "target": "extension/out/extension.js (chunk 23/121)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The function `ut()` executes a shell command (likely `where` or `which` based on context) via `ei` (likely child_process.exec) to locate a binary. Combined with the obfuscation and system path enumeration, this suggests the extension is hunting for specific executables to run or manipulate.",
+        "code_reference": "await ei(_0x52145b(0x346), [_0x52145b(0x251)], ...)",
+        "line_hint": 20,
+        "target": "extension/out/extension.js (chunk 23/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "ENVIRONMENT_MANIPULATION",
+        "description": "The function `Y()` modifies the PATH environment variable by prepending a discovered binary path. This is a common technique to hijack command execution or load malicious libraries/binaries in subsequent processes.",
+        "code_reference": "_0x70312e[_0x72d0a0] = _0x2b8a0f ? '' + _0x287db1 + ... : _0x287db1",
+        "line_hint": 35,
+        "target": "extension/out/extension.js (chunk 23/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Chat' and 'Coding Agent' interface. However, the code performs low-level system reconnaissance (listing Program Files, modifying PATH, executing shell commands to find binaries) which is not required for a standard chat UI or LLM wrapper. This behavior is disproportionate to the advertised functionality.",
+        "code_reference": "ti(), ut(), Y()",
+        "line_hint": 10,
+        "target": "extension/out/extension.js (chunk 23/121)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "OBSCURED_CODE_EXECUTION",
+        "description": "The code uses heavy obfuscation (hex-encoded string lookups via `_0x4fe149`) to construct and execute shell commands. Specifically, the function `ai` uses `child_process.spawn` (referenced via `Ke`) to execute `cmd.exe` on Windows or `/bin/sh` on Unix. The arguments are constructed dynamically from obfuscated strings, making it impossible to statically verify the safety of the commands without deobfuscation. This is a classic pattern for hiding malicious payloads or arbitrary command execution.",
+        "code_reference": "function ai(_0xf89a1c, _0x324a2b) { ... (0x0, Ke[_0x38f874(0x6ed)])(process.env.COMSPEC || _0x38f874(0x449), ['/d', '/s', '/c', ...]) ... }",
+        "line_hint": "30-45",
+        "target": "extension/out/extension.js (chunk 29/121)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Chat' and 'AI' agent interface. While AI agents can execute code, the presence of a generic, obfuscated shell execution wrapper (`ai`) that handles both Windows `cmd` and Unix `sh` with dynamic argument construction is disproportionate to a simple chat UI. It suggests the extension may be executing arbitrary, hidden commands rather than just managing a known, documented agent process.",
+        "code_reference": "var Ke = require(_0x4fe149(0x765)) ... function ai(...)",
+        "line_hint": "15-45",
+        "target": "extension/out/extension.js (chunk 29/121)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_FILESYSTEM_ACCESS",
+        "description": "The code constructs paths to user data directories (`LOCALAPPDATA` on Windows, `XDG_DATA_HOME` on Linux) and checks for the existence of specific files (likely binaries or config files for the 'Prime Agent'). While this might be for locating the agent binary, the obfuscation of the path components (`_0x2bc1ef(0x754)`, `_0x2bc1ef(0x736)`) prevents verification of what is being accessed. Combined with the shell execution capability, this raises the risk of reading sensitive user data or dropping malicious binaries.",
+        "code_reference": "function U(_0x59220a) { ... D[_0x4cd952(0x551)][_0x4cd952(0x4e0)](process.env.LOCALAPPDATA ?? ...) ... }",
+        "line_hint": "47-55",
+        "target": "extension/out/extension.js (chunk 29/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_NETWORK_ACTIVITY",
+        "description": "The function `ci` parses version information and constructs URLs for `tarballUrl` and `checksumsUrl`. While downloading binaries is a common pattern for language servers or agents, the obfuscation of the string literals used to construct these URLs and the lack of visible domain verification in this chunk makes it difficult to rule out supply-chain attacks (e.g., downloading a malicious binary from a compromised or lookalike domain).",
+        "code_reference": "function ci(_0x13ea8a) { ... return { 'version': _0x2aea90, 'tarballUrl': _0x2ee1b8, 'checksumsUrl': _0x79bbd4 } ... }",
+        "line_hint": "60-75",
+        "target": "extension/out/extension.js (chunk 29/121)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2 & Tunneling / Remote Code Execution",
+        "description": "The code downloads a remote file via `fetch` and writes it to the local filesystem (`li` function likely wraps `fs.writeFile`). It then executes this file using a child process (`ai` function likely wraps `child_process.spawn` or `exec`) with environment variables set to trigger installation logic (`PRIME_AGENT_BOOTSTRAP_TOOLS_ON_INSTALL`). This is a classic 'download-and-execute' stager pattern.",
+        "code_reference": "let _0x595a94 = await fetch(...); ... li(_0x4ff783, await _0x595a94...); ... ai([...], { ...process.env, 'PRIME_AGENT_BOOTSTRAP_TOOLS_ON_INSTALL': '1' ... })",
+        "line_hint": "20-45",
+        "target": "extension/out/extension.js (chunk 31/121)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Obfuscation",
+        "description": "The entire code block is heavily obfuscated using string arrays and hex-encoded function calls (e.g., `_0x3a9375(0x4b1)`). This prevents static analysis of the actual URLs, file paths, and commands being executed, which is a strong indicator of malicious intent to hide behavior.",
+        "code_reference": "_0x3a9375(0x4b1), _0x1dc8b3(0x2e7)",
+        "line_hint": "1-50",
+        "target": "extension/out/extension.js (chunk 31/121)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Arbitrary Command Execution",
+        "description": "The function `ai` is invoked with an array of arguments and environment variables, strongly suggesting `child_process.spawn` or `exec`. The arguments include a path to the downloaded file and flags, indicating the execution of the downloaded payload.",
+        "code_reference": "let _0x26946b = ai([_0x2d21c4(0x167), _0x2d21c4(0x420), _0x20b7c3, ...], { ... })",
+        "line_hint": "35",
+        "target": "extension/out/extension.js (chunk 31/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Capability Disconnect",
+        "description": "The extension claims to be a 'chat sidebar' and 'coding agent'. While coding agents can execute code, the specific pattern of downloading an opaque binary/script from a remote URL and executing it with bootstrap environment variables is disproportionate to a standard chat interface and aligns with malware installation patterns rather than legitimate agent functionality.",
+        "code_reference": "fetch(...).then(li).then(ai)",
+        "line_hint": "20-45",
+        "target": "extension/out/extension.js (chunk 31/121)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "OBSCURED_CODE",
+        "description": "The code is heavily obfuscated using a string array rotation function (`_0x4fe149`, `_0x1dc8b3`, etc.). This prevents static analysis of the actual commands, paths, and network endpoints being used. This is a hallmark of malicious supply-chain attacks.",
+        "code_reference": "var yn = require(_0x4fe149(0x765))",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 32/121)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The function `Sn` uses `xn` (likely `child_process.exec` or `spawn`) to execute a command constructed from obfuscated strings. It parses the stdout to find a valid path, suggesting it is locating a binary to execute or a configuration file to read. The use of `child_process` in a VS Code extension for a 'chat agent' is high-risk, especially when obfuscated.",
+        "code_reference": "let { stdout: _0x1097a8 } = await xn(_0x38cfe9, [_0x3b4462], { 'timeout': 0x1388 });",
+        "line_hint": 38,
+        "target": "extension/out/extension.js (chunk 32/121)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SENSITIVE_PATH_ACCESS",
+        "description": "The function `fi` constructs paths to `LOCALAPPDATA` (Windows) and `XDG_DATA_HOME`/`HOME` (Linux/Mac). It appears to be targeting specific application data directories (likely `~/.config` or `%LOCALAPPDATA%`). Combined with the obfuscation, this suggests the extension is hunting for sensitive user data, credentials, or other extensions' data outside its own workspace.",
+        "code_reference": "let _0x3e92ee = process.env.LOCALAPPDATA; return _0x3e92ee ? [A[_0x4d0446(0x551)][_0x4d0446(0x4e0)](_0x3e92ee, _0x4d0446(0x1a3), _0x4d0446(0x6e5), _0x4d0446(0x1fc))...",
+        "line_hint": 48,
+        "target": "extension/out/extension.js (chunk 32/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Prime Agent' for coding tasks. While it may legitimately need to run shell commands for a coding agent, the heavy obfuscation and specific probing of user data directories (LOCALAPPDATA, XDG_DATA_HOME) are disproportionate and suspicious for a standard AI chat extension. Legitimate extensions do not obfuscate their code to hide file system paths and command execution.",
+        "code_reference": "function fi() { ... }",
+        "line_hint": 46,
+        "target": "extension/out/extension.js (chunk 32/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_LOGIC",
+        "description": "The code is heavily obfuscated using a string array rotation pattern (e.g., `_0x4fe149`, `_0xf4673b`). This makes static analysis difficult and is a common technique used to hide malicious intent, although it is also sometimes used by legitimate tools to reduce bundle size or protect IP. Given the context of an AI agent, some obfuscation is possible, but the density is high.",
+        "code_reference": "const _0x3d2fb8 = _0x4fe149; ... _0x3d2fb8(0x606)",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 74/121)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PROCESS_EXECUTION",
+        "description": "The function `Mn` executes a child process via `yi` (likely a wrapper around `child_process.exec` or `spawn`) with arguments that are obfuscated. It parses JSON output from the process. While an AI coding agent might legitimately run shell commands, the specific arguments are hidden, making it impossible to verify if it's running benign commands (like `git status`) or something more dangerous. The presence of `GIT_CONFIG_SYSTEM` in the static hits suggests it might be interacting with Git, which is plausible for a coding agent, but the obfuscation prevents confirmation.",
+        "code_reference": "let { stdout: _0x27ab0f } = await yi(_0x15e05a, [..._0xc5b1c5, _0x141b3c(0x591), _0x141b3c(0x399), _0x141b3c(0x786)], ...)",
+        "line_hint": 35,
+        "target": "extension/out/extension.js (chunk 74/121)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The function `In` lists files in a directory (`ki()` likely returns a path) and reads their metadata (size, modified time). It then processes the file contents via `xi`. This is consistent with an AI agent indexing or analyzing local files for context. However, without seeing the implementation of `ki()` and `xi()`, it's hard to rule out sensitive file access, though the pattern looks like standard file indexing.",
+        "code_reference": "let _0x4f58ab = ki(), ... _0xf4e896 = (0x0, he[_0x3d2fb8(0x606)])(_0x4f58ab)...",
+        "line_hint": 8,
+        "target": "extension/out/extension.js (chunk 74/121)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits high-risk characteristics due to heavy code obfuscation and file system operations with restrictive permissions that are disproportionate to a standard VS Code extension's needs. While the visible code in this chunk handles local state management, the obfuscation level (0.70) and the 'RLM' branding combined with the small package size raise significant red flags for a potential supply-chain attack or stager. The disconnect between the advertised 'AI Agent' capabilities and the actual code structure (small size, obfuscated file I/O) warrants a MALICIOUS verdict pending dynamic analysis.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-17T22:41:35.337Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:50.008690+00:00Z"
+}

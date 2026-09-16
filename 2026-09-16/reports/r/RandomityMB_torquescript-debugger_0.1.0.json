@@ -1,0 +1,202 @@
+{
+  "extension_id": "RandomityMB.torquescript-debugger",
+  "display_name": "TorqueScript Language Debugger",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "RandomityMB",
+    "verified": false
+  },
+  "vsix_sha256": "083187395eb82d7531602c997e2befe648610c09cf61d57464c040edd62ae256",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.35,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'eval(' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 35,
+        "snippet": "`).length}static firstWord(a,e,t){let s=t[1].split(\" \");return s.length==0?\"\":s[0]}static restWords(a,e,t){let s=t[1].split(\" \");return s.length==0?\"\":s.slice(1).join(\" \")}static nextToken(a,e,t){let "
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 86,
+        "snippet": "Request(t){t.body={threads:[new w.Thread(a.threadID,\"Torquescript\")]},this.sendResponse(t)}stackTraceRequest(t,s){let n=typeof s.startFrame==\"number\"?s.startFrame:0,r=typeof s.levels==\"number\"?s.level"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.35,
+    "confidence": 0.8,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 3/148)",
+        "summary": "This chunk of code contains the core implementation of the Debug Adapter Protocol (DAP) classes and the main entry point for the debug adapter. It defines standard structures like Source, StackFrame, Thread, and Variable, which are required for any VS Code debugger. The logic for starting the server (listening on a port or stdin/stdout) is standard for a debug adapter. The static rule hits are false positives resulting from the generic nature of DAP message handling (sending responses with thread data). There are no signs of obfuscation, credential harvesting, or suspicious network endpoints in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 8/148)",
+        "summary": "This chunk of code implements the core request handlers for a VS Code Debug Adapter (DAP) for the Torquescript language. It defines standard DAP methods such as `initializeRequest`, `threadsRequest`, `stackTraceRequest`, and `scopesRequest`. The logic is boilerplate for a debugger, responding to VS Code's debug protocol with appropriate capabilities and data structures. The static rule hits are false positives caused by generic variable names and the standard `sendResponse` method which communicates locally with the VS Code UI, not over the network. No suspicious obfuscation, credential access, or arbitrary command execution is present in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 18/148)",
+        "summary": "This chunk of code represents the core execution engine of a custom Torquescript debugger. It handles bytecode interpretation, variable scope management, and DAP protocol responses. The static rule hits are false positives resulting from generic pattern matching on terms like 'Global' and 'sendResponse' without considering the context of a language-specific debug adapter. No direct filesystem access, network exfiltration, or obfuscation is present in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 27/148)",
+        "summary": "This chunk of code appears to be the core execution logic of a Haxe-compiled virtual machine used by the Torquescript debugger. It handles function dispatch, argument validation, and stack manipulation (pushing integers, floats, and strings). The obfuscation score is 0, indicating readable, standard compiled output. The static rule hits are largely false positives resulting from generic variable names and method calls typical in debugger adapters rather than malicious patterns. No hardcoded secrets, child_process calls, or suspicious network endpoints are visible in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 83/148)",
+        "summary": "This chunk of code appears to be the core logic of a Torquescript language interpreter or debugger adapter, likely written in Haxe and compiled to JavaScript. It handles variable resolution, object slot access, and function execution within a namespace context. The static rule hits are false positives resulting from the complexity of the compiled code and the specific naming conventions of the DAP protocol and Haxe runtime. There are no obvious signs of obfuscation, credential harvesting, or suspicious network calls in this specific segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 87/148)",
+        "summary": "This chunk of code appears to be the core logic of a Torquescript debugger, handling variable evaluation, package management, and console output. The primary concern is the use of `eval()` in the `eval_js` function, which is a common pattern in debuggers/REPLs but warrants caution. The other static rule hits appear to be false positives related to the Debug Adapter Protocol structure. The code aligns well with the extension's stated purpose of debugging Torquescript."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 92/148)",
+        "summary": "This chunk of code is part of a Torquescript debugger extension. It primarily registers console functions for the debugger's REPL (Read-Eval-Print Loop) and handles DAP (Debug Adapter Protocol) responses. The static rule hits are largely false positives caused by generic keywords like 'threads' and 'Global' appearing in a debugger context. The code aligns well with the extension's stated purpose of debugging Torquescript games via Telnet. No obvious malicious patterns like hardcoded secrets, obfuscated payloads, or unexpected network calls to third-party servers are visible in this specific chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'directory traversal' due to the presence of 'Request' and 'sendResponse' methods. However, the code defines standard DAP (Debug Adapter Protocol) classes (Source, Scope, StackFrame, Thread, Variable, Breakpoint) and a debug session handler. The 'sendResponse' is part of the DAP communication protocol, not arbitrary network exfiltration. The 'threads' array is a standard DAP response body.",
+        "code_reference": "Request(t){t.body={threads:[new w.Thread(a.threadID,\"Torquescript\")]},this.sendResponse(t)}",
+        "line_hint": 86,
+        "target": "extension/dist/extension.js (chunk 3/148)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements a standard DAP server/client using Node.js streams (process.stdin/stdout or TCP sockets). This is perfectly proportional to a 'Debugger' extension that interfaces with a Telnet debugger. The use of 'vi.createServer' (likely net.createServer) is expected for attaching to remote debug ports.",
+        "code_reference": "vi.createServer(s => { ... }).listen(e)",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 3/148)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' based on the presence of `sendResponse` and variable names like `Global`/`ConstTable`. However, the code is a standard implementation of the VS Code Debug Adapter Protocol (DAP). The `sendResponse` calls are local IPC to the VS Code client, not network exfiltration. The `Global` references are part of the Torquescript language scope definitions (e.g., `ConstTable.FloatTable`), not filesystem paths.",
+        "code_reference": "this.sendResponse(t)",
+        "line_hint": 86,
+        "target": "extension/dist/extension.js (chunk 8/148)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'directory traversal' due to the presence of `sendResponse` and variable names like `Global`. However, the code context reveals this is a custom bytecode interpreter (likely Haxe-based) for the Torquescript language. `sendResponse` is part of the DAP (Debug Adapter Protocol) implementation to send debug data back to VS Code, and `Global` refers to the VM's global variable scope, not filesystem paths. The logic involves reading binary streams (`readInt32`, `readDouble`) and managing a call stack, which is consistent with a debugger.",
+        "code_reference": "Request(t){t.body={threads:[new w.Thread(a.threadID,\"Torquescript\")]},this.sendResponse(t)}",
+        "line_hint": 86,
+        "target": "extension/dist/extension.js (chunk 18/148)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'directory traversal' due to the presence of `sendResponse` and variable names like `Global`. However, the code context shows these are part of a Haxe-compiled virtual machine (VM) execution loop handling function calls, stack operations (`intStack`, `floatStack`), and debugger thread responses. The `sendResponse` is a local method call within the debugger adapter, not necessarily a network exfiltration in this specific snippet, and the 'Global' references are related to variable scope tables, not filesystem paths.",
+        "code_reference": "Request(t){t.body={threads:[new w.Thread(a.threadID,\"Torquescript\")]},this.sendResponse(t)}",
+        "line_hint": 86,
+        "target": "extension/dist/extension.js (chunk 27/148)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' based on the presence of `sendResponse` and variable names like `Global`/`FloatTable`. However, the code context shows these are part of a DAP (Debug Adapter Protocol) implementation (`new w.Thread`, `t.body={threads:...}`) and Haxe runtime initialization (`HxOverrides`, `ConstTable`). The `sendResponse` call is sending debug thread information to the VS Code client, not exfiltrating data to a remote server.",
+        "code_reference": "Request(t){t.body={threads:[new w.Thread(a.threadID,\"Torquescript\")]},this.sendResponse(t)}",
+        "line_hint": 86,
+        "target": "extension/dist/extension.js (chunk 83/148)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code contains logic for a Torquescript interpreter/debugger (handling namespaces, variables, object slots, and execution contexts). This aligns perfectly with the extension's stated purpose of being a 'Torquescript Debugger'. The use of Haxe-specific globals (`HxOverrides`, `global.$haxeUID`) suggests the debugger core is written in Haxe, which is a reasonable technical choice for a game engine debugger.",
+        "code_reference": "global.$haxeUID|=0,typeof performance<\"u\"&&typeof performance.now==\"function\"&&(HxOverrides.now=perf",
+        "line_hint": 82,
+        "target": "extension/dist/extension.js (chunk 83/148)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "EVAL_USAGE",
+        "description": "The `eval_js` method uses the global `eval()` function to execute generated JavaScript code (`eval(jsOut)`). While this is likely part of the debugger's REPL functionality to evaluate expressions in the context of the game engine, using `eval` is inherently risky if the input source is not strictly controlled or if the extension runs in a privileged context.",
+        "code_reference": "return \"\" + Std.string(eval(jsOut))",
+        "line_hint": 86,
+        "target": "extension/dist/extension.js (chunk 87/148)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' based on patterns like `Request(t)` and `setTable`. Upon inspection, these are standard DAP (Debug Adapter Protocol) response objects and internal state management for the debugger's variable tables, not direct network exfiltration or file system traversal.",
+        "code_reference": "Request(t){t.body={threads:[new w.Thread(a.threadID,\"Torquescript\")]},this.sendResponse(t)}",
+        "line_hint": 86,
+        "target": "extension/dist/extension.js (chunk 87/148)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' based on the presence of the word 'threads' in a DAP (Debug Adapter Protocol) response body and variable names like 'Global'. In the context of a debugger, `threads` is a standard DAP capability, and `Global` refers to the global scope of the Torquescript VM, not the filesystem or network exfiltration.",
+        "code_reference": "Request(t){t.body={threads:[new w.Thread(a.threadID,\"Torquescript\")]},this.sendResponse(t)}",
+        "line_hint": 86,
+        "target": "extension/dist/extension.js (chunk 92/148)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The code registers console functions for the Torquescript VM (e.g., `isPackage`, `echo`, `eval`, `fileExt`). These are standard debugger REPL features allowing the user to interact with the game engine's script environment. The use of `eval` here is specific to the Torquescript VM evaluation, not necessarily Node.js `eval` on untrusted input, though it is a necessary part of a debugger's REPL.",
+        "code_reference": "e.addConsoleFunction(\"eval\", \"eval(consoleString) - Evaluates the given string\", 2, 2, console_FunctionType.StringCallbackType(function(t, s, n) { return console_ConsoleFunctions.eval(t, s, n) }))",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 92/148)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of code contains the core implementation of the Debug Adapter Protocol (DAP) classes and the main entry point for the debug adapter. It defines standard structures like Source, StackFrame, Thread, and Variable, which are required for any VS Code debugger. The logic for starting the server (listening on a port or stdin/stdout) is standard for a debug adapter. The static rule hits are false positives resulting from the generic nature of DAP message handling (sending responses with thread data). There are no signs of obfuscation, credential harvesting, or suspicious network endpoints in this specific chunk.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-25T12:57:01.68Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:50.124069+00:00Z"
+}

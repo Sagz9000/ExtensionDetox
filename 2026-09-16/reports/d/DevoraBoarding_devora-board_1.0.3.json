@@ -1,0 +1,97 @@
+{
+  "extension_id": "DevoraBoarding.devora-board",
+  "display_name": "Devora-Board",
+  "version": "1.0.3",
+  "publisher": {
+    "name": "DevoraBoarding",
+    "verified": false
+  },
+  "vsix_sha256": "10382e0969eb46ebef4a92e9a9f49699e9d2a056806d75d29474e1984b96858f",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.05,
+    "static": 0.125,
+    "behavioral": 0.0,
+    "trust_signal": 0.5499999999999999,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.72,
+    "blocks_parsed": 3,
+    "blocks_seen": 4,
+    "summaries": [
+      {
+        "target": "extension/src/extension.js (chunk 1/4)",
+        "summary": "The visible code implements a local-first VS Code webview panel for a kanban board using standard VS Code APIs and globalState persistence. It registers only the advertised commands, uses a local media resource root, and contains no network calls, child_process usage, filesystem access outside VS Code storage, eval, obfuscation, credential access, or other high-risk indicators. The require('crypto') import is not used in this chunk but is plausibly used later for IDs or hashing. The VSIX size, activation events, and advertised functionality appear proportional. The assessment is provisional because buildHtml and handleMessage are not included in this chunk."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/4)",
+        "summary": "The analyzed chunk implements expected local-first kanban functionality: handling webview messages for clipboard copy and user-initiated export, posting messages back to the webview, maintaining board activity, and creating board templates. Clipboard use is write-only and user-triggered, file export uses VS Code's save dialog and workspace filesystem API, and there is no network activity, command execution, obfuscation, sensitive file access, or capability mismatch with the advertised local-first kanban extension."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 4/4)",
+        "summary": "This chunk appears to be benign UI/helper code for a local-first VS Code kanban extension. It defines card data structures, generates identifiers/nonces, and builds a webview HTML document that loads local CSS and JavaScript from the extension media folder. There are no network calls, credential access, child process execution, persistence mechanisms, obfuscation, or capability mismatches relative to the advertised local kanban functionality. The only minor note is the use of Math.random() in randomCode(), which is not malicious but would be weak if used for security-sensitive values."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "INCOMPLETE_ANALYSIS",
+        "description": "Only chunk 1/4 of extension.js is provided. The functions buildHtml and handleMessage are referenced but not visible, so their behavior cannot be fully verified. Based on the visible code, no malicious or suspicious behavior is present.",
+        "code_reference": "panel.webview.html = buildHtml(context, boards, activeId); panel.webview.onDidReceiveMessage((msg) => handleMessage(...))",
+        "line_hint": "approx. 60-75",
+        "target": "extension/src/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEAK_RANDOMNESS",
+        "description": "randomCode() uses Math.random() to generate a short code. This is not malicious, but if the generated value were used for security-sensitive identifiers or access control, it would be weak. In the context of a local kanban UI, this is likely benign.",
+        "code_reference": "function randomCode() { const set = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let out = ''; for (let i = 0; i < 6; i++) out += set[Math.floor(Math.random() * set.length)]; return out; }",
+        "line_hint": "approx. lines 10-15",
+        "target": "extension/src/extension.js (chunk 4/4)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The visible code implements a local-first VS Code webview panel for a kanban board using standard VS Code APIs and globalState persistence. It registers only the advertised commands, uses a local media resource root, and contains no network calls, child_process usage, filesystem access outside VS Code storage, eval, obfuscation, credential access, or other high-risk indicators. The require('crypto') import is not used in this chunk but is plausibly used later for IDs or hashing. The VSIX size, activation events, and advertised functionality appear proportional. The assessment is provisional because buildHtml and handleMessage are not included in this chunk.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1197,
+    "published_date": "2026-09-08T03:29:10.52Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-09T19:09:56.017400+00:00Z"
+}

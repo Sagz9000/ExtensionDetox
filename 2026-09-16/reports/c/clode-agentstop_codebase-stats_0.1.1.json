@@ -1,0 +1,125 @@
+{
+  "extension_id": "clode-agentstop.codebase-stats",
+  "display_name": "clode",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "clode-agentstop",
+    "verified": false
+  },
+  "vsix_sha256": "d3f6410fa9ccee5f3a907e061ba693a205cf8858118cd772578739600375258f",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.15,
+    "static": 0.0625,
+    "behavioral": 0.78,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 3
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 4,
+    "blocks_seen": 4,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/2)",
+        "summary": "This chunk of the 'Code Stats' extension appears benign and well-structured. It implements a standard VS Code Webview View provider that registers a command and handles message passing between the extension host and the webview UI. The logic involves reading workspace configuration, triggering a scan (delegated to a separate `scan` module), and posting results to the UI. There are no direct network calls, child process executions, or file system accesses to sensitive paths in this specific file. The behavior is proportional to the advertised functionality of displaying codebase statistics."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/2)",
+        "summary": "This chunk of the extension source code handles the creation of the Webview HTML interface for the 'Code Stats' extension. It constructs a standard HTML document with a Content Security Policy (CSP) that restricts sources to the extension's own media files (CSS and JS) using nonces. The logic is straightforward, using standard VS Code APIs (`vscode.Uri.joinPath`, `webview.asWebviewUri`) to resolve local asset paths. There are no network calls, no child process executions, no file system reads outside the expected scope, and no obfuscation. The behavior is fully aligned with a UI-focused extension that displays statistics in a sidebar."
+      },
+      {
+        "target": "extension/out/scan.js (chunk 1/2)",
+        "summary": "This code chunk implements the core scanning logic for a 'Code Stats' extension. It uses standard VS Code APIs (`vscode.workspace.findFiles`, `vscode.workspace.fs`) to traverse the workspace, filter files by extension, read their contents to count lines, and aggregate statistics. There are no network calls, no child process execution, no obfuscation, and no access to sensitive user directories (like ~/.ssh or ~/.aws). The behavior is fully aligned with the extension's advertised purpose of providing codebase statistics."
+      },
+      {
+        "target": "extension/out/scan.js (chunk 2/2)",
+        "summary": "This chunk of the extension source code contains utility functions for analyzing file content at the byte level. Specifically, it checks for null bytes (likely to identify binary files) and counts lines by scanning for newline characters (0x0a). These operations are purely computational and local, with no network calls, file system writes, or process spawning visible in this segment. The logic aligns perfectly with the extension's advertised purpose of providing codebase statistics."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "OBFUSCATION",
+        "description": "The code is compiled/transpiled (likely from TypeScript) but remains highly readable. Variable names like `StatsViewProvider`, `scanWorkspace`, and `refresh` are descriptive. No minification or string encoding is present.",
+        "code_reference": "class StatsViewProvider",
+        "line_hint": 15,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `vscode.workspace.getConfiguration` to read user settings (`codeStats.exclude`, `codeStats.maxFiles`). This is standard for configurable extensions and aligns with the 'Settings' section in the README.",
+        "code_reference": "const config = vscode.workspace.getConfiguration(\"codeStats\");",
+        "line_hint": 52,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CSP_WEAKNESS",
+        "description": "The Content Security Policy allows 'unsafe-inline' for styles (via style-src ${webview.cspSource} which typically includes unsafe-inline in VS Code contexts) and relies on a nonce for scripts. While standard for VS Code webviews, the nonce generation uses Math.random() rather than a cryptographically secure source, which is acceptable for this context but worth noting.",
+        "code_reference": "const nonce = makeNonce(); ... script-src 'nonce-${nonce}'",
+        "line_hint": 10,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The extension reads file contents (`vscode.workspace.fs.readFile`) to count lines. While this is necessary for the advertised 'line count' feature, it technically accesses file data beyond just metadata. However, it is scoped to the workspace and specific source code extensions, making it proportional to the function.",
+        "code_reference": "bytes = await vscode.workspace.fs.readFile(uri);",
+        "line_hint": 68,
+        "target": "extension/out/scan.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "The code performs low-level byte manipulation (checking for null bytes and counting newlines) to calculate file statistics. This is an optimization technique consistent with a 'Code Stats' extension that needs to process many files efficiently without full string decoding.",
+        "code_reference": "function countLines(bytes)",
+        "line_hint": "10",
+        "target": "extension/out/scan.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the 'Code Stats' extension appears benign and well-structured. It implements a standard VS Code Webview View provider that registers a command and handles message passing between the extension host and the webview UI. The logic involves reading workspace configuration, triggering a scan (delegated to a separate `scan` module), and posting results to the UI. There are no direct network calls, child process executions, or file system accesses to sensitive paths in this specific file. The behavior is proportional to the advertised functionality of displaying codebase statistics.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 48,
+    "published_date": "2026-08-29T15:04:54.14Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:49.546181+00:00Z"
+}

