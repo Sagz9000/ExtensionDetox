@@ -1,0 +1,384 @@
+{
+  "extension_id": "coolstudio.cool-git-commit",
+  "display_name": "Cool Git Commit Assistant",
+  "version": "0.4.1",
+  "publisher": {
+    "name": "coolstudio",
+    "verified": false
+  },
+  "vsix_sha256": "7eabcee9e25b44a475e3c472f6c847db44d9ed751708353033522cc2720838ac",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6425000000000001,
+    "ai_vibe": 0.8,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/media/logView.js",
+        "line": 2,
+        "snippet": "addEventListener(\"keydown\",m=>{(m.key===\"Enter\"||m.key===\" \")&&(m.preventDefault(),u.postMessage({type:\"selectCommit\",hash:e.hash}))}),n.addEventListener(\"contextmenu\",m=>{m.preventDefault(),me(m.clie"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/media/logView.js",
+        "line": 4,
+        "snippet": "addEventListener(\"keydown\",n=>{if(n.key!==\"ArrowLeft\"&&n.key!==\"ArrowRight\")return;n.preventDefault();let a=n.key===\"ArrowRight\"?16:-16;t===\"left\"&&!y&&(L+=a),t===\"right\"&&(C-=a),H(),f(d?.rows??[])})}"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/media/commitView.js",
+        "line": 4,
+        "snippet": "addEventListener(\"keydown\",e=>{(e.metaKey||e.ctrlKey)&&e.key===\"Enter\"&&(e.preventDefault(),V.disabled||N(!1))});p.postMessage({type:\"ready\"});K();C.addEventListener(\"pointerdown\",e=>{e.preventDefault"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/media/commitEditor.js",
+        "line": 5,
+        "snippet": "addEventListener(\"keydown\",D=>{(D.metaKey||D.ctrlKey)&&D.key===\"Enter\"&&(D.preventDefault(),A.requestSubmit())});g.postMessage({type:\"ready\"});function X(D){i=D,t(\"repository-name\").textContent=D.repo"
+      },
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "Object.entries(process.env)"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 376,
+        "snippet": "Buffer.from(r,\"base64\");return Array.from(new Float32Array(e.buffer,e.byteOffset,e.length/Float32Array.BYTES_PER_ELEMENT))}else{let e=atob(r),t=e.length,s=new Uint8Array(t);for(let n=0;n<t;n++)s[n]=e."
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "readFile(a,\"utf-8\")}catch(f){if(f?.code!==\"ENOENT\")throw new Error(`failed to read config file ${a}: ${f}`);u=null}if(u===null){let f=q(\"ANTHROPIC_ORGANIZATION_ID\"),p=q(\"ANTHROPIC_IDENTITY_TOKEN_FILE\""
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "`)){let n=s.trim().split(\"/\").filter(o=>o!==\"\"&&o!==\".\");if(n.length===0)continue;let i=n[0];if(e===void 0)e=i;else if(i!==e)return\"\";n.length>1&&(t=!0)}return e!==void 0&&t?e:\"\"}async function xd(r,e"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 17,
+        "snippet": "`)}async function dg(r,e,t){let s=Qu.createReadStream(r,{encoding:\"utf8\"}),n=pg.createInterface({input:s,crlfDelay:1/0}),i=0;try{for await(let o of n)if(i++,!(o.length>qw)&&e.test(o)&&!t(`${r}:${i}:${"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 539,
+        "snippet": "</main>`})}#_(){for(this.#l?.abort(),r.#t===this&&(r.#t=void 0);this.#o.length>0;)this.#o.pop()?.dispose()}};function ly(r,e){let t=new Set;for(let s of r){if(s.id.trim()===\"\")return[`${e} ID \\u4E0D\\u"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/settings.js",
+        "line": 23,
+        "snippet": ".postMessage({type:\"ready\"});function uu(e){t=structuredClone(e),p.clear(),a=t.global.providers.some(u=>u.id===a)?a:t.global.providers[0]?.id,d=t.global.promptProfiles.some(u=>u.id===d)?d:t.global.pro"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/logView.js",
+        "line": 2,
+        "snippet": ".postMessage({type:\"selectCommit\",hash:e.hash})),n.addEventListener(\"keydown\",m=>{(m.key===\"Enter\"||m.key"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/logView.js",
+        "line": 4,
+        "snippet": ".postMessage({type:\"context\",hash:t,action:c})),i.append(g)}q.replaceChildren(n,s,r,i)}function le(e,t){let n=document.createElement(\"header\");n.className=\"detail-files-header\",n.textContent=`${e.leng"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/logView.js",
+        "line": 1,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/commitView.js",
+        "line": 4,
+        "snippet": ".postMessage({type:\"selectRepository\",repositoryId:P.value})});n.addEventListener(\"input\",()=>{x?.generating!==!0&&(p.postMessage({type:\"updateMessage\",value:n.value}),z())});for(let e of Array.from(d"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/commitView.js",
+        "line": 4,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/commitEditor.js",
+        "line": 5,
+        "snippet": ".postMessage({type:\"submit\",draft:u})});t(\"cancel\").addEventListener(\"click\",()=>g.postMessage({type:\"cancel\"}));t(\"reset\").addEventListener(\"click\",()=>{$(y()),n.focus()});t(\"open-emoji\").addEventLis"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "readdir(l))await Ue.rename(Fe.join(l,d),Fe.join(e,d))}finally{await Ue.rm(t,{force:!0}),await Ue.rm(s,{recursive:!0,force:!0})}}async function Gw(r,e){let t=await Ue.open(r,\"r\");try{let s=Buffer.alloc"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 17,
+        "snippet": "readdir(ne.join(r,o),{withFileTypes:!0})}catch{return!0}for(let l of u){if(l.name===\".git\"||l.name===\"node_modules\")continue;if(n--<=0||s?.aborted)return!1;let d=o?ne.join(o,l.name):l.name;if(l.isDire"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "readFile(a,\"utf-8\")}catch(f){if(f?.code!==\"ENOENT\")throw new Error(`failed to read config file ${a}: ${f}`);u=null}if(u===null){let f=q(\"ANTHROPIC_ORGANIZATION_ID\"),p=q(\"ANTHROPIC_IDENTITY_TOKEN_FILE\""
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "fetch(s,{method:\"POST\",headers:{\"Content-Type\":\"application/json\",\"anthropic-beta\":`${qr},${Hh}`,\"User-Agent\":r.userAgent||`anthropic-sdk-typescript/${ot} oidcFederationProvider`},body:JSON.stringify("
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\",\"anthropic-beta\":`${qr},${Hh}`,\"User-Agent\":r.userAgent||`anthropic-sdk-typescript/${ot} oidcFederationProvider`},body:JSON.stringify(t)})}catc"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 9,
+        "snippet": ".post(\"/v1/deployments?beta=true\",{body:n,...t,headers:y([{\"anthropic-beta\":[...s??[],\"managed-agents-2026-04-01\"].toString()},t?.headers])})}retrieve(e,t={},s){let{betas:n}=t??{};return this._client."
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 20,
+        "snippet": ".post(E`/v1/environments/${n}/work/${e}?beta=true`,{body:o,...s,headers:y([{\"anthropic-beta\":[...i??[],\"managed-agents-2026-04-01\"].toString()},s?.headers])})}list(e,t={},s){let{betas:n,...i}=t??{};re"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 43,
+        "snippet": ".post(\"/v1/messages?beta=true\",{body:o,timeout:a??6e5,...t,headers:y([{...n?.toString()!=null?{\"anthropic-beta\":n?.toString()}:void 0,...i!=null?{\"anthropic-user-profile-id\":i}:void 0},u,t?.headers]),"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 44,
+        "snippet": ".post(\"/v1/messages\",{body:n,timeout:i??6e5,...t,headers:y([{...s!=null?{\"anthropic-user-profile-id\":s}:void 0},o,t?.headers]),stream:e.stream??!1})}parse(e,t){return this.create(e,t).then(s=>ff(s,e,{"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 360,
+        "snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify(t)});if(!s.ok){let u=await s.text(),l;try{l=JSON.parse(u)}catch{}throw s.status===400||s.status===401||s.status===403?new "
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 376,
+        "snippet": ".post(\"/chat/completions\",{body:e,...t,stream:e.stream??!1,__security:{bearerAuth:!0}})}retrieve(e,t){return this._client.get(h`/chat/completions/${e}`,{...t,__security:{bearerAuth:!0}})}update(e,t,s)"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 386,
+        "snippet": ".postMessage({type:\"providerTest\",kind:\"loading\",text:\"\\u6B63\\u5728\\u8FDE\\u63A5\\u2026\"});try{if(await ay(e,n,s.signal),s.signal.aborted)return;await this.#e.webview.postMessage({type:\"providerTest\",ki"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 539,
+        "snippet": ".postMessage({type:\"generationPreview\",value:t.message})}))}resolveWebviewView(e){this.#u=e,this.#d=!1,e.webview.options={enableScripts:!0,localResourceRoots:[ce.Uri.joinPath(this.#t,\"media\")]},e.webv"
+      }
+    ],
+    "total": 50
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "gitee.com",
+      "source_file": "extension/package.json",
+      "line": 10,
+      "context": "\"url\": \"https://gitee.com/cool_studio/cool-git-commit-vscode.git\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "gitmoji.js.org",
+      "source_file": "extension/media/settings.js",
+      "line": 1,
+      "context": "\"use strict\";(()=>{var le={source:\"https://gitmoji.js.org/\",gitmojis:[{emoji:\"\\u{1F3A8}\",code:\":art:\",name:\"art\",description:\"\\u7ED3\\u6784\\u6539\\u8FDB / \\u683C\\u5F0F\\u5316\\u4EE3\\u7801\\u3002\"},{emoji:\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.openai.com",
+      "source_file": "extension/media/settings.js",
+      "line": 23,
+      "context": "`)}function je(e,u,D){return e.includes(u)||e.includes(D)}var A=acquireVsCodeApi(),ce=A.getState(),v=ce?.tab??\"provider\",a=ce?.selectedProviderId,d=ce?.selectedPromptId,t,X,p=new Map,j=i(\"provider-nam",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "docs.expo.dev",
+      "source_file": "extension/dist/extension.js",
+      "line": 3,
+      "context": "`,\"\\r\"]);Ht.NEWLINE_REGEXP=/\\r\\n|[\\n\\r]/g});async function*fm(r,e){if(!r.body)throw e.abort(),typeof globalThis.navigator<\"u\"&&globalThis.navigator.product===\"ReactNative\"?new C(\"The default react-nat",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "platform.claude.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 42,
+      "context": "Wrap your summary in <summary></summary> tags.`});async function yD(r,e=r.messages.at(-1),t){if(!e||e.role!==\"assistant\"||!e.content||typeof e.content==\"string\")return null;let s=e.content.filter(o=>o",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "docs.anthropic.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 43,
+      "context": "Please migrate to a newer model. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.`),ED.includes(o.model)&&o.thinking&&o.thinking.type===\"enabled\"&&console.wa",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.anthropic.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 44,
+      "context": "Please migrate to a newer model. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.`),jD.includes(n.model)&&n.thinking&&n.thinking.type===\"enabled\"&&console.wa",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "auth.openai.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 360,
+      "context": "`),raw:this.chunks};return this.event=null,this.data=[],this.chunks=[],i}if(this.chunks.push(e),e.startsWith(\":\"))return null;let[t,s,n]=eA(e,\":\");return n.startsWith(\" \")&&(n=n.substring(1)),t===\"eve",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "help.openai.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 384,
+      "context": "https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_summary": null,
+  "escalation_reasons": [
+    "7 CRITICAL findings",
+    "23 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-13T05:48:52.55Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-13T06:13:35.894035+00:00Z"
+}

@@ -1,0 +1,282 @@
+{
+  "extension_id": "zeco.floating-translation",
+  "display_name": "Floating Translation",
+  "version": "0.0.7",
+  "publisher": {
+    "name": "zeco",
+    "verified": false
+  },
+  "vsix_sha256": "f95fa63485e875a2bd7374c72c6a3d8a9381e643c10baf9300c396d8c87c8ea3",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6775,
+    "ai_vibe": 0.9,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "Object.keys(process.env)"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Hardware ID collection commands",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "getMac"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "Buffer.from(\"\",\"utf-8\"),v);if(d.isNull(t.stream)){if(!d.isNull(t.body))if(\"byte\"==e.reqBodyType){let e=Buffer.from(t.body);w=h.default.hash(e,v),u.body=new d.BytesReadable(e)}else if(\"json\"==e.reqBody"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "readFileSync(e,\"utf-8\"))},t.loadIni=async function(e){await h(e,c.default.constants.R_OK);const t=await d(e,\"utf-8\");return o.parse(t)},t.getRandomInt=function(e){return Math.floor(Math.random()*(e+1)"
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "Secret:\"credentials.aliyun.accessKeySecret\""
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "secretStorage.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w"
+      },
+      {
+        "check": "obfuscated_eval",
+        "severity": "HIGH",
+        "description": "Obfuscated eval() / Function() execution",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "Function(\"return"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "readFileSync(e,\"utf-8\"))},t.loadIni=async function(e){await h(e,c.default.constants.R_OK);const t=await d(e,\"utf-8\");return o.parse(t)},t.getRandomInt=function(e){return Math.floor(Math.random()*(e+1)"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "readFileSync(e,\"utf-8\"))},t.loadIni=async function(e){await h(e,c.default.constants.R_OK);const t=await d(e,\"utf-8\");return o.parse(t)},t.getRandomInt=function(e){return Math.floor(Math.random()*(e+1)"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "Request({body:d.OpenApiUtil.parseToMap(r)}),s=new d.$OpenApiUtil.Params({action:\"CreateAsyncTranslate\",version:\"2018-10-12\",protocol:\"HTTPS\",pathname:\"/\",method:\"POST\",authType:\"AK\",style:\"RPC\",reqBod"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "method:\"POST\",authType:\"AK\",style:\"RPC\",reqBodyType:\"formData\",bodyType:\"json\"});return u.cast(await this.callApi(s,n,t),new h.CreateAsyncTranslateResponse({}))}async createAsyncTranslate(e){let t=new"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "terminal_injection",
+        "severity": "HIGH",
+        "description": "Stealthy terminal command injection via VS Code API",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": "sendText(t)}async sendRawAwapTextMessage(e,t){const r=n.newAwapMessage(t,n.withType(e));await this.sendAwapTextMessage(r)}async sendRawAwapTextMessageWithId(e,t,r){const s=n.newAwapMessage(r,n.withTyp"
+      }
+    ],
+    "total": 23
+  },
+  "extracted_references": [
+    {
+      "type": "ip",
+      "value": "100.100.100.200",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "ip",
+      "value": "224.0.0.0",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "ip",
+      "value": "169.254.0.0",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "ip",
+      "value": "100.64.0.0",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "help.aliyun.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "oauth.aliyun.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "oauth.alibabacloud.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "npms.io",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "momentjs.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "fanyi-api.baidu.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "hash",
+      "value": "1111111010000000000000000000000000000000000000000000000000000000",
+      "source_file": "extension/dist/extension.js",
+      "line": 2,
+      "context": "(()=>{var e={4347(e,t,r){\"use strict\";var n,s=this&&this.__createBinding||(Object.create?function(e,t,r,n){void 0===n&&(n=r);var s=Object.getOwnPropertyDescriptor(t,r);s&&!(\"get\"in s?!t.__esModule:s.w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_summary": null,
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "9 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-15T16:21:02.96Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-15T16:37:34.377383+00:00Z"
+}
