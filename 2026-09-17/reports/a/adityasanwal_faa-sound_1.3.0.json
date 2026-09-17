@@ -1,0 +1,168 @@
+{
+  "extension_id": "adityasanwal.faa-sound",
+  "display_name": "Faa-Sound by codeKarlo",
+  "version": "1.3.0",
+  "publisher": {
+    "name": "adityasanwal",
+    "verified": false
+  },
+  "vsix_sha256": "5924625036a82682115c444363e626b546c8a25c9a7b85d237dbc271d9b27561",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.2,
+    "static": 0.7999999999999999,
+    "behavioral": 0.94,
+    "trust_signal": 0.5499999999999999,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/out/audioPlayer.js",
+        "line": 104,
+        "snippet": "os.platform()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/audioPlayer.js",
+        "line": 37,
+        "snippet": "const cp = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/audioPlayer.js",
+        "line": 37,
+        "snippet": "const cp = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/audioPlayer.js",
+        "line": 37,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.2,
+    "confidence": 0.85,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/out/audioPlayer.js (chunk 1/3)",
+        "summary": "The extension exhibits behavior that, while not overtly malicious, contains elements that could be indicative of potential misuse. The use of `child_process` and `os.platform()` raises flags typically associated with more nefarious activities, though in this context, they appear to serve legitimate purposes related to cross-platform audio playback. The extension's capabilities are generally aligned with its advertised function, but the presence of these indicators warrants closer scrutiny."
+      },
+      {
+        "target": "extension/out/audioPlayer.js (chunk 2/3)",
+        "summary": "The extension exhibits legitimate functionality for playing error sounds but contains high-risk patterns such as direct command execution and system fingerprinting. While not inherently malicious, these patterns could be exploited for malicious purposes, hence the suspicious verdict."
+      },
+      {
+        "target": "extension/out/audioPlayer.js (chunk 3/3)",
+        "summary": "The extension exhibits potential red flags with use of `child_process` and system fingerprinting. While these could be legitimate for its stated purpose of terminal error sound playback, further dynamic analysis is recommended to confirm benign behavior."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Use of `child_process` for executing system commands, which could potentially be used for arbitrary command execution.",
+        "code_reference": "extension/out/audioPlayer.js (chunk 1/3)",
+        "line_hint": 37,
+        "target": "extension/out/audioPlayer.js (chunk 1/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Info-Stealer Patterns",
+        "description": "Use of `os.platform()` for system fingerprinting, which could be indicative of information gathering behavior.",
+        "code_reference": "extension/out/audioPlayer.js (chunk 1/3)",
+        "line_hint": 104,
+        "target": "extension/out/audioPlayer.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which allows arbitrary command execution.",
+        "code_reference": "extension/out/audioPlayer.js",
+        "line_hint": 37,
+        "target": "extension/out/audioPlayer.js (chunk 2/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Info-Stealer Patterns",
+        "description": "System fingerprinting via `os.platform()` which could be used for malicious payload delivery based on OS detection.",
+        "code_reference": "extension/out/audioPlayer.js",
+        "line_hint": 104,
+        "target": "extension/out/audioPlayer.js (chunk 2/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which can be used for arbitrary command execution.",
+        "code_reference": "chunk 3/3, line 37",
+        "line_hint": 37,
+        "target": "extension/out/audioPlayer.js (chunk 3/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Info-Stealer Patterns",
+        "description": "Call to `os.platform()` which can be used for system fingerprinting.",
+        "code_reference": "chunk 3/3, line 104",
+        "line_hint": 104,
+        "target": "extension/out/audioPlayer.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits behavior that, while not overtly malicious, contains elements that could be indicative of potential misuse. The use of `child_process` and `os.platform()` raises flags typically associated with more nefarious activities, though in this context, they appear to serve legitimate purposes related to cross-platform audio playback. The extension's capabilities are generally aligned with its advertised function, but the presence of these indicators warrants closer scrutiny.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 7144,
+    "published_date": "2026-02-27T09:32:07.72Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:49.915620+00:00Z"
+}

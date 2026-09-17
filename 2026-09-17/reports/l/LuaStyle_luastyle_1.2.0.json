@@ -1,0 +1,202 @@
+{
+  "extension_id": "LuaStyle.luastyle",
+  "display_name": "Luastyle",
+  "version": "1.2.0",
+  "publisher": {
+    "name": "LuaStyle",
+    "verified": false
+  },
+  "vsix_sha256": "2d4c530998605377fdbe2d23c6f7f8e7a59427d34932ce379ebf31b95c2a0dca",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.05,
+    "static": 0.4932698389236725,
+    "behavioral": 0.0,
+    "trust_signal": 0.6,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/rojoProcess.js",
+        "line": 6,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/rojoProcess.js",
+        "line": 6,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/rojoProcess.js",
+        "line": 14,
+        "snippet": "/** @type {import('child_process').ChildProcess|undefined} */"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/linter.js",
+        "line": 6,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/linter.js",
+        "line": 6,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/formatter.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/formatter.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/rojoProcess.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/linter.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/formatter.js",
+        "line": 5,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 15
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.98,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/src/rojoProcess.js",
+        "summary": "The code is a clean implementation of a Rojo process controller. It uses child_process.spawn to execute the 'rojo' CLI tool for 'serve' and 'build' commands, which aligns perfectly with the extension's stated purpose of providing a Rojo-aware utility belt. There are no signs of credential harvesting, data exfiltration, obfuscation, or unauthorized network activity. The static rule hit for child_process is a legitimate functional requirement for this type of extension."
+      },
+      {
+        "target": "extension/src/linter.js",
+        "summary": "The code is a standard implementation of a linter that shells out to the 'selene' CLI tool. The use of 'child_process.spawn' is expected and proportional to the extension's advertised function of running external linting tools. There are no signs of obfuscation, credential harvesting, network exfiltration, or other malicious behavior. The static rule hit for 'child_process' is a false positive in the context of a linter extension."
+      },
+      {
+        "target": "extension/src/formatter.js",
+        "summary": "The code is a clean, standard implementation of a VS Code document formatter that shells out to the external `stylua` CLI tool. The use of `child_process.spawn` is explicitly documented in the README as the core mechanism for the extension ('It shells out to them'). The command execution is strictly limited to running the configured `stylua` binary with safe arguments (`--stdin-filepath`, `-`) and does not involve arbitrary command injection, credential harvesting, or network exfiltration. The static rule hit for `child_process` is a false positive in the context of a CLI-wrapper extension. The code aligns perfectly with its advertised purpose."
+      },
+      {
+        "target": "extension/src/extension.js",
+        "summary": "The code is a standard VS Code extension entry point for a Rojo/Luau utility. It correctly uses the VS Code API to create tree views, register commands, and manage file watchers. The use of `fs` and `path` is limited to reading project configuration files within the workspace, which is consistent with its advertised functionality. The static rule hit regarding `workspace.findFiles` is a false positive as it is used to locate project files for user selection, not for malicious enumeration. There are no indicators of credential theft, obfuscation, or unauthorized network activity in this file."
+      },
+      {
+        "target": "extension/src/rojoTree.js",
+        "summary": "The code is a benign implementation of a VS Code TreeView provider for Rojo project files. It uses standard Node.js `fs` and `path` modules to read and parse `*.project.json` files and traverse the local filesystem to build a tree structure, which is consistent with the extension's advertised purpose. There are no network calls, no execution of external commands, no access to sensitive user data (like credentials or SSH keys), and no obfuscation. The behavior is strictly limited to the workspace and local file system operations required for the stated functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of child_process.spawn is a false positive for malicious intent. The extension explicitly states in its README that it 'shells out' to CLI tools (rojo, stylua, selene) rather than bundling them. Spawning 'rojo' is the core advertised functionality of this extension.",
+        "code_reference": "const { spawn } = require('child_process');",
+        "line_hint": 6,
+        "target": "extension/src/rojoProcess.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a linter that only needs to run when Lua files are opened or saved. While not malicious, this increases the attack surface slightly by loading the extension for all users at startup.",
+        "code_reference": "package.json activation events",
+        "line_hint": null,
+        "target": "extension/src/linter.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a formatter that should ideally activate on 'onLanguage:lua' or 'onLanguage:luau'. However, this is a common pattern for extensions that also provide UI views (like the Rojo tree mentioned in the README) and does not indicate malicious intent.",
+        "code_reference": "package.json activation events",
+        "line_hint": null,
+        "target": "extension/src/formatter.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a utility that primarily operates on specific project files. While not malicious, this causes the extension to load in every workspace, even those without Rojo/Luau projects, which is a minor performance and privacy consideration (though no sensitive data is accessed in this file).",
+        "code_reference": "package.json activation events (implied by context)",
+        "line_hint": null,
+        "target": "extension/src/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a clean implementation of a Rojo process controller. It uses child_process.spawn to execute the 'rojo' CLI tool for 'serve' and 'build' commands, which aligns perfectly with the extension's stated purpose of providing a Rojo-aware utility belt. There are no signs of credential harvesting, data exfiltration, obfuscation, or unauthorized network activity. The static rule hit for child_process is a legitimate functional requirement for this type of extension.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1378,
+    "published_date": "2026-09-15T00:43:44.42Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T22:01:43.156541+00:00Z"
+}

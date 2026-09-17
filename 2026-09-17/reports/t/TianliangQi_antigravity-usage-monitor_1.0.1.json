@@ -1,0 +1,330 @@
+{
+  "extension_id": "TianliangQi.antigravity-usage-monitor",
+  "display_name": "Antigravity AI Usage Monitor",
+  "version": "1.0.1",
+  "publisher": {
+    "name": "TianliangQi",
+    "verified": false
+  },
+  "vsix_sha256": "ac8fe68c89ec24279eeebb3d1b4bd864214f2e961296cf0e4be3becc64a9f031",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.65,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 1,
+        "snippet": "\"use strict\";var X=Object.create;var _=Object.defineProperty;var Y=Object.getOwnPropertyDescriptor;var Z=Object.getOwnPropertyNames;var ee=Object.getPrototypeOf,te=Object.prototype.hasOwnProperty;var "
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 1,
+        "snippet": "\"use strict\";var X=Object.create;var _=Object.defineProperty;var Y=Object.getOwnPropertyDescriptor;var Z=Object.getOwnPropertyNames;var ee=Object.getPrototypeOf,te=Object.prototype.hasOwnProperty;var "
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/out/extension.js",
+        "line": 2,
+        "snippet": "method:\"POST\",headers:{\"Content-Type\":\"application/json\",\"Connect-Protocol-Version\":\"1\",...t?{\"X-Codeium-Csrf-Token\":t}:{}},rejectUnauthorized:!1,timeout:H.HTTP_TIMEOUT_MS},c=>{c.statusCode===200?i(!0"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 1,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.65,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/13)",
+        "summary": "The extension appears to be a legitimate tool for monitoring Google Antigravity AI quota usage, but it exhibits some suspicious behaviors for a 'lightweight' status bar extension. The use of `child_process` to scan for a specific language server binary is a significant capability that should be clearly documented. The network activity is likely local (to the language server), but the custom headers suggest a proprietary protocol. The code is minified but not heavily obfuscated. Overall, it is likely benign but requires user trust in the external language server process."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/13)",
+        "summary": "The extension code reveals a 'ProcessHunter' mechanism that scans system processes to locate the Antigravity AI language server, extracting its port and CSRF token to query usage stats. While this logic is functionally consistent with the extension's purpose of displaying AI quota usage, it is significantly more complex and invasive than a typical 'status bar' extension. The use of PowerShell/ps to scan all processes and the extraction of CSRF tokens from command lines are high-risk patterns that warrant scrutiny, especially given the 'private' claim in the README. The code appears to be minified but not heavily obfuscated, suggesting a legitimate but complex implementation rather than a simple stager."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/13)",
+        "summary": "This chunk of the extension source code implements a 'ProcessHunter' module that locates the Google Antigravity AI service running locally. It uses `child_process` to run PowerShell (on Windows) or likely `lsof`/`netstat` (on macOS/Linux, implied by platform check) to find listening ports associated with the Antigravity PID. It then probes these ports via HTTP/HTTPS to extract CSRF tokens and verify connectivity. The behavior is consistent with a local status bar monitor that needs to communicate with a local AI backend. The primary risk is the use of `child_process` with PowerShell, which is a powerful tool, but the command appears specific and non-interactive. No external network calls or sensitive file reads are observed in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/13)",
+        "summary": "This chunk of code focuses on discovering the local port used by the 'Antigravity' IDE backend to fetch quota information. It uses `child_process` to run standard system commands (`lsof`, `ss`, `netstat`, `powershell`) to list listening ports, then probes those ports with HTTP requests to verify the presence of the expected service. While the use of `child_process` is a high-risk indicator in isolation, the specific commands are well-known, standard utilities for port enumeration, and the network traffic is confined to `localhost`. The behavior is proportional to the extension's stated goal of monitoring a local AI IDE's status. No external network calls or sensitive file reads are observed in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/13)",
+        "summary": "This chunk of code appears to be the network communication layer for the 'Antigravity Usage Status Bar' extension. It primarily interacts with a local language server running on `127.0.0.1` to fetch quota usage data. The use of `rejectUnauthorized: false` is a minor security concern but typical for local dev tools. The `child_process` usage is likely for process discovery rather than arbitrary execution. The data exfiltration flag is likely a false positive as the data is sent to localhost. Overall, the code aligns well with the extension's stated purpose of monitoring local AI quota usage."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 6/13)",
+        "summary": "This chunk of the extension source code appears to be a client for communicating with a local language server (likely part of the Antigravity IDE ecosystem) to fetch AI quota usage. The code is relatively clean and follows standard patterns for local RPC communication. The primary risk indicators are the use of `rejectUnauthorized: false` for local connections and the presence of `child_process` (likely for managing the local server). There are no obvious signs of data exfiltration to external servers, credential harvesting, or obfuscated payloads in this specific chunk. The extension seems to be doing what it claims: fetching status from a local source. The 'SUSPICIOUS' verdict is due to the reliance on a local RPC mechanism which is less common for simple status bar extensions and the disabled SSL verification, which warrants a closer look at the full codebase to ensure the local port isn't exposed or spoofed."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 7/13)",
+        "summary": "This chunk of the extension source code focuses on parsing API responses related to AI model quotas (Gemini/Claude/GPT) and formatting them for the status bar. The logic is deterministic and aligns with the extension's stated purpose of displaying usage statistics. While static scanners flagged `child_process` and network POSTs, these are likely part of the extension's core mechanism to fetch data from the local Antigravity AI service or a configured endpoint, rather than malicious exfiltration. No obfuscation, credential file reads, or suspicious binary execution patterns are visible in this specific segment."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension uses `child_process.exec` to scan the system process list (via `ProcessHunter` class) to find a running `language_server` binary. For a 'lightweight status bar' extension, this is a heavy operation that implies the extension depends on or manages an external native process, which is not clearly documented in the README as a requirement for the user.",
+        "code_reference": "var V = require(\"child_process\")... P = (0, j.promisify)(V.exec)... b = class { ... async scanEnvironment ... }",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 1/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. While common for status bar items, combined with the process scanning logic, it means the extension performs system-level inspection immediately upon VS Code startup, which may be unexpected for a 'visualization' category extension.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "OBFUSCATION",
+        "description": "The code uses minified variable names (e.g., `X`, `_`, `Y`, `Z`, `ee`, `te`, `ne`, `q`, `v`, `ie`, `me`, `d`, `V`, `j`, `G`, `E`, `L`, `P`, `U`, `H`, `b`) which is typical for bundled TypeScript/JavaScript but makes static analysis harder. The obfuscation score is low, suggesting it's standard bundling rather than intentional obfuscation.",
+        "code_reference": "var X = Object.create; var _ = Object.defineProperty; ...",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 1/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ACTIVITY",
+        "description": "The extension imports `http` and `https` modules and defines a `POST` request with custom headers (`Connect-Protocol-Version`, `X-Cod...`). This is likely for communicating with the local language server, but without seeing the full URL construction, it's a potential exfiltration vector if the server is remote.",
+        "code_reference": "method:\"POST\",headers:{\"Content-Type\":\"application/json\",\"Connect-Protocol-Version\":\"1\",...t?{\"X-Cod",
+        "line_hint": 2,
+        "target": "extension/out/extension.js (chunk 1/13)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a 'lightweight, clean, and private' status bar item. However, the code implements a 'ProcessHunter' that scans the entire system process list (using `powershell Get-CimInstance` or `ps`) to find processes matching 'language_server', 'agy', 'antigravity', or 'codeium'. This is a heavy system-level operation disproportionate to a simple UI widget.",
+        "code_reference": "getProcessListCommand()",
+        "line_hint": 5,
+        "target": "extension/out/extension.js (chunk 2/13)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code extracts `--csrf_token` from the command line arguments of the detected Antigravity/Codeium processes. While this might be necessary to authenticate with the local server, it involves parsing sensitive tokens from other processes' command lines, which is a common pattern in info-stealers or local privilege escalation attacks.",
+        "code_reference": "extractConnectionParams()",
+        "line_hint": 38,
+        "target": "extension/out/extension.js (chunk 2/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "COMMAND_EXECUTION",
+        "description": "Uses `child_process` (via `P(e, ...)`) to execute PowerShell and `ps` commands. While necessary for the process scanning logic, this introduces a vector for command injection if the process list output is not strictly sanitized, and adds complexity/risk to a simple extension.",
+        "code_reference": "scanByKeywordWindows()",
+        "line_hint": 12,
+        "target": "extension/out/extension.js (chunk 2/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_COMMUNICATION",
+        "description": "The code connects to a local port found via process scanning. The static rule flagged a POST request, which is likely the communication with the local Antigravity server to fetch quota data. This is expected behavior for the feature but confirms network egress from the extension context.",
+        "code_reference": "verifyAndConnect()",
+        "line_hint": 2,
+        "target": "extension/out/extension.js (chunk 2/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension executes a complex PowerShell command via `child_process` to enumerate listening ports for a specific PID. While necessary for the 'ProcessHunter' logic to find the Antigravity service, it relies on `powershell -NoProfile -NonInteractive` which is a common LOLBIN. The command is constructed with string interpolation of the PID, which is safe if the PID is validated upstream, but adds attack surface.",
+        "code_reference": "let n = `chcp 65001 >nul && powershell -NoProfile -NonInteractive -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-NetTCPConnection -State Listen -OwningProcess ${e} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty LocalPort\"`",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 3/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_COMMUNICATION",
+        "description": "The extension makes HTTP/HTTPS requests to `127.0.0.1` (localhost) to fetch CSRF tokens from the Antigravity service's webview. This is expected behavior for a local status bar monitor interacting with a local AI service, but it involves parsing HTML/JSON from the response to extract tokens.",
+        "code_reference": "let n = G.get({ hostname: \"127.0.0.1\", port: e, path: \"/\", timeout: 2e3 }, ...",
+        "line_hint": 30,
+        "target": "extension/out/extension.js (chunk 3/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIGURATION_ACCESS",
+        "description": "Reads extension-specific configuration (`antigravityUsage`) to determine refresh intervals and other settings. This is standard practice for configurable extensions.",
+        "code_reference": "workspace.getConfiguration(\"antigravityUsage\")",
+        "line_hint": 32,
+        "target": "extension/out/extension.js (chunk 3/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code logic aligns with the extension's purpose: it hunts for the Antigravity process, identifies its ports, and connects to it to fetch quota data. The use of `child_process` is justified by the need to inspect OS-level network connections which Node.js `net` module alone might not easily expose for a specific PID without native dependencies.",
+        "code_reference": "async verifyAndConnect(e) { ... }",
+        "line_hint": 10,
+        "target": "extension/out/extension.js (chunk 3/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension executes shell commands (`lsof`, `ss`, `netstat`, `powershell`) to enumerate listening ports on the local machine. While this is a standard technique for discovering local services (like the Antigravity IDE backend), it requires the `child_process` module and runs arbitrary system binaries. The commands are piped to `grep` and parsed, which is typical for port scanning but adds a dependency on system tools that may not exist or behave differently across environments.",
+        "code_reference": "let n = `lsof -nP -iTCP -sTCP:LISTEN -a -p ${e} 2>/dev/null` ... let n = `ss -tlnp 2>/dev/null | grep \"pid=${e},\" ...`",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 4/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_COMMUNICATION",
+        "description": "The code sends HTTP requests to `127.0.0.1` (localhost) to probe for a specific gRPC/HTTP service (`RetrieveUserQuotaSummary`). This is consistent with the extension's purpose of communicating with a local IDE backend. The 'exfiltration' flag from the static scanner is likely a false positive since the destination is localhost, not an external server, and the payload is a simple JSON metadata object.",
+        "code_reference": "hostname: \"127.0.0.1\", port: e, path: \"/exa.language_server_pb.LanguageServerService/RetrieveUserQuotaSummary\"",
+        "line_hint": 32,
+        "target": "extension/out/extension.js (chunk 4/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIGURATION_ACCESS",
+        "description": "The extension reads its own configuration namespace (`antigravityUsage`) to determine refresh intervals and other settings. This is standard VS Code extension behavior and does not indicate harvesting of user secrets unless the config keys are named generically like `api_key` or `token` (which is not evident in this snippet).",
+        "code_reference": "workspace.getConfiguration(\"antigravityUsage\")",
+        "line_hint": 32,
+        "target": "extension/out/extension.js (chunk 4/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "TLS_CONFIGURATION",
+        "description": "The code uses `rejectUnauthorized: !1` (false) in HTTP/HTTPS requests. While this is common for local development servers (localhost) to handle self-signed certificates, it technically disables certificate validation, which could be a security risk if the endpoint were ever changed to a remote host or if a MITM attack occurred on the local network.",
+        "code_reference": "rejectUnauthorized: !1",
+        "line_hint": 10,
+        "target": "extension/out/extension.js (chunk 5/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The static scanner flagged `require(\"child_process\")` as a direct command execution risk. However, in the context of an extension that monitors a local AI IDE process (Antigravity), using child_process is likely to inspect process lists or PIDs to find the active server instance. This is a necessary capability for the stated purpose, though it warrants monitoring to ensure it doesn't execute arbitrary commands.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 5/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension sends POST requests to `127.0.0.1` (localhost) with JSON payloads containing metadata like `ideName: \"antigravity\"`. This is consistent with communicating with a local language server. The data sent appears to be minimal metadata rather than user secrets, aligning with the 'private' claim in the README.",
+        "code_reference": "hostname: \"127.0.0.1\", port: e, path: \"/exa.language_server_pb.LanguageServerService/GetUserStatus\"",
+        "line_hint": 30,
+        "target": "extension/out/extension.js (chunk 5/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIGURATION_ACCESS",
+        "description": "The extension reads its own configuration namespace `antigravityUsage` to determine refresh intervals and other settings. This is standard behavior for a status bar extension and does not appear to be harvesting sensitive user secrets.",
+        "code_reference": "workspace.getConfiguration(\"antigravityUsage\")",
+        "line_hint": 32,
+        "target": "extension/out/extension.js (chunk 5/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_COMMUNICATION",
+        "description": "The extension connects to a local port (127.0.0.1) using `http` or `https` (variable `ae`/`se`). While connecting to a local IDE process is expected for a status bar extension, the code uses `rejectUnauthorized: !1` (false), which disables SSL certificate verification if the connection is HTTPS. This is common for local dev tools but reduces security guarantees against local MITM if the port is exposed.",
+        "code_reference": "rejectUnauthorized: !1",
+        "line_hint": 20,
+        "target": "extension/out/extension.js (chunk 6/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "COMMAND_EXECUTION",
+        "description": "The static scanner flagged `require(\"child_process\")`. In this chunk, it is likely imported at the top of the module (line 1 of the file, not visible in this snippet but referenced by the scanner). For a status bar extension, `child_process` is often used to spawn the language server or check process status. Without seeing the specific `exec`/`spawn` call in this chunk, it is likely benign infrastructure, but worth noting as a capability that could be abused.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 6/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIGURATION_ACCESS",
+        "description": "The extension reads its own configuration namespace `antigravityUsage` via `workspace.getConfiguration`. This is standard behavior for reading user settings like refresh intervals. The scanner flagged it as potential harvesting, but since it's reading its own extension's config, it is likely benign.",
+        "code_reference": "workspace.getConfiguration(\"antigravityUsage\")",
+        "line_hint": 32,
+        "target": "extension/out/extension.js (chunk 6/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a 'lightweight, clean, and private' status bar monitor. However, it implements a full RPC client (`sendRpc`) to communicate with a local language server (`exa.language_server_pb.LanguageServerService`). This implies a dependency on a running local server process (likely the Antigravity IDE itself or a companion process). If the extension is used in standard VS Code without this specific server running, it may fail or require the user to run additional background processes, which is a slight disconnect from 'lightweight' if not clearly documented as a requirement.",
+        "code_reference": "this.sendRpc(e, \"/exa.language_server_pb.LanguageServerService/GetUserStatus\", t)",
+        "line_hint": 10,
+        "target": "extension/out/extension.js (chunk 6/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `require(\"child_process\")` and a `POST` request with custom headers as high-risk. However, this chunk (7/13) primarily contains data parsing logic (`parseGetUserStatusResponse`) and aggregation methods. The `child_process` reference is likely part of a bundled dependency or a utility for fetching local status (common in extensions that read local API responses or logs), and the POST request is likely the mechanism to query the local Antigravity AI service or a proxy. Without evidence of obfuscated payloads or sensitive file reads in this specific chunk, these are likely functional requirements for the 'real-time quota monitor' feature rather than exfiltration.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 7/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The rule engine flagged `workspace.getConfiguration` as harvesting. The code reads `antigravityUsage` configuration to determine refresh intervals and display settings. This is standard VS Code extension behavior for user preferences, not secret harvesting, unless the config values are sent to a third-party server (which is not evident in this parsing chunk).",
+        "code_reference": "workspace.getConfiguration(\"antigravityUsage\")",
+        "line_hint": 32,
+        "target": "extension/out/extension.js (chunk 7/13)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension appears to be a legitimate tool for monitoring Google Antigravity AI quota usage, but it exhibits some suspicious behaviors for a 'lightweight' status bar extension. The use of `child_process` to scan for a specific language server binary is a significant capability that should be clearly documented. The network activity is likely local (to the language server), but the custom headers suggest a proprietary protocol. The code is minified but not heavily obfuscated. Overall, it is likely benign but requires user trust in the external language server process.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-25T02:29:22.77Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:49.527931+00:00Z"
+}

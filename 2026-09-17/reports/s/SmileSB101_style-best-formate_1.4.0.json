@@ -1,0 +1,174 @@
+{
+  "extension_id": "SmileSB101.style-best-formate",
+  "display_name": "style-best-formate: a better CSS/LESS/SCSS formatter based on formate",
+  "version": "1.4.0",
+  "publisher": {
+    "name": "SmileSB101",
+    "verified": false
+  },
+  "vsix_sha256": "b735e2b2a7f0e5be4bb28b369021cec049a007efb7ae2df456944a60876cd8bc",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.1,
+    "static": 0.40625,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "LIFECYCLE_SCRIPT",
+        "severity": "HIGH",
+        "description": "Extension has 'postinstall' script: node ./node_modules/vscode/bin/install",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "LIFECYCLE_SCRIPT",
+        "severity": "HIGH",
+        "description": "Extension has 'install' script: npx vsce package && code --install-extension *.vsix",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/scripts/version-manager.js",
+        "line": 3,
+        "snippet": "const { execSync } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/scripts/version-manager.js",
+        "line": 3,
+        "snippet": "const { execSync } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/scripts/version-manager.js",
+        "line": 3,
+        "snippet": "const { execSync } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/scripts/version-manager.js",
+        "line": 14,
+        "snippet": "return execSync(command, { encoding: 'utf8' }).trim();"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/scripts/version-manager.js",
+        "line": 3,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 9
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 4,
+    "blocks_seen": 4,
+    "summaries": [
+      {
+        "target": "extension/scripts/version-manager.js (chunk 1/4)",
+        "summary": "The code is a standard version management utility for a VS Code extension. It uses `child_process` to run safe Git commands to determine the current version and generate changelogs. The behavior is fully proportional to the extension's purpose (a CSS/LESS/SCSS formatter) as part of its development/release tooling. No malicious indicators, credential harvesting, or suspicious network activity were found in this chunk."
+      },
+      {
+        "target": "extension/scripts/version-manager.js (chunk 2/4)",
+        "summary": "The provided code chunk contains standard utility functions for semantic versioning and changelog generation. It parses commit messages, determines version bump types (major/minor/patch), and formats changelog entries. There are no network calls, file system access to sensitive paths, credential harvesting, or obfuscation patterns. The `child_process` flag is likely a false positive or refers to code outside this specific chunk, but the visible logic is entirely benign and consistent with a development utility script."
+      },
+      {
+        "target": "extension/scripts/version-manager.js (chunk 3/4)",
+        "summary": "The code is a developer utility script for managing versioning, changelogs, and packaging. It performs standard file I/O and executes benign shell commands related to npm and git. There are no indicators of malicious intent, data exfiltration, or capability disconnect relative to a development tool."
+      },
+      {
+        "target": "extension/scripts/version-manager.js (chunk 4/4)",
+        "summary": "The code is a benign release automation script for a CSS formatter extension. It handles version bumping, changelog generation, and git tagging. The flagged `child_process` usage is appropriate for a CLI-based build tool and does not indicate malicious intent or capability disconnect, as this script is not executed within the VS Code editor environment during normal extension usage."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process.execSync` is flagged by static analysis as high-risk. However, in the context of a `version-manager.js` script, it is used exclusively to execute standard, safe Git commands (`git describe`, `git log`) to retrieve version metadata. There is no evidence of arbitrary command execution, shell injection, or execution of untrusted input. This is a legitimate development utility pattern.",
+        "code_reference": "const { execSync } = require('child_process'); ... this.exec('git describe --tags --abbrev=0')",
+        "line_hint": 3,
+        "target": "extension/scripts/version-manager.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` at line 3. However, the provided source code chunk (chunk 2/4) does not contain this statement. The visible code consists of pure logic functions (`analyzeCommits`, `calculateNewVersion`, `generateChangelog`) that manipulate strings and arrays without any system interaction. The `child_process` import is likely present in the file header (chunk 1) for other utility functions not shown here, or is a false positive from a different context. Given the visible code is benign string manipulation, this does not indicate malicious intent in this specific context.",
+        "code_reference": "require('child_process')",
+        "line_hint": 3,
+        "target": "extension/scripts/version-manager.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process` is flagged by static analysis, but the code explicitly executes standard development workflow commands (`npm run clean`, `npm run compile`, `git add`, `git commit`). This is consistent with a 'version-manager' script intended for developer use during the release process, not for runtime execution within the VS Code extension host.",
+        "code_reference": "this.exec('npm run clean'); this.exec('git add .');",
+        "line_hint": 30,
+        "target": "extension/scripts/version-manager.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, this file is a development utility script (`version-manager.js`) intended to be run via Node.js CLI (indicated by `require.main === module`), not as part of the VS Code extension runtime. The usage of child_process is standard for a release automation tool that needs to execute git commands (e.g., `git commit`, `git tag`) and build processes. This is a false positive in the context of a supply-chain attack analysis for the extension's runtime behavior.",
+        "code_reference": "require('child_process')",
+        "line_hint": 3,
+        "target": "extension/scripts/version-manager.js (chunk 4/4)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard version management utility for a VS Code extension. It uses `child_process` to run safe Git commands to determine the current version and generate changelogs. The behavior is fully proportional to the extension's purpose (a CSS/LESS/SCSS formatter) as part of its development/release tooling. No malicious indicators, credential harvesting, or suspicious network activity were found in this chunk.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 17,
+    "published_date": "2026-08-31T02:56:52.21Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T08:58:37.609656+00:00Z"
+}

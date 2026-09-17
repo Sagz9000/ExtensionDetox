@@ -1,0 +1,303 @@
+{
+  "extension_id": "CODEZPC.deepseek-statusbar",
+  "display_name": "Deepseek \u72b6\u6001\u680f",
+  "version": "1.2.0",
+  "publisher": {
+    "name": "CODEZPC",
+    "verified": false
+  },
+  "vsix_sha256": "e6465ecc536b15077b92555184cf8b68079826e7e493e702238904a99d616f0a",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.35,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/extension.js",
+        "line": 451,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/extension.js",
+        "line": 337,
+        "snippet": ".postMessage({ command: 'setApiKey"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/extension.js",
+        "line": 338,
+        "snippet": ".postMessage({ command: 'clearApiKey"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.35,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/7)",
+        "summary": "This chunk of the extension source code appears to be a utility module for calculating peak/valley electricity pricing times and formatting dates. The logic is straightforward and aligns with the extension's stated purpose of displaying pricing status in the status bar. The static scanner hits for 'exfiltration' and 'credential theft' are likely false positives related to standard VS Code Webview communication and SecretStorage usage. However, the use of `onStartupFinished` and the presence of `https` imports warrant checking subsequent chunks to ensure network calls are directed to legitimate API endpoints and that the API key is not being sent to unexpected third parties. The code is currently clean but requires verification of network destinations."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/7)",
+        "summary": "This chunk of code contains utility functions for calculating peak/valley electricity pricing boundaries, formatting countdown timers, and fetching the user's balance from the DeepSeek API. The network call to `api.deepseek.com` is consistent with the extension's stated purpose (displaying DeepSeek account balance). The use of `https.request` is standard for Node.js environments. The flagged 'exfiltration' and 'credential theft' patterns are false positives resulting from standard VS Code Webview communication and SecretStorage usage respectively. No obfuscation or suspicious system access is observed in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/7)",
+        "summary": "This chunk of code is primarily responsible for formatting and displaying balance information in a Webview panel. It contains helper functions to build Markdown and HTML strings for the UI. The logic is straightforward and consistent with the extension's purpose of displaying API balance and status. The flagged 'exfiltration' and 'credential theft' patterns are standard VS Code API usages for Webview communication and secure secret storage, respectively, making them false positives in this context."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/7)",
+        "summary": "This chunk of code primarily contains the HTML/CSS/JS template for a VS Code Webview panel and helper functions to format data for that panel. The code is clean, well-commented, and uses standard VS Code Webview APIs (`acquireVsCodeApi`, `postMessage`). The 'exfiltration' hits are false positives resulting from the standard Webview communication pattern. The `SecretStorage` usage is appropriate for storing the user's API key securely. The logic aligns perfectly with the extension's purpose of displaying Deepseek billing status and electricity peak/valley prices."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/7)",
+        "summary": "This chunk of the extension source code appears to be a standard implementation for a status bar extension that displays API balance and status. It uses the VS Code SecretStorage API correctly to store an API key, and the 'exfiltration' flags from the static scanner are likely false positives related to internal Webview messaging. The activation event 'onStartupFinished' is broad but typical for status bar items. The code is clean and well-commented, with no obvious obfuscation or suspicious network calls in this specific chunk. The risk is low to medium, primarily due to the broad activation scope and the inherent risk of any extension handling API keys."
+      },
+      {
+        "target": "extension/extension.js (chunk 6/7)",
+        "summary": "This chunk of the extension source code appears benign and consistent with its stated purpose of displaying DeepSeek API balance and status in the VS Code status bar. It uses standard VS Code APIs for command registration, webview creation, and secret storage. The 'exfiltration' hits from the static scanner are false positives resulting from internal webview messaging and standard secret retrieval. No obfuscation or suspicious network calls are present in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 7/7)",
+        "summary": "This chunk of code (7/7) contains the main activation logic and update loop for a VS Code status bar extension that displays DeepSeek API balance and peak/valley pricing status. The code uses standard VS Code APIs (`vscode.window`, `vscode.StatusBarItem`, `vscode.ThemeColor`) and manages a `setInterval` timer for updates. The flagged 'exfiltration' patterns are false positives related to internal Webview communication. The use of `context.secrets` is appropriate for storing the user's API key. The logic is straightforward: calculate status, update UI, and periodically fetch balance. No obfuscation, child processes, or suspicious network calls are visible in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is a broad activation event. While common for status bar extensions that need to be visible immediately, it means the code runs for every user upon VS Code startup, increasing the attack surface if the extension is compromised or malicious.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `postMessage` with 'setApiKey' as data exfiltration. In the context of VS Code extensions, `postMessage` is typically used to communicate with Webviews (UI panels). Sending an API key to a local Webview for display or storage is a standard pattern, not necessarily exfiltration to a remote server, unless the Webview loads remote content (which is not visible in this chunk).",
+        "code_reference": "extension/extension.js",
+        "line_hint": 337,
+        "target": "extension/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `context.secrets.get` as credential theft. Using VS Code's SecretStorage API is the recommended way to store sensitive data like API keys securely. It is only 'theft' if the key is sent to an unknown third-party server. Given the extension's purpose (displaying balance/pricing), storing the user's API key locally in the secure store is expected behavior.",
+        "code_reference": "extension/extension.js",
+        "line_hint": 451,
+        "target": "extension/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_ACTIVITY",
+        "description": "The code imports `https` and likely makes network calls to fetch balance/pricing data. While this is necessary for the extension's function, the specific endpoints are not visible in this chunk. If the extension sends the user's API key to a non-official server (e.g., a personal server instead of the official DeepSeek/LLM provider), it could be a risk. This requires checking the URL construction in subsequent chunks.",
+        "code_reference": "const https = require('https');",
+        "line_hint": 2,
+        "target": "extension/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `postMessage` calls as data exfiltration. However, `postMessage` is the standard VS Code API for communicating between the extension host and Webview panels. The commands 'setApiKey' and 'clearApiKey' are internal UI state updates, not network transmissions.",
+        "code_reference": ".postMessage({ command: 'setApiKey'",
+        "line_hint": 337,
+        "target": "extension/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `context.secrets.get` as credential theft. While this reads a secret, it is the recommended VS Code API for storing user-provided API keys securely. The key is subsequently sent to the documented API endpoint (`api.deepseek.com`), which aligns with the extension's purpose of checking DeepSeek balance.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 451,
+        "target": "extension/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. For a status bar widget that requires a user-provided API key, this is slightly aggressive but common for ensuring the status bar item is visible immediately. It is not a security risk in itself but worth noting.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `postMessage` calls as data exfiltration. However, `postMessage` is the standard VS Code API for communicating between the extension host and a Webview panel. The commands 'setApiKey' and 'clearApiKey' are internal UI state updates, not network transmissions.",
+        "code_reference": ".postMessage({ command: 'setApiKey'",
+        "line_hint": 337,
+        "target": "extension/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `context.secrets.get` as credential theft. While this reads from VS Code's SecretStorage, it is the recommended secure way for extensions to store user-provided API keys (like the Deepseek key mentioned in the description). It is not reading system credentials like SSH keys or browser cookies.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 451,
+        "target": "extension/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `postMessage` calls as data exfiltration. However, these are standard VS Code Webview API calls (`acquireVsCodeApi().postMessage`) used to send UI button click events (refresh, set key, clear key) from the Webview to the extension host. This is the intended communication channel for Webviews.",
+        "code_reference": "vscode.postMessage({ command: 'setApiKey' })",
+        "line_hint": 337,
+        "target": "extension/extension.js (chunk 4/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `context.secrets.get` as credential theft. While this reads from VS Code's SecretStorage, it is the standard, secure way for extensions to store user-provided API keys (like the Deepseek API key mentioned in the description). It is not reading browser cookies or SSH keys directly from the filesystem.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 451,
+        "target": "extension/extension.js (chunk 4/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. For a status bar item that displays real-time data (electricity prices, balance), this is appropriate to ensure the status bar is populated immediately upon VS Code launch, rather than waiting for a specific command or file open.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 4/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is a broad activation event. While common for status bar extensions that need to be visible immediately, it means the code runs on every VS Code startup, increasing the attack surface if the extension is compromised or malicious.",
+        "code_reference": "activationEvents in package.json (referenced in metadata)",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `context.secrets.get` as 'vscode_credential_theft'. However, the code is reading a specific key (`SECRET_KEY_ID`) intended for the DeepSeek API, not iterating over all secrets or reading unrelated system credentials. This is standard usage of the VS Code SecretStorage API for extension-specific secrets.",
+        "code_reference": "let apiKey = (await context.secrets.get(SECRET_KEY_ID)) || null;",
+        "line_hint": 451,
+        "target": "extension/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `postMessage` calls as 'data exfiltration'. These are likely internal communication with a Webview panel (standard VS Code pattern) to update the UI with the API key status or balance info, not necessarily sending data to an external server.",
+        "code_reference": ".postMessage({ command: 'setApiKey' ...",
+        "line_hint": 337,
+        "target": "extension/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension description mentions displaying 'peak/valley electricity prices' (\u5cf0\u8c37\u7535\u4ef7) and 'balance'. The code shows a `fetchBalance` function and a tooltip builder that includes fee structures. This aligns with the description. However, the use of `vscode.window.showInputBox` with `password: true` for the API key is appropriate. The main disconnect is minor: the extension relies on a specific API (DeepSeek) which is not explicitly named in the short description but implied by the 'PRO/FLASH' tiers in the tooltip.",
+        "code_reference": "buildTooltip function and refreshBalance function",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `context.secrets.get` as credential theft. However, the code uses the standard VS Code SecretStorage API to retrieve a user-provided DeepSeek API key, which is the intended mechanism for storing secrets in extensions.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 451,
+        "target": "extension/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `postMessage` as data exfiltration. The messages are sent to a local Webview panel (`panel.webview.postMessage`) to update the UI, not to an external network endpoint.",
+        "code_reference": "panel.webview.postMessage",
+        "line_hint": 337,
+        "target": "extension/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. While common for status bar items, it is slightly aggressive for a utility that could activate on demand or when the status bar is visible, but it is not strictly malicious.",
+        "code_reference": "activationEvents",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `postMessage` calls as data exfiltration. However, these calls are directed to the extension's own Webview panel (`panel.webview.postMessage`) to update the UI with status data, not to an external network endpoint.",
+        "code_reference": "panel.webview.postMessage(buildPanelData(...))",
+        "line_hint": 337,
+        "target": "extension/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged `context.secrets.get` as credential theft. While this reads from VS Code's SecretStorage, it is the standard mechanism for extensions to retrieve user-provided API keys (DeepSeek API key in this case) securely. The key is used for the extension's primary function (balance check), not necessarily sent to a third-party C2 server (though it is sent to the DeepSeek API, which is expected).",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 451,
+        "target": "extension/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. For a status bar item that updates every second, this is appropriate to ensure the UI is ready immediately, though it does consume a small amount of CPU/RAM constantly. This is a common pattern for status bar extensions and not necessarily malicious, but worth noting for performance-sensitive users.",
+        "code_reference": "activationEvents: [\"onStartupFinished\"]",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 7/7)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the extension source code appears to be a utility module for calculating peak/valley electricity pricing times and formatting dates. The logic is straightforward and aligns with the extension's stated purpose of displaying pricing status in the status bar. The static scanner hits for 'exfiltration' and 'credential theft' are likely false positives related to standard VS Code Webview communication and SecretStorage usage. However, the use of `onStartupFinished` and the presence of `https` imports warrant checking subsequent chunks to ensure network calls are directed to legitimate API endpoints and that the API key is not being sent to unexpected third parties. The code is currently clean but requires verification of network destinations.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 10,
+    "published_date": "2026-08-23T09:36:19.79Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:50.597235+00:00Z"
+}

@@ -1,0 +1,124 @@
+{
+  "extension_id": "arthurafarias.vscode-extension-custom-actions",
+  "display_name": "vscode-extension-custom-actions",
+  "version": "0.0.1",
+  "publisher": {
+    "name": "arthurafarias",
+    "verified": false
+  },
+  "vsix_sha256": "8b6a17e3f3cdd4610a2b4e79894e46c01959ab727164f0170027a55a90d95057",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 3
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 4,
+    "blocks_seen": 4,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/4)",
+        "summary": "The provided code chunk is the standard TypeScript-compiled entry point for a VS Code extension. It imports standard Node.js modules ('fs', 'path') and the 'vscode' API. The logic shown is consistent with the extension's stated purpose: defining configuration keys, setting up an output channel, and beginning the process of locating and loading JavaScript files from a workspace directory ('.vscode/custom-actions'). There are no signs of obfuscation, network exfiltration, credential harvesting, or arbitrary command execution in this chunk. The use of 'fs' and 'path' is expected for an extension that reads local workspace files. The activation event 'onStartupFinished' is slightly aggressive but common for extensions that need to be ready immediately; it is not inherently malicious. No critical or high-risk indicators were found in this portion of the code."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/4)",
+        "summary": "This code chunk is benign and aligns perfectly with the extension's documented functionality. It handles the discovery, validation, and hot-reloading of custom action directories within the user's workspace. It uses standard VS Code APIs for file watching and configuration changes. There are no signs of credential harvesting, data exfiltration, obfuscation, or unauthorized command execution. The only minor note is the inherent trust model of executing user-defined JS files, which is the core feature of the extension, not a vulnerability in the extension code itself."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/4)",
+        "summary": "This extension is highly suspicious and likely malicious or at least extremely dangerous. Its core functionality relies on using `require()` to load and execute arbitrary JavaScript files from the user's workspace. This is a well-known technique for creating backdoors or malware in VS Code extensions, as it allows a malicious repository to execute arbitrary Node.js code when a user opens the workspace. The 'Custom Actions' feature is a deceptive wrapper for an RCE payload. The use of `require` on user-controlled paths is a critical security vulnerability that should never be present in a legitimate VS Code extension."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/4)",
+        "summary": "This code chunk represents the tail end of the extension's main logic, specifically handling error reporting for custom actions and the deactivation lifecycle. It contains no network calls, file system access, process execution, or obfuscation. The behavior is strictly limited to VS Code UI interactions (showing error messages) and internal state management, which is fully consistent with the extension's advertised purpose of loading and executing user-defined JavaScript actions."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a tool that loads workspace-specific files. While not malicious, this increases the attack surface slightly by running code before the user has explicitly interacted with the extension's features.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements file system watchers and dynamic loading of JavaScript files from the workspace. While this is consistent with the extension's stated purpose ('define its own Command Palette actions as plain JavaScript files'), it inherently carries a supply-chain risk if a malicious actor gains write access to the workspace's action directories. However, the code itself does not exhibit malicious intent (no exfiltration, no obfuscation, no suspicious network calls).",
+        "code_reference": "setupWatchers, loadActions, registerCustomAction",
+        "line_hint": "1-50",
+        "target": "extension/out/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension's stated purpose is to load 'plain JavaScript files' as custom actions. However, the code explicitly uses `require(entryPath)` to load these files. This is a classic Remote Code Execution (RCE) vector. By allowing arbitrary JS files in the workspace to be loaded via `require`, the extension effectively allows any malicious workspace to execute arbitrary Node.js code with the privileges of the VS Code process. This is a severe supply-chain risk, as a malicious repository could contain a `.vscode/custom-actions` folder that executes malware upon opening the workspace.",
+        "code_reference": "entryModule = require(entryPath);",
+        "line_hint": "approximate line 45",
+        "target": "extension/out/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The function `registerCustomAction` loads and executes JavaScript files from the user's workspace directory (`.vscode/custom-actions/`). While the README claims this is for 'IDE automation', the use of `require` on user-controlled paths is inherently dangerous. It bypasses VS Code's sandboxing for extensions and allows direct access to the Node.js API (fs, child_process, net, etc.) from the workspace context, which is not a standard or safe pattern for VS Code extensions.",
+        "code_reference": "let entryModule; try { delete require.cache[require.resolve(entryPath)]; entryModule = require(entryPath); }",
+        "line_hint": "approximate line 42",
+        "target": "extension/out/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "TRUST_BYPASS_ATTEMPT",
+        "description": "The code checks `vscode.workspace.isTrusted` before running the action. While this is a good security practice, it does not mitigate the risk of the `require` call itself if the workspace is trusted. More importantly, the mere presence of this mechanism suggests the extension is designed to run untrusted code, which is a red flag for a 'Custom Actions' extension that should ideally be declarative or sandboxed.",
+        "code_reference": "const isTrusted = vscode.workspace.isTrusted ?? true;",
+        "line_hint": "approximate line 55",
+        "target": "extension/out/extension.js (chunk 3/4)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The provided code chunk is the standard TypeScript-compiled entry point for a VS Code extension. It imports standard Node.js modules ('fs', 'path') and the 'vscode' API. The logic shown is consistent with the extension's stated purpose: defining configuration keys, setting up an output channel, and beginning the process of locating and loading JavaScript files from a workspace directory ('.vscode/custom-actions'). There are no signs of obfuscation, network exfiltration, credential harvesting, or arbitrary command execution in this chunk. The use of 'fs' and 'path' is expected for an extension that reads local workspace files. The activation event 'onStartupFinished' is slightly aggressive but common for extensions that need to be ready immediately; it is not inherently malicious. No critical or high-risk indicators were found in this portion of the code.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-18T13:41:27.817Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-18T14:06:10.934227+00:00Z"
+}

@@ -1,0 +1,123 @@
+{
+  "extension_id": "ccimage.ccimage-emoji-log",
+  "display_name": "Emoji Log 2026",
+  "version": "1.5.1",
+  "publisher": {
+    "name": "ccimage",
+    "verified": false
+  },
+  "vsix_sha256": "755f2f4b2ef424f3f66269d17322b06fa38824ea72c1c99167f70355e909125a",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.1,
+    "static": 0.09375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 4
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "img.shields.io",
+      "source_file": "extension/package.json",
+      "line": 113,
+      "context": "\"url\": \"https://img.shields.io/badge/SUPPORT%20THIS%20PROJECT-Become%20a%20VSCode%20Power%20User%20%E2%86%92-gray.svg?colorA=131217&colorB=5734F5&style=flat\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.98,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/2)",
+        "summary": "The code is a benign implementation of the 'Emoji-Log' VS Code extension. It registers commands to allow users to select emoji prefixes for Git commit messages and configure those emojis. The logic is strictly limited to interacting with the VS Code Git API and UI (QuickPick, InputBoxes). There are no network calls, file system access outside of VS Code configuration, child process execution, or obfuscation. The static rule hit regarding extension enumeration is a false positive, as it is required to function as a Git integration tool. The extension's capabilities are fully proportional to its advertised purpose."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/2)",
+        "summary": "The provided code snippet is the tail end of the extension file, containing only the empty 'deactivate' function. It exhibits no malicious behavior, obfuscation, or suspicious network activity. The static rule hit regarding extension enumeration is likely a false positive or refers to code in the previous chunk that is standard for this type of utility extension. The extension aligns with its stated purpose of providing emoji-based git commit logs."
+      },
+      {
+        "target": "extension/out/EmojiLog/EmojiConfiguration.js (chunk 1/3)",
+        "summary": "The provided code chunk is a standard configuration management module for the 'Emoji-Log' VS Code extension. It utilizes the `vscode.workspace.getConfiguration` API to read user-defined emoji prefixes and provides a UI loop (`vscode.window.showQuickPick`) to allow users to add, edit, delete, or reorder these entries. The code is clean, unobfuscated, and strictly adheres to the extension's advertised purpose of managing git commit log standards. There are no indicators of malicious behavior, data exfiltration, or capability disconnects in this specific file."
+      },
+      {
+        "target": "extension/out/EmojiLog/EmojiConfiguration.js (chunk 2/3)",
+        "summary": "The provided code chunk is a standard implementation of configuration management for the 'Emoji-Log' VS Code extension. It handles user interactions for adding, editing, deleting, and reordering emoji commit prefixes using standard VS Code APIs (e.g., `vscode.window.showQuickPick`, `vscode.commands.executeCommand`). There are no network calls, file system operations outside of expected configuration storage, process execution, or obfuscation. The behavior is fully aligned with the extension's stated purpose of managing git commit log standards."
+      },
+      {
+        "target": "extension/out/EmojiLog/EmojiConfiguration.js (chunk 3/3)",
+        "summary": "The provided code snippet is a benign configuration management module for the 'Emoji-Log' VS Code extension. It handles user interactions for customizing git commit prefixes using standard VS Code APIs (`showQuickPick`, `showInputBox`, `showWarningMessage`) and persists settings via `vscode.workspace.getConfiguration`. There are no network calls, no file system access to sensitive paths, no process execution, and no obfuscation. The behavior is fully aligned with the extension's stated purpose of managing emoji-based commit log standards."
+      },
+      {
+        "target": "extension/out/EmojiLog/RepositoryTarget.js",
+        "summary": "The analyzed file `RepositoryTarget.js` contains benign logic for resolving Git repository input boxes and prefixing commit messages, which is fully consistent with the extension's advertised purpose of managing emoji-based git commit logs. There are no indicators of malicious behavior, credential harvesting, obfuscation, or unauthorized network activity. The code is clean."
+      },
+      {
+        "target": "extension/out/EmojiLog/EmojiLog.js",
+        "summary": "The analyzed file is a benign data module that exports a static array of emoji prefixes and descriptions for git commit messages. It contains no network activity, file system access, process execution, or obfuscation. The code is fully proportional to the extension's advertised purpose of providing an emoji-based git log standard, and the static indicators (img.shields.io) are benign."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode.extensions.getExtension' as potential reconnaissance. In this context, it is used exclusively to access the 'vscode.git' extension API to interact with the Git SCM view (prefixing commit messages). This is a standard and necessary pattern for extensions that integrate with VS Code's built-in Git features, not malicious reconnaissance.",
+        "code_reference": "const vscodeGit = vscode.extensions.getExtension('vscode.git');",
+        "line_hint": 54,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' for enumerating installed extensions. However, the provided source code chunk (chunk 2/2) only contains the 'deactivate' function. The 'getExtension' call likely resides in chunk 1. In the context of a Git commit log extension, checking for the presence of Git-related extensions or other dependencies is a standard and benign pattern, not reconnaissance for malicious intent.",
+        "code_reference": "function deactivate() {}",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a benign implementation of the 'Emoji-Log' VS Code extension. It registers commands to allow users to select emoji prefixes for Git commit messages and configure those emojis. The logic is strictly limited to interacting with the VS Code Git API and UI (QuickPick, InputBoxes). There are no network calls, file system access outside of VS Code configuration, child process execution, or obfuscation. The static rule hit regarding extension enumeration is a false positive, as it is required to function as a Git integration tool. The extension's capabilities are fully proportional to its advertised purpose.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-07T10:34:12.597Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T19:01:37.972621+00:00Z"
+}

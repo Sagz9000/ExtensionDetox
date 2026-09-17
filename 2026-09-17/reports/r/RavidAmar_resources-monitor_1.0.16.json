@@ -1,0 +1,236 @@
+{
+  "extension_id": "RavidAmar.resources-monitor",
+  "display_name": "System Metrics Lens",
+  "version": "1.0.16",
+  "publisher": {
+    "name": "RavidAmar",
+    "verified": false
+  },
+  "vsix_sha256": "555f14d70467382446048542f3e48f247e9d976a4080889e9e1e5b5ac51b9d80",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.15,
+    "static": 0.28125,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "ACTIVATION_WILDCARD",
+        "severity": "HIGH",
+        "description": "Extension uses wildcard activation: ['*', 'onCommand:resmon.openSettings']",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 91,
+        "snippet": "let childProcess = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 91,
+        "snippet": "let childProcess = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 91,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "resmon.show.net",
+      "source_file": "extension/package.json",
+      "line": 57,
+      "context": "\"resmon.show.net\": {",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 11,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
+    "confidence": 0.9,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/9)",
+        "summary": "This is a fork of the popular 'Resource Monitor' extension. The code in this chunk is standard boilerplate for a VS Code status bar extension: it registers commands, initializes a monitor class, and defines resource display logic. The primary dependency is `systeminformation`, a reputable library for fetching system metrics (CPU, RAM, etc.), which explains the presence of system-level calls. The obfuscation score is 0, and the logic aligns perfectly with the advertised 'System Metrics Lens' functionality. The `child_process` hit is likely a false positive or a necessary low-level call for specific OS metrics, not a stager."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/9)",
+        "summary": "This chunk of the extension source code implements CPU usage sampling logic. It primarily relies on the `systeminformation` library (via `si.currentLoad()`) and falls back to a PowerShell command on Windows to fetch `Win32_PerfFormattedData_Counters_ProcessorInformation`. The use of `child_process` is justified by the extension's purpose (reading system metrics) and the command execution is tightly scoped with timeouts and error handling. No secrets, obfuscation, or suspicious network calls are present in this segment."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/9)",
+        "summary": "This chunk of the extension source code focuses on retrieving CPU temperature and frequency data using the `systeminformation` library and direct file system reads on Linux. The logic is straightforward, well-commented, and aligns perfectly with the extension's advertised functionality (System Metrics Lens). The flagged `child_process` usage is likely a false positive in this specific context or refers to standard system querying mechanisms within the dependency. No obfuscation, credential harvesting, or suspicious network calls are observed in this segment."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/9)",
+        "summary": "This chunk of the 'System Metrics Lens' extension contains standard logic for displaying CPU frequency, battery status, and memory usage in the VS Code status bar. It relies heavily on the `systeminformation` npm package, which is a well-known, legitimate library for retrieving system metrics. The code performs straightforward data formatting and tooltip generation. The flagged `child_process` usage is consistent with the extension's purpose of reading system resources and does not exhibit signs of obfuscation or exfiltration in this specific segment."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/9)",
+        "summary": "This chunk of the 'System Metrics Lens' extension is benign. It contains logic for formatting and retrieving memory and network statistics using the `systeminformation` library. The code follows standard patterns for a resource monitor, calculating rates and converting units. The flagged `child_process` usage is a false positive in the context of this specific snippet, as it is a necessary dependency for the underlying system metrics library to function on various OSes."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 6/9)",
+        "summary": "This chunk of the 'System Metrics Lens' extension contains logic for displaying network and disk statistics in the VS Code status bar. The code is clean, well-commented, and uses the `systeminformation` library appropriately. The flagged `child_process` usage is consistent with the extension's goal of gathering system metrics, and no obfuscation, credential harvesting, or suspicious network exfiltration patterns are present in this section."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 7/9)",
+        "summary": "This chunk of the 'System Metrics Lens' extension focuses on disk space calculation and display logic. It utilizes the `systeminformation` library to fetch filesystem sizes and formats them for the VS Code status bar. The logic for determining the current directory and matching it to a mounted volume is standard and defensive. The `child_process` hit is likely a false positive from the underlying library's internals or a legitimate use for system queries, which is proportional to a system monitor extension. No obfuscation, credential harvesting, or suspicious network calls were observed in this segment."
+      },
+      {
+        "target": "extension/out/constants.js",
+        "summary": "The analyzed file `extension/out/constants.js` contains only static enum definitions and mapping objects for units (K, M, G) and disk space formats. There is no logic, network activity, file system access, or obfuscation in this specific file. The extracted indicators (domains like `systeminformation.io`, `elinux.org`) originate from the `systeminformation` dependency, which is a well-known, legitimate library for retrieving system metrics, consistent with the extension's stated purpose. The VSIX size (0.1 MB) is proportional to a simple status bar extension. No critical or high-risk indicators were found in this source file."
+      },
+      {
+        "target": "extension/out/metrics.js",
+        "summary": "The analyzed file `metrics.js` contains pure utility functions for normalizing CPU load, parsing Windows processor data, and formatting network rates. There is no network I/O, file system access, child process execution, or obfuscation in this specific file. The dependencies (systeminformation) and domains identified in the static scan are consistent with a system metrics extension. The code is clean and proportional to the extension's stated purpose."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*' (all events), which is broader than necessary for a status bar widget. While common for extensions that need to be ready immediately, it technically allows activation before the window is fully loaded, which is slightly over-permissive for a simple UI element.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` at line 91. However, this file primarily imports `systeminformation` (a well-known library for system metrics) and VS Code APIs. The `child_process` usage is likely within the `systeminformation` library or a specific Windows CPU utility function (seen in `getWindowsProcessorUtility`), which is expected for a system monitor to read OS-level stats. It is not an arbitrary command execution in the context of the main extension logic shown.",
+        "code_reference": "require('child_process')",
+        "line_hint": 91,
+        "target": "extension/out/extension.js (chunk 1/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension uses `child_process.execFile` to run `powershell.exe` on Windows to retrieve CPU performance counters. This is a standard technique for accurate CPU sampling on Windows when native APIs are insufficient. The command is hardcoded, uses `-NoProfile -NonInteractive` to minimize side effects, and has a 3-second timeout. While `child_process` is a high-risk indicator in isolation, it is proportionate to a system metrics extension.",
+        "code_reference": "childProcess.execFile(\"powershell.exe\", ...)",
+        "line_hint": 91,
+        "target": "extension/out/extension.js (chunk 2/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require(\"child_process\")` at line 91. However, the provided source code chunk (which covers CPU temperature and frequency logic) does not contain this string. The `child_process` usage is likely located in a different chunk or is part of the `systeminformation` dependency's internal implementation for gathering system stats. Given the extension's purpose (displaying system metrics), using `child_process` to query OS-level data is a standard and expected pattern, not necessarily malicious.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 91,
+        "target": "extension/out/extension.js (chunk 3/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The code reads from `/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq` and `/proc/cpuinfo` on Linux. These are standard pseudo-filesystem paths used to retrieve CPU frequency data. This is consistent with the extension's stated purpose of displaying CPU metrics.",
+        "code_reference": "fs.readFile(path, \"utf8\", ...)",
+        "line_hint": 45,
+        "target": "extension/out/extension.js (chunk 3/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require(\"child_process\")` at line 91. However, this chunk (4/9) contains the implementation for CPU frequency, Battery, and Memory classes which rely on the `systeminformation` library (`si`). The `child_process` usage is likely located in a different chunk or is part of the library's internal implementation for system queries. In the context of a system metrics extension, spawning processes to read system stats (like `lscpu` or `free`) is expected behavior, not necessarily malicious.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 91,
+        "target": "extension/out/extension.js (chunk 4/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` as a high-risk command execution. However, in this specific chunk, the code primarily uses the `systeminformation` library (aliased as `si`) to fetch memory and network stats. While `child_process` is likely required elsewhere in the module to execute system commands (like `free` or `netstat`) for these metrics, this is standard behavior for a system resource monitor and not indicative of arbitrary code execution or stager payloads.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 91,
+        "target": "extension/out/extension.js (chunk 5/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require(\"child_process\")` at line 91. However, this chunk (6/9) contains the `Network` and `DiskSpace` classes which primarily use the `systeminformation` library. The `child_process` reference is likely located in a different class within the same file (e.g., CPU or Battery) or is a false positive from the scanner's line mapping. Given the extension's purpose (system metrics), spawning processes to query system stats is a standard and expected behavior for this type of extension, not an anomaly.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 91,
+        "target": "extension/out/extension.js (chunk 6/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require(\"child_process\")` as a high-risk command execution. However, this is a standard dependency of the `systeminformation` library (used for gathering system metrics like CPU, memory, and disk stats) which is explicitly listed in the package dependencies. The code in this chunk primarily handles disk volume logic and does not show direct, unmediated shell execution by the extension itself.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 91,
+        "target": "extension/out/extension.js (chunk 7/9)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*' (all events), which is broader than necessary for a status bar widget. However, this is a common pattern for extensions that need to update the status bar immediately upon startup and is not inherently malicious.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/constants.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*' (all events), which is broader than necessary for a status bar metrics tool. While common for extensions that need to update the status bar immediately, it technically allows activation before the user opens a workspace or runs a command, slightly increasing the attack surface if the extension were compromised.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/out/metrics.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This is a fork of the popular 'Resource Monitor' extension. The code in this chunk is standard boilerplate for a VS Code status bar extension: it registers commands, initializes a monitor class, and defines resource display logic. The primary dependency is `systeminformation`, a reputable library for fetching system metrics (CPU, RAM, etc.), which explains the presence of system-level calls. The obfuscation score is 0, and the logic aligns perfectly with the advertised 'System Metrics Lens' functionality. The `child_process` hit is likely a false positive or a necessary low-level call for specific OS metrics, not a stager.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-04T10:55:52.58Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-07T16:31:33.551974+00:00Z"
+}

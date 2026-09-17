@@ -1,0 +1,303 @@
+{
+  "extension_id": "souhailaserbout.codelight",
+  "display_name": "CodeLight",
+  "version": "0.3.0",
+  "publisher": {
+    "name": "souhailaserbout",
+    "verified": false
+  },
+  "vsix_sha256": "0872a0bb4f98b33587cfd46815a3a99c5e4efe93601fbafa9871d43b97da2e2c",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.15,
+    "static": 0.5182800781475361,
+    "behavioral": 0.0,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/extension.js",
+        "line": 13,
+        "snippet": "addEventListener('keydown', (event) => {\",\"  if (event.key !== 'Enter' && event.key !== ' ') {\",\"    return;\",\"  }\",\"  if (reveal(event.target)) {\",\"    event.preventDefault();\",\"  }\",\"});\",\"window.ad"
+      }
+    ],
+    "high": [
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 15,
+        "snippet": "readFile(e);t=Buffer.from(n).toString(\"utf8\").replace(/^\\uFEFF/,\"\")}catch(n){return It(n)?{status:\"missing\"}:{status:\"error\",message:`CodeLight could not read ${e.fsPath}. ${Te(n)}`}}try{let n=De(t);r"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 13,
+        "snippet": ".postMessage({ type: 'reveal', id: card.dataset.id });\",\"  return true;\",\"};\",\"list.addEventListener('click', (event) => {\",\"  const selection = window.getSelection();\",\"  if (selection && !selection."
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 14,
+        "snippet": ".postMessage(o))}mappable(e){let t=this.store.rootUri;return!e||!t||e.document.isClosed?!1:x(t,e.document.uri)!==void 0}editor(){let e=R.window.activeTextEditor;return this.mappable(e)?(this.tracked=e"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/29)",
+        "summary": "The code is a standard VS Code extension implementation for a note-taking/highlighting tool. It uses standard VS Code APIs (workspace.fs, authentication, window.createWebviewPanel) and Node.js crypto for ID generation. The static scanner hits are false positives caused by the presence of Webview HTML/JS templates within the bundle and standard workspace file operations. There is no evidence of malicious intent, credential harvesting, or data exfiltration in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/29)",
+        "summary": "The code is a benign implementation of the 'CodeLight' extension, which manages shared code highlights and comments stored in a local 'codelight.json' file. The static scanner hits are false positives resulting from the scanner misinterpreting standard VS Code Webview communication (postMessage), local file I/O for the extension's data store, and UI event handling (keydown for Enter/Space) as malicious patterns. The logic for parsing JSON, sorting annotations, and resolving workspace paths is consistent with the extension's stated purpose of managing local annotations. No malicious behavior, network exfiltration, or credential harvesting was identified in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 17/29)",
+        "summary": "The code is part of the 'CodeLight' extension, which provides shared highlights and comments. The static scanner hits are false positives resulting from standard VS Code API usage for user identity (GitHub auth) and local file management for the extension's features. The code logic aligns with the extension's stated purpose of managing highlights and comments, with no evidence of malicious behavior, data exfiltration, or credential theft."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 21/29)",
+        "summary": "The code is a standard implementation of a VS Code extension that manages local JSON files for storing code annotations. It uses standard VS Code APIs (workspace.fs, createFileSystemWatcher) to read/write to a specific file (.vscode/codelight.json) within the user's workspace. There are no network calls, no access to sensitive system paths, no obfuscation, and no credential harvesting. The static rule engine hits are false positives resulting from generic pattern matching on file I/O and event listeners that are appropriate for the extension's stated purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 22/29)",
+        "summary": "The code is a benign VS Code extension named 'CodeLight' designed to store and share code comments and highlights. The static scanner hits are false positives resulting from minified code patterns and standard VS Code API usage (clipboard, authentication for identity, file reading for local storage). The behavior is proportional to the extension's stated purpose of collaborative code annotation. No malicious intent, credential theft, or data exfiltration was identified."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 23/29)",
+        "summary": "The analyzed code chunk is part of a legitimate VS Code extension ('CodeLight') designed for shared code highlighting and commenting. The logic shown handles comment creation, validation, local storage transactions, and UI state management. All static scanner hits (keylogger, credential theft, exfiltration) are false positives resulting from the scanner misinterpreting standard VS Code API usage (authentication.getSession for identity, keydown for UI interaction, local file I/O for storage) as malicious behavior. There are no indicators of malicious intent, obfuscation, or unauthorized data access in this segment."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 26/29)",
+        "summary": "The code is benign and consistent with the extension's stated purpose of managing shared highlights and comments. The static rule engine hits are false positives caused by the scanner misinterpreting standard VS Code API usage (authentication for identity, document reading for annotation, webview event listeners for UI interaction) as malicious patterns. No evidence of credential harvesting, data exfiltration, or obfuscated malicious logic was found in this chunk."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'infostealer_behavior' due to a keydown listener. Context analysis reveals this is part of a Webview HTML template string (indicated by `addEventListener('keydown', (event) => {` inside a string array), used for UI interaction (e.g., closing a card on Escape/Enter), not system-level keylogging.",
+        "code_reference": "list.addEventListener",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 1/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'credential theft'. The code uses `vscode.authentication.getSession` likely to identify the user for the 'shared highlights' feature described in the README. The `readFile` operation targets `.vscode/codelight.json` (workspace-relative), not system credential stores like `~/.ssh` or `~/.aws`. The `postMessage` calls are standard Webview-to-Extension communication.",
+        "code_reference": "authentication.getSession",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 1/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension's capabilities (reading/writing JSON files in .vscode, creating Webviews for comments/highlights, using crypto.randomUUID for IDs) are proportional to its advertised function of 'Shared highlights and comments'. No suspicious dependencies or network exfiltration endpoints were found in this chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'readFile' and 'Buffer.from' as credential theft. Context shows this is part of a function to read and parse 'codelight.json' (the extension's data file) from the workspace, not a sensitive system path.",
+        "code_reference": "e = JSON.parse(i) ... codelight.json is not valid JSON",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 2/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'postMessage' as data exfiltration. This is standard communication between the VS Code extension host and a Webview UI panel, used to update the UI with highlight data.",
+        "code_reference": ".postMessage({ type: 'reveal', id: card.dataset.id });",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 2/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'keydown' listener as a keylogger. The code snippet shows a listener for 'Enter' and ' ' (space) keys, which is typical for UI interaction in a webview (e.g., confirming a comment or navigating), not for capturing all keystrokes for exfiltration.",
+        "code_reference": "addEventListener('keydown', (event) => { if (event.key !== 'Enter' && event.key !== ' ') {",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 2/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'authentication.getSession' as credential theft. While this API can access tokens, in the context of a 'shared highlights' extension, it is likely used to identify the user (e.g., GitHub username) to attribute comments/highlights to the correct author, which is a benign feature for a collaboration tool. No network exfiltration of the token itself is visible in this chunk.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 2/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'infostealer_behavior' due to a keydown listener. However, the code snippet shows standard UI interaction logic (checking for Enter/Space keys) within a webview context, not a keylogger buffer or exfiltration mechanism. The context is a highlight/commenting tool, making this a false positive.",
+        "code_reference": "addEventListener('keydown', (event) => { ... })",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 17/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_credential_theft' for accessing GitHub authentication. The code uses `vscode.authentication.getSession('github', ['read:user'], ...)` to retrieve the user's identity (login, avatar) for attributing comments/highlights. This is a standard, documented VS Code API usage for extensions that require user identity, not credential theft. The scope is limited to 'read:user'.",
+        "code_reference": "j.authentication.getSession(be, Ye, { silent: !0 })",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 17/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'credential file reading'. The code references `readFile` and `postMessage` in the context of managing local shared highlight files (`.vscode` directory) and communicating with the extension's own webview UI. There is no evidence of sending data to external C2 servers or reading sensitive system files like `~/.ssh` or browser cookies.",
+        "code_reference": "readFile(e);t=Buffer.from(n).toString(\"utf8\")",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 17/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'readFile' and 'postMessage' as credential theft/exfiltration. However, the code explicitly reads from a specific file path '.vscode/codelight.json' within the workspace (via T.RelativePattern) to store user-defined highlights and comments. This is the core functionality of the extension, not malicious behavior.",
+        "code_reference": "let t = new T.RelativePattern(e, \".vscode/codelight.json\")",
+        "line_hint": 45,
+        "target": "extension/dist/extension.js (chunk 21/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'authentication.getSession' and 'keydown' listeners. These strings are not present in the provided source code chunk. The 'keydown' logic likely exists in a Webview HTML/JS file (not shown here) for UI interaction (e.g., pressing Enter to save a comment), which is standard for this type of extension. The 'authentication' reference is likely a false positive from a different part of the bundle or a misinterpretation of variable names.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 21/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'infostealer_behavior' and 'data exfiltration' based on string matches for 'keydown' and 'postMessage'. Upon review, the code is a standard VS Code extension implementing a comment controller. The 'postMessage' usage is likely within a Webview context (standard for VS Code UI communication) or a false positive from minified code structure. The 'keydown' match is likely a false positive from a string literal or unrelated logic, as no keylogging buffer or network exfiltration logic is present in this chunk.",
+        "code_reference": "addEventListener('keydown', ...)",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 22/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'vscode_credential_theft' due to 'authentication.getSession'. In the context of a 'Shared highlights' extension, this is likely used to retrieve the user's GitHub identity (avatar, login) to attribute comments, which is a benign and expected feature for a collaboration tool. No evidence of token exfiltration is present.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 22/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'builtin: Attempt to read credential / key files'. The match 'readFile(e);t=Buffer.from(n).toString(\"utf8\")' is a standard pattern for reading JSON/text files (likely the .vscode/codelight.json storage file mentioned in the README). It is not targeting sensitive system paths like ~/.ssh or ~/.aws.",
+        "code_reference": "readFile(e);t=Buffer.from(n).toString(\"utf8\")",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 22/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'infostealer_behavior' due to a keydown listener. However, the code snippet shows standard VS Code comment thread interaction logic (handling Enter/Space for navigation or submission within a webview), not keylogging or buffer exfiltration. The context is UI interaction, not credential harvesting.",
+        "code_reference": "addEventListener('keydown', (event) => { ... })",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 23/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_credential_theft' for 'authentication.getSession'. This is a standard VS Code API call used to retrieve the user's identity (login/id) to attribute comments to the correct author. It does not exfiltrate tokens or secrets; it only uses the identity metadata for local storage and display.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 23/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'credential file reading'. The code references 'readFile' and 'postMessage' in the context of managing local file state (storing comments in .vscode) and communicating with the VS Code webview UI. There is no evidence of network exfiltration to external servers in this chunk.",
+        "code_reference": "readFile(e); ... postMessage({ type: 'reveal', ... })",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 23/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'infostealer_behavior' due to a keydown listener. Context analysis reveals this is part of a webview UI for navigating comment threads (checking for Enter/Space to move focus), not a keylogger. The code does not buffer keystrokes or send them to a remote server.",
+        "code_reference": "addEventListener('keydown', (event) => { ... }",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 26/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'credential theft'. The code uses `vscode.authentication.getSession` to retrieve a GitHub identity (login/id) to attribute comments to the user, which is standard behavior for collaborative features. It does not exfiltrate tokens or secrets; it only uses the identity metadata for local annotation storage.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 26/29)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_api_abuse' regarding document reading. The code reads document content to create highlights and comments within the workspace, which is the core function of the extension. No network exfiltration of this data is observed in this chunk.",
+        "code_reference": "document.getText(), s=o.map(f=>({start:e.document.offsetAt(f.start)...",
+        "line_hint": 15,
+        "target": "extension/dist/extension.js (chunk 26/29)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension implementation for a note-taking/highlighting tool. It uses standard VS Code APIs (workspace.fs, authentication, window.createWebviewPanel) and Node.js crypto for ID generation. The static scanner hits are false positives caused by the presence of Webview HTML/JS templates within the bundle and standard workspace file operations. There is no evidence of malicious intent, credential harvesting, or data exfiltration in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "3 HIGH findings"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-08-17T14:42:07.757Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T23:16:25.867792+00:00Z"
+}

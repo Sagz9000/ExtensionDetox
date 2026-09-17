@@ -1,0 +1,168 @@
+{
+  "extension_id": "grikomsn.opencode-bridge-copilot-chat",
+  "display_name": "OpenCode for Copilot Chat",
+  "version": "0.3.1",
+  "publisher": {
+    "name": "grikomsn",
+    "verified": false
+  },
+  "vsix_sha256": "5e189350e222743fa093b35e696f797b398dbd07f84204edb40fb267d2f3ddbc",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.1,
+    "static": 0.125,
+    "behavioral": 0.0,
+    "trust_signal": 0.7,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 5
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "opencode.ai",
+      "source_file": "extension/out/transport/protocol.js",
+      "line": 9,
+      "context": "exports.DEFAULT_CONSOLE_SERVER = \"https://opencode.ai/console\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "models.dev",
+      "source_file": "extension/out/models/metadata.js",
+      "line": 6,
+      "context": "exports.MODELS_DEV_API_URL = \"https://models.dev/api.json\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.1,
+    "confidence": 0.9,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
+    "summaries": [
+      {
+        "target": "extension/out/commands/commands.js (chunk 1/6)",
+        "summary": "The code in this chunk is a standard command registration module for a VS Code extension that integrates OpenCode models with GitHub Copilot Chat. It registers UI commands for managing authentication, refreshing models, and viewing diagnostics. The logic is transparent, uses standard VS Code APIs, and aligns perfectly with the extension's advertised purpose. The static rule hit regarding configuration updates is a false positive, as it refers to the extension's own settings namespace. No malicious indicators, obfuscation, or capability disconnects were found in this file."
+      },
+      {
+        "target": "extension/out/commands/commands.js (chunk 2/6)",
+        "summary": "This code chunk implements standard UI logic for a VS Code extension that bridges OpenCode models to GitHub Copilot Chat. It uses `vscode.window.showQuickPick` to present menu options for authentication (Zen, Go, Console), usage testing, and log viewing. The logic is straightforward, with no obfuscation, network exfiltration, credential harvesting, or suspicious system calls. The domains `opencode.ai` and `models.dev` are consistent with the extension's stated purpose of connecting to OpenCode services. The flagged configuration update is a false positive related to the extension managing its own settings."
+      },
+      {
+        "target": "extension/out/commands/commands.js (chunk 3/6)",
+        "summary": "The code snippet implements standard authentication flows for the 'OpenCode' service, including API key entry via secure input boxes and OAuth device code flow. The use of `vscode.env.clipboard` is limited to copying the user's device code for convenience, which is a common UX pattern in OAuth flows and does not involve monitoring or exfiltration. The configuration update is scoped to the extension's own namespace. No malicious indicators, credential harvesting, or capability disconnects were found."
+      },
+      {
+        "target": "extension/out/commands/commands.js (chunk 4/6)",
+        "summary": "The code chunk contains standard VS Code extension logic for managing authentication sessions, selecting organizations, and testing AI model connections. It uses standard VS Code APIs (`showInformationMessage`, `showQuickPick`, `lm.selectChatModels`) and handles errors gracefully. The network domains (`opencode.ai`, `models.dev`) align with the extension's stated purpose of integrating with OpenCode services. No malicious patterns, credential harvesting, or obfuscation were detected."
+      },
+      {
+        "target": "extension/out/commands/commands.js (chunk 5/6)",
+        "summary": "The code in this chunk is benign and consistent with the extension's stated purpose of bridging OpenCode models to GitHub Copilot Chat. It implements UI commands for testing connections, displaying usage statistics via QuickPick, and generating diagnostic reports. The flagged configuration update is a false positive as it pertains to the extension's own settings. No malicious patterns, data exfiltration, or suspicious network calls were identified in this segment."
+      },
+      {
+        "target": "extension/out/commands/commands.js (chunk 6/6)",
+        "summary": "This code chunk is benign. It contains simple utility functions for getting and setting the default model mode ('zen', 'go', 'console') for the 'opencode' extension. The flagged configuration update is a legitimate use of the VS Code API to save user preferences. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious network activity in this specific file."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule flagged `workspace.getConfiguration(\"opencode\").update(` as potential tampering. In the context of a VS Code extension, updating its own configuration namespace (`opencode`) is standard behavior for persisting user preferences or state (e.g., active mode, API keys). This is not malicious tampering.",
+        "code_reference": "workspace.getConfiguration(\"opencode\").update(",
+        "line_hint": 303,
+        "target": "extension/out/commands/commands.js (chunk 1/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_DOMAIN",
+        "description": "The extension connects to `opencode.ai` and `models.dev`. Given the extension's purpose is to bridge OpenCode models, these domains are expected and relevant to the functionality. No evidence of data exfiltration to third-party C2 servers in this chunk.",
+        "code_reference": "opencode.ai, models.dev",
+        "line_hint": null,
+        "target": "extension/out/commands/commands.js (chunk 1/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule flagged `workspace.getConfiguration(\"opencode\").update(` as potential tampering. In the context of an extension managing its own configuration (storing API keys or mode selection), updating its own configuration namespace is standard and expected behavior, not malicious tampering.",
+        "code_reference": "workspace.getConfiguration(\"opencode\").update(",
+        "line_hint": 303,
+        "target": "extension/out/commands/commands.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule flagged `workspace.getConfiguration(\"opencode\").update(` as potential tampering. However, in the context of an extension named 'OpenCode for Copilot Chat', updating its own configuration namespace (`opencode`) to persist the selected mode (e.g., 'console', 'zen') is standard and expected behavior for state management. It does not modify global VS Code settings or other extensions' settings.",
+        "code_reference": "workspace.getConfiguration(\"opencode\").update(",
+        "line_hint": 303,
+        "target": "extension/out/commands/commands.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration(\"opencode\").update(` as potential tampering. However, in the context of an extension that manages its own provider settings (OpenCode Zen/Go/Console), updating its own configuration namespace is standard and expected behavior for saving user preferences or authentication states. It does not indicate malicious tampering with unrelated workspace settings.",
+        "code_reference": "workspace.getConfiguration(\"opencode\").update(",
+        "line_hint": 303,
+        "target": "extension/out/commands/commands.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration(\"opencode\").update(` as potential tampering. However, in the context of an extension that manages its own configuration (OpenCode settings), updating its own configuration namespace is standard and expected behavior for a settings manager or provider bridge. It does not indicate malicious tampering with user data or system settings.",
+        "code_reference": "workspace.getConfiguration(\"opencode\").update(",
+        "line_hint": 303,
+        "target": "extension/out/commands/commands.js (chunk 5/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIG_MODIFICATION",
+        "description": "The code modifies the extension's own configuration setting 'opencode.defaultMode' using vscode.workspace.getConfiguration(). This is standard behavior for an extension to persist user preferences (selecting a model mode) and is not malicious tampering.",
+        "code_reference": "await vscode.workspace.getConfiguration(\"opencode\").update(\"defaultMode\", mode, vscode.ConfigurationTarget.Global);",
+        "line_hint": 303,
+        "target": "extension/out/commands/commands.js (chunk 6/6)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code in this chunk is a standard command registration module for a VS Code extension that integrates OpenCode models with GitHub Copilot Chat. It registers UI commands for managing authentication, refreshing models, and viewing diagnostics. The logic is transparent, uses standard VS Code APIs, and aligns perfectly with the extension's advertised purpose. The static rule hit regarding configuration updates is a false positive, as it refers to the extension's own settings namespace. No malicious indicators, obfuscation, or capability disconnects were found in this file.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-17T20:56:15.593Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-07T16:31:33.559926+00:00Z"
+}

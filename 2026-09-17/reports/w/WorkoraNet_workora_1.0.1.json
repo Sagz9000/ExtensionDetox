@@ -1,0 +1,143 @@
+{
+  "extension_id": "WorkoraNet.workora",
+  "display_name": "Workora",
+  "version": "1.0.1",
+  "publisher": {
+    "name": "WorkoraNet",
+    "verified": false
+  },
+  "vsix_sha256": "0407004bb2d19a83f5e4987623a2f41c7b23e9c484ef6a5943021e317db38b46",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.1,
+    "static": 0.125,
+    "behavioral": 0.0,
+    "trust_signal": 0.5499999999999999,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "workora.me",
+      "source_file": "extension/src/extension.js",
+      "line": 12,
+      "context": "const K_ME = 'workora.me';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "CLEAN",
+    "risk_score": 0.05,
+    "confidence": 0.95,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
+    "summaries": [
+      {
+        "target": "extension/src/extension.js (chunk 1/6)",
+        "summary": "The provided code chunk (1/6) appears benign and consistent with the extension's advertised functionality as a local-first Kanban board. It uses standard VS Code APIs for command registration, webview creation, and global state storage. The use of 'crypto' and 'zlib' is likely for local data integrity or compression, which is appropriate for a local storage solution. No malicious indicators such as credential harvesting, obfuscated payloads, or suspicious child_process calls are present in this chunk. The 'workora.me' domain reference is noted but does not constitute an immediate threat in isolation without evidence of network exfiltration in the remaining code chunks."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/6)",
+        "summary": "This code chunk is benign and consistent with the extension's advertised functionality as a local-first Kanban board. It implements standard VS Code extension patterns for state persistence using `context.globalState` and provides a self-contained invite code system using local `zlib` compression and Base64 encoding. There are no signs of credential harvesting, obfuscation, arbitrary command execution, or data exfiltration in this section. The behavior aligns perfectly with the '100% local' claim in the README."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/6)",
+        "summary": "This code chunk implements standard Kanban board logic (create, switch, rename, delete, invite generation/joining) using local state management. It uses standard VS Code APIs for UI feedback and does not exhibit any malicious behavior such as credential harvesting, obfuscated payloads, or unauthorized network exfiltration. The 'invite' mechanism appears to be a local encoding/decoding of board data, consistent with the 'local-first' description. The flagged domain is likely benign in this context."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 4/6)",
+        "summary": "This code chunk implements standard VS Code extension logic for a local Kanban board. It handles message passing between the extension host and webview, manages clipboard operations for copying invite codes and text, and handles file exports via the standard `vscode.window.showSaveDialog` API. All operations are local and align perfectly with the extension's advertised functionality. There are no signs of malicious behavior, credential harvesting, or unauthorized network exfiltration in this segment."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 5/6)",
+        "summary": "The provided code chunk contains benign utility functions for generating Kanban board structures, including column creation, template definitions, and sample card generation. It uses standard cryptographic functions for ID generation and contains no network calls, file system access, or suspicious logic. The presence of the domain 'workora.me' in the full file is likely for documentation or branding purposes and does not indicate malicious intent in this context."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 6/6)",
+        "summary": "This code chunk represents the final part of the extension, focusing on Webview HTML generation and module exports. The implementation follows secure VS Code extension practices, including the use of CSP nonces, proper URI handling via `webview.asWebviewUri`, and safe JSON serialization with HTML escaping. There are no indicators of malicious behavior, credential harvesting, or unauthorized network exfiltration in this segment. The 'workora.me' domain indicator is likely a false positive or benign branding element, as no active network calls to it are present in this code."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "NETWORK_CALL",
+        "description": "The domain 'workora.me' was flagged by static scanners as unknown reputation. However, in this specific code chunk, the domain is not actively used for network requests (no fetch, http, or socket calls are visible). It is likely defined as a constant for future use or UI display. Given the extension claims to be '100% local' and 'no server in the loop', any actual network exfiltration to this domain in subsequent chunks would be a critical disconnect. Currently, it is a low-risk indicator pending further analysis of the full codebase.",
+        "code_reference": "domain: workora.me (extension/src/extension.js:12)",
+        "line_hint": 12,
+        "target": "extension/src/extension.js (chunk 1/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ACTIVITY",
+        "description": "The domain 'workora.me' was flagged by static scanners, but this chunk of code does not contain any network calls, fetch requests, or WebSocket connections. The code strictly handles local state persistence via `context.globalState` and local data encoding/decoding using `zlib`. The domain reference likely exists in another chunk (e.g., for documentation links or update checks) but does not appear in this specific logic block.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_DOMAIN",
+        "description": "The domain 'workora.me' was flagged by static scanners as unknown reputation. However, in this code chunk, the domain is not actively used for network exfiltration or C2. It is likely part of a URL construction for the invite system or documentation links. Given the extension's 'local-first' claim and the lack of network calls in this specific logic block (which handles board state locally), this is likely a false positive or a benign reference to the extension's own branding/website.",
+        "code_reference": "domain: workora.me (extension/src/extension.js:12)",
+        "line_hint": 12,
+        "target": "extension/src/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ACTIVITY",
+        "description": "The domain 'workora.me' was flagged by static scanners, but this specific code chunk contains no network calls, fetch requests, or WebSocket connections. The domain is likely defined in a previous chunk for UI purposes (e.g., links in the webview) or configuration, which is consistent with the extension's stated purpose.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_DOMAIN",
+        "description": "The domain 'workora.me' was flagged by static scanners as having unknown reputation. However, in this code chunk, the domain is not actively used for network requests. It is likely defined in a previous chunk for UI display or configuration. Given the extension's 'local-first' claim and the absence of exfiltration logic in this chunk, this is likely a false positive or a benign branding domain.",
+        "code_reference": "domain: workora.me (extension/src/extension.js:12)",
+        "line_hint": 12,
+        "target": "extension/src/extension.js (chunk 6/6)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The provided code chunk (1/6) appears benign and consistent with the extension's advertised functionality as a local-first Kanban board. It uses standard VS Code APIs for command registration, webview creation, and global state storage. The use of 'crypto' and 'zlib' is likely for local data integrity or compression, which is appropriate for a local storage solution. No malicious indicators such as credential harvesting, obfuscated payloads, or suspicious child_process calls are present in this chunk. The 'workora.me' domain reference is noted but does not constitute an immediate threat in isolation without evidence of network exfiltration in the remaining code chunks.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1637,
+    "published_date": "2026-09-08T18:11:13.63Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T19:42:52.861209+00:00Z"
+}

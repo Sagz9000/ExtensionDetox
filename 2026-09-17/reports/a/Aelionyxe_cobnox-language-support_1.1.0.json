@@ -1,0 +1,237 @@
+{
+  "extension_id": "Aelionyxe.cobnox-language-support",
+  "display_name": "COBNOX Language & Notebooks support",
+  "version": "1.1.0",
+  "publisher": {
+    "name": "Aelionyxe",
+    "verified": false
+  },
+  "vsix_sha256": "64fda4557b156745d4efd17263f7daf04c43200b51bb93a40943a2df4bbd5297",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.35,
+    "static": 0.25,
+    "behavioral": 0.38,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "aelionyxe.top",
+      "source_file": "extension/extension.js",
+      "line": 8,
+      "context": "const DOWNLOAD_PAGE_URL = 'https://aelionyxe.top/downloads/cobnox/';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "cobnox.aelionyxe.com",
+      "source_file": "extension/extension.js",
+      "line": 58,
+      "context": "const url = config.get('webNotebookUrl') || 'https://cobnox.aelionyxe.com';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.35,
+    "confidence": 0.8,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/5)",
+        "summary": "The code appears to be a standard VS Code language extension for a niche language called COBNOX. It uses `child_process` to run a compiler, which is expected behavior. The primary suspicion arises from the use of a `.top` domain for downloads (`aelionyxe.top`), which is less common for established software but not inherently malicious. The obfuscation score is low, and the logic is transparent. Without seeing the `ensureCompilerAvailable` function (likely in a later chunk), it's hard to confirm if it downloads unsigned binaries, but the current chunk shows benign intent."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/5)",
+        "summary": "This chunk of the extension source code handles the serialization and deserialization of COBNOX notebook files (.cbxnb). It uses standard VS Code APIs (`vscode.NotebookCellData`, `vscode.NotebookData`) and standard Node.js utilities (`TextDecoder`, `TextEncoder`, `JSON.parse`). The logic is straightforward: it reads JSON, maps it to notebook cells, and writes it back. There are no obvious signs of obfuscation, credential harvesting, or suspicious network calls in this specific segment. The `child_process` hit is likely a false positive for this specific code block or refers to a require statement at the top of the file that is not fully visible here, which is a reasonable dependency for a language runner extension."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/5)",
+        "summary": "This chunk of code implements the notebook execution logic for the COBNOX language. It spawns a compiler process to execute cell contents and captures the output. The use of `child_process` is functionally necessary for a language runner, so it is not inherently suspicious, but it elevates the trust required for the compiler binary itself. The code is relatively clean and follows standard patterns for VS Code notebook controllers. The primary risk lies in the supply chain of the compiler binary which is managed in other parts of the extension (likely chunk 1 or 2 where `ensureCompilerAvailable` is defined)."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/5)",
+        "summary": "This chunk of the extension code appears largely benign and consistent with a language support extension that requires an external compiler. It uses `child_process` to locate the compiler binary, which is a necessary capability for a runner extension. The network calls are limited to opening a download page. The primary risk stems from the reliance on an external compiler binary (`cobnox.exe`) which, if compromised, would execute with the user's privileges. The code itself does not show obvious signs of obfuscation or credential harvesting."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/5)",
+        "summary": "This is the final chunk of the extension source code. It primarily contains the tail end of the notebook output rendering logic and the module exports. The primary risk factor identified across the package is the network communication with `aelionyxe.top` and `cobnox.aelionyxe.com`, which are unknown domains. For a language runner, using `child_process` is expected, but the combination of an unknown publisher ('Aelionyxe'), unknown domains, and command execution creates a moderate suspicion level. The code itself in this chunk is not heavily obfuscated and appears to perform standard VS Code API operations for notebook output. Further analysis of the network payloads and the specific commands executed via `child_process` in other chunks would be needed to confirm if the network calls are for telemetry, updates, or exfiltration."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension defines a download URL pointing to a domain with a `.top` TLD (`aelionyxe.top`), which is often used for cheap or disposable domains. While the code snippet doesn't show the fetch logic, the presence of this URL combined with `child_process` suggests a potential auto-update or binary download mechanism that could fetch unverified binaries.",
+        "code_reference": "const DOWNLOAD_PAGE_URL = 'https://aelionyxe.top/downloads/cobnox/';",
+        "line_hint": 8,
+        "target": "extension/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "PROCESS_EXECUTION",
+        "description": "Uses `child_process.spawn` to execute a compiler. This is expected for a language runner, but the specific implementation (spawning a shell command string in the terminal) is standard for VS Code extensions that run external tools. The risk depends on what `ensureCompilerAvailable` downloads/installs.",
+        "code_reference": "const { spawn } = require('child_process');",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is categorized as 'Themes' in the marketplace metadata, but the code implements a full language runner and notebook serializer. While 'Themes' is likely a misclassification by the developer, it is a minor mismatch. The size (0.4 MB) is appropriate for a language extension.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` at line 4. However, the source code provided in this chunk (lines 1-80 of the file content) consists entirely of VS Code Notebook serialization/deserialization logic (JSON parsing, TextDecoder/Encoder, NotebookCellData creation). The `require` statement is likely in the header of the file (not shown in this specific text block but referenced by the scanner) or is a false positive from a different part of the bundle. Given the context of a language extension that executes code, `child_process` is expected for the 'Run' feature, but its mere presence in this specific chunk's context is not immediately suspicious without seeing the execution logic.",
+        "code_reference": "require('child_process')",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extracted indicators list domains `aelionyxe.top` and `cobnox.aelionyxe.com`. These are not visible in the provided code chunk, which focuses on local JSON serialization. If these domains are used for telemetry or language server updates in other chunks, they are consistent with a custom language extension. The `.top` TLD is slightly less common for major corporate domains but acceptable for indie projects.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension uses `child_process.spawn` to execute a compiler binary. While this is expected for a language runner/notebook kernel, the security of the extension depends entirely on the integrity of the downloaded compiler binary (referenced in `ensureCompilerAvailable`). If the compiler is fetched from an untrusted source, this is a vector for arbitrary code execution.",
+        "code_reference": "const proc = spawn(compilerPath, [tempFile], { cwd: docDir });",
+        "line_hint": 45,
+        "target": "extension/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The extension writes temporary files (`.tmp_cell_*.cbx`) to the directory containing the notebook file (`docDir`) rather than a dedicated temporary storage area. This is a minor deviation from best practices but common in simple runners.",
+        "code_reference": "const tempFile = path.join(docDir, `.tmp_cell_${Date.now()}.cbx`);",
+        "line_hint": 38,
+        "target": "extension/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "COMMAND_EXECUTION",
+        "description": "The function `isCommandInPath` uses `child_process.spawn` to execute `where` (Windows) or `which` (Unix) to locate the compiler. While this is a standard pattern for finding executables, it does invoke a shell command. The input `cmd` is hardcoded to 'cobnox' in the calling context, reducing risk, but it remains a dynamic execution point.",
+        "code_reference": "const proc = spawn(checkCmd, [cmd]);",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The code references external domains `aelionyxe.top` and `cobnox.aelionyxe.com` (likely for the download page or compiler binary). These are not official VS Code or Microsoft domains. Given the extension is from a new publisher 'Aelionyxe', this is expected but requires trust in the publisher's infrastructure.",
+        "code_reference": "vscode.env.openExternal(vscode.Uri.parse(DOWNLOAD_PAGE_URL));",
+        "line_hint": 58,
+        "target": "extension/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The `parseOutput` function reads image files from the filesystem (`fs.readFileSync`) based on paths extracted from compiler output. If the compiler output is manipulated, this could potentially read arbitrary files, though it is scoped to the notebook directory by default.",
+        "code_reference": "const imgBase64 = fs.readFileSync(fullImgPath).toString('base64');",
+        "line_hint": 85,
+        "target": "extension/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension communicates with two domains (`aelionyxe.top` and `cobnox.aelionyxe.com`) that are not official VS Code or well-known third-party services. While the extension is a language runner, the use of a `.top` TLD (often associated with cheap/free domains) and a subdomain on a `.com` requires verification that these endpoints are strictly for the COBNOX language server or update checks, and not for telemetry/exfiltration. The reputation is currently 'unknown'.",
+        "code_reference": "domains: aelionyxe.top, cobnox.aelionyxe.com",
+        "line_hint": 8,
+        "target": "extension/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension uses `child_process` to execute commands. For a language runner/execution extension, this is expected behavior (to run the COBNOX compiler/interpreter). However, without seeing the specific arguments passed to `exec`/`spawn` in this chunk, it is difficult to rule out arbitrary command injection if user input is not sanitized. Given the context of a 'runner', this is likely benign but warrants attention.",
+        "code_reference": "require('child_process')",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code shown in this chunk (chunk 5/5) primarily handles notebook output rendering (`NotebookCellOutputItem`). This aligns well with the advertised 'Interactive Notebooks' feature. The `deactivate` function is empty, which is common. The overall structure appears consistent with a language support extension.",
+        "code_reference": "module.exports = { activate, deactivate }",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 5/5)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code appears to be a standard VS Code language extension for a niche language called COBNOX. It uses `child_process` to run a compiler, which is expected behavior. The primary suspicion arises from the use of a `.top` domain for downloads (`aelionyxe.top`), which is less common for established software but not inherently malicious. The obfuscation score is low, and the logic is transparent. Without seeing the `ensureCompilerAvailable` function (likely in a later chunk), it's hard to confirm if it downloads unsigned binaries, but the current chunk shows benign intent.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-04T05:14:48.553Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-05T16:31:31.721136+00:00Z"
+}

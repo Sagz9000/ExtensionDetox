@@ -1,0 +1,346 @@
+{
+  "extension_id": "a1phaZ.mr-creator",
+  "display_name": "MR Creator",
+  "version": "1.6.1",
+  "publisher": {
+    "name": "a1phaZ",
+    "verified": false
+  },
+  "vsix_sha256": "748250bf6b0af3f891ee5164a7070fc2ea757fe749f3a5039d7e98f6c93bbfd0",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 0.8999999999999999,
+  "scores": {
+    "composite": 1.0,
+    "ai_vibe": 0.95,
+    "static": 0.40625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/out/extension.cjs",
+        "line": 1,
+        "snippet": "['push'](H['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/out/extension.cjs",
+        "line": 1,
+        "snippet": "['push'](H['shift']())"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.cjs",
+        "line": 1,
+        "snippet": "(function(a,U){const G9={a:'Z#zr',U:0x10d6,H:0xf97,N:0xa55,f:'wUj2',Y:0xeeb,F:0x1084,w:0xeaf,A:'js(v',E:0x83f,s:0xa01,S:0x7be,P:0x549,z:0xd07,k:'l2LW',Q:0x10e8,e:0x85b,y:'Elpi',p:0xa99,V:'(Tod',L:0x58"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "bot.mr",
+      "source_file": "extension/package.json",
+      "line": 123,
+      "context": "\"default\": \"https://bot.mr-creator.ru\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "or.ru",
+      "source_file": "extension/out/extension.cjs",
+      "line": 13543,
+      "context": "U[nr(0x965, fL.a, fL.U, fL.H)] = 'licenseSer' + nf(fL.N, 'i$l&', fL.f, fL.Y), U['haUyZ'] = nr(fL.F, fL.w, fL.A, fL.E) + 't.mr-creat' + 'or.ru';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.cjs (chunk 1/169)",
+        "summary": "The extension exhibits strong signs of malicious activity, primarily through the use of obfuscator.io-style string rotation decoders. This level of obfuscation is unnecessary for a standard Merge Request creation tool and is typically used to hide malicious payloads, credential stealers, or C2 logic. The reliance on a Telegram bot for licensing, combined with the obfuscation, suggests a potential supply-chain attack vector where the extension may be used to exfiltrate data or execute arbitrary code. The behavioral mismatch between the advertised functionality (SCM) and the code's complexity (obfuscated logic) is a critical indicator of compromise."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 15/169)",
+        "summary": "The extension 'MR Creator' exhibits multiple high-risk indicators. The code is heavily obfuscated, which is a strong indicator of malicious intent. The extension's advertised functionality (creating Merge Requests) is disconnected from its actual implementation, which includes a complex, non-standard licensing system involving ECDSA signatures and a Telegram bot. This mismatch, combined with connections to suspicious domains ('bot.mr', 'or.ru') and potential directory traversal/network send patterns, suggests that the extension may be a vector for malware, such as an info-stealer or a backdoor, disguised as a legitimate SCM tool. The obfuscation prevents easy verification of the code's true purpose, making it highly suspicious."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 31/169)",
+        "summary": "The extension 'MR Creator' exhibits high-risk behavior due to heavy code obfuscation (obfuscator.io) which is not typical for a standard SCM extension. The code contains logic for interacting with a Telegram bot ('bot.mr') for license management, which is a potential vector for command-and-control or data exfiltration. The combination of obfuscation, a non-standard license activation method via Telegram, and the presence of suspicious domains makes this extension highly suspicious. The obfuscation prevents a full static analysis, but the available indicators strongly suggest malicious intent or at least a significant security risk."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 55/169)",
+        "summary": "This VS Code extension exhibits multiple critical and high-risk indicators of malicious behavior. The code is heavily obfuscated using a string-array rotation decoder, which is a common technique used to hide malicious payloads. The extension imports `child_process` and uses `execAsync` for command execution, which, when combined with obfuscation, poses a significant risk of arbitrary command execution. The capability disconnect between the advertised 'Merge Request Creator' functionality and the actual code behavior (heavy obfuscation, dynamic command execution) strongly suggests hidden malicious capabilities. The presence of suspicious domains and the use of a Telegram bot for license management further raise concerns about potential data exfiltration or C2 communication. Overall, this extension is highly suspicious and likely malicious."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 76/169)",
+        "summary": "This extension exhibits multiple high-risk indicators of malicious intent. The use of heavy string-array rotation obfuscation is a primary red flag, as legitimate VS Code extensions rarely require such aggressive obfuscation. The presence of network connections to 'bot.mr' and 'or.ru' domains, which are not standard Git provider endpoints, strongly suggests Command and Control (C2) or data exfiltration activity. The 'Disconnect Check' reveals a significant mismatch between the advertised functionality (creating Merge Requests) and the actual code behavior (obfuscated logic, suspicious network calls, and potential file exfiltration). The reference to a Telegram bot for licensing further supports the hypothesis that this is a malicious payload using a social engineering vector to distribute malware or steal credentials."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 122/169)",
+        "summary": "This extension exhibits multiple high-risk indicators of malicious intent. The source code is heavily obfuscated using a string-array rotation decoder, which is a hallmark of malware attempting to evade detection. The extension's stated purpose (creating merge requests) is disconnected from its actual capabilities, which include a suspicious license management system involving Telegram bots and ECDSA signatures. The presence of suspicious domains (or.ru) and the combination of obfuscation with network activity strongly suggest this is a malicious extension, likely a trojan or info-stealer, rather than a legitimate SCM tool."
+      },
+      {
+        "target": "extension/out/extension.cjs (chunk 123/169)",
+        "summary": "This chunk of the 'MR Creator' extension contains obfuscated code primarily focused on license verification using ECDSA P-256 signatures. The presence of obfuscation is a medium-risk indicator due to reduced transparency, but the visible logic (checking for PEM headers, using Node.js crypto module for signature verification) is consistent with the extension's advertised 'License system' feature. No malicious behavior such as credential theft, C2 communication, or arbitrary command execution is evident in this specific chunk. The static rule hits appear to be false positives or related to the obfuscation layer rather than malicious intent."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code utilizes a classic obfuscator.io string array rotation decoder. This technique is heavily associated with malware to hide malicious logic, C2 endpoints, and payload staging from static analysis tools. The presence of this specific pattern in a VS Code extension is a strong indicator of malicious intent.",
+        "code_reference": "while (!![]) { try { ... H['push'](H['shift']()); } catch (f) { H['push'](H['shift']()); } }",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 1/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Merge Request Creator' (SCM tool). However, the code contains heavy obfuscation and references to a Telegram bot for licensing ('bot.mr'). Legitimate SCM extensions do not require such aggressive obfuscation or external bot-based license validation that often serves as a backdoor or C2 channel. The disconnect between a simple UI tool and complex obfuscated logic is a major red flag.",
+        "code_reference": "domain: bot.mr (extension/package.json:123)",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 1/169)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_NETWORK",
+        "description": "References to 'bot.mr' and 'or.ru' domains. While 'or.ru' might be a false positive or part of a URL, the combination with a Telegram bot for licensing suggests potential exfiltration or C2 communication. The obfuscation makes it difficult to verify the safety of these endpoints.",
+        "code_reference": "domain: bot.mr, domain: or.ru",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 1/169)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code is heavily obfuscated using a string-array rotation decoder (obfuscator.io signature). This technique is commonly used to hide malicious logic, such as payload execution or data exfiltration, from static analysis tools. The presence of this obfuscation in a 'Merge Request' extension is a major red flag.",
+        "code_reference": "['push'](H['shift']())",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 15/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a tool for creating Merge Requests (SCM). However, the code contains a 'License system' involving ECDSA P-256 signed licenses and a Telegram bot for purchasing licenses. This is a significant behavioral mismatch. Legitimate SCM tools do not typically require paid licenses via Telegram bots, nor do they implement complex cryptographic license validation in the client-side code, which suggests a potential for abuse (e.g., locking users out or exfiltrating data under the guise of license validation).",
+        "code_reference": "License system \u2014 ECDSA P-256 signed licenses for access control",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 15/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "The extracted indicators show connections to 'bot.mr' and 'or.ru'. 'or.ru' is a Russian domain, and 'bot.mr' is associated with the Telegram bot mentioned in the README. While the Telegram bot might be for license sales, the combination of obfuscation, a non-standard licensing model, and connections to potentially suspicious domains increases the risk of data exfiltration or C2 communication.",
+        "code_reference": "domain: bot.mr, domain: or.ru",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 15/169)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "VSCode_API_ABUSE",
+        "description": "The static rule engine detected 'Directory traversal paired with network send'. While this could be a false positive related to reading configuration files, in the context of heavy obfuscation and suspicious network activity, it warrants further investigation for potential data exfiltration.",
+        "code_reference": "globalStor'+Br('^AG%',0x7a3,aZ.w,aZ.A)],N['EfqsQ']);}async[jK('e@qE',0x5d0,0x769,0x74e)](){const au=`",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 15/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBFUSCATION",
+        "description": "The code is heavily obfuscated using a string-array rotation decoder (obfuscator.io signature). This makes static analysis difficult and is a common technique used to hide malicious logic, such as credential theft or data exfiltration, from human reviewers and simple scanners.",
+        "code_reference": "['push'](H['shift']())",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 31/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a 'Merge Request Creator' for Git providers. However, the code contains logic for 'License management' involving a Telegram bot ('bot.mr') and ECDSA signed licenses. While a license system is a stated feature, the combination of heavy obfuscation, a Telegram bot for license activation (which can be used for C2 or data exfiltration), and the 'MR Creator' branding creates a significant disconnect. The obfuscation level is disproportionate for a simple SCM tool.",
+        "code_reference": "bot.mr",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 31/169)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_ACTIVITY",
+        "description": "The code references 'api.bitbucket.org' and constructs an 'authHeader' using Base64 encoding of credentials (username:password). While this is standard for API authentication, the obfuscation of this logic and the presence of other suspicious indicators (like the Telegram bot) raise the risk that these credentials might be exfiltrated or used for unauthorized access.",
+        "code_reference": "api.bitbucket.org",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 31/169)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The domain 'or.ru' was extracted from the code. This is a top-level domain for Russia, but in the context of a VS Code extension, it could be part of a suspicious URL or a typosquatted domain. Its presence in a heavily obfuscated codebase warrants further investigation.",
+        "code_reference": "or.ru",
+        "line_hint": 13543,
+        "target": "extension/out/extension.cjs (chunk 31/169)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code is heavily obfuscated using a string-array rotation decoder (obfuscator.io signature). This technique is commonly used to hide malicious logic, such as payload execution or data exfiltration, from static analysis tools. The presence of this obfuscation in a 'Merge Request' extension is a major red flag.",
+        "code_reference": "['push'](H['shift']())",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 55/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The extension imports `child_process` and `util.promisify` to create an `execAsync` function. While Git CLI operations are expected, the combination of heavy obfuscation and dynamic command execution via `execAsync` creates a high risk of arbitrary command injection or execution of hidden payloads.",
+        "code_reference": "import_node_child_process = require(jK('cRaV', 0x458, 0x11f, 0x1e6) + '_process'), execAsync = (0x0, import_node_util[jK('BtMt', 0x109, -0x28, -0x3ec)])(import_node_child_process[jK('!i&*', 0xb5, 0x3c9, -0x392)])",
+        "line_hint": 42,
+        "target": "extension/out/extension.cjs (chunk 55/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Merge Request Creator' for Git providers. However, the code contains heavy obfuscation and dynamic command execution capabilities that are disproportionate to the stated functionality. A simple MR creation tool does not require such complex obfuscation or potentially arbitrary command execution, suggesting hidden malicious capabilities.",
+        "code_reference": "GitCli = class { ... }",
+        "line_hint": 45,
+        "target": "extension/out/extension.cjs (chunk 55/169)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "The static analysis identified a domain `bot.mr` and `or.ru` in the package. The use of a Telegram bot for license management (as mentioned in the README) combined with obfuscated code and command execution raises concerns about potential data exfiltration or C2 communication.",
+        "code_reference": "domain: bot.mr, domain: or.ru",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 55/169)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code utilizes a string-array rotation decoder (obfuscator.io signature) to hide string literals. This is a common technique used to evade static analysis and hide malicious payloads, such as C2 URLs or command execution strings.",
+        "code_reference": "['push'](H['shift']())",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 76/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Merge Request Creator' for Git providers. However, the code contains references to 'bot.mr' (a domain with unknown reputation) and 'or.ru' (a Russian TLD often associated with C2 infrastructure in malware samples). A legitimate MR tool should only communicate with GitHub, GitLab, or Bitbucket APIs, not arbitrary bot domains or .ru domains.",
+        "code_reference": "domain: bot.mr, domain: or.ru",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 76/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The static rule engine detected 'Directory traversal paired with network send'. Combined with the heavy obfuscation and suspicious domains, this suggests the extension may be reading local files (potentially sensitive ones like .git config or credentials) and exfiltrating them to the identified suspicious domains.",
+        "code_reference": "globalStor'+Br('^AG%',0x7a3,aZ.w,aZ.A)],N['EfqsQ']);}async[jK('e@qE',0x5d0,0x769,0x74e)](){const au=`",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 76/169)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension mentions a 'License system' involving a Telegram bot. While license checks are common, the combination of a Telegram bot for licensing, obfuscated code, and connections to non-standard domains (bot.mr, or.ru) is a strong indicator of a malware distribution or C2 channel disguised as a licensing mechanism.",
+        "code_reference": "README: 'Select Buy License and follow the Telegram bot instructions'",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 76/169)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code utilizes a heavy string-array rotation decoder (obfuscator.io signature) to hide all string literals, including API endpoints, file paths, and command arguments. This is a standard technique used to evade static analysis and signature-based detection in malware.",
+        "code_reference": "['push'](H['shift']())",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 122/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Merge Request Creator' (SCM tool). However, the code contains logic for 'subscriptions' and 'license management' involving ECDSA P-256 signatures and Telegram bot interactions. While license checks exist in legitimate software, the combination of heavy obfuscation, a 'Buy License' flow via Telegram (a common C2 channel), and the specific obfuscation patterns strongly suggests this is a trojanized extension or a malware dropper disguised as a productivity tool.",
+        "code_reference": "a['subscripti' + ...]",
+        "line_hint": 10,
+        "target": "extension/out/extension.cjs (chunk 122/169)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "The extracted indicators include the domain 'or.ru' (a Russian TLD often associated with C2 infrastructure or botnets) and 'bot.mr'. The code references a Telegram bot for license activation, which is a common pattern for malware distribution or command-and-control (C2) communication in supply-chain attacks.",
+        "code_reference": "domain: or.ru",
+        "line_hint": null,
+        "target": "extension/out/extension.cjs (chunk 122/169)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION_RISK",
+        "description": "The static rule engine detected 'Directory traversal paired with network send'. Although the specific code is obfuscated, the presence of `globalStorage` access combined with network calls in an obfuscated context raises the risk of exfiltrating user data or secrets stored in the VS Code workspace or global storage.",
+        "code_reference": "globalStor'+Br('^AG%',0x7a3,aZ.w,aZ.A)]",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 122/169)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURITY",
+        "description": "The code is heavily obfuscated using a string-array rotation decoder (obfuscator.io signature). While this is a common technique for protecting intellectual property or license keys, it significantly hinders static analysis and is a risk factor in supply-chain attacks. However, the visible logic (license verification) aligns with the extension's stated purpose.",
+        "code_reference": "H[n1(rZ.a, rZ.U, rZ.H, rZ.N)] = n2(0x877, rZ.f, 0x460, '^gny');",
+        "line_hint": 1,
+        "target": "extension/out/extension.cjs (chunk 123/169)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'Directory traversal paired with network send'. Upon inspection, the code snippet shows `Buffer.from` and crypto operations related to license verification (`verifyLicense`). The 'network send' is likely a false positive from the obfuscated string decoding or unrelated context in the full file, as no explicit HTTP request or file read of sensitive paths is visible in this chunk.",
+        "code_reference": "return Buffer[n1(rZ.Q, rZ.e, rZ.y, -rZ.p)](U, N[n2(0xa27, rZ.V, rZ.L, rZ.A)])[n2(rZ.W, -rZ.d, -rZ.R, rZ.K)](N[n2(rZ.Z, -rZ.b, -rZ.h, 'G[*[')]);",
+        "line_hint": 12,
+        "target": "extension/out/extension.cjs (chunk 123/169)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits strong signs of malicious activity, primarily through the use of obfuscator.io-style string rotation decoders. This level of obfuscation is unnecessary for a standard Merge Request creation tool and is typically used to hide malicious payloads, credential stealers, or C2 logic. The reliance on a Telegram bot for licensing, combined with the obfuscation, suggests a potential supply-chain attack vector where the extension may be used to exfiltrate data or execute arbitrary code. The behavioral mismatch between the advertised functionality (SCM) and the code's complexity (obfuscated logic) is a critical indicator of compromise.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-10T06:13:02.547Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-11T19:42:52.714913+00:00Z"
+}

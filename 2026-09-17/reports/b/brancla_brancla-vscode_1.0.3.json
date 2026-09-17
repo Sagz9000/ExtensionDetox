@@ -1,0 +1,233 @@
+{
+  "extension_id": "brancla.brancla-vscode",
+  "display_name": "Brancla - Dead Branch Sweeper",
+  "version": "1.0.3",
+  "publisher": {
+    "name": "brancla",
+    "verified": false
+  },
+  "vsix_sha256": "6325e84a9338a16c5585a5afb72f86082a6c5246a41bf0eb43933105f8a53fa4",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6299999999999999,
+    "ai_vibe": 0.8,
+    "static": 0.9500000000000001,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 8,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 8,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 128,
+        "snippet": "const child = (0, child_process_1.spawn)(command, args, {"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 197,
+        "snippet": "const child = (0, child_process_1.spawn)(cliPath, [\"server\"], {"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 357,
+        "snippet": "const child = (0, child_process_1.spawn)(\"git\", [\"-C\", folderPath, \"rev-parse\", \"--show-toplevel\"], {"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 8,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.8,
+    "confidence": 0.9,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/5)",
+        "summary": "The extension exhibits several suspicious patterns including direct command execution, a hardcoded IP address, an unusually small package size, and activation on startup. These indicators suggest potential malicious intent, though some may be justified by the extension's functionality. The findings raise significant red flags that warrant further investigation."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/5)",
+        "summary": "The extension exhibits some suspicious patterns, such as a hardcoded IP and direct command execution, which could indicate potential malicious behavior. However, these activities may also be legitimate given the extension's purpose of downloading and managing its CLI. Further dynamic analysis is recommended to confirm the nature of these activities."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/5)",
+        "summary": "The extension exhibits high-risk behavior by using `child_process` for command execution and contains a hardcoded IP address. While these actions may be legitimate for the extension's functionality, they raise concerns about potential misuse and should be carefully reviewed. The overall risk is moderate due to the lack of overt malicious intent but requires further scrutiny to ensure no unintended behaviors."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/5)",
+        "summary": "The extension exhibits potential suspicious behavior with hardcoded IP addresses and direct command execution capabilities. While these may align with legitimate functionality, they warrant further investigation to ensure no malicious intent is present."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/5)",
+        "summary": "The extension exhibits legitimate behavior for its stated purpose but contains static analysis findings that warrant closer examination. The hardcoded IP and direct command execution are concerning but may be explained by the extension's functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Use of `require('child_process')` which allows arbitrary command execution.",
+        "code_reference": "extension/dist/extension.js (chunk 1/5)",
+        "line_hint": 8,
+        "target": "extension/dist/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "C2 & Tunneling",
+        "description": "Hardcoded IP address `http://127.0.0.1:47382` which may indicate a potential C2 server.",
+        "code_reference": "extension/dist/extension.js (chunk 1/5)",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "VSIX package size is 0.0 MB, which is unusually small for an extension with API interactions and binary downloads.",
+        "code_reference": "N/A",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "Activation on `onStartupFinished` may indicate early execution, potentially for privilege escalation or early access.",
+        "code_reference": "N/A",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "network",
+        "description": "Hardcoded IP address (potential C2) detected.",
+        "code_reference": "line 13",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "process",
+        "description": "Direct command execution using child_process.spawn.",
+        "code_reference": "line 8",
+        "line_hint": 8,
+        "target": "extension/dist/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Use of `require('child_process')` which allows arbitrary command execution.",
+        "code_reference": "extension/dist/extension.js (chunk 3/5)",
+        "line_hint": "Line 8",
+        "target": "extension/dist/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "C2 & Tunneling",
+        "description": "Hardcoded IP address `127.0.0.1:47382` detected, which could indicate potential C2 communication.",
+        "code_reference": "extension/dist/extension.js (chunk 3/5)",
+        "line_hint": "Line 13",
+        "target": "extension/dist/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "STATIC_ANALYSIS",
+        "description": "Hardcoded IP address (potential C2) detected at line 13: `http://127.0.0.1:47382`.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "EXECUTION",
+        "description": "Use of `require('child_process')` at line 8, which could allow arbitrary command execution.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 8,
+        "target": "extension/dist/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "STATIC_ANALYSIS",
+        "description": "Hardcoded IP address detected (127.0.0.1:47382). This could indicate local development or unintended communication.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 13,
+        "target": "extension/dist/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "EXECUTION",
+        "description": "Direct command execution using child_process.spawn() which could potentially be misused for arbitrary command execution.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 8,
+        "target": "extension/dist/extension.js (chunk 5/5)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits several suspicious patterns including direct command execution, a hardcoded IP address, an unusually small package size, and activation on startup. These indicators suggest potential malicious intent, though some may be justified by the extension's functionality. The findings raise significant red flags that warrant further investigation.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-13T15:14:44.31Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-13T23:34:49.910494+00:00Z"
+}
