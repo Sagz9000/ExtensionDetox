@@ -14,8 +14,8 @@
   ],
   "confidence": 0.6,
   "scores": {
-    "composite": 0.6599999999999999,
-    "ai_vibe": 0.85,
+    "composite": 0.6950000000000001,
+    "ai_vibe": 0.95,
     "static": 1.0,
     "behavioral": 0.0,
     "trust_signal": 0.75,
@@ -128,167 +128,215 @@
   "ioc_enrichment": [],
   "shared_infrastructure": {},
   "ai_analysis": {
-    "verdict": "SUSPICIOUS",
-    "risk_score": 0.85,
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
     "confidence": 0.95,
     "blocks_parsed": 4,
     "blocks_seen": 4,
     "summaries": [
       {
         "target": "extension/dist/extension.js (chunk 1/4)",
-        "summary": "The extension appears to be a legitimate-looking dashboard for a service called '9Router', but it exhibits high-risk behavior by reading local configuration files (`machine-id`, `cli-secret`) from the user's AppData/Home directory to generate authentication tokens. This 'token piggybacking' technique is often used by malware to steal credentials from installed CLI tools. Additionally, it uses a Webview with scripts enabled to display data fetched from a configurable endpoint. While the code structure is clean and not heavily obfuscated, the capability to harvest local secrets and send them to a remote server (even if localhost by default) warrants a SUSPICIOUS verdict. If '9Router' is not a widely recognized, trusted enterprise tool, this extension should be treated as malicious."
+        "summary": "The extension is a legitimate monitoring tool for the 9Router AI Gateway. It connects to a local API to display token usage and manage provider accounts. All static scanner hits are false positives resulting from the tool's need to interact with local files (for CLI auth) and local HTTP endpoints (for API management). There is no evidence of malicious intent, data exfiltration, or unauthorized system access. The code behavior is proportional to its advertised function."
       },
       {
         "target": "extension/dist/extension.js (chunk 2/4)",
-        "summary": "The extension '9Router Monitor Pro' appears to be a legitimate utility for monitoring AI token usage via a local or tunneled gateway. The static analysis flags (Cloudflare tunnels, HTTP requests, secret variable names) are false positives resulting from the tool's legitimate architecture. The code uses standard VS Code APIs for status bars, webviews, and secure storage. There is no evidence of credential harvesting, unauthorized data exfiltration, or malicious persistence mechanisms. The behavior aligns perfectly with the stated purpose of monitoring quotas for a specific AI gateway service."
+        "summary": "The extension '9Router Monitor Pro' exhibits high-risk behavior primarily due to its reliance on Cloudflare Tunnels (`trycloudflare.com`) for connectivity, which is a common C2 vector. It also possesses write capabilities (toggling account status) that are disproportionate to its stated 'Monitor' purpose, indicating a capability disconnect. The combination of remote tunneling, webview script execution, and handling of sensitive credentials (API keys/tokens) creates a significant attack surface for credential theft or remote control if the backend endpoint is malicious or compromised."
       },
       {
         "target": "extension/dist/extension.js (chunk 3/4)",
-        "summary": "The provided code chunk is a benign UI rendering module for a VS Code extension. It contains utility functions for formatting numbers, dates, and percentages, as well as a function that generates HTML for a webview dashboard displaying AI token usage quotas. The code uses standard VS Code APIs (`vscode.window`, `vscode.Uri`) and safe string manipulation. There are no network calls, file system writes outside of standard extension storage, child process executions, or obfuscated payloads. The static scanner hits are false positives triggered by common keywords ('hidden', 'token', 'password') appearing in UI labels, CSS classes, or configuration keys, which are consistent with the extension's stated purpose of monitoring AI gateway quotas."
+        "summary": "This extension is highly malicious. While it presents itself as a legitimate AI quota monitor ('9Router Monitor Pro'), static analysis reveals critical indicators of compromise. It utilizes Cloudflare Tunneling for C2 communication, harvests machine IDs for fingerprinting, and contains hardcoded secret-like variables. The combination of data exfiltration patterns (HTTP PUT/POST), hidden file attributes, and tunneling infrastructure indicates this is likely an info-stealer or backdoor disguised as a productivity tool. The 'Capability Disconnect' between its stated purpose and its actual behavior is severe."
       },
       {
         "target": "extension/dist/extension.js (chunk 4/4)",
-        "summary": "The provided code chunk is a benign Webview HTML template and associated JavaScript logic for the '9Router Monitor Pro' extension. It renders a dashboard for tracking AI model usage quotas. The code uses standard VS Code APIs (`acquireVsCodeApi`, `postMessage`) for UI interaction. The static scanner hits (C2, Info-stealer, Persistence) are false positives triggered by common keywords ('Cloudflare', 'machine-id', 'hidden', 'PASSWORD') appearing in UI labels, CSS classes, or variable names, rather than malicious behavior. No malicious network calls, command execution, or data exfiltration are present in this chunk."
+        "summary": "The '9Router Monitor Pro' extension is highly malicious. While it presents itself as a tool for monitoring AI token usage, the code contains critical indicators of compromise including the use of Cloudflare Quick Tunnels (trycloudflare.com) for C2 communication, harvesting of the system's machine-id for fingerprinting, and data exfiltration via HTTP requests. The presence of these capabilities is a severe disconnect from the extension's stated purpose, indicating a supply-chain attack designed to steal data or establish persistent remote access."
       }
     ],
     "findings": [
       {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'trycloudflare.com' and 'Cloudflare Tunnel' as C2 indicators. Upon inspection, these strings appear in the context of documentation or configuration help for the 9Router AI Gateway, which is a local AI proxy. The code does not establish connections to tunneling services; it connects to a user-configured local API (default localhost:20128).",
+        "code_reference": "Static rule hit: c2_tunneling",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'machine-id' and 'cli-secret' file reads as info-stealer behavior. The code reads these files from the 9Router application's local data directory (e.g., %APPDATA%/9router) to generate a local authentication token for the 9Router API. This is a legitimate integration pattern for a local CLI tool, not an attempt to steal system identifiers or exfiltrate them.",
+        "code_reference": "function f() in module 24",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'PASSWORD' and 'TOKEN' assignments as hardcoded secrets. These are actually string keys used to access the VS Code SecretStorage API (e.g., 'aiTokenUsage.dashboardPassword'). The actual secret values are stored securely by VS Code, not hardcoded in the source.",
+        "code_reference": "t.SECRET_PASSWORD = 'aiTokenUsage.dashboardPassword'",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged HTTP PUT/POST requests as data exfiltration. These requests are sent to the user-configured 9Router API endpoint (default localhost) to manage provider status and login. No data is sent to external, untrusted domains.",
+        "code_reference": "updateProviderActive and loginDashboard functions",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The extension explicitly supports and prompts for Cloudflare Tunnel URLs (`trycloudflare.com`) for connecting to the backend service. While this might be intended for remote access to a local gateway, Cloudflare Tunnels are a primary vector for Command & Control (C2) and data exfiltration in supply chain attacks. The combination of a 'Monitor' extension requiring a tunnel connection is highly anomalous.",
+        "code_reference": "prompt: \"Enter 9Router Base URL (Local: http://localhost:20128 or Cloudflare Tunnel: https://...)\"",
+        "line_hint": "function m(e, t)",
+        "target": "extension/dist/extension.js (chunk 2/4)"
+      },
+      {
         "severity": "HIGH",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension claims to be a '9Router AI Gateway' monitor but contains logic to read local CLI configuration files from specific paths (`%APPDATA%\\9router`, `~/.9router`) to extract a 'machine-id' and 'cli-secret'. This behavior suggests it is designed to piggyback on a locally installed CLI tool to steal or reuse authentication tokens, rather than just monitoring a remote API. If the '9Router' CLI is not a widely known, trusted tool, this is a credential harvesting vector.",
-        "code_reference": "function f() { ... const e = g.join(t, \"machine-id\"), n = g.join(t, \"auth\", \"cli-secret\") ... const r = p.readFileSync(e, \"utf-8\").trim(), i = p.readFileSync(a, \"utf-8\").trim(); ... return u.createHash(\"sha256\").update(r + \"9r-cli-auth\" + i).digest(\"hex\") ... }",
-        "line_hint": "Module 24, function f (getLocalCliToken)",
-        "target": "extension/dist/extension.js (chunk 1/4)"
+        "description": "The extension is described as a 'Monitor' for quotas and tokens. However, it includes functionality to modify the state of provider accounts (`updateProviderActive`) and potentially interact with the backend via PUT/POST requests (as indicated by static analysis hits). A read-only monitor should not have write capabilities to toggle account status or modify configurations on the server side.",
+        "code_reference": "await (0, l.updateProviderActive)(r, a.connectionId, i)",
+        "line_hint": "case \"toggleAccount\"",
+        "target": "extension/dist/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "Static analysis detected patterns consistent with data exfiltration, specifically HTTP PUT and POST requests with JSON payloads. The code handles sensitive data (API keys, session tokens, account IDs) and sends them to a configurable base URL. If the base URL is compromised or malicious (e.g., via the tunnel feature), this constitutes credential theft.",
+        "code_reference": "request(d,{method:\"PUT\",headers:m},s=>{const c=[];s.on(\"data\",e=>c.push(e)),s.on(\"end\",async()=>{con",
+        "line_hint": "Static Rule Engine Hit",
+        "target": "extension/dist/extension.js (chunk 2/4)"
       },
       {
         "severity": "MEDIUM",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension uses `vscode.window.createWebviewPanel` with `enableScripts: true` to render a dashboard. While common for dashboards, combined with the fetching of external data and potential credential reuse, this creates a surface for UI-based phishing or data exfiltration if the webview content is not strictly sanitized. The static scanner flagged this as a potential phishing overlay.",
-        "code_reference": "v = s.window.createWebviewPanel(\"aiTokenUsage.dashboard\", \"9Router Monitor Pro\", s.ViewColumn.One, { enableScripts: !0, retainContextWhenHidden: !0 })",
-        "line_hint": "Module 565, function showDetails",
-        "target": "extension/dist/extension.js (chunk 1/4)"
+        "category": "WEBVIEW_PHISHING",
+        "description": "The extension creates a Webview panel (`createWebviewPanel`) with `enableScripts: true` and loads content from a function `getWebviewContent`. If this content is fetched from the remote '9Router' server (which could be a tunnel), it allows for potential phishing overlays or script injection within the VS Code context.",
+        "code_reference": "createWebviewPanel(\"aiTokenUsage.dashboard\",\"9Router Monitor Pro\",s.ViewColumn.One,{enableScripts:!0",
+        "line_hint": "Static Rule Engine Hit",
+        "target": "extension/dist/extension.js (chunk 2/4)"
       },
       {
         "severity": "MEDIUM",
-        "category": "DATA_EXFILTRATION_PATTERN",
-        "description": "The code constructs HTTP requests (PUT/POST) to a configurable `baseUrl` (defaulting to `http://localhost:20128`). It sends authentication tokens (`auth_token`, `cliToken`, `legacyApiKey`) in headers. While this looks like standard API communication, the combination of reading local secrets and sending them to a configurable endpoint (which could be changed by the user or via config injection) is a classic exfiltration pattern if the '9Router' service is not legitimate.",
-        "code_reference": "t.authToken && (m.Cookie = `auth_token=${t.authToken}`), t.cliToken && (m[\"x-9r-cli-token\"] = t.cliToken), t.legacyApiKey && (m.Authorization = `Bearer ${t.legacyApiKey}` ...)",
-        "line_hint": "Module 970, function updateProviderActive / fetchJson",
-        "target": "extension/dist/extension.js (chunk 1/4)"
+        "category": "HARDCODED_SECRETS",
+        "description": "The code references configuration keys for passwords and tokens (`aiTokenUsage.dashboardPassword`, `aiTokenUsage.sessionToken`). While these are likely configuration keys rather than hardcoded values in this specific chunk, the static analyzer flagged them as potential hardcoded secrets. The use of `secrets.store` is standard, but the context of a 'Monitor' extension handling raw credentials is risky.",
+        "code_reference": "PASSWORD=\"aiTokenUsage.dashboardPassword\"",
+        "line_hint": "Static Rule Engine Hit",
+        "target": "extension/dist/extension.js (chunk 2/4)"
       },
       {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "Static scanner flagged 'Cloudflare Tunnel' and 'trycloudflare.com'. These strings do not appear in the provided source code chunk. They may be in other chunks or are false positives from the scanner's global context. Based on this chunk, there is no direct evidence of C2 tunneling.",
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The static scanner detected references to 'Cloudflare Tunnel' and 'trycloudflare.com'. This is a strong indicator of Command and Control (C2) infrastructure or data exfiltration via tunneling services, which is highly suspicious for a simple quota monitoring extension.",
+        "code_reference": "match=`Cloudflare Tunnel`",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "INFO_STEALER",
+        "description": "The scanner detected 'machine-id' harvesting. Combined with the extension's stated purpose of monitoring AI tokens, harvesting machine IDs suggests fingerprinting for tracking or potential credential theft context.",
+        "code_reference": "match=`machine-id`",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Hardcoded secret-like assignments were detected: `PASSWORD=\"aiTokenUsage.dashboardPassword\"` and `TOKEN=\"aiTokenUsage.sessionToken\"`. While these might be configuration keys, their presence alongside tunneling and machine ID harvesting strongly suggests they are used to store or transmit stolen credentials.",
+        "code_reference": "match=`PASSWORD=\"aiTokenUsage.dashboardPassword\"`",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "Patterns suggesting data exfiltration were detected, specifically HTTP PUT and POST requests with JSON content types. Given the 'Cloudflare Tunnel' finding, these requests likely send harvested data (tokens, machine IDs) to an external attacker-controlled endpoint.",
+        "code_reference": "match=`request(d,{method:\"PUT\",headers:m},s=>{const c=[];s.on(\"data\",e=>c.push(e)),s.on(\"end\",async()=>{con`",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code sets the `.hidden` attribute on files. This is a common technique used by malware to hide dropped payloads or configuration files from the user.",
+        "code_reference": "match=`.hidden`",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a '9Router Monitor Pro' for tracking AI quotas. However, the presence of Cloudflare tunneling, machine ID harvesting, and hidden file attributes represents a massive disconnect from its advertised functionality. A legitimate quota monitor does not need to tunnel traffic or hide files.",
         "code_reference": null,
         "line_hint": null,
-        "target": "extension/dist/extension.js (chunk 1/4)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "Static scanner flagged 'Hardcoded secret/password/token assignment'. The code assigns variable names like `SECRETS_PASSWORD = \"aiTokenUsage.dashboardPassword\"`. These are configuration keys, not hardcoded secrets. This is a false positive.",
-        "code_reference": "t.SECRET_PASSWORD = \"aiTokenUsage.dashboardPassword\", t.SECRET_SESSION_TOKEN = \"aiTokenUsage.sessionToken\"",
-        "line_hint": "Module 24, end of file",
-        "target": "extension/dist/extension.js (chunk 1/4)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_TUNNELING",
-        "description": "The static scanner flagged 'trycloudflare.com' and 'Cloudflare Tunnel' as C2 indicators. However, the code context reveals this is a legitimate feature for connecting to a local '9Router' service via a secure tunnel. The user explicitly inputs the URL in a setup dialog (`showInputBox`). This is standard behavior for local development tools exposing services to the cloud, not malicious C2.",
-        "code_reference": "prompt: \"Enter 9Router Base URL (Local: http://localhost:20128 or Cloudflare Tunnel: https://...)\"",
-        "line_hint": "approx line 140",
-        "target": "extension/dist/extension.js (chunk 2/4)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_SECRETS",
-        "description": "The scanner flagged `PASSWORD=\"aiTokenUsage.dashboardPassword\"` and `TOKEN=\"aiTokenUsage.sessionToken\"` as hardcoded secrets. These are actually configuration keys used to retrieve values from VS Code's secure storage (`context.secrets.get`) or workspace configuration. They are not hardcoded credentials themselves.",
-        "code_reference": "const o = await e.secrets.get(d.SECRET_PASSWORD)",
-        "line_hint": "approx line 145",
-        "target": "extension/dist/extension.js (chunk 2/4)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_EXFILTRATION",
-        "description": "The scanner flagged HTTP requests as data exfiltration. The code performs standard REST API calls (GET/POST) to the user-configured `apiBaseUrl` to fetch quota data. The destination is controlled by the user, not hardcoded to an attacker's server.",
-        "code_reference": "await (0, d.loginDashboard)(r, l)",
-        "line_hint": "approx line 150",
-        "target": "extension/dist/extension.js (chunk 2/4)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The static scanner flagged 'Cloudflare Tunnel' and 'trycloudflare.com' as C2 indicators. However, in the context of a '9Router Monitor' extension, these strings are likely part of UI labels, documentation, or configuration options for connecting to local AI gateways via tunnels, rather than malicious C2 infrastructure. No actual network calls to these domains are present in this code chunk.",
-        "code_reference": "None (strings not present in this specific chunk, but flagged in package metadata)",
-        "line_hint": null,
         "target": "extension/dist/extension.js (chunk 3/4)"
       },
       {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The scanner flagged 'machine-id' as info-stealer behavior. In this context, it is likely used for anonymous telemetry or license validation, which is common in commercial extensions. No exfiltration of this ID to a hardcoded malicious IP is visible in this chunk.",
-        "code_reference": "None (string not present in this specific chunk)",
-        "line_hint": null,
+        "severity": "MEDIUM",
+        "category": "PHISHING_OVERLAY",
+        "description": "The extension creates a WebView panel (`createWebviewPanel`) with `enableScripts: true` and loads content from a function `getWebviewContent`. Combined with external HTTP requests, this could be used to render a phishing interface or execute malicious scripts within the VS Code context.",
+        "code_reference": "match=`createWebviewPanel(\"aiTokenUsage.dashboard\",\"9Router Monitor Pro\",s.ViewColumn.One,{enableScripts:!0`",
+        "line_hint": "1",
         "target": "extension/dist/extension.js (chunk 3/4)"
       },
       {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The scanner flagged 'PASSWORD' and 'TOKEN' assignments as leaked secrets. These are clearly variable names or configuration keys (e.g., `aiTokenUsage.dashboardPassword`) used for VS Code SecretStorage API interactions, not hardcoded credentials.",
-        "code_reference": "None (strings not present in this specific chunk)",
-        "line_hint": null,
-        "target": "extension/dist/extension.js (chunk 3/4)"
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The code contains references to 'trycloudflare.com' and 'Cloudflare Tunnel'. This indicates the use of a Cloudflare Quick Tunnel to establish a reverse proxy or Command & Control (C2) channel, allowing remote access to the local machine or exfiltration of data through a public endpoint.",
+        "code_reference": "trycloudflare.com",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 4/4)"
       },
       {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The scanner flagged `.hidden` as persistence evasion. In this code, `.hidden` is used as a CSS class name (`class=\"badge-hidden\"`) and a data attribute (`data-hidden=\"true\"`) for UI state management in the webview, not for setting file system attributes.",
-        "code_reference": "const i = r.includes(e), ... data-hidden=\"${i?\"true\":\"false\"}\"",
-        "line_hint": "approx 150",
-        "target": "extension/dist/extension.js (chunk 3/4)"
+        "severity": "CRITICAL",
+        "category": "INFOSTEALER",
+        "description": "The code references 'machine-id', which is a unique identifier for the Linux system. Harvesting this identifier is a common step in info-stealer malware to fingerprint the victim's machine for tracking or targeted attacks.",
+        "code_reference": "machine-id",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 4/4)"
       },
       {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The static scanner flagged 'Cloudflare Tunnel' and 'trycloudflare.com' as C2 indicators. However, in the context of '9Router Monitor Pro', these strings are likely part of UI labels, documentation, or configuration options for connecting to a local development gateway (9Router) which often uses Cloudflare tunnels for secure remote access. There is no code executing `cloudflared` or establishing a reverse shell.",
-        "code_reference": "match=`Cloudflare Tunnel`",
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The code performs HTTP PUT and POST requests with JSON payloads. Combined with the C2 tunneling and machine ID harvesting, this strongly suggests the exfiltration of stolen data (such as credentials or system info) to a remote server.",
+        "code_reference": "request(d,{method:\"PUT\"... method:\"POST\"...",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a '9Router Monitor Pro' for tracking AI token quotas. However, the code contains capabilities for C2 tunneling, machine ID harvesting, and data exfiltration that are completely unrelated to and disproportionate for a simple quota monitoring tool. This is a major behavioral mismatch.",
+        "code_reference": "Extension README vs. Code Capabilities",
         "line_hint": null,
         "target": "extension/dist/extension.js (chunk 4/4)"
       },
       {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The scanner flagged 'machine-id' as info-stealer behavior. In this context, it is likely used for telemetry or unique identification of the VS Code instance for quota tracking purposes, which is standard for AI gateway monitors. No exfiltration of this ID to unknown third-party domains is observed in this chunk.",
-        "code_reference": "match=`machine-id`",
-        "line_hint": null,
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the 'hidden' attribute on files. This is a technique used to hide malicious payloads or configuration files from the user and standard file explorers.",
+        "code_reference": ".hidden",
+        "line_hint": 1,
         "target": "extension/dist/extension.js (chunk 4/4)"
       },
       {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The scanner flagged 'PASSWORD' and 'TOKEN' assignments. These are variable names (`aiTokenUsage.dashboardPassword`, `aiTokenUsage.sessionToken`) used to store keys in VS Code's secure storage (`context.secrets`). They are not hardcoded secrets.",
-        "code_reference": "match=`PASSWORD=\"aiTokenUsage.dashboardPassword\"`",
-        "line_hint": null,
-        "target": "extension/dist/extension.js (chunk 4/4)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The scanner flagged `.hidden` as persistence evasion. This refers to CSS classes (`.model-card.is-hidden`) and UI logic for hiding/showing model cards in the dashboard, not file system attributes.",
-        "code_reference": "match=`.hidden`",
-        "line_hint": null,
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The package.json references the domain 'rv6v39u.abc', which has an unknown reputation. This is likely a C2 server or a domain used for hosting malicious payloads.",
+        "code_reference": "rv6v39u.abc",
+        "line_hint": 88,
         "target": "extension/dist/extension.js (chunk 4/4)"
       }
     ],
     "findings_truncated": 0
   },
-  "ai_summary": "The extension appears to be a legitimate-looking dashboard for a service called '9Router', but it exhibits high-risk behavior by reading local configuration files (`machine-id`, `cli-secret`) from the user's AppData/Home directory to generate authentication tokens. This 'token piggybacking' technique is often used by malware to steal credentials from installed CLI tools. Additionally, it uses a Webview with scripts enabled to display data fetched from a configurable endpoint. While the code structure is clean and not heavily obfuscated, the capability to harvest local secrets and send them to a remote server (even if localhost by default) warrants a SUSPICIOUS verdict. If '9Router' is not a widely recognized, trusted enterprise tool, this extension should be treated as malicious.",
+  "ai_summary": "The extension is a legitimate monitoring tool for the 9Router AI Gateway. It connects to a local API to display token usage and manage provider accounts. All static scanner hits are false positives resulting from the tool's need to interact with local files (for CLI auth) and local HTTP endpoints (for API management). There is no evidence of malicious intent, data exfiltration, or unauthorized system access. The code behavior is proportional to its advertised function.",
   "escalation_reasons": [
     "5 CRITICAL findings",
     "5 HIGH findings",
-    "Composite risk 0.54 >= 0.45",
-    "AI verdict: SUSPICIOUS"
+    "Composite risk 0.57 >= 0.45",
+    "AI verdict: MALICIOUS"
   ],
   "virustotal": {
     "malicious": 0,
@@ -306,5 +354,5 @@
     "excluded_phases": [],
     "ai_phase_ran": true
   },
-  "scanned_at": "2026-09-17T14:22:13.539759+00:00"
+  "scanned_at": "2026-09-17T14:22:39.468989+00:00"
 }
