@@ -681,230 +681,222 @@
     "summaries": [
       {
         "target": "extension/dist/extension.js (chunk 12/77)",
-        "summary": "The provided code chunk is a standard, benign portion of the `iconv-lite` npm package, containing character encoding definitions (Shift_JIS, GBK, Big5) and stream transformation logic. The static analysis hits for `child_process`, `AWS_` credentials, and hardcoded IPs are false positives resulting from the scanner analyzing the entire bundle while this specific chunk only contains encoding tables. The extension's stated purpose (mobile approvals for AI agents) justifies the use of `child_process` (to execute approved commands) and network calls (to relay approvals to phones), which are likely present in other chunks of the bundle. No malicious behavior is observed in this specific segment."
+        "summary": "The provided code chunk is from the `iconv-lite` library, a well-known open-source character encoding/decoding library for Node.js. The code contains standard implementations for handling various character sets (Shift_JIS, GBK, Big5, etc.) and stream transformations. There is no malicious code, obfuscation, or suspicious behavior in the visible source. The static scanner hits (AWS credentials, child_process, C2 IPs) are false positives, likely triggered by patterns in other parts of the bundled extension or unrelated dependencies not present in this specific chunk. The extension's functionality (mobile approval for AI agents) aligns with the presence of pairing/push-token endpoints, which are benign in this context."
       },
       {
         "target": "extension/dist/extension.js (chunk 53/77)",
-        "summary": "The provided code chunk consists primarily of bundled third-party libraries: `gaxios` (Google's HTTP client), `uuid` (UUID generation), and `is-stream`. The code implements standard HTTP request handling, retry logic, UUID generation, and stream utilities. The 'suspicious' indicators flagged by the static scanner (hardcoded IP 169.254.169.254, AWS env vars, child_process require) are false positives associated with the legitimate functionality of the `gaxios` library detecting cloud environments and standard Node.js module imports. There is no evidence of malicious intent, data exfiltration, or capability disconnect relative to the extension's stated purpose of mobile approvals for AI agents."
+        "summary": "The analyzed code chunk consists entirely of standard, well-known Node.js library boilerplate (node-fetch, gaxios, uuid, debug, ms). The static rule engine hits (hardcoded IPs, AWS env vars, child_process) are consistent with the extension's stated purpose of running a local backend server to bridge VS Code with mobile devices and cloud AI agents. There is no evidence of obfuscation, credential harvesting, or malicious network exfiltration in this chunk. The code is benign."
       },
       {
         "target": "extension/dist/extension.js (chunk 58/77)",
-        "summary": "The provided code chunk consists of standard, well-known Node.js libraries (`google-auth-library`, `gcp-metadata`, `base64-js`) bundled into the extension. The static analysis flags (C2 IP, AWS env vars, child_process) are false positives triggered by the legitimate functionality of these libraries. The IP address is the standard GCP metadata endpoint, and the environment variable checks are part of standard cloud provider detection logic. There is no evidence of malicious intent, credential harvesting, or unauthorized command execution in this specific chunk."
+        "summary": "This code chunk consists entirely of standard, well-known third-party libraries (`google-logging-utils`, `gcp-metadata`, `google-auth-library`, `base64-js`) bundled into the extension. The static analysis hits for 'hardcoded IPs', 'credential access', and 'child_process' are false positives resulting from the inclusion of these legitimate cloud SDKs. The code aligns with the extension's purpose of integrating with cloud-based AI agents (Copilot, Codex, Claude) and does not exhibit malicious behavior."
       },
       {
         "target": "extension/dist/extension.js (chunk 63/77)",
-        "summary": "The provided code chunk consists entirely of standard, unmodified source code from the `google-auth-library` npm package. It implements OAuth 2.0 flows, specifically for Google Cloud Platform (GCP) Workload Identity Federation and AWS Identity Federation. The 'suspicious' indicators flagged by the static scanner (AWS env vars, IMDS IP, child_process) are false positives resulting from the library's legitimate use of cloud metadata services and the extension's core function of executing approved commands. There is no evidence of malicious intent, obfuscation, or data exfiltration in this specific chunk."
+        "summary": "The analyzed code chunk consists almost entirely of standard, well-known library code from `google-auth-library` (handling AWS/GCP authentication, STS token exchange, and IMDS) and MIME type definitions. The static scanner hits for 'credential access' and 'hardcoded IPs' are false positives resulting from the standard implementation of cloud authentication libraries. There is no evidence of malicious intent, obfuscation, or capability disconnect in this specific chunk. The extension's purpose (mobile approval for AI agents) aligns with the presence of authentication and command execution logic."
       },
       {
         "target": "extension/dist/extension.js (chunk 64/77)",
-        "summary": "The provided code chunk is a standard, unmodified portion of the `google-auth-library` (specifically the AWS and Pluggable Auth clients). The static analysis flags (AWS env var access, child_process usage, IMDS IP) are false positives triggered by legitimate cloud authentication mechanisms. The code implements standard Workload Identity Federation patterns for Google Cloud, allowing authentication via AWS or external executables. There is no evidence of malicious intent, data exfiltration, or capability disconnect relative to the extension's purpose (which likely uses Google Cloud APIs for its backend or features)."
+        "summary": "The analyzed code chunk consists entirely of bundled source code from the `google-auth-library` npm package. This library is a standard, widely-used dependency for handling OAuth2 and service account authentication in Node.js applications. The flagged indicators (AWS env vars, IMDS IP, child_process) are standard components of the library's Workload Identity Federation and Pluggable Auth features. There is no evidence of malicious intent, data exfiltration to unauthorized endpoints, or deceptive behavior in this specific chunk. The extension's stated purpose (mobile approval for AI agents) is consistent with using a robust authentication library to secure its backend communication."
       },
       {
         "target": "extension/dist/extension.js (chunk 72/77)",
-        "summary": "The extension is a legitimate tool for remote approval of AI coding agent actions, but it employs high-risk mechanisms to achieve this. It downloads and executes the Cloudflare Tunnel binary (`cloudflared`) to expose a local relay server to the internet, allowing mobile devices to approve actions. This architecture introduces significant supply-chain and network exposure risks: if the Cloudflare binary is compromised, or if the relay server/pairing mechanism is vulnerable, it could lead to remote code execution or data exfiltration. The use of `child_process.spawn` to execute a downloaded binary is a critical security concern. While the code appears to function as advertised, the inherent risk of exposing a local development environment via a tunnel warrants a 'SUSPICIOUS' verdict due to the potential for abuse if the extension's trust model is broken."
+        "summary": "The code is consistent with the extension's advertised functionality of enabling mobile approvals for AI coding agents. It implements a local relay server, uses Cloudflare Tunnel for secure remote access, and handles WebSocket communication for pairing and approval requests. The flagged indicators (child_process, AWS env vars, metadata IP) are all explained by the legitimate need to manage the tunnel binary and detect cloud environments for the AI agents it controls. No malicious intent or data exfiltration patterns were found."
       },
       {
         "target": "extension/dist/extension.js (chunk 75/77)",
-        "summary": "The extension exhibits high-risk behavior consistent with a supply-chain attack or a highly aggressive utility that oversteps its stated purpose. The most critical finding is the access to AWS Instance Metadata (`169.254.169.254`) and AWS environment variables, which are standard techniques for stealing cloud credentials. While the extension legitimately needs to spawn processes to interact with AI agents (Claude, Codex), the inclusion of cloud credential harvesting logic is a major red flag and constitutes a capability disconnect. The code also actively modifies user configuration files to inject hooks, which is a persistence mechanism. This combination of features suggests the extension may be malicious or compromised."
+        "summary": "The extension is a complex tool that integrates deeply with AI coding agents (Copilot, Codex, Claude). It exhibits high-risk behaviors typical of 'utility' extensions that go beyond simple UI interactions: it modifies external configuration files (`~/.claude/settings.json`, `~/.codex/config.toml`) to inject hooks, downloads and executes a tunneling binary (`cloudflared`) to expose the local machine to the internet, and spawns child processes to run AI agents. While these actions align with the stated purpose of 'mobile approval', the aggressive modification of third-party tool configs and the use of network tunneling create a significant attack surface. The extension is not overtly malicious (no obvious data exfiltration to unknown C2s), but its behavior is intrusive and requires high trust. The 'SUSPICIOUS' verdict reflects the potential for supply-chain compromise if the extension itself is compromised, given its deep system integration."
       }
     ],
     "findings": [
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged 'child_process' and 'AWS_' references. However, the provided code chunk (chunk 12) consists entirely of the `iconv-lite` library's character encoding tables (Shift_JIS, GBK, Big5, etc.) and stream handling logic. The flagged lines (43063, 43305, etc.) are outside the provided text range. Given the context of a 'Mobile Approval' extension, `child_process` is likely used legitimately to execute local commands for approval workflows, and `AWS_` references are likely part of bundled dependencies or environment checks, not credential theft. The visible code is benign.",
-        "code_reference": "var require_dbcs_data = __commonJS({ ... }); // iconv-lite encoding tables",
-        "line_hint": "N/A (Scanner hits are outside this chunk)",
+        "description": "The static scanner flagged 'process.env[\"AWS_\"]' as credential harvesting. However, the provided code chunk is exclusively from the `iconv-lite` library (character encoding/decoding). The AWS references are likely from bundled dependencies or unrelated chunks not shown here, or false positives from string matching in minified code. The visible code contains no logic to read AWS credentials.",
+        "code_reference": "N/A (Scanner hit outside visible chunk)",
+        "line_hint": null,
         "target": "extension/dist/extension.js (chunk 12/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The scanner flagged 'http://169.254.169.254' as a hardcoded IP/C2. This IP address is part of the `iconv-lite` library's internal documentation or test fixtures for character encoding mappings (specifically related to JIS/Shift_JIS standards documentation links often found in such libraries). It is not a live C2 server in this context.",
-        "code_reference": "// http://www8.plala.or.jp/tkubota1/unicode-symbols-map2.html",
-        "line_hint": "Visible in comments near line 100 of chunk",
+        "description": "The static scanner flagged `require(\"child_process\")` as arbitrary command execution. The provided code chunk does not contain any `require(\"child_process\")` calls. This is likely a false positive from the scanner analyzing the entire bundle or other chunks. The visible code is standard Node.js stream/buffer manipulation for encoding.",
+        "code_reference": "N/A (Scanner hit outside visible chunk)",
+        "line_hint": null,
         "target": "extension/dist/extension.js (chunk 12/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `http://169.254.169.254` as a potential C2 IP. However, this IP address is part of the `gaxios` library's internal logic for detecting Google Cloud metadata endpoints (specifically checking if the code is running inside a GCP environment to fetch service account credentials). This is standard behavior for Google Cloud SDKs and not malicious.",
-        "code_reference": "null",
-        "line_hint": "38498",
-        "target": "extension/dist/extension.js (chunk 53/77)"
+        "description": "The static scanner flagged `http://169.254.169.254` as a C2 IP. This IP is in the link-local/reserved range and is often used in documentation or as a placeholder in libraries. In the context of `iconv-lite`, this is likely part of a comment, documentation link, or a benign internal reference, not an active C2 connection.",
+        "code_reference": "N/A (Scanner hit outside visible chunk)",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 12/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `process.env[\"AWS_`` as credential harvesting. In the context of `gaxios` (a Google API client), this is likely part of a generic environment variable check or a false positive from a bundled dependency that supports multiple cloud providers. It does not indicate active exfiltration in this specific chunk.",
-        "code_reference": "null",
-        "line_hint": "43063",
-        "target": "extension/dist/extension.js (chunk 53/77)"
+        "description": "The static scanner flagged `.post(\"/pair/:pairCode/push-token\")` as exfiltration. This endpoint pattern is consistent with the extension's stated purpose ('Mobile Approval... from your phone'), which requires pairing a device and sending push notifications. This is expected functionality, not malicious exfiltration.",
+        "code_reference": "N/A (Scanner hit outside visible chunk)",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 12/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `require(\"child_process\")` as direct command execution. This is a standard Node.js module import used by many legitimate libraries (including `gaxios` for system info or `uuid` for entropy) and does not inherently indicate malicious shell execution without accompanying `exec`/`spawn` calls with suspicious arguments.",
-        "code_reference": "null",
-        "line_hint": "43305",
-        "target": "extension/dist/extension.js (chunk 53/77)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged 'http://169.254.169.254' as a potential C2 IP. This is a false positive. The IP 169.254.169.254 is the standard link-local address for the Google Cloud Platform (GCP) metadata server, used by the `gcp-metadata` library to detect if the code is running inside a GCP environment. This is standard behavior for Google Cloud SDKs.",
-        "code_reference": "exports2.HOST_ADDRESS = \"http://169.254.169.254\";",
-        "line_hint": "approx 38498",
-        "target": "extension/dist/extension.js (chunk 58/77)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `process.env[\"AWS_`` as credential harvesting. This is a false positive. The code is part of the `google-auth-library` (visible in package.json and comments). It likely checks for AWS environment variables to determine if it's running in an AWS environment (for cross-cloud compatibility or detection logic), which is standard behavior for cloud SDKs, not malicious credential theft.",
-        "code_reference": "process.env[\"AWS_`",
-        "line_hint": "approx 43063",
-        "target": "extension/dist/extension.js (chunk 58/77)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `require(\"child_process\")` as direct command execution. This is a false positive in the context of this chunk. The provided code is heavily bundled with standard Node.js libraries (`google-auth-library`, `gcp-metadata`, `base64-js`). These libraries legitimately use `child_process` for internal operations (e.g., spawning processes for auth flows or system checks). Without evidence of arbitrary command injection from user input, this is benign library behavior.",
-        "code_reference": "require(\"child_process\")",
-        "line_hint": "approx 43305",
-        "target": "extension/dist/extension.js (chunk 58/77)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `process.env[\"AWS_`` as credential harvesting. However, the code context shows this is part of the standard `google-auth-library` (specifically `DefaultAwsSecurityCredentialsSupplier`) which reads AWS environment variables to support Workload Identity Federation. This is a legitimate authentication flow for cloud resources, not malicious exfiltration.",
-        "code_reference": "process.env[\"AWS_\"",
-        "line_hint": "43063",
-        "target": "extension/dist/extension.js (chunk 63/77)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `http://169.254.169.254` as a potential C2 IP. This IP address is the standard AWS EC2 Instance Metadata Service (IMDS) endpoint. The code uses it to retrieve temporary security credentials for AWS resources, which is standard behavior for cloud-native applications.",
+        "description": "Hardcoded IP 169.254.169.254 detected. This is the standard AWS/GCP/Azure metadata service endpoint. In the context of a 'Mobile Approval' extension that likely runs a local backend server (indicated by the 'backend/node_modules' paths), this is standard behavior for cloud instance detection or configuration retrieval, not C2.",
         "code_reference": "http://169.254.169.254",
-        "line_hint": "38498",
-        "target": "extension/dist/extension.js (chunk 63/77)"
+        "line_hint": 38498,
+        "target": "extension/dist/extension.js (chunk 53/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `require(\"child_process\")` as direct command execution. In the context of a VS Code extension that approves terminal commands for AI agents (Copilot/Codex), executing shell commands is the core functionality. The code provided in this chunk is primarily authentication logic, but the presence of child_process in the bundle is expected for the extension's stated purpose.",
+        "description": "Access to AWS environment variables (AWS_ACCESS_KEY_ID, etc.) detected. This is standard behavior for cloud SDKs (like gaxios or AWS SDK) to authenticate API calls. Given the extension's purpose of managing cloud-based AI agents (Copilot/Codex), this is expected functionality, not credential theft.",
+        "code_reference": "process.env[\"AWS_...",
+        "line_hint": 43063,
+        "target": "extension/dist/extension.js (chunk 53/77)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Usage of child_process detected. The extension is described as approving 'terminal commands' and interacting with local agents. Spawning processes to check agent status or execute approved commands is core to its functionality. The code chunks shown are standard library boilerplate (node-fetch, gaxios, uuid), not malicious payload execution.",
         "code_reference": "require(\"child_process\")",
-        "line_hint": "43305",
+        "line_hint": 43305,
+        "target": "extension/dist/extension.js (chunk 53/77)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Pattern matching for 'data exfiltration' triggered on MIME type definitions and API route definitions. These are standard HTTP library structures (node-fetch/gaxios) and Express route definitions, not malicious data transmission.",
+        "code_reference": ".post(\"/pair/:pairCode/push-token",
+        "line_hint": 49561,
+        "target": "extension/dist/extension.js (chunk 53/77)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The hardcoded IP 169.254.169.254 is the standard GCP metadata service address. Its presence is part of the `gcp-metadata` and `google-auth-library` npm packages, which are legitimate dependencies for cloud authentication and are not indicative of Command & Control (C2) infrastructure.",
+        "code_reference": "exports2.HOST_ADDRESS = \"http://169.254.169.254\";",
+        "line_hint": 38498,
+        "target": "extension/dist/extension.js (chunk 58/77)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "References to `process.env[\"AWS_...\"]` and `child_process` are located within bundled third-party libraries (likely `google-auth-library` or related cloud SDKs). These are standard mechanisms for cloud environment detection and are not being used for malicious credential harvesting or arbitrary command execution in this context.",
+        "code_reference": "process.env[\"AWS_...\"]",
+        "line_hint": 43063,
+        "target": "extension/dist/extension.js (chunk 58/77)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged hardcoded IP addresses (169.254.169.254) and AWS environment variable access (process.env['AWS_...']). These are standard components of the `google-auth-library` npm package, specifically used for AWS IAM role assumption via the EC2 Instance Metadata Service (IMDS) and standard AWS credential resolution. This is legitimate functionality for cloud authentication, not credential harvesting or C2 communication.",
+        "code_reference": "require_defaultawssecuritycredentialssupplier",
+        "line_hint": 43063,
         "target": "extension/dist/extension.js (chunk 63/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `process.env[\"AWS_...\"]` as credential harvesting. However, the code context clearly shows this is part of the standard `google-auth-library` (specifically `DefaultAwsSecurityCredentialsSupplier`) used to retrieve AWS credentials for Workload Identity Federation. It reads environment variables to authenticate with AWS STS, which is a legitimate and documented authentication flow, not malicious exfiltration.",
-        "code_reference": "process.env[\"AWS_ACCESS_KEY_ID\"] && process.env[\"AWS_SECRET_ACCESS_KEY\"]",
-        "line_hint": "43063",
+        "description": "The static scanner flagged `require('child_process')` and network POST requests. In the context of this extension (which manages Copilot/Codex/Claude agents), these are likely used for executing agent commands or communicating with the local backend/relay service. The code chunk provided is primarily standard library code (Google Auth, MIME types), and the flagged lines correspond to standard library implementations or legitimate extension logic for agent management, not malicious shell execution or exfiltration.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 43305,
+        "target": "extension/dist/extension.js (chunk 63/77)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The code contains references to AWS environment variables (AWS_REGION, AWS_ACCESS_KEY_ID, etc.) and the IMDS endpoint (169.254.169.254). This is part of the standard `google-auth-library` implementation for Workload Identity Federation, allowing the extension to authenticate with Google Cloud using AWS credentials. It does not exfiltrate these credentials to an attacker-controlled server but uses them to sign requests to Google's STS endpoints.",
+        "code_reference": "process.env[\"AWS_ACCESS_KEY_ID\"]",
+        "line_hint": 43063,
         "target": "extension/dist/extension.js (chunk 64/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `require(\"child_process\")` and `childProcess.spawn` as arbitrary command execution. This code belongs to `PluggableAuthHandler` in the `google-auth-library`. This is a standard feature of Google Cloud SDKs allowing users to configure external credential providers (executables) to fetch tokens. The execution is gated by the `GOOGLE_EXTERNAL_ACCOUNT_ALLOW_EXECUTABLES` environment variable and is part of the official Google authentication library, not a backdoor.",
-        "code_reference": "childProcess.spawn(this.commandComponents[0], this.commandComponents.slice(1), ...)",
-        "line_hint": "43305",
+        "description": "The use of `child_process.spawn` is part of the `PluggableAuthHandler` in `google-auth-library`. This feature allows users to specify an external executable to generate authentication tokens. It is a standard, documented feature of the library, not a malicious backdoor or arbitrary command execution vulnerability in this context.",
+        "code_reference": "childProcess.spawn(this.commandComponents[0], ...)",
+        "line_hint": 48562,
         "target": "extension/dist/extension.js (chunk 64/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged the IP `169.254.169.254` as a potential C2. This is the well-known AWS EC2 Instance Metadata Service (IMDS) IPv4 address. The code uses it to retrieve temporary security credentials for AWS instances, which is standard behavior for cloud-native applications.",
-        "code_reference": "AwsClient.AWS_EC2_METADATA_IPV4_ADDRESS = \"169.254.169.254\";",
-        "line_hint": "38498",
+        "description": "The hardcoded IP 169.254.169.254 is the standard AWS EC2 Instance Metadata Service (IMDS) address. It is used to retrieve temporary security credentials when running on AWS infrastructure, which is a legitimate part of the authentication flow for Workload Identity Federation.",
+        "code_reference": "AwsClient.AWS_EC2_METADATA_IPV4_ADDRESS = \"169.254.169.254\"",
+        "line_hint": 38498,
         "target": "extension/dist/extension.js (chunk 64/77)"
       },
       {
-        "severity": "HIGH",
-        "category": "TUNNELING_SERVICE",
-        "description": "The extension downloads and executes `cloudflared` (Cloudflare Tunnel binary) from GitHub releases and spawns it to create a public tunnel (`trycloudflare.com`). While this enables the stated 'mobile approval' feature, it introduces a significant attack surface. If the relay server or the downloaded binary is compromised, or if the tunnel is exposed to malicious actors, it allows remote command execution and data exfiltration. The use of `child_process.spawn` to execute a downloaded binary is a high-risk pattern.",
-        "code_reference": "async function downloadCloudflared(...) { ... const url = `https://github.com/cloudflare/cloudflared/releases/latest/download/${release.asset}`; ... } function startTunnel(binary, port, ...) { const child = (0, import_child_process.spawn)(binary, [\"tunnel\", \"--url\", `http://127.0.0.1:${port}`]); ... }",
-        "line_hint": "43305-43803",
-        "target": "extension/dist/extension.js (chunk 72/77)"
-      },
-      {
-        "severity": "HIGH",
-        "category": "COMMAND_EXECUTION",
-        "description": "The extension uses `child_process.spawn` to execute the downloaded `cloudflared` binary. This is a direct command execution primitive. Combined with the tunneling capability, this allows the extension to expose local services to the internet. If the pairing token or relay server is compromised, an attacker could potentially trigger actions or exfiltrate data via the tunnel.",
-        "code_reference": "const child = (0, import_child_process.spawn)(binary, [\"tunnel\", \"--url\", `http://127.0.0.1:${port}`]);",
-        "line_hint": "43803",
-        "target": "extension/dist/extension.js (chunk 72/77)"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "NETWORK_EXPOSURE",
-        "description": "The extension starts a local HTTP server (`startRelay`) on `127.0.0.1:8787` and exposes it via a Cloudflare tunnel. This creates a persistent network listener. While bound to localhost, the tunnel makes it accessible externally. The `/api/pair/:pairCode/push-token` endpoint and WebSocket connections handle sensitive approval data. If the pairing code is weak or leaked, unauthorized access to the approval interface is possible.",
-        "code_reference": "function startRelay(options = {}) { const port = options.port ?? 8787; const host = options.host ?? \"127.0.0.1\"; ... }",
-        "line_hint": "49561",
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The code uses `child_process` to locate, download, and execute `cloudflared`. This is a legitimate and necessary behavior for the extension's stated purpose of creating a secure tunnel to allow mobile devices to reach the local VS Code instance. The binary is downloaded from the official Cloudflare GitHub repository.",
+        "code_reference": "src/tunnel.ts",
+        "line_hint": 43305,
         "target": "extension/dist/extension.js (chunk 72/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `process.env[\"AWS_...\"]` as credential harvesting. However, in the context of a developer tool that approves commands, reading environment variables (including AWS credentials) is often necessary to display the context of the command being approved or to check for sensitive data in the command itself. Without evidence of exfiltration of these specific variables to an external C2, this is likely a false positive for legitimate feature functionality.",
-        "code_reference": "process.env[\"AWS_...\"]",
-        "line_hint": "43063",
+        "description": "The extension reads AWS environment variables. This is standard behavior for a tool that integrates with AI agents (like Claude Code or Copilot) to detect cloud environments or manage entitlements, not for credential theft.",
+        "code_reference": "process.env[\"AWS_...]",
+        "line_hint": 43063,
         "target": "extension/dist/extension.js (chunk 72/77)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `http://169.254.169.254` as a hardcoded IP. This IP is part of the link-local address range (169.254.0.0/16) used by Windows for APIPA (Automatic Private IP Addressing) when DHCP fails. It is commonly used in network configuration checks or fallback mechanisms. It is not a typical C2 indicator.",
-        "code_reference": "\"http://169.254.169.254\"",
-        "line_hint": "38498",
+        "description": "The IP address 169.254.169.254 is the standard AWS metadata service endpoint. Its presence is likely part of a bundled library (like `aws-sdk` or a detection utility) to identify if the code is running on an EC2 instance, which is benign in this context.",
+        "code_reference": "http://169.254.169.254",
+        "line_hint": 38498,
         "target": "extension/dist/extension.js (chunk 72/77)"
       },
       {
         "severity": "HIGH",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension claims to be a 'Mobile Approval' tool for AI agents but contains logic to read AWS credentials from environment variables (`process.env[\"AWS_...\"]`). This is not required for mobile approval functionality and suggests potential credential harvesting or unauthorized cloud access capabilities.",
+        "description": "The extension claims to be a 'Mobile Approval' tool for AI agents, but it aggressively modifies configuration files for third-party AI tools (Codex and Claude Code) located in the user's home directory (`~/.codex/config.toml`, `~/.claude/settings.json`). It injects Python hooks and MCP server configurations to intercept tool usage. While this might be the intended mechanism for 'approval', modifying external tool configs without explicit, granular user consent for *each* modification is a high-risk supply-chain behavior that can break other tools or introduce instability.",
+        "code_reference": "function configureClaude(extensionPath) { ... fs4.writeFileSync(file, JSON.stringify(doc, null, 2), \"utf8\"); }",
+        "line_hint": "approx. line 43000-43100 (based on context of `configureClaude`)",
+        "target": "extension/dist/extension.js (chunk 75/77)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension uses `child_process.spawn` to execute external binaries (`claude.exe`, `python`) with arguments constructed from user input and internal state. Specifically, `handleClaudePhoneChat` spawns the Claude executable with a prompt derived from `request.prompt` and `request.history`. If the `claude` binary or the `python` hook script is compromised or if the argument injection is flawed, this could lead to command injection. The use of `shell: true` on Windows for `claude.cmd` increases this risk.",
+        "code_reference": "child = (0, import_child_process5.spawn)(runner.executable, args, { cwd, windowsHide: true, shell: runner.shell, stdio: [\"pipe\", \"pipe\", \"pipe\"] });",
+        "line_hint": "approx. line 49663",
+        "target": "extension/dist/extension.js (chunk 75/77)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_TUNNELING",
+        "description": "The extension downloads and executes `cloudflared` (Cloudflare Tunnel client) to expose the local VS Code instance to the internet. While this is likely for the 'mobile approval' feature, downloading and running a tunneling binary from a third-party source (or even official source) within an extension is a significant attack surface. It creates a persistent network bridge that could be abused if the relay logic has vulnerabilities.",
+        "code_reference": "binary = await vscode7.window.withProgress(..., (progress) => downloadCloudflared(storageDir, ...));",
+        "line_hint": "approx. line 48562",
+        "target": "extension/dist/extension.js (chunk 75/77)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "ENVIRONMENT_VARIABLE_MANIPULATION",
+        "description": "The extension reads and sets environment variables related to cloud credentials (`AWS_...`) and push notification services (`NTFY_TOPIC`, `FIREBASE_SERVICE_ACCOUNT_JSON`). While likely used for configuration, reading `process.env` for AWS keys is a sensitive operation that should be strictly scoped. The static scanner flagged multiple `process.env[\"AWS_...\"]` accesses.",
         "code_reference": "process.env[\"AWS_...\"]",
-        "line_hint": "43063-43069",
+        "line_hint": "approx. line 43063",
         "target": "extension/dist/extension.js (chunk 75/77)"
       },
       {
-        "severity": "HIGH",
-        "category": "C2 & Tunneling",
-        "description": "The code references `http://169.254.169.254`, which is the AWS EC2 Instance Metadata Service (IMDSv1) endpoint. Accessing this endpoint allows an attacker to steal temporary AWS security credentials associated with the instance. This is a classic cloud credential theft technique.",
+        "severity": "LOW",
+        "category": "HARDCODED_IP",
+        "description": "The code contains a hardcoded IP address `169.254.169.254`. This is a link-local address often used for metadata services (like AWS EC2 metadata). In this context, it might be part of a library for detecting cloud environments or a fallback, but hardcoded IPs are generally suspicious in extensions.",
         "code_reference": "\"http://169.254.169.254\"",
-        "line_hint": "38498",
-        "target": "extension/dist/extension.js (chunk 75/77)"
-      },
-      {
-        "severity": "HIGH",
-        "category": "Direct command / shell execution",
-        "description": "The extension uses `child_process.spawn` to execute external binaries (`claude.exe`, `python`, `control.exe`). While this is necessary for the stated purpose of interacting with CLI agents, combined with the credential access, it increases the attack surface for arbitrary command execution if the input validation is flawed.",
-        "code_reference": "require(\"child_process\")",
-        "line_hint": "43305, 43803, 48562, 49663, 50190",
-        "target": "extension/dist/extension.js (chunk 75/77)"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "Configuration Tampering",
-        "description": "The extension programmatically modifies user configuration files (`~/.claude/settings.json`, Codex config) to inject hooks and MCP servers. While this is part of the 'auto-configure' feature, it represents a significant privilege escalation capability that could be abused to persist malicious hooks if the extension is compromised.",
-        "code_reference": "fs4.writeFileSync(configFile, after, \"utf8\")",
-        "line_hint": "43000-43100",
-        "target": "extension/dist/extension.js (chunk 75/77)"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "Network Exfiltration",
-        "description": "The extension sets up a local relay and potentially uses Cloudflare tunnels (`cloudflared`) to expose the local machine to the internet. It also references `ntfy.sh` for push notifications. While likely for the mobile pairing feature, this creates a persistent network bridge that could be used for data exfiltration.",
-        "code_reference": "startTunnel(binary, localRelay.port)",
-        "line_hint": "49561",
+        "line_hint": "approx. line 38498",
         "target": "extension/dist/extension.js (chunk 75/77)"
       }
     ],
     "findings_truncated": 0
   },
-  "ai_summary": "The provided code chunk is a standard, benign portion of the `iconv-lite` npm package, containing character encoding definitions (Shift_JIS, GBK, Big5) and stream transformation logic. The static analysis hits for `child_process`, `AWS_` credentials, and hardcoded IPs are false positives resulting from the scanner analyzing the entire bundle while this specific chunk only contains encoding tables. The extension's stated purpose (mobile approvals for AI agents) justifies the use of `child_process` (to execute approved commands) and network calls (to relay approvals to phones), which are likely present in other chunks of the bundle. No malicious behavior is observed in this specific segment.",
+  "ai_summary": "The provided code chunk is from the `iconv-lite` library, a well-known open-source character encoding/decoding library for Node.js. The code contains standard implementations for handling various character sets (Shift_JIS, GBK, Big5, etc.) and stream transformations. There is no malicious code, obfuscation, or suspicious behavior in the visible source. The static scanner hits (AWS credentials, child_process, C2 IPs) are false positives, likely triggered by patterns in other parts of the bundled extension or unrelated dependencies not present in this specific chunk. The extension's functionality (mobile approval for AI agents) aligns with the presence of pairing/push-token endpoints, which are benign in this context.",
   "escalation_reasons": [
     "118 CRITICAL findings",
     "81 HIGH findings",
@@ -927,5 +919,5 @@
     "excluded_phases": [],
     "ai_phase_ran": true
   },
-  "scanned_at": "2026-09-17T22:30:21.505453+00:00"
+  "scanned_at": "2026-09-17T22:31:44.761964+00:00"
 }
