@@ -142,42 +142,42 @@
     "summaries": [
       {
         "target": "extension/dist/extension.cjs (chunk 4/20)",
-        "summary": "The extension 'Postern' is malicious. While the JavaScript source code in this chunk appears to be standard LSP client library code (benign), the package contains a hidden ELF binary executable ('extension/server/postern'). A simple configuration linter does not require a native binary server. This is a classic supply-chain attack pattern where a benign-looking extension bundles a malicious native payload. The static analysis hits for 'child_process' and 'env' are likely false positives from the LSP library, but the hidden binary is a critical indicator of compromise."
+        "summary": "The extension 'Postern' is highly malicious. While it presents itself as a linter for PostgreSQL configuration files, it contains a hidden ELF binary executable ('extension/server/postern') which is a severe capability disconnect. Additionally, the code exhibits signs of credential harvesting (enumerating process.env) and system command execution (child_process). The presence of a full LSP client suggests the binary might be a malicious 'language server' that executes arbitrary code or exfiltrates data. The combination of a hidden native binary, credential access, and command execution in a simple linter extension is a classic supply-chain attack pattern."
       },
       {
         "target": "extension/dist/extension.cjs (chunk 10/20)",
-        "summary": "The extension 'Postern' is highly suspicious and likely malicious. While it presents itself as a PostgreSQL configuration linter, it contains a hidden ELF binary ('extension/server/postern') which is a severe red flag. Additionally, static analysis identified patterns for command execution ('child_process') and environment variable harvesting ('process.env'), which are disproportionate to the advertised functionality. The combination of a hidden native executable and these code patterns strongly suggests a supply-chain attack or malware distribution vector."
+        "summary": "The provided JavaScript source code (chunk 10/20) is benign. It contains the `minimatch` library for glob pattern matching and standard VS Code LSP client logic for handling diagnostics. The static analysis hits for 'child_process', 'process.env', and 'data exfiltration' are not present in this specific code chunk and are likely false positives or refer to other parts of the bundle where they are used legitimately (e.g., for LSP server management). The primary concern is the presence of an ELF binary (`extension/server/postern`) identified in the static analysis. While this is likely the LSP server binary, which is a common pattern for high-performance language servers, it warrants further inspection to rule out malicious behavior. The JavaScript code itself shows no signs of malicious intent, credential theft, or unauthorized network activity."
       },
       {
         "target": "extension/dist/extension.cjs (chunk 13/20)",
-        "summary": "The extension 'Postern' is highly suspicious and likely malicious. While the provided source code chunk appears to be benign standard library code for LSP client functionality, the static analysis of the whole package reveals a critical finding: an unexplained ELF binary (`extension/server/postern`) included in the package. This binary is disproportionate to the extension's stated purpose (PostgreSQL config linting) and represents a significant security risk. The combination of a hidden native executable and the extension's category (Linter) suggests a supply-chain attack where the binary may be used to execute malicious payloads, steal credentials, or establish persistence, while the JavaScript code provides a legitimate-looking front-end."
+        "summary": "The extension 'Postern' is highly suspicious and likely malicious. While the JavaScript code in this chunk appears to be standard VS Code Language Client boilerplate, the static analysis reveals a critical finding: an ELF binary named 'postern' is included in the package. This binary is not a standard Node.js dependency and is not explained by the extension's purpose (PostgreSQL config linting). The combination of an unexplained native executable and the use of a Language Client (which typically spawns a server process) strongly suggests that the extension is a vector for delivering and executing malicious code. The 'data exfiltration' and 'credential harvesting' hits from the static scanner are likely false positives due to the minified nature of the LSP client code, but the presence of the ELF binary is a definitive red flag."
       },
       {
         "target": "extension/dist/extension.cjs (chunk 16/20)",
-        "summary": "The extension 'Postern' is malicious. While the visible JavaScript code in this chunk appears to be standard VS Code Language Client boilerplate, the package contains a hidden ELF binary ('extension/server/postern'). This binary is disproportionate to the extension's stated purpose (PostgreSQL config linting) and poses a severe risk of arbitrary code execution. The combination of a deceptive front-end (standard LSP client) and a hidden native executable is a hallmark of supply-chain attacks."
+        "summary": "The extension 'Postern' exhibits a critical capability disconnect. It is marketed as a PostgreSQL configuration linter but ships with a native ELF binary executable (`extension/server/postern`). While LSP servers can be native, the combination of an unverified native binary, static hits for environment variable serialization (`process.env`), and the general risk profile of supply-chain attacks makes this highly suspicious. The JavaScript code in this chunk appears to be standard `vscode-languageclient` boilerplate, but it serves as the bridge to the potentially malicious native binary. The presence of a native executable in a 'linter' extension is a major red flag that warrants immediate rejection or deep reverse-engineering of the binary."
       },
       {
         "target": "extension/dist/extension.cjs (chunk 18/20)",
-        "summary": "The code is a standard implementation of the VS Code Language Client Protocol (LSP) for the 'Postern' extension. It manages the lifecycle of a local language server process, handles diagnostics, and registers standard LSP features like completion and hover. The static analysis hits for 'credential harvesting' and 'data exfiltration' are false positives caused by pattern matching on standard library imports and local process management code. The presence of an ELF binary is expected for a native language server and is not inherently malicious, though it warrants standard supply-chain verification."
+        "summary": "The code is a standard implementation of a VS Code Language Client for the 'Postern' extension, which provides diagnostics and completion for PostgreSQL configuration files. The static analysis flags for 'credential harvesting' and 'data exfiltration' are false positives caused by generic pattern matching on standard Node.js and LSP APIs. The use of 'child_process' is limited to terminating the LSP server process tree, which is a standard and safe practice. The presence of an ELF binary is consistent with a compiled language server backend, which is a common architecture for such extensions. No malicious behavior, obfuscation, or capability disconnect was found in this chunk."
       },
       {
         "target": "extension/dist/extension.cjs (chunk 19/20)",
-        "summary": "The code is a standard implementation of the VS Code Language Client library, bundled with the 'Postern' extension. It handles the lifecycle of the language server process (spawning via `child_process`, managing stdio streams, and handling LSP messages). The static analysis hits for `child_process`, `process.env`, and document events are false positives resulting from the legitimate requirements of running an LSP server. The presence of the `postern` ELF binary is consistent with the extension's advertised functionality (PostgreSQL config linting). No malicious behavior, data exfiltration, or capability disconnect was found."
+        "summary": "The analyzed code chunk is part of the standard VS Code Language Client library and the 'Postern' extension's initialization logic. It handles version checking (semver), environment variable propagation to the language server, and process management. All static analysis hits (child_process, process.env, postMessage) are false positives resulting from the standard architecture of LSP-based VS Code extensions. The extension's purpose (PostgreSQL config diagnostics) aligns with its capabilities (spawning a local language server). No malicious behavior, data exfiltration, or suspicious network activity was found in this source code."
       },
       {
         "target": "extension/dist/extension.cjs (chunk 20/20)",
-        "summary": "The code is a standard implementation of a VS Code Language Client for the 'Postern' PostgreSQL configuration linter. It correctly spawns the bundled language server binary, manages its lifecycle, and handles LSP communication. All static analysis alerts regarding command execution and environment variable access are false positives resulting from the standard behavior of launching a local language server process. There is no evidence of malicious intent, data exfiltration, or capability disconnect."
+        "summary": "The code is a standard VS Code extension implementing a Language Server Protocol (LSP) client for the 'Postern' PostgreSQL configuration linter. It uses the 'vscode-languageclient' library to spawn and communicate with a local language server binary ('postern'). All static analysis hits (child_process, env vars, binary file) are consistent with the documented functionality of an LSP-based extension. There is no evidence of malicious behavior, data exfiltration, or capability disconnect."
       },
       {
         "target": "extension/dist/browser.js",
-        "summary": "The extension 'Postern' is highly suspicious and likely malicious. While the JavaScript source provided is a benign browser stub, the package contains a hidden ELF binary (`extension/server/postern`) which is not consistent with the extension's advertised purpose of parsing PostgreSQL configuration files. The presence of an unexplained native executable in a text-based linter is a critical red flag for supply-chain attacks, such as malware delivery or data exfiltration. The capability disconnect between a simple text linter and a bundled native binary warrants immediate rejection."
+        "summary": "The extension 'Postern' is highly suspicious due to the presence of a hidden ELF binary executable ('extension/server/postern') that is not standard for a VS Code language server extension. While the JavaScript code in 'browser.js' appears benign and only handles browser-side activation (which is expected for web extensions), the inclusion of an unexplained native binary in the package is a critical indicator of malicious intent, likely used to execute arbitrary code on the user's machine. This represents a significant capability disconnect and a high risk of supply-chain attack."
       }
     ],
     "findings": [
       {
         "severity": "CRITICAL",
         "category": "HIDDEN_EXECUTABLE",
-        "description": "The package contains a hidden ELF binary executable at 'extension/server/postern'. This is a major capability disconnect for a configuration linter, which should not require a native binary server. This binary is likely a payload for remote code execution or data exfiltration.",
+        "description": "The package contains a hidden ELF binary executable at 'extension/server/postern'. This is a major capability disconnect for a 'PostgreSQL configuration linter' extension, which should consist of JavaScript/TypeScript code. The presence of a native binary suggests the extension may be executing arbitrary code, potentially a payload or a backdoor, rather than just performing text analysis.",
         "code_reference": "extension/server/postern",
         "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 4/20)"
@@ -185,55 +185,63 @@
       {
         "severity": "HIGH",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a simple PostgreSQL configuration linter (diagnostics, hover, completion). However, the presence of a native ELF binary and references to 'child_process' in the static analysis indicate capabilities far beyond a text linter, suggesting malicious intent or a trojanized dependency.",
-        "code_reference": "extension/server/postern",
+        "description": "The extension is advertised as a linter for PostgreSQL config files (postgresql.conf, pg_hba.conf). However, the codebase includes a full Language Server Protocol (LSP) client implementation and a native binary server. While LSP is common for language features, the combination of a hidden binary and the specific static analysis hits (credential harvesting, child_process) indicates the 'server' is likely not a standard language server but a malicious payload or a tool for exfiltration.",
+        "code_reference": "LSP client code and binary reference",
         "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 4/20)"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "FALSE_POSITIVE",
-        "description": "The static rule engine flagged 'data exfiltration' and 'credential harvesting' patterns (e.g., 'postMessage', 'Object.keys(process.env)'). Upon review of the provided source code (chunk 4/20), these matches correspond to standard LSP (Language Server Protocol) client library code (e.g., vscode-languageclient) and standard utility functions. These are false positives in the context of this specific chunk, but the presence of the binary overrides the benign nature of the JS code.",
-        "code_reference": "var we = P(at => { ... });",
-        "line_hint": 1,
-        "target": "extension/dist/extension.cjs (chunk 4/20)"
-      },
-      {
-        "severity": "CRITICAL",
-        "category": "HIDDEN_EXECUTABLE",
-        "description": "The package contains a hidden ELF binary at 'extension/server/postern'. This is a major capability disconnect for a VS Code extension, which should consist of JavaScript/TypeScript. The presence of a native executable suggests the extension may be a wrapper for a malicious payload or a remote access tool.",
-        "code_reference": "extension/server/postern",
-        "line_hint": null,
-        "target": "extension/dist/extension.cjs (chunk 10/20)"
-      },
-      {
-        "severity": "HIGH",
-        "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a linter/diagnostics tool for PostgreSQL configuration files. However, the static analysis reveals the presence of a native binary and code patterns associated with command execution and environment variable harvesting. A simple configuration linter does not require native executables or access to system environment variables.",
-        "code_reference": "README vs extension/server/postern",
-        "line_hint": null,
-        "target": "extension/dist/extension.cjs (chunk 10/20)"
       },
       {
         "severity": "HIGH",
         "category": "CREDENTIAL_HARVESTING",
-        "description": "Static analysis detected 'Object.keys(process.env)' in the code. While this might be part of a library, in the context of a hidden binary and a linter that doesn't need environment variables, this is a strong indicator of credential or secret exfiltration.",
+        "description": "Static analysis detected 'Object.keys(process.env)' in the code. This pattern is commonly used to enumerate and exfiltrate environment variables, which often contain sensitive credentials (API keys, tokens, database passwords). This is highly suspicious for a config file linter.",
         "code_reference": "Object.keys(process.env)",
+        "line_hint": 28,
+        "target": "extension/dist/extension.cjs (chunk 4/20)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "EXECUTION",
+        "description": "The code requires 'child_process', which allows the extension to execute system commands. For a simple linter, this is a disproportionate capability and a common vector for malware to execute payloads or establish persistence.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 19,
+        "target": "extension/dist/extension.cjs (chunk 4/20)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' patterns related to '.post' and 'postMessage'. Upon review, these are likely standard LSP/Webview communication mechanisms (e.g., sending messages between the extension host and a webview, or LSP protocol messages) rather than direct network exfiltration of stolen data. However, given the other critical findings, these should be treated with caution.",
+        "code_reference": ".post.length),f=!1,!p.post.length)break;n=p.post;continue",
+        "line_hint": 12,
+        "target": "extension/dist/extension.cjs (chunk 4/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'require(\"child_process\")' and 'Object.keys(process.env)' as credential harvesting and command execution. However, the provided source code chunk (chunk 10/20) does not contain these strings. The code consists of the `minimatch` library (glob pattern matching) and VS Code LSP client diagnostic logic. The static scanner likely analyzed the entire bundle or other chunks where these standard Node.js APIs might be used for legitimate purposes (e.g., checking platform or environment for LSP server startup), but in the context of this specific file, they are absent. Even if present elsewhere, `process.env` access is standard for VS Code extensions to determine OS or configuration, and `child_process` is standard for spawning LSP servers.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.cjs (chunk 10/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' patterns related to `.post.length` and `.postMessage`. The code contains `postMessage` calls which are standard for VS Code Webview communication or LSP client-server messaging. The context in this file is LSP diagnostic handling (`DocumentDiagnosticReportKind`), not network exfiltration. The regex matches are likely false positives from the scanner's heuristic on standard LSP/VS Code API usage.",
+        "code_reference": "postMessage(e),Promise.resolve()",
         "line_hint": 28,
         "target": "extension/dist/extension.cjs (chunk 10/20)"
       },
       {
-        "severity": "HIGH",
-        "category": "COMMAND_EXECUTION",
-        "description": "The code contains 'require(\"child_process\")'. For a configuration file linter, executing system commands is highly suspicious and likely used to run the hidden binary or exfiltrate data.",
-        "code_reference": "require(\"child_process\")",
-        "line_hint": 19,
+        "severity": "MEDIUM",
+        "category": "UNEXPECTED_BINARY",
+        "description": "The static analysis report indicates the presence of an ELF binary at `extension/server/postern`. While this is not visible in the JavaScript source code provided, it is a significant finding. For a VS Code extension that provides diagnostics and completion for PostgreSQL config files, bundling a native binary is unusual unless it is a language server (LSP) written in Go, Rust, or C++. Given the extension name 'Postern' and its function, it is highly probable that this binary is the LSP server itself. However, without verifying the binary's behavior, it remains a potential risk vector. The JavaScript code appears to be a standard LSP client wrapper. The binary should be inspected separately to ensure it does not perform malicious actions beyond its stated purpose.",
+        "code_reference": "extension/server/postern",
+        "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 10/20)"
       },
       {
         "severity": "CRITICAL",
         "category": "HIDDEN_EXECUTABLE",
-        "description": "The package contains an ELF binary at 'extension/server/postern' which is not a standard Node.js module or documented language server. The presence of an unexplained native executable in a VS Code extension is a strong indicator of malware, potentially used for privilege escalation, credential theft, or establishing a persistent backdoor.",
+        "description": "The package contains an ELF binary at 'extension/server/postern' which is not a standard Node.js module or documented service. The presence of an unexplained native executable in a VS Code extension is a strong indicator of malware, potentially used for privilege escalation, credential theft, or establishing a persistent backdoor.",
         "code_reference": "extension/server/postern",
         "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 13/20)"
@@ -241,23 +249,23 @@
       {
         "severity": "HIGH",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a linter/diagnostics tool for PostgreSQL configuration files. However, the inclusion of a native ELF binary and the use of `child_process` (implied by the static hits and the binary's presence) is a major capability disconnect. A simple config linter does not require executing arbitrary native binaries or shell commands.",
-        "code_reference": "extension/server/postern",
-        "line_hint": null,
+        "description": "The extension is advertised as a linter/diagnostics tool for PostgreSQL configuration files. However, the codebase includes the VS Code Language Client library (which manages communication with external processes) and ships with an ELF binary. A simple configuration linter does not require a native binary server or complex LSP client infrastructure, indicating a major disconnect between the advertised functionality and the actual capabilities.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 19,
         "target": "extension/dist/extension.cjs (chunk 13/20)"
       },
       {
-        "severity": "MEDIUM",
-        "category": "FALSE_POSITIVE",
-        "description": "The provided source code chunk (chunk 13/20) consists entirely of standard `vscode-languageclient` library code (handling LSP features like Completion, Hover, Definition, etc.). The static rule engine hits for 'data exfiltration', 'child_process', and 'credential harvesting' in this specific text block are false positives caused by the minified/bundled nature of the library code (e.g., matching strings like `.post` or `require` in unrelated contexts). The malicious behavior is likely in the other chunks or the binary itself.",
-        "code_reference": "extension/dist/extension.cjs",
-        "line_hint": null,
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The code utilizes the VS Code Language Client library (indicated by classes like 'DidChangeTextDocumentFeature', 'CompletionItemFeature', etc.). While this library is legitimate, its inclusion in a simple config file linter is disproportionate. It suggests the extension is designed to spawn and communicate with an external process (the ELF binary), which is a common pattern for hiding malicious payloads.",
+        "code_reference": "var cP = require(\"vscode\")",
+        "line_hint": 12,
         "target": "extension/dist/extension.cjs (chunk 13/20)"
       },
       {
         "severity": "CRITICAL",
         "category": "HIDDEN_EXECUTABLE",
-        "description": "The package contains an ELF binary named 'postern' located at 'extension/server/postern'. This is a native executable hidden within the extension package. For a language server extension, this is highly suspicious as it allows arbitrary code execution on the host system, bypassing JavaScript sandboxing. The name 'postern' matches the extension name, but the presence of a raw ELF binary is a classic malware delivery mechanism.",
+        "description": "The package contains an ELF binary executable named 'postern' located at 'extension/server/postern'. This is a major capability disconnect for a VS Code extension that claims to be a linter/diagnostics tool for PostgreSQL configuration files. Linters typically use Node.js or lightweight WASM, not native ELF binaries. The presence of a native binary in a 'server' directory suggests a Language Server Protocol (LSP) implementation, but the binary's origin and integrity are unverified, posing a high risk of arbitrary code execution.",
         "code_reference": "extension/server/postern",
         "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 16/20)"
@@ -265,39 +273,55 @@
       {
         "severity": "HIGH",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a linter/diagnostics tool for PostgreSQL configuration files. Such extensions typically use a lightweight language server (often written in Go, Rust, or Node.js) or pure JavaScript. The presence of a native ELF binary that is not a standard Node.js native module (like a .node file) represents a major capability disconnect. A simple config linter does not require a standalone ELF executable.",
-        "code_reference": "extension/server/postern",
+        "description": "The extension is advertised as a 'PostgreSQL configuration files' linter (Postern). However, the static analysis detected a native ELF binary. While LSP servers can be native, the combination of a native binary with the specific static hits for 'child_process' and 'process.env' serialization in the JavaScript client code raises suspicion that the binary or the JS code may be performing actions beyond simple text analysis, such as executing system commands or harvesting environment variables.",
+        "code_reference": "extension/dist/extension.cjs",
         "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 16/20)"
       },
       {
+        "severity": "HIGH",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "Static analysis detected a pattern matching 'Object.keys(process.env)' in the code. While this might be part of the LSP client initialization (passing environment variables to the server), in the context of a suspicious native binary and a 'linter' that shouldn't need full environment access, this is a potential vector for exfiltrating secrets (API keys, tokens) if the environment is sent to the native binary or over the network.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 28,
+        "target": "extension/dist/extension.cjs (chunk 16/20)"
+      },
+      {
         "severity": "MEDIUM",
-        "category": "FALSE_POSITIVE",
-        "description": "Static analysis flagged 'require(\"child_process\")' and 'Object.keys(process.env)'. Upon review of the provided source code (chunk 16/20), these specific strings are not present in the visible JavaScript logic. The code shown is standard VS Code Language Client boilerplate (handling InlayHints, WorkspaceFolders, FileOperations, etc.). The static hits likely originate from other chunks or the binary itself. However, given the presence of the ELF binary, the potential for these behaviors in other parts of the codebase or within the binary is high.",
-        "code_reference": null,
-        "line_hint": null,
+        "category": "FALSE_POSITIVE_ANALYSIS",
+        "description": "The static rule engine flagged 'require(\"child_process\")' and 'data exfiltration' patterns. Upon reviewing the provided source chunk (16/20), the code is standard `vscode-languageclient` boilerplate (InlayHints, WorkspaceFolders, FileOperations, InlineCompletion). The `child_process` hits likely refer to the LSP client spawning the server process (which is the ELF binary). The 'exfiltration' hits on `postMessage` and `getText` are standard LSP communication protocols. These are likely false positives for the JS code itself, but they become significant when combined with the untrusted native binary.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 19,
         "target": "extension/dist/extension.cjs (chunk 16/20)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static analysis flagged 'credential_harvesting' due to 'Object.keys(process.env)'. However, the code in this chunk does not contain this string. The 'child_process' usage is limited to a 'terminate' function that kills the LSP server process tree (using 'taskkill' on Windows or 'kill -9' on Unix), which is standard behavior for language server lifecycle management, not credential theft or command injection.",
-        "code_reference": "function kT(n, e) { ... iv.execFileSync(\"taskkill\", ...) ... iv.spawnSync(\"/bin/sh\", ...) ... }",
+        "description": "Static analysis flagged 'credential_harvesting' due to 'Object.keys(process.env)'. However, the code in this chunk does not contain this string. The flag likely originates from a different chunk or is a false positive from a generic rule matching 'process.env' usage in standard Node.js environments. The visible code only uses 'process.env.XDG_RUNTIME_DIR' for pipe naming, which is standard.",
+        "code_reference": null,
         "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 18/20)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static analysis flagged 'data exfiltration' and 'vscode_api_abuse'. The code shown is standard implementation of the VS Code Language Client API (LSP client). It handles diagnostics, configuration changes, and feature registration (completion, hover, etc.) locally. There is no network egress to external servers, only local IPC/stdio communication with the language server process.",
-        "code_reference": "class BaseLanguageClient ... registerBuiltinFeatures() ...",
-        "line_hint": null,
+        "description": "Static analysis flagged 'Direct command / shell execution' via 'require(\"child_process\")'. The code uses 'child_process' to spawn 'taskkill' (Windows) or '/bin/sh' with 'kill -9' (Linux/Mac) to terminate the LSP server process tree. This is standard behavior for VS Code language server clients to ensure clean shutdown of the server process and its children. It does not execute arbitrary user input or malicious commands.",
+        "code_reference": "iv.execFileSync(\"taskkill\", [\"/T\", \"/F\", \"/PID\", n.pid.toString()], t)",
+        "line_hint": 19,
+        "target": "extension/dist/extension.cjs (chunk 18/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' patterns. The matches for '.post.length' and '.postMessage' are part of standard LSP (Language Server Protocol) message handling and VS Code webview communication APIs, not data exfiltration. The code implements standard LSP client features like diagnostics, hover, and completion.",
+        "code_reference": "this._p2c.asDiagnostics(r, i.token)",
+        "line_hint": 12,
         "target": "extension/dist/extension.cjs (chunk 18/20)"
       },
       {
         "severity": "MEDIUM",
         "category": "UNEXPECTED_BINARY",
-        "description": "The package contains an ELF binary at 'extension/server/postern'. While this is expected for a native language server (Postern is a Rust-based LSP for PostgreSQL), the binary itself is not analyzed in this text chunk. Users should verify the binary's integrity via checksums if they have concerns about supply chain attacks, but its presence is consistent with the extension's purpose.",
+        "description": "The package contains an ELF binary 'extension/server/postern'. For a PostgreSQL configuration linter, this is likely a compiled language server (e.g., written in Go, Rust, or C++) that provides the diagnostics and completion logic. While binaries require caution, this is a common pattern for high-performance LSP servers. The binary is not executed via 'child_process' in this chunk (which only handles termination), but would be spawned by the LSP client initialization logic (likely in another chunk). Given the extension's purpose (PostgreSQL config analysis), a native binary is plausible and not inherently malicious.",
         "code_reference": "extension/server/postern",
         "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 18/20)"
@@ -306,38 +330,38 @@
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
         "description": "Static analysis flagged 'Object.keys(process.env)' as credential harvesting. In context, this code is part of the `createMessageTransports` function in the VS Code Language Client library. It copies the current environment variables to pass them to the spawned language server process (the `postern` binary). This is standard behavior for LSP clients to ensure the server inherits the user's environment (e.g., PATH, HOME) and is not malicious.",
-        "code_reference": "let _ = Object.create(null); return Object.keys(process.env).forEach(v => _[v] = process.env[v])",
+        "code_reference": "let _ = Object.create(null); return Object.keys(process.env).forEach(v => _[v] = process.env[v]), ...",
         "line_hint": 28,
         "target": "extension/dist/extension.cjs (chunk 19/20)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static analysis flagged 'require(\"child_process\")' as direct command execution. This is the standard Node.js module used by the VS Code Language Client to spawn the external language server process (`extension/server/postern`). This is the intended mechanism for LSP extensions to run their server binaries.",
-        "code_reference": "var nr = ks(require(\"child_process\"))",
+        "description": "Static analysis flagged 'require(\"child_process\")' as direct command execution. This is a standard import in the VS Code Language Client to spawn the language server process (`postern`). The extension is a linter/diagnostics tool that requires a backend server to analyze PostgreSQL configuration files. Spawning a local, bundled binary is the intended architecture for this type of extension.",
+        "code_reference": "var nr = ks(require(\"child_process\")),",
         "line_hint": 19,
         "target": "extension/dist/extension.cjs (chunk 19/20)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static analysis flagged 'postMessage' and document events as data exfiltration. These are standard VS Code API calls (`vscode.window.createWebviewPanel` messaging and `workspace.onDidOpenTextDocument`) used by the Language Client to manage the UI and track document state for the LSP protocol. No network egress to external C2 servers is observed in this chunk.",
-        "code_reference": "this.postMessage(e), Promise.resolve()",
+        "description": "Static analysis flagged 'postMessage' and document listeners as data exfiltration. These are standard VS Code API calls (`vscode.window.createWebviewPanel` or LSP communication) used to send diagnostics and hover information from the language server to the editor UI. There is no network egress to external domains in this chunk.",
+        "code_reference": ".postMessage(e),Promise.resolve()...",
         "line_hint": 28,
         "target": "extension/dist/extension.cjs (chunk 19/20)"
       },
       {
         "severity": "LOW",
         "category": "NOTE",
-        "description": "The package contains an ELF binary at `extension/server/postern`. While flagged as 'HIDDEN_EXECUTABLE' by the scanner, this is the expected language server binary for a PostgreSQL configuration linter. The extension's purpose is to provide diagnostics for `postgresql.conf`, which requires a server process to parse the files. The binary is not obfuscated or hidden in a way that suggests malware (it is in the `server` directory, consistent with LSP architecture).",
-        "code_reference": "extension/server/postern",
+        "description": "The package contains a binary executable `extension/server/postern`. While flagged as 'HIDDEN_EXECUTABLE' by static scanners, this is expected for a language server extension that bundles a native binary (likely Go or Rust) to perform the actual parsing and diagnostics. The binary is not executed via shell injection but via `child_process.spawn` with controlled arguments. Without binary analysis, it cannot be 100% ruled out, but the JavaScript wrapper is benign and standard.",
+        "code_reference": null,
         "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 19/20)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static analysis flagged 'child_process' usage and 'Object.keys(process.env)' as malicious. The code uses 'child_process' exclusively to spawn the bundled 'postern' language server binary via the standard VS Code Language Client API. The environment variable access is part of the standard LSP client initialization to pass the current environment to the spawned process, not for exfiltration.",
+        "description": "Static analysis flagged 'child_process' usage and 'Object.keys(process.env)' as malicious. However, the code is the standard 'vscode-languageclient' library implementation. It uses 'child_process' to spawn the language server process (postern) and passes environment variables to it, which is standard behavior for LSP clients. No data is exfiltrated.",
         "code_reference": "nr.spawn(w, v, q)",
         "line_hint": 19,
         "target": "extension/dist/extension.cjs (chunk 20/20)"
@@ -345,23 +369,23 @@
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static analysis flagged 'postMessage' and network patterns. These are standard LSP communication mechanisms (IPC/Stdio) between the VS Code extension host and the language server process. No external network exfiltration endpoints were identified.",
-        "code_reference": "this._serverProcess = F",
+        "description": "Static analysis flagged 'postMessage' and network patterns. The code uses 'postMessage' for internal IPC between the extension host and webviews (standard VS Code API) and 'post' for LSP protocol messages. No external network exfiltration is present.",
+        "code_reference": "this._postMessage(e)",
         "line_hint": 28,
         "target": "extension/dist/extension.cjs (chunk 20/20)"
       },
       {
         "severity": "LOW",
-        "category": "INFO",
-        "description": "The extension bundles a native ELF binary ('postern') which is expected for a language server. The code correctly handles platform-specific paths and permissions (chmod) for this binary.",
-        "code_reference": "hb.join(n.extensionPath, \"server\", process.platform === \"win32\" ? \"postern.exe\" : \"postern\")",
-        "line_hint": 350,
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'HIDDEN_EXECUTABLE' for 'extension/server/postern'. This is the legitimate language server binary for the Postern extension. It is expected to be an ELF binary (or .exe on Windows) and is executed via the standard LSP client mechanism.",
+        "code_reference": "extension/server/postern",
+        "line_hint": null,
         "target": "extension/dist/extension.cjs (chunk 20/20)"
       },
       {
         "severity": "CRITICAL",
         "category": "HIDDEN_EXECUTABLE",
-        "description": "The package contains a file named 'postern' with no extension in the 'extension/server/' directory. Static analysis confirms this file is an ELF binary (Linux executable). This is a classic technique for hiding malicious payloads (e.g., reverse shells, miners, or stealers) within a VS Code extension, bypassing simple file extension checks.",
+        "description": "The package contains a file named 'extension/server/postern' which is an ELF binary (Linux executable) despite having no file extension. This is a classic technique for hiding malicious payloads in VS Code extensions. The extension's stated purpose is a language server for PostgreSQL configuration, which typically runs as a Node.js process, not a raw ELF binary. The presence of an unexplained native executable is a severe red flag for malware, such as a backdoor, cryptominer, or credential stealer.",
         "code_reference": "extension/server/postern",
         "line_hint": null,
         "target": "extension/dist/browser.js"
@@ -369,23 +393,15 @@
       {
         "severity": "HIGH",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a 'PostgreSQL configuration' linter/formatter (text-based). However, it bundles a native ELF binary. A simple text linter does not require a compiled native executable. This is a major capability disconnect, strongly suggesting the binary performs functions unrelated to the advertised purpose (e.g., system compromise).",
-        "code_reference": "README: 'PostgreSQL configuration files... Diagnostics, hover and completion'",
+        "description": "The extension is advertised as a 'PostgreSQL configuration' linter/language server. While language servers can be native, bundling an unexplained ELF binary without clear documentation or standard native module structure (like .node files) is disproportionate and suspicious. The browser.js file explicitly states the server runs on 'desktop and remote hosts', implying the binary is the core component, which is unusual for a simple config file linter and suggests hidden functionality.",
+        "code_reference": "extension/server/postern",
         "line_hint": null,
-        "target": "extension/dist/browser.js"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The provided source code (`browser.js`) is a stub that explicitly states the language server runs on 'desktop and remote hosts' and that the browser host provides 'syntax highlighting only'. This implies the actual logic (and likely the execution of the suspicious binary) resides in other files not fully detailed in this snippet, or that the binary is launched by the main extension entry point on desktop environments. The presence of the binary in the package confirms the risk.",
-        "code_reference": "t.info(\"The Postern language server runs on desktop and remote hosts. This host provides syntax highlighting only.\")",
-        "line_hint": 28,
         "target": "extension/dist/browser.js"
       }
     ],
     "findings_truncated": 0
   },
-  "ai_summary": "The extension 'Postern' is malicious. While the JavaScript source code in this chunk appears to be standard LSP client library code (benign), the package contains a hidden ELF binary executable ('extension/server/postern'). A simple configuration linter does not require a native binary server. This is a classic supply-chain attack pattern where a benign-looking extension bundles a malicious native payload. The static analysis hits for 'child_process' and 'env' are likely false positives from the LSP library, but the hidden binary is a critical indicator of compromise.",
+  "ai_summary": "The extension 'Postern' is highly malicious. While it presents itself as a linter for PostgreSQL configuration files, it contains a hidden ELF binary executable ('extension/server/postern') which is a severe capability disconnect. Additionally, the code exhibits signs of credential harvesting (enumerating process.env) and system command execution (child_process). The presence of a full LSP client suggests the binary might be a malicious 'language server' that executes arbitrary code or exfiltrates data. The combination of a hidden native binary, credential access, and command execution in a simple linter extension is a classic supply-chain attack pattern.",
   "escalation_reasons": [
     "2 CRITICAL findings",
     "10 HIGH findings",
@@ -408,5 +424,5 @@
     "excluded_phases": [],
     "ai_phase_ran": true
   },
-  "scanned_at": "2026-09-18T01:13:14.344187+00:00Z"
+  "scanned_at": "2026-09-18T01:21:31.034431+00:00"
 }
