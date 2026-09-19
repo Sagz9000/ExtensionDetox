@@ -1,0 +1,189 @@
+{
+  "extension_id": "NicolasBrunaFuentealba.snapcontext-vscode",
+  "display_name": "SnapContext",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "NicolasBrunaFuentealba",
+    "verified": false
+  },
+  "vsix_sha256": "be4e2cc81a8ccba501f478ff091b25042aac83ff647fb947646696ac6eadcd74",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 17,
+        "snippet": "const { spawn } = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/extension.js",
+        "line": 17,
+        "snippet": "const { spawn } = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 17,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 4,
+    "blocks_seen": 4,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/4)",
+        "summary": "The code is a standard VS Code extension wrapper for a local Python-based AI assistant tool ('SnapContext'). It uses `child_process.spawn` to execute the associated CLI and `net` to check server availability, which aligns perfectly with its description as an AI assistant with chat and planning capabilities. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious network activity. The `child_process` usage is a false positive in the context of this specific extension's purpose."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/4)",
+        "summary": "The code is a standard VS Code extension wrapper for a local Python-based AI assistant tool ('snapcontext'). It spawns a local Python process, passes configuration and API keys via environment variables, and streams output to a VS Code output channel. The use of `child_process` is appropriate for its stated purpose of running a local AI context tool. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious intent. The static rule hit for `child_process` is a false positive in the context of a tool that explicitly runs a local Python module."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/4)",
+        "summary": "This extension exhibits high-risk behavior by spawning a local Python web server and loading it into a VS Code Webview, which is a disproportionate capability for a simple AI assistant. The use of `child_process.spawn` to execute dynamic Python scripts, combined with passing API keys via environment variables to this local server, creates a significant attack surface for credential theft and arbitrary code execution. The extremely small package size further raises suspicion about where the actual Python application code resides, potentially indicating dynamic download or obfuscation. This pattern is consistent with supply-chain attacks that use local servers to serve malicious payloads or exfiltrate secrets."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/4)",
+        "summary": "The analyzed code chunk is consistent with a VS Code extension that manages a local AI assistant service. It handles file context selection, checks local TCP ports for service availability, and renders a webview interface. The static hit for `child_process` is not present in this specific chunk and is likely a false positive or refers to benign local process spawning in other parts of the extension. There are no signs of credential harvesting, remote code execution, data exfiltration, or obfuscation. The behavior is proportional to the advertised 'AI assistant' functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, the code explicitly documents that it reuses a Python CLI (`python -m snapcontext`) and a web server (`web/app.py`). Spawning these processes is the core advertised functionality of the extension ('AI assistant with automatic context'). This is a legitimate use of child_process for running a local language model/CLI tool, not arbitrary command execution or stager behavior.",
+        "code_reference": "const { spawn } = require(\"child_process\");",
+        "line_hint": 17,
+        "target": "extension/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension uses `child_process.spawn` to execute a Python module (`python -m snapcontext`). This is consistent with the extension's description of being an AI assistant that likely relies on a local Python backend for context processing. The command arguments are constructed from configuration and workspace state, not from untrusted user input in a way that suggests injection. The use of `shell: true` on Windows is a standard practice for resolving executables via PATH, though it carries inherent risks if arguments were malicious, which they are not in this context.",
+        "code_reference": "const proc = spawn(path.basename(pythonPath), argv, { ... shell: process.platform === \"win32\" ... });",
+        "line_hint": 17,
+        "target": "extension/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "SECRET_HANDLING",
+        "description": "The extension reads an API key from VS Code configuration (`config().get(\"apiKey\", \"\")`) and passes it to the child process via environment variables (`GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, etc.). This is a standard pattern for extensions that wrap CLI tools or local services requiring authentication. The key is not hardcoded, logged, or sent to a remote server directly by the extension itself; it is passed to the local Python process.",
+        "code_reference": "env.GEMINI_API_KEY = claveApi; ...",
+        "line_hint": 28,
+        "target": "extension/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'AI Assistant' but the code spawns a local Python web server (`python -c ...`) and loads it into a VS Code Webview. This is a classic pattern for serving malicious HTML/JS payloads or establishing a local C2 channel, which is completely disproportionate to a standard AI chat extension that should typically use official APIs or LSPs.",
+        "code_reference": "procesoChat = spawn(path.basename(pythonPath), [\"-c\", script], ...)",
+        "line_hint": 17,
+        "target": "extension/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension executes arbitrary Python code via `child_process.spawn`. The script string is constructed dynamically and passed to the Python interpreter. While it claims to start a server, this mechanism allows for arbitrary code execution on the host system if the `pythonPath` is manipulated or if the script logic is updated via remote configuration (though config is local, the pattern is dangerous).",
+        "code_reference": "const script = (\"from web.app import arrancar_servidor; ...\" ...); procesoChat = spawn(...)",
+        "line_hint": 12,
+        "target": "extension/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SECRET_EXFILTRATION_RISK",
+        "description": "The function `entornoConClave()` is used to pass environment variables to the spawned process. Given the context of an 'AI Assistant' that stores API keys in workspace settings, this likely passes the user's API keys to the local Python server. If the Python server (`web.app`) is malicious or compromised, it can exfiltrate these secrets. The combination of local server + API key injection is a high-risk pattern for credential theft.",
+        "code_reference": "env: entornoConClave(),",
+        "line_hint": 20,
+        "target": "extension/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX package size is reported as 0.0 MB, which is suspiciously small for an extension that bundles a Python web application (`web.app`). This suggests the Python code might be missing, dynamically downloaded, or the size reporting is inaccurate. If the code is downloaded at runtime, it bypasses static analysis entirely.",
+        "code_reference": "VSIX Package Size: 0.0 MB",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` at line 17. However, the provided source code chunk (4/4) does not contain this string. The code shown uses `net.createServer` and `net.connect` for localhost port checking, which is standard for local service management. If `child_process` is used in other chunks, it is likely for spawning a local AI server process, which is consistent with the extension's description ('AI assistant'). Without evidence of arbitrary command execution or external exfiltration, this is assessed as a false positive or benign local process management.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 17,
+        "target": "extension/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_LOCAL",
+        "description": "The code implements `libre()` and `esperarPuerto()` functions to check if a TCP port is free or accepting connections on `127.0.0.1`. This is a standard pattern for extensions that manage local background services (e.g., a local LLM server or language server). The binding is strictly to localhost, posing no direct network exfiltration risk from this code block.",
+        "code_reference": "servidor.listen(puerto, \"127.0.0.1\")",
+        "line_hint": 42,
+        "target": "extension/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The `htmlWebview` function creates an iframe pointing to a URL passed as an argument. While the code itself doesn't define the URL, loading remote content in a webview can be a vector for XSS if the URL is not validated. However, given the context of an AI assistant that likely runs a local server, this is likely pointing to `http://localhost:<port>`. The `allow` attribute grants clipboard access, which is common for chat interfaces but should be monitored if the URL source is untrusted.",
+        "code_reference": "iframe src=\"${url}\" allow=\"clipboard-read; clipboard-write\"",
+        "line_hint": 68,
+        "target": "extension/extension.js (chunk 4/4)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension wrapper for a local Python-based AI assistant tool ('SnapContext'). It uses `child_process.spawn` to execute the associated CLI and `net` to check server availability, which aligns perfectly with its description as an AI assistant with chat and planning capabilities. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious network activity. The `child_process` usage is a false positive in the context of this specific extension's purpose.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-22T21:01:39.047Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-22T21:35:58.663510+00:00Z"
+}

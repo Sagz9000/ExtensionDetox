@@ -1,0 +1,222 @@
+{
+  "extension_id": "tryarcsh.arc-vs-code",
+  "display_name": "Arc in VS Code",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "tryarcsh",
+    "verified": false
+  },
+  "vsix_sha256": "a714f4d1582dce151e3bcdd7a42089ffc749b7b5af2382ddc9239748f146b3ba",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "tryarc.sh",
+      "source_file": "extension/package.json",
+      "line": 8,
+      "context": "\"license\": \"https://tryarc.sh/legal\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 6,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 5/56)",
+        "summary": "This chunk of the 'Arc' extension source code appears to be standard application logic for a VS Code AI assistant. It defines a tool for opening git diffs (`openDiff`) and manages UI state for tab decisions. The code utilizes heavy string obfuscation, which is typical for bundled commercial software but warrants caution; however, no malicious patterns such as credential harvesting, reverse shells, or unauthorized network exfiltration were observed in this specific segment. The presence of WebSocket constants suggests real-time communication, which is consistent with an AI chat agent. The disconnect check reveals no major capability mismatches for an AI coding agent."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 11/56)",
+        "summary": "This code chunk is a minified and slightly obfuscated version of the `ws` (WebSocket) library, specifically the utility functions for validating UTF-8 strings and HTTP status codes. The 'dynamic require' hits are false positives resulting from the library's optional loading of the `utf-8-validate` native module. The presence of the `tryarc.sh` domain in the package.json is consistent with the extension's identity as 'Arc', an AI coding agent. There are no indicators of credential theft, system fingerprinting, or malicious execution in this specific chunk. The code is benign."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 26/56)",
+        "summary": "This chunk of code appears to be a bundled and minified version of a standard WebSocket client library (likely the 'ws' npm package) used by the 'Arc' extension. The 'dynamic require' hits are false positives resulting from the bundler's module resolution strategy. The presence of WebSocket, HTTP, and crypto imports is proportional to an AI agent extension that requires real-time communication with a remote backend. No malicious indicators such as credential harvesting, reverse shells, or data exfiltration to suspicious endpoints were found in this specific chunk. The domain 'tryarc.sh' is the extension's own backend, which is expected behavior for a SaaS-based AI tool."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 31/56)",
+        "summary": "This code chunk represents the internal implementation of a WebSocket client library (likely `ws` or similar) bundled within the extension. It handles standard networking tasks such as setting up the WebSocket handshake, managing headers, and processing redirects. There are no indicators of malicious behavior such as credential harvesting, reverse shells, or data exfiltration to unauthorized endpoints. The presence of the domain `tryarc.sh` aligns with the extension's identity as an AI coding agent. The obfuscation is typical of minified production code, not malicious obfuscation."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 40/56)",
+        "summary": "The code exhibits characteristics of a bundled, obfuscated JavaScript application. It performs system fingerprinting (PID, OS, IDE info) and writes this data to a local config file. Most notably, it contains a loop that scans 50 random local ports, which is atypical for a standard VS Code extension and suggests it is trying to locate a local backend service (possibly a 'coding agent' daemon). While the 'Arc' extension claims to be an AI coding agent, the aggressive port scanning and obfuscation are concerning. The behavior is consistent with a client trying to connect to a local server, but the implementation is opaque and potentially risky if the 'local server' is not what it claims to be. No direct exfiltration to external domains was found in this chunk, but the local port scanning is a significant behavioral anomaly."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 46/56)",
+        "summary": "The extension exhibits multiple high-risk behaviors: heavy code obfuscation, dynamic module loading, and the establishment of local HTTP/WebSocket servers. While the extension claims to be an AI coding agent, the implementation details (obfuscation, local server binding, unknown domain) are disproportionate to a standard AI chat interface and align more closely with C2 infrastructure or data exfiltration tools. The combination of these factors strongly suggests malicious intent."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "OBFUSCATION",
+        "description": "The code uses a string array rotation/obfuscation technique (functions `bm`, `bk`, `a0b` mapping hex indices to strings). While this increases the difficulty of static analysis, it is a common pattern in bundled/minified JavaScript and does not inherently indicate malicious intent, especially given the lack of other high-risk indicators in this chunk.",
+        "code_reference": "c[bm(0x3a8)], bk(0x2d2), a0b",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The domain 'tryarc.sh' was identified in the package metadata. Given the extension is named 'Arc' and described as a coding agent, this is likely the official backend API for the service. Without evidence of data exfiltration or C2 behavior in the code, this is treated as a legitimate service endpoint.",
+        "code_reference": "tryarc.sh",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 5/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'Dynamic require/import with computed module name'. Upon inspection, the code `require(c5(0x34e))` is part of the `ws` (WebSocket) library's internal logic for loading the `utf-8-validate` native module. This is a standard, optional dependency pattern in the `ws` library to improve performance, not a malicious dynamic require.",
+        "code_reference": "let j = c[c5(0x1e0)](require, c5(0x34e));",
+        "line_hint": "end",
+        "target": "extension/dist/extension.js (chunk 11/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "OBFUSCATION",
+        "description": "The code exhibits moderate obfuscation (score 0.40) with string arrays and hex-encoded constants. However, the logic is clearly identifiable as the `ws` library's UTF-8 validation and status code checking routines. The obfuscation is consistent with a bundled/minified dependency rather than a malicious stager.",
+        "code_reference": "function h(j) { ... }",
+        "line_hint": "middle",
+        "target": "extension/dist/extension.js (chunk 11/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "OBSCURED_CODE",
+        "description": "The code is heavily obfuscated with minified variable names and a string decryption function (d7). While this is common in bundled/minified production code, it reduces transparency. However, the visible logic corresponds to standard WebSocket library internals (ws library), not malicious payloads.",
+        "code_reference": "var d7 = ...; 'HBGJR': function(af, ag) { return af === ag; }",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 26/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_COMMUNICATION",
+        "description": "The code initializes WebSocket connections and imports 'http', 'crypto', and 'stream' modules. This is consistent with the extension's stated purpose of being an AI coding agent that likely communicates with a backend service (tryarc.sh) via WebSocket for real-time chat/agent interactions.",
+        "code_reference": "require('crypto'), require('http'), 'websocket', 'OPEN', 'CLOSING'",
+        "line_hint": 45,
+        "target": "extension/dist/extension.js (chunk 26/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The code contains standard WebSocket client implementation logic (handshake, headers, redirect handling). The 'dynamic require' hits are artifacts of the bundler/minifier (webpack/rollup) resolving module IDs at runtime, which is standard for distributed VS Code extensions. The domain 'tryarc.sh' is the official API endpoint for the 'Arc' coding agent extension, consistent with its stated purpose of being an AI interface.",
+        "code_reference": "require(c[...])",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 31/56)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_LOGIC",
+        "description": "The code uses a control-flow flattening technique (switch statement with string cases) and a string decryption function (`ew`/`ex`) to obscure the logic. While common in bundled/minified code, this makes static analysis difficult and is a pattern often used to hide malicious intent or evade simple signature-based detection.",
+        "code_reference": "while (!![]) { switch (d[e++]) { ... } }",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 40/56)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "The code collects system information including `process.pid`, `os.homedir()`, `process.platform`, and VS Code environment details (`appName`, `workspaceFolders`). This data is written to a local file. While potentially for legitimate state management (e.g., storing session info), it is a prerequisite for info-stealing if combined with exfiltration.",
+        "code_reference": "let s = { 'pid': process[ez(0x2dc)], 'workspaceFolders': ..., 'ideName': h['env']['appName'], ... }; d['writeFileSync'](i(p), JSON[ez(0x44c)](s), ...)",
+        "line_hint": 45,
+        "target": "extension/dist/extension.js (chunk 40/56)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_PROBING",
+        "description": "The function `o()` iterates through 50 random ports (range 0x2710 to 0x2710 + 0xd8f0) and attempts to open a TCP connection to `localhost` (implied by context of local agent communication) on each port. This is a port-scanning behavior. In the context of an AI agent, this might be to find a local backend service, but it is an unusual and aggressive network behavior for a VS Code extension.",
+        "code_reference": "async function o() { ... for (let p = 0x0; p < 0x32; p++) { let q = Math['floor'](Math[eB(0x405)]() * 0xd8f0) + 0x2710; if (await c[eB(0x442)](n, q)) return q; } }",
+        "line_hint": 60,
+        "target": "extension/dist/extension.js (chunk 40/56)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The code creates directories and writes files to a user-specific configuration directory (`ARC_CONFIG_DIR` or `~/.arc`). This is standard for extensions that need to persist state or configuration, but the use of `fs.mkdirSync` with `recursive: true` and specific file modes (`0x1c0`, `0x180`) indicates deliberate permission management.",
+        "code_reference": "d[ey(0x505)](q, { 'recursive': !0x0, 'mode': 0x1c0 })",
+        "line_hint": 38,
+        "target": "extension/dist/extension.js (chunk 40/56)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The code establishes a local WebSocket server and HTTP server, likely acting as a Command and Control (C2) bridge or tunnel. It imports 'http' and 'WebSocketServer' and binds them, which is highly suspicious for a VS Code extension that should primarily communicate via VS Code's extension host API or standard HTTPS requests to a known backend. This pattern is often used to expose local services or facilitate data exfiltration/remote control.",
+        "code_reference": "const e = c[eV(0x212)](require, 'http'), ... const { WebSocketServer: g } = zr(), ... B = e[eX(0x4c0)](), C = new g({ 'server': B })",
+        "line_hint": "15-25",
+        "target": "extension/dist/extension.js (chunk 46/56)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_LOGIC",
+        "description": "The code is heavily obfuscated using a string array rotation technique (e.g., `eU(0x359)`, `c['mNSZZ']`). This makes static analysis difficult and is a strong indicator of malicious intent to hide functionality from security scanners. The use of `require(c[...])` with computed keys further obscures dependencies.",
+        "code_reference": "if (!B) return c[eU(0x359)](f, j, -0x7f5a, eU(0x318) + x); ... var d = c[eV(0x212)](require, eV(0x3b6))",
+        "line_hint": "1-10",
+        "target": "extension/dist/extension.js (chunk 46/56)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as an 'AI Interface' or 'Coding Agent'. While AI agents may use websockets, the combination of a local HTTP/WebSocket server, heavy obfuscation, and the domain `tryarc.sh` (unknown reputation) creates a significant disconnect. A legitimate AI extension would typically use standard HTTPS APIs, not spin up local servers with obfuscated logic unless explicitly documented as a local LLM runner (which this does not appear to be, given the 'Unified AI Interface' description implying cloud connectivity).",
+        "code_reference": "domain: tryarc.sh",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 46/56)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DYNAMIC_REQUIRE",
+        "description": "Multiple instances of dynamic `require()` calls with computed arguments (e.g., `require(c[...])`). This allows the code to load modules not explicitly declared in `package.json`, potentially hiding malicious native dependencies or bypassing extension sandbox restrictions.",
+        "code_reference": "var d = c[eV(0x212)](require, eV(0x3b6)), e = c[eV(0x212)](require, 'http')",
+        "line_hint": "15",
+        "target": "extension/dist/extension.js (chunk 46/56)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This chunk of the 'Arc' extension source code appears to be standard application logic for a VS Code AI assistant. It defines a tool for opening git diffs (`openDiff`) and manages UI state for tab decisions. The code utilizes heavy string obfuscation, which is typical for bundled commercial software but warrants caution; however, no malicious patterns such as credential harvesting, reverse shells, or unauthorized network exfiltration were observed in this specific segment. The presence of WebSocket constants suggests real-time communication, which is consistent with an AI chat agent. The disconnect check reveals no major capability mismatches for an AI coding agent.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-21T14:55:29.52Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-21T15:44:25.618503+00:00Z"
+}

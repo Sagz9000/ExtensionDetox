@@ -1,0 +1,400 @@
+{
+  "extension_id": "SoidynDistrubution.vscode-studio-connect",
+  "display_name": "Visual Code Studio Connect",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "SoidynDistrubution",
+    "verified": false
+  },
+  "vsix_sha256": "de7a40ce9235df4ea220093f878270228d81bfb7875f713bdc7557f32f40e7ec",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6039050781475361,
+    "ai_vibe": 0.95,
+    "static": 0.6356203125901445,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "c2_tunneling",
+        "severity": "CRITICAL",
+        "description": "ngrok tunnel service",
+        "file": "extension/out/extension.js",
+        "line": 112,
+        "snippet": "ngrok-free.app"
+      },
+      {
+        "check": "c2_tunneling",
+        "severity": "CRITICAL",
+        "description": "ngrok tunnel service",
+        "file": "extension/out/extension.js",
+        "line": 1302,
+        "snippet": "ngrok-free.app"
+      },
+      {
+        "check": "c2_tunneling",
+        "severity": "CRITICAL",
+        "description": "ngrok tunnel service",
+        "file": "extension/out/extension.js",
+        "line": 1346,
+        "snippet": "ngrok-free.app"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/out/extension.js",
+        "line": 377,
+        "snippet": "os.userInfo()"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/out/extension.js",
+        "line": 1431,
+        "snippet": ".postMessage({ type: 'startHost', authtoken: token"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "xxxx.ngrok",
+      "source_file": "extension/out/extension.js",
+      "line": 124,
+      "context": "placeHolder: 'wss://xxxx.ngrok-free.app',",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 73,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 2/20)",
+        "summary": "The extension 'StudioConnect' exhibits high-risk behavior by integrating Ngrok tunneling to expose local VS Code workspaces to external WebSocket endpoints. While the README describes this as a 'collaborative workspace' feature, the use of free-tier Ngrok tunnels (`ngrok-free.app`) and the potential for system fingerprinting (`os.userInfo`) create a significant attack surface for data exfiltration and remote access. The capability to start and stop hosts, combined with the ability to join remote sessions via user-provided URLs, allows for potential unauthorized access to the user's code and environment. The behavioral alignment is poor, as a simple collaborative tool should not require such aggressive tunneling mechanisms without robust authentication and encryption guarantees."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/20)",
+        "summary": "The extension 'StudioConnect' exhibits high-risk behavior by integrating Ngrok tunneling to expose local VS Code workspaces to the internet. While framed as a collaboration feature, the combination of tunneling, WebSocket streaming, and system fingerprinting (`os.userInfo`) is disproportionate to a simple pair-programming tool and aligns with patterns seen in info-stealers and remote access tools. The 'Office Mode' allowing multiple peers further suggests potential for data aggregation or unauthorized access. The use of public Ngrok domains (`ngrok-free.app`) indicates reliance on untrusted infrastructure. This extension should be considered malicious due to the high potential for data exfiltration and remote access."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 6/20)",
+        "summary": "The extension 'StudioConnect' is a collaborative coding tool that uses Ngrok to create a tunnel for real-time file and cursor synchronization. While the features align with the advertised purpose, the use of Ngrok creates a critical security risk by exposing the user's workspace to the internet. The combination of file system access, WebSocket streaming, and tunneling makes this extension a potential vector for data exfiltration or remote code execution if the tunnel is compromised. The presence of `os.userInfo()` and the broadcasting of file contents further elevate the risk. Users should exercise extreme caution when using this extension, especially in sensitive environments."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 8/20)",
+        "summary": "The extension 'StudioConnect' exhibits high-risk behavior by using Ngrok to expose a local server to the internet, combined with system fingerprinting (`os.userInfo`). This creates a potential backdoor for remote access and data exfiltration. The advertised 'collaboration' feature is a plausible cover for a remote access tool or info-stealer. The presence of Ngrok tunneling, system reconnaissance, and credential handling in a VS Code extension is a major red flag, warranting a MALICIOUS verdict."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 17/20)",
+        "summary": "The extension 'StudioConnect' exhibits high-risk behavior by integrating Ngrok tunneling services to expose local environments. The combination of system fingerprinting (os.userInfo) and the ability to create outbound tunnels via Ngrok creates a significant risk for data exfiltration or unauthorized remote access. The 'collaborative workspace' description is likely a cover for a backdoor or C2 channel. The use of free Ngrok domains and the specific implementation of tunneling logic strongly suggest malicious intent or at least a severe security vulnerability that could be exploited by an attacker."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 18/20)",
+        "summary": "The extension 'StudioConnect' exhibits high-risk behavior by integrating Ngrok to create public tunnels for 'collaborative' sessions. This architecture allows remote parties to access the user's workspace via WebSocket, which is a significant security risk and a major disconnect from the benign 'pairing' description. The presence of system fingerprinting calls and the explicit use of tunneling services to expose local data to the internet strongly suggest potential for data exfiltration or unauthorized remote access, warranting a MALICIOUS verdict."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 19/20)",
+        "summary": "The code is a standard Webview UI implementation for a VS Code extension that facilitates real-time collaboration using Ngrok tunnels. All flagged indicators (ngrok usage, token handling, system info) are consistent with the extension's advertised purpose of 'One-Click Live Pairing' and 'Ngrok Integration'. There is no evidence of malicious intent, hidden exfiltration, or capability disconnect. The extension behaves exactly as described in its documentation."
+      },
+      {
+        "target": "extension/out/studioConnectManager.js (chunk 1/2)",
+        "summary": "The code appears to be a standard TypeScript-compiled VS Code extension implementing a collaboration manager. It uses the official `@ngrok/ngrok` library for tunneling, which is explicitly documented in the README. The detected domains (ngrok.com, linux.die.net) are legitimate dependencies of the Ngrok client library. No malicious indicators such as credential harvesting, obfuscated payloads, or unauthorized system access were found in this chunk. The empty class implementations suggest this is a partial view or a stub implementation, but the visible logic is benign and aligned with the extension's stated purpose."
+      },
+      {
+        "target": "extension/out/studioConnectManager.js (chunk 2/2)",
+        "summary": "The extension 'StudioConnect' exhibits high-risk behavior by integrating Ngrok tunneling to expose the local VS Code instance to the internet. While framed as a collaboration feature, the use of third-party tunneling services for 'live pairing' is a common pattern in malicious VS Code extensions designed for data exfiltration or remote access. The combination of WebSocket streaming and Ngrok integration, along with the requirement for user-provided Ngrok tokens, creates a significant security surface that is disproportionate to a standard collaborative coding tool. The static evidence of Ngrok domains and the architectural disconnect from secure collaboration standards warrant a malicious verdict."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The extension explicitly integrates with Ngrok to create outbound tunnels. While Ngrok is a legitimate tool, its use in a VS Code extension to expose local workspace data to the internet via `ngrok-free.app` endpoints creates a high-risk channel for data exfiltration and remote access. The code facilitates connecting to these tunnels for 'collaborative' sessions, which is a common vector for supply-chain attacks where the 'collaborator' is actually an attacker.",
+        "code_reference": "ngrok-free.app",
+        "line_hint": 112,
+        "target": "extension/out/extension.js (chunk 2/20)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises 'Real-time collaborative workspace' but the implementation relies on Ngrok tunneling and WebSocket streaming to external endpoints. This is a significant behavioral mismatch for a standard VS Code extension, which typically uses local or authenticated cloud services. The use of a free-tier tunneling service (`ngrok-free.app`) suggests a lack of enterprise-grade security controls and increases the risk of man-in-the-middle attacks or unauthorized access to the user's workspace.",
+        "code_reference": "executeStartHost",
+        "line_hint": 45,
+        "target": "extension/out/extension.js (chunk 2/20)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "INFOGATHERING",
+        "description": "The code calls `os.userInfo()` which is a system fingerprinting API. While this might be used for display purposes in a collaborative session, in the context of an extension that tunnels data to external servers, this information could be exfiltrated to identify the victim's environment.",
+        "code_reference": "os.userInfo",
+        "line_hint": 377,
+        "target": "extension/out/extension.js (chunk 2/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CREDENTIAL_STORAGE",
+        "description": "The extension stores Ngrok authentication tokens in VS Code's SecretStorage. This is a standard practice for sensitive data, but combined with the tunneling functionality, it means the extension has persistent access to credentials that can open tunnels to the user's machine.",
+        "code_reference": "context.secrets.store",
+        "line_hint": 42,
+        "target": "extension/out/extension.js (chunk 2/20)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The extension explicitly integrates with Ngrok, a tunneling service, to expose local workspace data to the internet. While advertised as a feature for 'collaboration', this creates a direct channel for data exfiltration and remote access. The use of `ngrok-free.app` domains indicates reliance on public, untrusted tunnel endpoints.",
+        "code_reference": "ngrok-free.app",
+        "line_hint": 112,
+        "target": "extension/out/extension.js (chunk 5/20)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a 'collaborative workspace' tool, but the combination of Ngrok tunneling, WebSocket streaming, and system fingerprinting (`os.userInfo`) creates a profile consistent with an info-stealer or remote access trojan (RAT) rather than a standard pair-programming tool. The 'Office Mode' allowing up to 20 peers suggests a potential for mass data collection or botnet-like behavior.",
+        "code_reference": "this.config.maxPeers = enabled ? 20 : 5;",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 5/20)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "The code calls `os.userInfo()`, which retrieves system user details. In the context of a network-connected extension using tunneling services, this is a common precursor to exfiltrating victim identity information.",
+        "code_reference": "os.userInfo",
+        "line_hint": 377,
+        "target": "extension/out/extension.js (chunk 5/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CREDENTIAL_STORAGE",
+        "description": "The extension stores Ngrok auth tokens in VS Code's SecretStorage. While this is a standard practice for storing secrets, it increases the value of the extension's data if compromised.",
+        "code_reference": "context.secrets.store(NGROK_SECRET_KEY, data.authtoken.trim());",
+        "line_hint": 1431,
+        "target": "extension/out/extension.js (chunk 5/20)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The extension explicitly integrates with Ngrok, a tunneling service, to expose the local workspace to the internet. While advertised, this capability is highly dangerous in a collaborative coding context as it allows arbitrary remote access to the user's file system and terminal, effectively creating a persistent backdoor if the tunnel is compromised or misconfigured.",
+        "code_reference": "ngrok-free.app",
+        "line_hint": 112,
+        "target": "extension/out/extension.js (chunk 6/20)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The code broadcasts file contents and text edits to a remote peer via WebSocket. Combined with the Ngrok tunnel, this allows any connected peer to read all files in the workspace. The 'startHost' message includes an authtoken, which, if leaked or intercepted, could grant unauthorized access to the tunnel.",
+        "code_reference": ".postMessage({ type: 'startHost', authtoken: token",
+        "line_hint": 1431,
+        "target": "extension/out/extension.js (chunk 6/20)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "The code calls `os.userInfo()` to retrieve the username. While used here for cursor labeling, this is a common step in info-stealer malware to gather system details. In the context of a tunneling extension, it adds to the risk profile.",
+        "code_reference": "os.userInfo()",
+        "line_hint": 377,
+        "target": "extension/out/extension.js (chunk 6/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension's stated purpose is 'real-time collaborative workspace'. The use of Ngrok and WebSocket streaming is proportional to this goal, but the security implications are severe. The risk is not from a disconnect in functionality, but from the inherent danger of exposing a local IDE to the internet via a third-party tunneling service without robust authentication or encryption guarantees.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 6/20)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The extension explicitly uses Ngrok to create a public tunnel to a local HTTP/WebSocket server. This exposes the user's local environment to the internet, allowing remote peers to connect and potentially execute code or access files. While advertised as a feature, the combination with system fingerprinting and lack of clear security boundaries makes this a high-risk vector for remote access and data exfiltration.",
+        "code_reference": "this.tunnelListener = await ngrok.connect(forwardOptions);",
+        "line_hint": 1302,
+        "target": "extension/out/extension.js (chunk 8/20)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "INFOSTEALER_BEHAVIOR",
+        "description": "The code calls `os.userInfo()` to gather system fingerprinting data. In the context of a remote collaboration tool that exposes local services via Ngrok, this data is likely sent to remote peers or a C2 server, facilitating targeted attacks or user tracking.",
+        "code_reference": "os.userInfo()",
+        "line_hint": 377,
+        "target": "extension/out/extension.js (chunk 8/20)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension sends the Ngrok authtoken and other configuration details via `postMessage` to the webview. If the webview is compromised or if the extension logic is manipulated, this could lead to leakage of sensitive credentials or configuration data.",
+        "code_reference": ".postMessage({ type: 'startHost', authtoken: token",
+        "line_hint": 1431,
+        "target": "extension/out/extension.js (chunk 8/20)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "While the extension advertises 'collaborative coding', the use of Ngrok to expose a local HTTP server that accepts WebSocket connections from arbitrary remote peers is a significant security risk. The 'one-click' nature and lack of visible authentication mechanisms for incoming peers (beyond the Ngrok tunnel) make it susceptible to unauthorized access.",
+        "code_reference": "ngrok.connect(forwardOptions)",
+        "line_hint": 1302,
+        "target": "extension/out/extension.js (chunk 8/20)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The extension explicitly integrates with Ngrok to create outbound tunnels. While Ngrok is a legitimate tool, its use in a VS Code extension to expose local workspaces or facilitate remote access is a high-risk pattern often used for data exfiltration or remote control. The presence of 'ngrok-free.app' domains confirms active tunneling logic.",
+        "code_reference": "ngrok-free.app",
+        "line_hint": 112,
+        "target": "extension/out/extension.js (chunk 17/20)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a 'collaborative workspace' tool, but the use of Ngrok for 'secure tunneling' combined with system fingerprinting (os.userInfo) suggests capabilities beyond simple collaboration, potentially allowing an attacker to establish a persistent remote access channel or exfiltrate system information under the guise of 'pairing'.",
+        "code_reference": "os.userInfo",
+        "line_hint": 377,
+        "target": "extension/out/extension.js (chunk 17/20)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "INFO_GATHERING",
+        "description": "The code calls os.userInfo(), which retrieves system user details. In the context of a tunneling extension, this could be used for fingerprinting the victim's machine for targeted attacks or logging purposes.",
+        "code_reference": "os.userInfo()",
+        "line_hint": 377,
+        "target": "extension/out/extension.js (chunk 17/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "Reading from context.secrets is a standard VS Code API usage for storing extension-specific secrets (like the Ngrok token). This is not a credential theft vector in itself, but the token is likely used to authenticate the malicious tunnel.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 87,
+        "target": "extension/out/extension.js (chunk 17/20)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The extension explicitly integrates with Ngrok to create outbound tunnels. While Ngrok is a legitimate tool, its use in a VS Code extension to expose local workspace data via WebSocket to a public internet endpoint (ngrok-free.app) creates a high-risk data exfiltration channel. The 'Cloud Host' functionality allows an attacker (or the extension author) to remotely access the user's file system and editor state.",
+        "code_reference": "ngrok-free.app",
+        "line_hint": 112,
+        "target": "extension/out/extension.js (chunk 18/20)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises 'Live Pairing' and 'Collaborative Workspace'. However, the implementation involves creating a public tunnel (Ngrok) and streaming data via WebSocket. This is disproportionate to a standard 'pairing' feature (which usually uses peer-to-peer or secure signaling) and effectively turns the user's machine into a remote server accessible by anyone with the URL. The 'Security Access Policy' options (Blacklist/Whitelist) suggest the extension is designed to filter what is sent, implying the default behavior might be to send sensitive data.",
+        "code_reference": "startHost",
+        "line_hint": 1431,
+        "target": "extension/out/extension.js (chunk 18/20)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "The code calls `os.userInfo()`. In the context of a collaborative tool that tunnels data to the internet, this is a potential vector for system fingerprinting or exfiltrating user identity information, although it could be used for legitimate user identification in the session.",
+        "code_reference": "os.userInfo()",
+        "line_hint": 377,
+        "target": "extension/out/extension.js (chunk 18/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "The use of `context.secrets.get` is standard for storing user-provided tokens (like the Ngrok auth token) securely within VS Code's secret storage. This is not malicious in itself.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 87,
+        "target": "extension/out/extension.js (chunk 18/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'ngrok-free.app' and 'os.userInfo' as critical/high risk. However, the extension's README explicitly advertises 'Ngrok Integration' for 'Secure tunneling for peer-to-peer or remote workspace sharing'. The use of ngrok is a core, documented feature of this collaborative extension, not a hidden C2 channel. Similarly, 'os.userInfo' is likely used for display purposes (e.g., showing the username in the UI) or standard environment setup, which is benign in this context.",
+        "code_reference": "ngrok-free.app, os.userInfo",
+        "line_hint": "112, 377",
+        "target": "extension/out/extension.js (chunk 19/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'postMessage' with 'authtoken' as data exfiltration. This is standard Webview communication where the UI sends user-provided configuration (the Ngrok token) to the extension host to initiate the tunnel. This is not exfiltration of secrets to an attacker, but rather passing credentials to the legitimate service (Ngrok) as intended by the user.",
+        "code_reference": "vscode.postMessage({ type: 'startHost', authtoken: token",
+        "line_hint": "1431",
+        "target": "extension/out/extension.js (chunk 19/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX package size (11.7 MB) is disproportionately large for a simple WebSocket/Ngrok collaboration extension. This is likely due to the inclusion of the `@ngrok/ngrok` native binary and `ws` library, but it warrants monitoring for hidden payloads in future updates.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/studioConnectManager.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises 'AudioVoiceStreamManager' and 'SharedTerminalManager', but the provided code shows these classes are empty stubs (no-op methods). This suggests the extension is either a skeleton/placeholder or the core functionality is implemented in the second chunk or native binaries not visible here. The presence of Ngrok integration is consistent with the README.",
+        "code_reference": "class AudioVoiceStreamManager { processAudioChunk(chunk) {} }",
+        "line_hint": 105,
+        "target": "extension/out/studioConnectManager.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The extension explicitly integrates Ngrok, a tunneling service, to expose the local VS Code workspace to the internet. While advertised as a feature for 'live pairing', this capability is frequently abused in supply-chain attacks to establish persistent Command and Control (C2) channels or exfiltrate data without user awareness. The presence of `xxxx.ngrok` domains confirms active tunneling infrastructure.",
+        "code_reference": "domain: xxxx.ngrok (extension/out/extension.js:124)",
+        "line_hint": 124,
+        "target": "extension/out/studioConnectManager.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'collaborative workspace' but relies on Ngrok tunneling. Legitimate collaborative coding tools (like Live Share) use secure, authenticated signaling and do not typically require users to configure Ngrok auth tokens or expose their local environment via third-party tunneling services. This architectural choice is a major red flag for potential data exfiltration or remote access abuse.",
+        "code_reference": "README: Ngrok Integration; Extension Settings: studioConnect.ngrokAuthtoken",
+        "line_hint": null,
+        "target": "extension/out/studioConnectManager.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 1
+  },
+  "ai_summary": "The extension 'StudioConnect' exhibits high-risk behavior by integrating Ngrok tunneling to expose local VS Code workspaces to external WebSocket endpoints. While the README describes this as a 'collaborative workspace' feature, the use of free-tier Ngrok tunnels (`ngrok-free.app`) and the potential for system fingerprinting (`os.userInfo`) create a significant attack surface for data exfiltration and remote access. The capability to start and stop hosts, combined with the ability to join remote sessions via user-provided URLs, allows for potential unauthorized access to the user's code and environment. The behavioral alignment is poor, as a simple collaborative tool should not require such aggressive tunneling mechanisms without robust authentication and encryption guarantees.",
+  "escalation_reasons": [
+    "4 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-08T04:20:03.053Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T04:49:29.741937+00:00Z"
+}

