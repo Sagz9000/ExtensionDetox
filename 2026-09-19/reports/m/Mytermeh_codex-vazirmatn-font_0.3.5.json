@@ -1,0 +1,333 @@
+{
+  "extension_id": "Mytermeh.codex-vazirmatn-font",
+  "display_name": "Codex Vazirmatn Font",
+  "version": "0.3.5",
+  "publisher": {
+    "name": "Mytermeh",
+    "verified": false
+  },
+  "vsix_sha256": "2cc1d1591d26482d0aba28be29548132c0cbcb6ac455cabb2e65e9da6821581e",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.6375,
+    "static": 0.4245300781475361,
+    "behavioral": 0.0,
+    "trust_signal": 0.6,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "ACTIVATION_WILDCARD",
+        "severity": "HIGH",
+        "description": "Extension uses wildcard activation: ['*']",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/legacy-startup-core.js",
+        "line": 3,
+        "snippet": "const { spawnSync } = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/legacy-startup-core.js",
+        "line": 3,
+        "snippet": "const { spawnSync } = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/legacy-startup-core.js",
+        "line": 3,
+        "snippet": "const { spawnSync } = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/legacy-startup-core.js",
+        "line": 212,
+        "snippet": "const result = spawnSync(\"reg\", args, {"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/legacy-startup-core.js",
+        "line": 3,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "mytermeh.com",
+      "source_file": "extension/package.json",
+      "line": 10,
+      "context": "\"url\": \"https://mytermeh.com\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 8,
+    "blocks_seen": 8,
+    "summaries": [
+      {
+        "target": "extension/legacy-startup-core.js",
+        "summary": "The extension exhibits severe capability disconnect. While marketed as a Persian RTL font patcher for Codex, the code contains logic to inspect and delete files from the Windows Startup folder and remove entries from the HKCU Run registry key using `child_process.spawnSync` to execute `reg.exe`. This is a high-risk persistence/cleanup mechanism completely unrelated to font rendering or UI theming. The use of `child_process` to modify system startup locations is a hallmark of malware or aggressive system utilities, not benign VS Code extensions. The 'cleanup' of specific 'legacy' signatures suggests this might be a malicious extension trying to remove traces of previous infections or competing malware, or it is a highly deceptive utility masquerading as a theme."
+      },
+      {
+        "target": "extension/extension.js (chunk 1/3)",
+        "summary": "The extension is flagged as SUSPICIOUS primarily due to a significant capability disconnect. It advertises itself as a font/RTL support tool (typically low-privilege) but implements a complex patching engine that modifies the files of another extension (OpenAI Codex) at runtime. This 'monkey-patching' behavior, combined with an 'always-on' activation event, is disproportionate to a simple theme/font extension. While the code appears to be a legitimate utility for localization (Persian RTL), the mechanism of modifying third-party extension files is inherently risky and could be abused or break the target extension. No direct credential theft or C2 communication was observed in this chunk, but the file modification capability warrants caution."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/3)",
+        "summary": "The provided source code is part of a legitimate VS Code extension designed to patch the OpenAI Codex extension for Persian (Farsi) RTL support. The code implements standard extension lifecycle management, including applying patches, modifying configuration settings (specifically locale overrides), and cleaning up artifacts. The 'suspicious' static analysis hits regarding extension enumeration are false positives, as the code only queries for the specific target extension it intends to patch. There are no indicators of credential theft, command execution, network exfiltration, or obfuscation. The behavior is proportional to the stated purpose."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/3)",
+        "summary": "The provided code snippet is a standard VS Code extension activation/deactivation module handling uninstall cleanup logic. It writes a local marker file and calls a cleanup function. The static analysis flags regarding `extensions.getExtension` are false positives in this context, as the extension's stated purpose is to patch another specific extension (Codex), requiring it to locate that extension's files. No malicious patterns such as network exfiltration, credential harvesting, or arbitrary code execution are present in this chunk."
+      },
+      {
+        "target": "extension/patch-core.js (chunk 1/2)",
+        "summary": "The provided source code is a utility script designed to patch the OpenAI ChatGPT/Codex VS Code extension to support Persian (Farsi) RTL layout and the Vazirmatn font. The code generates CSS and JavaScript strings to inject into the target extension's webview HTML. It includes logic to scan the target extension's assets for specific DOM attributes and CSS classes to ensure compatibility. There are no indicators of malicious behavior such as credential harvesting, network exfiltration, command execution, or obfuscation. The code is transparent, well-commented, and aligns with its stated purpose of providing RTL support. The only minor concerns are the aggressive activation event ('*') and the practice of modifying another extension's files, which are functional design choices rather than security risks."
+      },
+      {
+        "target": "extension/patch-core.js (chunk 2/2)",
+        "summary": "The provided source code is a utility module for a VS Code extension that patches the OpenAI Codex extension to support Persian (Farsi) RTL layout and the Vazirmatn font. The code performs file system operations (read/write/copy/delete) strictly within the target extension's directory structure to inject CSS and JavaScript blocks. It includes comprehensive safety features such as creating backups before modification, detecting stale backups, and cleaning up orphaned artifacts. There are no network calls, no execution of arbitrary commands, no obfuscation, and no access to sensitive user data (credentials, keys, etc.). The behavior is consistent with the extension's stated purpose. The risk is low, primarily stemming from the inherent risk of modifying third-party extension files, but the implementation appears benign and well-structured."
+      },
+      {
+        "target": "extension/locale-core.js",
+        "summary": "The provided source code (extension/locale-core.js) is entirely benign. It contains pure logic for normalizing locale strings and determining whether to update a locale setting for the Codex extension. There are no network calls, file system operations, child process executions, or obfuscation techniques present in this specific file. The code aligns perfectly with the stated purpose of managing Persian (Farsi) locale settings. The low-risk findings are related to metadata (activation events and an unrelated domain in package.json) rather than the code itself."
+      },
+      {
+        "target": "extension/state-store.js",
+        "summary": "The provided source file `extension/state-store.js` is a benign utility module responsible for managing local state files for the extension. It reads and writes JSON configuration files to the VS Code user data directory (`globalStorage`). The code uses standard Node.js `fs`, `os`, and `path` modules. There are no network calls, no child process executions, no obfuscation, and no access to sensitive system credentials or external APIs. The logic is strictly limited to file I/O operations within the expected extension storage path. The risk is minimal, limited to minor best-practice deviations in activation events and metadata hygiene."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to provide 'Persian (Farsi) RTL support' and font patching for the Codex UI. However, the code implements a 'legacy cleanup' routine that aggressively deletes files from the Windows Startup folder and removes entries from the HKCU Run registry key. A font/theme extension has no legitimate reason to manage OS-level persistence mechanisms (Startup folder/Registry Run keys). This behavior is characteristic of malware attempting to remove competing malware or establish its own persistence (though here it appears to be removing specific legacy signatures, the capability itself is disproportionate and dangerous).",
+        "code_reference": "function removeLegacyStartupHooks(options = {}) { ... fs.unlinkSync(hook.path); ... removeRunValue(hook.name, options); }",
+        "line_hint": "60-85",
+        "target": "extension/legacy-startup-core.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_MECHANISM",
+        "description": "The code directly interacts with the Windows Registry (`HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run`) and the Windows Startup folder (`%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup`). It uses `child_process.spawnSync` to execute `reg.exe` for querying and deleting registry values. While the intent appears to be 'cleanup' of specific legacy signatures (`codex-rtl`, `codexfontpatch`), the ability to delete arbitrary registry Run keys and Startup files is a high-risk capability often abused by malware for persistence or anti-forensics.",
+        "code_reference": "const HKCU_RUN_KEY = \"HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\"; ... const result = spawnSync(\"reg\", args, ...);",
+        "line_hint": "10, 145",
+        "target": "extension/legacy-startup-core.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension imports `child_process` and uses `spawnSync` to execute system commands (`reg.exe`). This is flagged by the static rule engine. While executing `reg.exe` for cleanup is technically possible, it is highly unusual for a VS Code extension, especially one focused on UI theming. This bypasses the sandboxed nature of typical extension APIs.",
+        "code_reference": "const { spawnSync } = require(\"child_process\");",
+        "line_hint": "3",
+        "target": "extension/legacy-startup-core.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The activation event is set to `*` (activate on startup). For a simple font/theme extension, this is unnecessary and increases the attack surface. Combined with the immediate execution of cleanup logic (implied by the 'legacy-startup-core' name and the nature of the code), this suggests the extension performs background system modifications immediately upon VS Code launch, which is not standard behavior for a passive theme.",
+        "code_reference": "Activation Events: *",
+        "line_hint": null,
+        "target": "extension/legacy-startup-core.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension claims to provide 'Vazirmatn font and Persian RTL support' (a cosmetic/theme feature) but activates on '*' (always) and performs complex file system operations ('applyPatchToTarget', 'restoreTarget') on another extension's installation directory (OpenAI Codex). A simple font/theme extension should not require modifying the source code or assets of a third-party extension at runtime.",
+        "code_reference": "Activation Events: *; applyPatchToTarget(target, settings, logger); restoreTarget(...)",
+        "line_hint": "Activation Events / applyPatch function",
+        "target": "extension/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "RECONNAISSANCE",
+        "description": "The extension actively enumerates installed extensions to locate the target 'OpenAI Codex' extension. While necessary for the stated patching functionality, this behavior combined with the 'always-on' activation and file modification capabilities increases the attack surface if the patching logic were compromised or if the target path resolution is manipulated.",
+        "code_reference": "vscode.extensions.getExtension(TARGET_EXTENSION_ID)",
+        "line_hint": "961-972 (inferred from static hits)",
+        "target": "extension/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FILE_SYSTEM_MODIFICATION",
+        "description": "The extension modifies files within the installation directory of another extension (Codex). This is a high-privilege operation that can break the target extension, introduce vulnerabilities, or persist malicious code if the patching logic is flawed or malicious. The code includes 'restore' and 'cleanup' commands, suggesting it manages these modifications, but the core capability is intrusive.",
+        "code_reference": "applyPatchToTarget, restoreTarget, cleanOrphanArtifacts",
+        "line_hint": "applyPatch function",
+        "target": "extension/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "GLOBAL_STATE_POLLUTION",
+        "description": "The extension exposes its internal dashboard provider to the global scope (`globalThis.__codexVazirmatnDashboard`). While described as a debug escape hatch, exposing internal objects to the global scope can potentially allow other extensions or malicious scripts to interact with or manipulate the extension's state if not properly isolated.",
+        "code_reference": "globalThis.__codexVazirmatnDashboard = dashboardProvider;",
+        "line_hint": "activate function",
+        "target": "extension/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension modifies the global VS Code configuration (`vscode.ConfigurationTarget.Global`) to set `chatgpt.localeOverride`. While this is consistent with the stated purpose of forcing Persian RTL support, modifying global settings of another extension (OpenAI Codex) is an aggressive behavior that could be considered intrusive if not clearly communicated to the user. However, the code includes logic to revert these changes (`revertManagedLocaleToEnglish`) and tracks state to avoid breaking user preferences, indicating good engineering practice rather than malicious intent.",
+        "code_reference": "await chatgptConfig.update(\"localeOverride\", targetLocale, vscode.ConfigurationTarget.Global);",
+        "line_hint": "approx. line 140",
+        "target": "extension/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The extension enumerates installed extensions using `vscode.extensions.getExtension` to locate the target 'Codex' extension. This is a standard pattern for extensions that patch or integrate with other extensions. It is not used for harvesting data about unrelated extensions.",
+        "code_reference": "const extension = vscode.extensions.getExtension(TARGET_EXTENSION_ID);",
+        "line_hint": "approx. line 961",
+        "target": "extension/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The extension performs file system operations (`fs.unlinkSync`, `fs.existsSync`) to clean up 'orphan artifacts' (leftover CSS/JS files from previous installs). These operations are scoped to the target extension's directory and specific known filenames, not arbitrary user files.",
+        "code_reference": "if (fs.existsSync(orphan.path)) { fs.unlinkSync(orphan.path); }",
+        "line_hint": "approx. line 480",
+        "target": "extension/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The code enumerates installed extensions using `vscode.extensions.getExtension`. While flagged by the static scanner as potential reconnaissance, in the context of this extension (which patches the 'Codex' extension), this is a necessary and benign operation to locate the target extension's installation path for patching.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": "961-972",
+        "target": "extension/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_SYSTEM",
+        "description": "The code writes a marker file (`cleanup-started`) to a local path during uninstall cleanup. This is standard behavior for ensuring cleanup processes complete or for debugging, and does not indicate malicious persistence or exfiltration.",
+        "code_reference": "fs.writeFileSync(markerPath, \"cleanup-started\\n\", \"utf8\")",
+        "line_hint": "1",
+        "target": "extension/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses the activation event '*' (activate on startup), which is aggressive for a UI patching extension. While not malicious, it causes unnecessary resource consumption on every VS Code startup. The extension likely activates early to ensure the patch is applied before the target extension (OpenAI ChatGPT/Codex) loads its webview.",
+        "code_reference": "Activation Events: *",
+        "line_hint": null,
+        "target": "extension/patch-core.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension modifies files within another extension's directory (`openai.chatgpt`). While this is the stated purpose (patching for RTL support), modifying third-party extension files is a fragile practice that can break with updates and is generally discouraged in favor of VS Code's native theming or webview customization APIs if available. However, given the specific need to inject CSS/JS into a webview that may not expose hooks, this is a common pattern for such utility extensions.",
+        "code_reference": "const TARGET_EXTENSION_ID = \"openai.chatgpt\";",
+        "line_hint": 4,
+        "target": "extension/patch-core.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension modifies files within another extension's directory (OpenAI Codex) to inject CSS/JS patches. While this is the stated purpose ('Apply Persian RTL Patch'), modifying third-party extension files is a supply-chain risk vector if the patching logic were malicious. However, the code strictly limits modifications to specific known files (index.html, codex-rtl.css, font files) and includes robust backup/restore mechanisms.",
+        "code_reference": "function applyPatchToTarget(target, config = {}, logger = createNoopLogger()) { ... const indexPatched = patchTextFile(target.indexFile, blocks.indexInlineBlock, ...); ... }",
+        "line_hint": null,
+        "target": "extension/patch-core.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "DOMAIN_REPUTATION",
+        "description": "The extracted indicators mention 'mytermeh.com' in package.json. This domain is not referenced in the provided source code chunk. It is likely a homepage or repository link. No network requests are made to this domain in the analyzed code.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/patch-core.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*' (always), which is aggressive for a utility extension that primarily patches another extension's files. While not malicious, it consumes resources unnecessarily when the target extension is not present or active.",
+        "code_reference": "Activation Events: *",
+        "line_hint": null,
+        "target": "extension/locale-core.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The package.json contains a domain 'mytermeh.com' which is unrelated to the stated purpose (Persian font support for Codex). This could be a publisher website or a leftover from a template, but it is an anomaly worth noting.",
+        "code_reference": "extension/package.json:10",
+        "line_hint": null,
+        "target": "extension/locale-core.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses an activation event of '*' (always active), which is generally discouraged for simple utility extensions like font/RTL patches unless strictly necessary for immediate startup patching. While not malicious, it increases startup overhead.",
+        "code_reference": "package.json metadata",
+        "line_hint": null,
+        "target": "extension/state-store.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The package.json references a domain 'mytermeh.com' which is unrelated to the stated purpose (Persian RTL support for Codex). While not used in this specific file for network calls, it appears in the package metadata and should be verified for legitimacy.",
+        "code_reference": "extension/package.json:10",
+        "line_hint": null,
+        "target": "extension/state-store.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits severe capability disconnect. While marketed as a Persian RTL font patcher for Codex, the code contains logic to inspect and delete files from the Windows Startup folder and remove entries from the HKCU Run registry key using `child_process.spawnSync` to execute `reg.exe`. This is a high-risk persistence/cleanup mechanism completely unrelated to font rendering or UI theming. The use of `child_process` to modify system startup locations is a hallmark of malware or aggressive system utilities, not benign VS Code extensions. The 'cleanup' of specific 'legacy' signatures suggests this might be a malicious extension trying to remove traces of previous infections or competing malware, or it is a highly deceptive utility masquerading as a theme.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: extension.js -> legacy-startup-core.js [process_execution, persistence] -- intent: persistence in extension/legacy-startup-core.js",
+    "6 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 437,
+    "published_date": "2026-03-28T07:51:24.71+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-19T02:18:56.345240+00:00"
+}
