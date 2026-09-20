@@ -1,0 +1,105 @@
+{
+  "extension_id": "zehirplus.zehirplus",
+  "display_name": "Zehir+",
+  "version": "1.0.0",
+  "publisher": {
+    "name": "zehirplus",
+    "verified": false
+  },
+  "vsix_sha256": "266641823f6bf95fa0e6f7cc002c20e949ce414e4dc07f6da6706072caba6d19",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "MAGIC_MISMATCH",
+        "severity": "HIGH",
+        "description": "File 'extension/icon.png' claims to be '.png' but magic bytes indicate 'JPEG' (expected: {'PNG'})",
+        "file": "extension/icon.png",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "total": 4
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": null,
+        "summary": "This extension is highly suspicious and likely malicious. It presents itself as a syntax highlighter for a niche language ('Zehir+'), but its core functionality involves executing an external binary from a hardcoded, user-specific path (`/home/r00t/Desktop/zehir/zehir`). This behavior is completely disproportionate to its advertised purpose and is a strong indicator of a stager or loader for a more complex payload. The hardcoded path with the username 'r00t' suggests targeted deployment or a specific test environment. The magic byte mismatch in the icon file further supports the notion of a hastily assembled or tampered package. Users should not install or run this extension."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises itself as a syntax highlighting and language support tool for the 'Zehir+' language. However, the code implements a 'runFile' command that executes an external binary located at a hardcoded, non-standard path (`/home/r00t/Desktop/zehir/zehir`). A legitimate syntax highlighting extension should not execute arbitrary external binaries, especially not from a user-specific desktop directory. This is a classic stager pattern where the VS Code extension acts as a loader for a malicious payload.",
+        "code_reference": "terminal.sendText(`/home/r00t/Desktop/zehir/zehir \"${filePath}\"`);",
+        "line_hint": 21,
+        "target": null
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_PATH",
+        "description": "The code references a hardcoded absolute path `/home/r00t/Desktop/zehir/zehir`. The username 'r00t' suggests a specific target environment or a test environment used by the attacker. Legitimate extensions do not hardcode paths to user desktops or assume specific usernames. This indicates the extension is tailored for a specific victim or environment, or is a proof-of-concept for a targeted attack.",
+        "code_reference": "/home/r00t/Desktop/zehir/zehir",
+        "line_hint": 21,
+        "target": null
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX package size is 0.5 MB, which is reasonable for a simple extension, but the presence of an `icon.png` that is actually a JPEG (magic byte mismatch) suggests sloppy packaging or potential tampering. While not directly malicious, it indicates a lack of professional quality control often seen in malicious supply-chain attacks.",
+        "code_reference": "extension/icon.png",
+        "line_hint": null,
+        "target": null
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is highly suspicious and likely malicious. It presents itself as a syntax highlighter for a niche language ('Zehir+'), but its core functionality involves executing an external binary from a hardcoded, user-specific path (`/home/r00t/Desktop/zehir/zehir`). This behavior is completely disproportionate to its advertised purpose and is a strong indicator of a stager or loader for a more complex payload. The hardcoded path with the username 'r00t' suggests targeted deployment or a specific test environment. The magic byte mismatch in the icon file further supports the notion of a hastily assembled or tampered package. Users should not install or run this extension.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-18T10:21:30.997Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-19T20:06:37.260442+00:00Z"
+}

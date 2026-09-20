@@ -1,0 +1,327 @@
+{
+  "extension_id": "CoForge.coforge",
+  "display_name": "CoForge",
+  "version": "1.0.6",
+  "publisher": {
+    "name": "CoForge",
+    "verified": false
+  },
+  "vsix_sha256": "84d9c3adc29816fb8e828d0375cda08a6c229c4fb955a5ad3fc46f64aac23f5f",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6475,
+    "ai_vibe": 0.85,
+    "static": 0.9500000000000001,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "Buffer.from(r),ze.readOnly=!1),e}Ce.exports={concat:Bs,mask:yt,toArrayBuffer:$s,toBuffer:ze,unmask:Ct};if(!process.env.WS_NO_BUFFER_UTIL)try{let r=require(\"bufferutil\");Ce.exports.mask=function(e,t,i,"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 7,
+        "snippet": "Buffer.from(u).toString(\"utf-8\");let p=JSON.parse(g);this.emit(\"message\",p)}catch{this.log(\"Received malformed JSON message.\"),this.emit(\"error\",new S(\"Malformed JSON message received.\"))}};o.on(\"open"
+      }
+    ],
+    "high": [],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "coforge.onrender.com",
+      "source_file": "extension/package.json",
+      "line": 44,
+      "context": "\"default\": \"wss://coforge.onrender.com\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/44)",
+        "summary": "The code appears to be a standard implementation of a WebSocket-based file synchronization and collaboration tool. The 'critical' scanner hits are false positives resulting from standard WebSocket library code (buffer manipulation and message parsing). The primary risk is inherent to the extension's function: it enumerates workspace files and sends them to a remote server (`coforge.onrender.com`). While the code excludes sensitive files like `.env` and `.git` from the sync glob, users should verify the trustworthiness of the remote server before using this extension, as any compromise of the server could lead to data exfiltration. The code itself does not show signs of malicious intent, obfuscation, or credential harvesting."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/44)",
+        "summary": "The analyzed code chunk is part of the 'ws' WebSocket library implementation, which is a standard dependency for real-time collaborative coding tools. The static scanner hits are false positives caused by generic patterns in WebSocket protocol handling (Buffer manipulation, UTF-8 validation) and standard workspace file enumeration with appropriate exclusions. The extension's behavior is proportional to its advertised function of real-time collaborative workspace synchronization. No malicious intent, credential harvesting, or unauthorized network exfiltration is observed in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 17/44)",
+        "summary": "This code chunk is part of the `ws` (WebSocket) client library bundled within the extension. It handles the low-level HTTP upgrade handshake, redirect logic, and header management for WebSocket connections. The static scanner hits for 'infostealer' and 'API abuse' are false positives resulting from standard WebSocket implementation details (Base64 auth encoding) and legitimate file synchronization logic required by the extension's stated purpose. The extension appears to be a legitimate collaborative coding tool connecting to a user-configurable backend server. No malicious intent, obfuscation, or credential harvesting patterns were identified in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 18/44)",
+        "summary": "This chunk of code is standard WebSocket client implementation logic, likely from the `ws` npm package or a similar library bundled into the extension. The 'critical' scanner hits are false positives resulting from pattern-matching on standard cryptographic handshake procedures (SHA1/Base64) and standard file enumeration APIs. The extension's behavior (WebSocket communication, workspace file syncing with exclusions) is proportional to its advertised purpose of real-time collaborative coding. No malicious intent, credential harvesting, or obfuscation was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 28/44)",
+        "summary": "The analyzed code chunk contains message validation logic for a collaborative editing protocol (handling file locks, revisions, and changes) and WebSocket connection configuration. The static scanner hits for 'infostealer_behavior' are false positives resulting from standard Buffer/JSON operations used in WebSocket communication. The file discovery logic explicitly excludes sensitive paths, indicating careful implementation. The connection to a third-party WebSocket server is consistent with the extension's advertised purpose of real-time collaboration. No malicious intent, credential harvesting, or obfuscation was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 33/44)",
+        "summary": "The extension exhibits strong indicators of malicious behavior, specifically data exfiltration. It enumerates the entire workspace, including sensitive files, and sends this data over a WebSocket connection to a suspicious Render.com backend. The 'collaborative coding' description is likely a cover for stealing source code and secrets. The combination of broad file enumeration, network exfiltration, and a low-reputation backend domain warrants a MALICIOUS verdict."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 34/44)",
+        "summary": "The extension exhibits strong indicators of a supply-chain attack or information stealer disguised as a collaboration tool. It performs bulk reading of workspace files (snapshotting), encodes them, and communicates with an external, low-reputation server (coforge.onrender.com). The ability to apply remote snapshots by writing files to the local workspace provides a vector for code injection. The 'guest window' and 'collaboration' framing is likely a social engineering cover for remote access and data exfiltration. The static analysis hits for base64 encoding and network transmission align with the observed file reading logic. This is not a benign collaboration tool; it is a potential backdoor."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'infostealer_behavior' due to Base64/Buffer manipulation. The code is standard `ws` (WebSocket) library implementation for handling binary frames (masking/unmasking). This is expected behavior for a real-time collaboration tool.",
+        "code_reference": "Buffer.from(r),ze.readOnly=!1),e}Ce.exports={concat:Bs,mask:yt,toArrayBuffer:$s,toBuffer:ze,unmask:C",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'infostealer_behavior' for JSON parsing of received messages. This is standard WebSocket message handling logic.",
+        "code_reference": "Buffer.from(u).toString(\"utf-8\");let p=JSON.parse(g);this.emit(\"message\",p)}catch{this.log(\"Received",
+        "line_hint": 7,
+        "target": "extension/dist/extension.js (chunk 1/44)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension uses `workspace.findFiles` with a broad glob pattern `**/*` to enumerate workspace files. While consistent with 'file synchronization', this is a high-impact operation that could be used for data exfiltration if the server is compromised. The exclusion list includes `.env` and `.git`, which is a good sign, but the broad scope warrants caution.",
+        "code_reference": "workspace.findFiles(\"**/*\",\"**/{.git,node_modules,.vscode,dist,out,build,coverage,.env,.env.*}/**\",t",
+        "line_hint": 32,
+        "target": "extension/dist/extension.js (chunk 1/44)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFIL_RISK",
+        "description": "The extension connects to `coforge.onrender.com` (an unknown domain) and reads configuration from `coforge.serverUrl`. If the server is malicious or compromised, the file enumeration and synchronization features could lead to data leakage. The use of a Render.com free-tier domain for a 'real-time collaborative coding environment' is slightly unusual for a commercial product but common for open-source or hobby projects.",
+        "code_reference": "workspace.getConfiguration(\"coforge\").get(\"serverUrl\")",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 1/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged Base64/Buffer operations as potential data exfiltration. The code is standard WebSocket protocol implementation (ws library) handling binary frames, masking, and UTF-8 validation. No network exfiltration logic is present in this chunk.",
+        "code_reference": "Buffer.from(r),ze.readOnly=!1),e}Ce.exports={concat:Bs,mask:yt,toArrayBuffer:$s,toBuffer:ze,unmask:C",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged workspace.findFiles as bulk file discovery. The code explicitly excludes sensitive directories (.git, node_modules, .vscode, dist, .env) which is consistent with a collaborative coding tool that needs to sync workspace files while respecting standard ignore patterns.",
+        "code_reference": "workspace.findFiles(\"**/*\",\"**/{.git,node_modules,.vscode,dist,out,build,coverage,.env,.env.*}/**\",t",
+        "line_hint": 32,
+        "target": "extension/dist/extension.js (chunk 5/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged configuration reading as harvesting. The code reads 'coforge' serverUrl configuration, which is expected for a collaborative tool that needs to know where to connect. This is not credential harvesting.",
+        "code_reference": "workspace.getConfiguration(\"coforge\").get(\"serverUrl\")",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 5/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'infostealer_behavior' hits regarding Base64 encoding are false positives. The code shown is standard `ws` (WebSocket) library implementation for handling HTTP upgrade handshakes, specifically encoding Basic Auth headers (`Buffer.from(s.auth).toString('base64')`) and parsing incoming JSON messages. This is expected behavior for a collaborative coding tool using WebSockets.",
+        "code_reference": "i.headers.authorization = \"Basic \" + Buffer.from(s.auth).toString(\"base64\")",
+        "line_hint": 45,
+        "target": "extension/dist/extension.js (chunk 17/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The 'vscode_api_abuse' hits regarding `workspace.findFiles` and `getConfiguration` are consistent with the extension's stated purpose of 'real-time collaborative coding' and 'synchronize files'. Reading workspace files and configuration (serverUrl) is necessary for the advertised functionality. The glob pattern excludes sensitive directories like `.git` and `node_modules` by default in the exclusion list, which is standard practice.",
+        "code_reference": "workspace.findFiles(\"**/*\",\"**/{.git,node_modules,.vscode,dist,out,build,coverage,.env,.env.*}/**\",t",
+        "line_hint": 32,
+        "target": "extension/dist/extension.js (chunk 17/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_CONNECTION",
+        "description": "The extension connects to `coforge.onrender.com` via WebSocket. While the domain reputation is unknown, the use of a Render.com subdomain is a common pattern for free-tier or hobbyist backend services. The connection is explicitly configured via `serverUrl` in the extension configuration, allowing user control. No hardcoded IPs or suspicious tunneling services (ngrok, etc.) were found in this chunk.",
+        "code_reference": "workspace.getConfiguration(\"coforge\").get(\"serverUrl\")",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 17/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged Base64 encoding and network transmission as potential data exfiltration. However, the code context shows this is the standard WebSocket handshake implementation (verifying `Sec-WebSocket-Accept` header using SHA1 and Base64). This is standard library behavior for the `ws` package, not malicious exfiltration.",
+        "code_reference": "let pt = vi(\"sha1\").update(h + wi).digest(\"base64\");",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 18/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.findFiles` with a broad glob pattern. The code explicitly excludes sensitive directories like `.git`, `node_modules`, `.vscode`, `dist`, `build`, and `.env` files. This is consistent with a collaborative coding tool that needs to sync workspace files while respecting standard ignore patterns.",
+        "code_reference": "workspace.findFiles(\"**/*\",\"**/{.git,node_modules,.vscode,dist,out,build,coverage,.env,.env.*}/**\",t",
+        "line_hint": 32,
+        "target": "extension/dist/extension.js (chunk 18/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged reading `coforge` configuration. The code reads `serverUrl` from the extension's own configuration namespace (`coforge`), which is standard practice for user-configurable endpoints. It does not read sensitive system credentials or other extensions' secrets.",
+        "code_reference": "workspace.getConfiguration(\"coforge\").get(\"serverUrl\")",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 18/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged Base64/Buffer operations as data exfiltration. The code shown is standard WebSocket message serialization/deserialization (JSON parsing and Buffer handling) typical for real-time sync libraries. No evidence of sensitive data (secrets, keys) being encoded and sent in this chunk.",
+        "code_reference": "Buffer.from(r),ze.readOnly=!1... JSON.parse(g)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 28/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged workspace.findFiles with broad glob. The code explicitly excludes sensitive directories (.git, node_modules, .env, etc.) in the exclusion pattern, which is standard practice for file synchronization tools to avoid syncing dependencies or secrets.",
+        "code_reference": "workspace.findFiles(\"**/*\",\"**/{.git,node_modules,.vscode,dist,out,build,coverage,.env,.env.*}/**\",t",
+        "line_hint": 32,
+        "target": "extension/dist/extension.js (chunk 28/44)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension connects to a hardcoded WebSocket server (wss://coforge.onrender.com) and allows configuration via VS Code settings. This is consistent with the advertised 'real-time collaborative coding environment' functionality. The domain is a Render.com service, which is a common PaaS for such applications. While connecting to a third-party server is a trust boundary, it is proportional to the extension's stated purpose of collaboration.",
+        "code_reference": "hr = \"wss://coforge.onrender.com\"",
+        "line_hint": 9,
+        "target": "extension/dist/extension.js (chunk 28/44)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension enumerates the entire workspace using `workspace.findFiles` with a broad glob pattern (`**/*`), explicitly including sensitive files like `.env` and `.env.*` in the exclusion list (which implies it is targeting them or at least processing the rest of the workspace). It reads file contents (implied by the `buildSnapshot` method and size checks) and sends them over a WebSocket connection to a remote server. This is a classic data exfiltration pattern.",
+        "code_reference": "let n = await N.workspace.findFiles(\"**/*\", \"**/{.git,node_modules,.vscode,dist,out,build,coverage,.env,.env.*}/**\", this.MAX_FILES);",
+        "line_hint": 32,
+        "target": "extension/dist/extension.js (chunk 33/44)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_COMMUNICATION",
+        "description": "The code establishes a WebSocket connection to send file locks, deletions, and renames. Combined with the workspace enumeration, this suggests the extension is syncing or exfiltrating workspace data to a remote server (`coforge.onrender.com`). The use of a Render.com free-tier domain for a 'collaborative coding' tool is suspicious, as it lacks the infrastructure of a legitimate enterprise product.",
+        "code_reference": "this.client.send(n)",
+        "line_hint": 10,
+        "target": "extension/dist/extension.js (chunk 33/44)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'real-time collaborative coding environment'. While file locking and syncing are part of collaboration, the aggressive enumeration of all workspace files (up to 1000 files, 1MB each) and the use of a generic Render.com backend are disproportionate to a simple collaboration tool. Legitimate collaboration tools (like Live Share) use secure, authenticated channels and do not typically bulk-snapshot the entire workspace on activation without explicit user consent for each file.",
+        "code_reference": "MAX_FILES = 1e3; MAX_FILE_SIZE = 1 * 1024 * 1024;",
+        "line_hint": 25,
+        "target": "extension/dist/extension.js (chunk 33/44)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The extension connects to `coforge.onrender.com`. Render.com is a PaaS often used for hobby projects or disposable backends. A legitimate VS Code extension for enterprise collaboration would typically use a dedicated, secure domain with proper TLS and authentication infrastructure, not a free-tier Render service.",
+        "code_reference": "coforge.onrender.com",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 33/44)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension performs a full workspace snapshot, reading the contents of all files (excluding binaries and large files) into memory. This is a classic information stealer pattern. Combined with the WebSocket connection to an external server (coforge.onrender.com), this allows the attacker to exfiltrate the entire user's codebase, including secrets, API keys, and proprietary code.",
+        "code_reference": "let l = await N.workspace.fs.readFile(o); ... i.push({ path: a, content: h })",
+        "line_hint": "10",
+        "target": "extension/dist/extension.js (chunk 34/44)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'real-time collaborative coding environment'. While collaboration implies file sync, the implementation here involves a 'guest window' applying a full snapshot from a remote server. The combination of bulk file reading, base64 encoding (seen in static hits), and sending to a Render.com hosted service (often used for free/ephemeral C2) is disproportionate to a standard LSP or simple sync tool. The 'guest window' terminology suggests a remote-controlled session where the local machine acts as a client receiving instructions/files, which is a high-risk architectural pattern for supply chain attacks.",
+        "code_reference": "applySnapshot(e) ... await N.workspace.fs.writeFile(o, c)",
+        "line_hint": "35",
+        "target": "extension/dist/extension.js (chunk 34/44)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_C2",
+        "description": "The extension connects to 'coforge.onrender.com'. Render.com is a PaaS often abused for hosting malicious payloads or C2 servers due to its free tier and ease of deployment. The domain has 'unknown' reputation. The code reads configuration for 'serverUrl', allowing the attacker to pivot the C2 endpoint dynamically if the initial domain is taken down.",
+        "code_reference": "workspace.getConfiguration(\"coforge\").get(\"serverUrl\")",
+        "line_hint": "9",
+        "target": "extension/dist/extension.js (chunk 34/44)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_FILE_WRITE",
+        "description": "The 'applySnapshot' method writes files to the workspace based on remote instructions. Although it checks for path traversal ('../'), it allows writing arbitrary text files to the user's project directory. If the remote server is compromised or malicious, this allows the attacker to inject malicious code (e.g., postinstall scripts, .vscode/tasks.json, or malicious source files) into the user's environment, leading to code execution when the user runs their project.",
+        "code_reference": "await N.workspace.fs.writeFile(o, c)",
+        "line_hint": "48",
+        "target": "extension/dist/extension.js (chunk 34/44)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BULK_FILE_DISCOVERY",
+        "description": "Uses 'workspace.findFiles(\"**/*\", ...)' to enumerate all files in the workspace. While it excludes common build directories, it still scans the entire project structure to identify files for exfiltration or synchronization. This is a heavy operation that is not typical for simple collaboration tools which usually track open files or use git-like diffs.",
+        "code_reference": "workspace.findFiles(\"**/*\", ...)",
+        "line_hint": "32",
+        "target": "extension/dist/extension.js (chunk 34/44)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code appears to be a standard implementation of a WebSocket-based file synchronization and collaboration tool. The 'critical' scanner hits are false positives resulting from standard WebSocket library code (buffer manipulation and message parsing). The primary risk is inherent to the extension's function: it enumerates workspace files and sends them to a remote server (`coforge.onrender.com`). While the code excludes sensitive files like `.env` and `.git` from the sync glob, users should verify the trustworthiness of the remote server before using this extension, as any compromise of the server could lead to data exfiltration. The code itself does not show signs of malicious intent, obfuscation, or credential harvesting.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-08-15T15:32:20.457Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-16T09:10:16.904738+00:00Z"
+}

