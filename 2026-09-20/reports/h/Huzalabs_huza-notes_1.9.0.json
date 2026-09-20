@@ -1,0 +1,246 @@
+{
+  "extension_id": "Huzalabs.huza-notes",
+  "display_name": "Huza Notes",
+  "version": "1.9.0",
+  "publisher": {
+    "name": "Huzalabs",
+    "verified": false
+  },
+  "vsix_sha256": "18f4bb3f4ca77aad0fac1b697b1a4ee12a9750447ffd4d7c54e3ed6f7c88b6d8",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.51,
+    "static": 0.5192096826286002,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 10,
+        "snippet": "const { exec, execSync } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 10,
+        "snippet": "const { exec, execSync } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/extension.js",
+        "line": 10,
+        "snippet": "const { exec, execSync } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/extension.js",
+        "line": 603,
+        "snippet": "const result = execSync(cmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'] });"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/extension.js",
+        "line": 616,
+        "snippet": "const prefix = execSync('npm config get prefix', { encoding: 'utf-8' }).trim();"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/extension.js",
+        "line": 672,
+        "snippet": "execSync(npmCheck, { stdio: 'ignore' });"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/extension.js",
+        "line": 712,
+        "snippet": "const prefix = execSync(`${npmCmd} config get prefix`, { encoding: 'utf-8' }).trim();"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 10,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 616,
+        "snippet": "execSync('"
+      }
+    ],
+    "total": 15
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "gitlab.com",
+      "source_file": "extension/package.json",
+      "line": 9,
+      "context": "\"url\": \"https://gitlab.com/didierkibugenza/memory-agent-vscode\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "opencode.ai",
+      "source_file": "extension/extension.js",
+      "line": 601,
+      "context": "tuiConfig.$schema = tuiConfig.$schema || 'https://opencode.ai/tui.json';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/2)",
+        "summary": "The extension is flagged as SUSPICIOUS due to a significant capability disconnect. While advertised as a simple 'project journal' and 'memory' tool, it contains complex logic to automatically install and execute a third-party CLI tool ('opencode-ai') using `child_process`. This introduces supply chain risks and arbitrary code execution capabilities that are disproportionate to the stated purpose of logging file changes. The extension modifies global user configuration files and communicates with a locally spawned server, behaviors that are atypical for a simple logging extension."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/2)",
+        "summary": "The extension 'Huza Notes' presents a significant capability disconnect. While marketed as a simple project memory/notes tool, the code reveals it integrates deeply with an external tool called 'opencode' (referencing opencode.ai). It modifies global terminal branding for all projects and utilizes `child_process` (confirmed by static analysis) and terminal manipulation (`sendText`). This behavior is highly suspicious for a notes extension and suggests it may be a wrapper for a potentially malicious or unwanted CLI tool, or an attempt to establish persistent branding/control over the user's terminal environment. The combination of child_process execution, terminal manipulation, and undisclosed external service integration warrants a high-risk assessment."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'project memory' and 'journal' tool but contains extensive logic to auto-install and execute a third-party CLI tool ('opencode-ai') via npm/npx. This is a significant capability mismatch for a simple logging extension.",
+        "code_reference": "async function installOpenCode() { ... await run(npmCmd, ['install', '-g', moduleName]); ... }",
+        "line_hint": "approx. line 450-550",
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension uses `child_process.exec` and `execSync` to run shell commands (`npm install`, `which opencode`, `where opencode`). While used for installation, this provides a vector for arbitrary command execution if the `opencode-ai` package or npm registry is compromised, or if the extension logic is manipulated.",
+        "code_reference": "const { exec, execSync } = require('child_process'); ... execSync(cmd, ...)",
+        "line_hint": "line 10, 616",
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUPPLY_CHAIN_RISK",
+        "description": "The extension automatically installs the `opencode-ai` npm package globally or locally if not found. This introduces a supply chain risk where the extension's functionality depends on the integrity of an external, potentially unvetted npm package. The package name 'opencode-ai' is not a standard, widely-known utility.",
+        "code_reference": "const moduleName = 'opencode-ai'; ... await run(npmCmd, ['install', '-g', moduleName]);",
+        "line_hint": "approx. line 480",
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FILE_SYSTEM_MODIFICATION",
+        "description": "The extension writes files to the user's home directory (`~/.config/opencode/`, `~/.opencode/`) and modifies global configuration files (`tui.json`). While likely intended for branding, writing to global config directories outside the workspace is a high-privilege operation for a VS Code extension.",
+        "code_reference": "const GLOBAL_OPENCODE_DIR = path.join(os.homedir(), '.config', 'opencode'); ... fs.writeFileSync(GLOBAL_TUI_CONFIG, ...)",
+        "line_hint": "approx. line 20, 380",
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_ACTIVITY",
+        "description": "The extension starts a local HTTP server (via the spawned `opencode` binary) and communicates with it via `fetch` to `http://localhost:<port>`. It also sends the active file path to this local server. While local, this behavior combined with the auto-install of a CLI tool is suspicious.",
+        "code_reference": "await fetch(`http://localhost:${port}/tui/append-prompt`, { ... body: JSON.stringify({ text: `In ${filePath}` }) });",
+        "line_hint": "approx. line 280",
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Project Memory' / 'Notes' tool ('Huza Notes') but contains logic to modify global terminal branding ('ensureGlobalBranding') and references an external service 'opencode.ai'. A notes extension should not be modifying global terminal configurations or branding for 'ALL projects'. This suggests the extension may be a wrapper for a different tool (possibly 'opencode') or attempting to establish persistent presence/branding in the user's environment.",
+        "code_reference": "ensureGlobalBranding(); // This makes the custom logo appear in the opencode terminal for ALL projects",
+        "line_hint": "approx. line 105",
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "Static analysis confirms the use of `child_process.execSync` and `require('child_process')`. While not visible in this specific chunk, the static rule engine flags these at lines 10 and 616. Combined with the 'opencode' branding logic, this suggests the extension likely executes external binaries or shell commands, which is disproportionate for a simple notes extension.",
+        "code_reference": "Static Rule Engine Hit: require('child_process') at line 10, execSync at line 616",
+        "line_hint": "10, 616",
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "TERMINAL_MANIPULATION",
+        "description": "The extension registers commands to open terminals and send text (`openTerminal`, `openNewTerminal`). The static rule engine flags `terminal.sendText` usage. While opening a terminal is common for dev tools, combined with the 'opencode' branding and child_process usage, this could be used to launch a specific CLI tool or inject commands into the user's shell environment.",
+        "code_reference": "Static Rule Engine Hit: terminal.sendText(sh... at line 328",
+        "line_hint": "328",
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "EXTERNAL_DEPENDENCY",
+        "description": "The code references 'opencode.ai' and 'Huzaflix Code' branding. The domain 'opencode.ai' has unknown reputation. The extension appears to be tightly coupled with an external CLI tool or service ('opencode'), which is not clearly disclosed in the primary 'Notes' description.",
+        "code_reference": "opencode.ai (extension/extension.js:601)",
+        "line_hint": "601",
+        "target": "extension/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is flagged as SUSPICIOUS due to a significant capability disconnect. While advertised as a simple 'project journal' and 'memory' tool, it contains complex logic to automatically install and execute a third-party CLI tool ('opencode-ai') using `child_process`. This introduces supply chain risks and arbitrary code execution capabilities that are disproportionate to the stated purpose of logging file changes. The extension modifies global user configuration files and communicates with a locally spawned server, behaviors that are atypical for a simple logging extension.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: extension.js [process_execution] -- intent: download, write and execute in extension/extension.js | IOCs: https://nodejs.org",
+    "9 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 25,
+    "published_date": "2026-06-03T14:55:19.53+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-20T06:18:01.480266+00:00"
+}
