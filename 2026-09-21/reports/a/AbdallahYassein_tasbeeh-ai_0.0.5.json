@@ -1,0 +1,394 @@
+{
+  "extension_id": "AbdallahYassein.tasbeeh-ai",
+  "display_name": "AI Voice Tasbeeh - \u0627\u0644\u0645\u0633\u0628\u062d\u0629 \u0627\u0644\u0630\u0643\u064a\u0629",
+  "version": "0.0.5",
+  "publisher": {
+    "name": "AbdallahYassein",
+    "verified": false
+  },
+  "vsix_sha256": "ad85281c57cd51f49f308a327a9ba8af46025e7059d7a76a4479ed51db88e83a",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6599999999999999,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Webcam/microphone access via MediaDevices API (review context)",
+        "file": "extension/dist/extension.js",
+        "line": 149,
+        "snippet": "navigator.mediaDevices.getUserMedia("
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Webcam/microphone access via MediaDevices API (review context)",
+        "file": "extension/dist/extension.js",
+        "line": 230,
+        "snippet": "navigator.mediaDevices.getUserMedia("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "\"use strict\";var N=Object.create;var _=Object.defineProperty;var K=Object.getOwnPropertyDescriptor;var q=Object.getOwnPropertyNames;var J=Object.getPrototypeOf,Q=Object.prototype.hasOwnProperty;var Y="
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "\"use strict\";var N=Object.create;var _=Object.defineProperty;var K=Object.getOwnPropertyDescriptor;var q=Object.getOwnPropertyNames;var J=Object.getPrototypeOf,Q=Object.prototype.hasOwnProperty;var Y="
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 292,
+        "snippet": ".postMessage(e),u&&u.webview.postMessage(e)}function V(e){C&&C.webview.postMessage(e),u&&u.webview.postMessage(e)}function ee(e){let i=t.workspace.getConfiguration(\"tasbeeh\").get(\"engine\")||\"auto\";i=="
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "www.python.org",
+      "source_file": "extension/dist/extension.js",
+      "line": 292,
+      "context": "</html>`}};function m(){let e={type:\"update\",counts:a,isRunning:w,engineMode:v};C&&C.webview.postMessage(e),u&&u.webview.postMessage(e)}function V(e){C&&C.webview.postMessage(e),u&&u.webview.postMessa",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "download.pytorch.org",
+      "source_file": "extension/dist/extension.js",
+      "line": 292,
+      "context": "</html>`}};function m(){let e={type:\"update\",counts:a,isRunning:w,engineMode:v};C&&C.webview.postMessage(e),u&&u.webview.postMessage(e)}function V(e){C&&C.webview.postMessage(e),u&&u.webview.postMessa",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/7)",
+        "summary": "This extension exhibits multiple high-risk indicators that are disproportionate to its advertised function as a simple prayer counter. The most concerning finding is the use of `navigator.mediaDevices.getUserMedia` in a Webview, which is unnecessary for a counter and suggests potential audio/video capture capabilities. Additionally, the inclusion of `child_process` and references to downloading PyTorch/Python environments indicates the extension may execute external code or download large, unverified binaries at runtime. The aggressive activation on startup and the 'Hybrid AI' branding for a simple counter create a significant capability disconnect, strongly suggesting malicious intent or at least a severe supply chain vulnerability."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/7)",
+        "summary": "This extension exhibits multiple critical and high-risk behaviors that are disproportionate to its stated purpose of being a voice-activated tasbeeh counter. The presence of `child_process` for shell execution, `getUserMedia` for audio capture, and references to downloading Python/PyTorch environments strongly suggests malicious intent, likely involving credential theft, system compromise, or remote code execution. The 'Hybrid AI' branding is likely a smokescreen for these dangerous capabilities."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/7)",
+        "summary": "The code appears to be a legitimate implementation of a voice-activated prayer counter. The 'critical' and 'high' scanner hits are false positives resulting from standard web APIs (getUserMedia for audio) and Node.js patterns (child_process for local AI execution) that are appropriate for the extension's stated purpose. The UI code is straightforward HTML/CSS/JS for a counter interface. No evidence of credential harvesting, remote code execution, or data exfiltration was found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/7)",
+        "summary": "The code in this chunk appears to be a legitimate implementation of a voice-activated counter. The 'critical' scanner hits for microphone access and command execution are contextual false positives: the microphone is used for the advertised speech recognition feature, and the command execution is likely related to a local Python AI engine. The communication is via standard VS Code IPC (`postMessage`), not external network exfiltration. The primary residual risk is the potential download and execution of a local Python model (indicated by `python.org`/`pytorch.org` domains and `child_process`), which requires trust in the extension's supply chain for those binary assets. Based on this source code alone, there is no evidence of malicious intent, credential theft, or C2 communication."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/7)",
+        "summary": "The code in this chunk appears to be the webview HTML/JS logic for a voice-activated prayer counter. The flagged indicators (microphone access, child_process, postMessage) are consistent with the extension's advertised functionality of using local speech recognition (either via Webview API or a local Python engine) to count spoken phrases. There is no evidence of network exfiltration, credential harvesting, or malicious payload execution in this specific chunk. The `child_process` usage is likely for spawning the local Python AI model, which is a documented feature. The risk is low, with the main concern being the inherent security surface of allowing microphone access and local process spawning, which is necessary for the app's function."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/7)",
+        "summary": "The code implements a voice-activated prayer counter (Tasbeeh) using a hybrid approach: a Webview-based microphone capture or a local Python-based AI engine (Whisper/PyTorch). The 'suspicious' behaviors flagged by static analysis (microphone access, child_process execution, network calls) are all directly proportional to the extension's advertised functionality. The microphone is used for voice input, child_process is used to bootstrap a local Python environment for AI processing, and network calls are restricted to installing necessary Python dependencies from official repositories. There is no evidence of data exfiltration, credential harvesting, or malicious payload execution."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 7/7)",
+        "summary": "This extension exhibits multiple critical and high-risk behaviors that are disproportionate to its stated purpose of being a voice-activated tasbeeh counter. It installs and executes a local Python AI engine with microphone access, which is a significant deviation from standard VS Code extension practices and creates a high-risk environment for data exfiltration and arbitrary code execution. The use of `child_process.spawn` to run a Python daemon and the dynamic installation of heavy ML libraries like `torch` and `whisper` are strong indicators of potential malicious intent or at least a severe lack of security best practices. The microphone access via `getUserMedia` is particularly concerning as it could be used to record and exfiltrate audio data. Overall, this extension should be considered malicious or at least highly suspicious and should not be installed."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Voice-Activated Tasbeeh Counter' but contains code for `navigator.mediaDevices.getUserMedia`. In a VS Code Webview context, this API is typically restricted or requires specific permissions that a simple counter does not need. More critically, the presence of this API in a 'counter' extension is a classic precursor to audio recording or screen capture for exfiltration, which is completely disproportionate to the stated function of counting prayers.",
+        "code_reference": "navigator.mediaDevices.getUserMedia(",
+        "line_hint": 149,
+        "target": "extension/dist/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The code imports `child_process` and `os` modules. While the README mentions a 'Hybrid AI Engine' potentially using Python, the direct inclusion of `child_process` in the main extension bundle allows for arbitrary shell command execution. Combined with the 'auto' engine selection logic, this creates a vector for executing malicious payloads if the 'python' or 'webview' engine paths are manipulated or if the downloaded dependencies are compromised.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "The code references `download.pytorch.org` and `www.python.org`. While these are legitimate domains, a simple text counter extension does not require downloading PyTorch or Python environments at runtime. This suggests the extension may be bundling a heavy, potentially unverified AI model or using the 'AI' label as a cover for downloading and executing external binaries or scripts, which is a significant supply chain risk.",
+        "code_reference": "download.pytorch.org",
+        "line_hint": 292,
+        "target": "extension/dist/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`, meaning it runs immediately upon VS Code startup. For a utility that should only run when explicitly invoked by the user (a prayer counter), this is an unnecessary and aggressive activation scope that increases the attack surface and resource usage.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION_PATTERN",
+        "description": "The static scanner flagged a pattern involving `postMessage` and `globalStorageUri`. The code reads configuration (`workspace.getConfiguration`) and interacts with the file system (`fs.mkdirSync`). While `postMessage` is standard for Webviews, the combination of reading user config, creating directories, and the presence of network-capable modules (child_process) raises the possibility of harvesting local state or user preferences for exfiltration, although direct evidence of external HTTP POSTs is not visible in this chunk.",
+        "code_reference": "workspace.getConfiguration(\"tasbeeh\")",
+        "line_hint": 292,
+        "target": "extension/dist/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Voice-Activated Tasbeeh Counter' but contains code for `navigator.mediaDevices.getUserMedia`. While microphone access is plausible for voice activation, the combination with `child_process` and network exfiltration patterns suggests a potential info-stealer or surveillance tool disguised as a productivity/religious tool. The 'Hybrid AI Engine' claim is vague and often used to justify heavy resource usage or network calls in malicious extensions.",
+        "code_reference": "navigator.mediaDevices.getUserMedia(",
+        "line_hint": 149,
+        "target": "extension/dist/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The code imports `child_process`, which allows the extension to execute arbitrary shell commands on the host system. This is highly suspicious for a simple counter extension and is a common technique for installing persistent malware or stealing credentials.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The code constructs a path using `globalStorageUri` and checks for existence, potentially preparing to write or read sensitive data. Combined with the `postMessage` patterns and network indicators (python.org, pytorch.org), this suggests data staging or exfiltration. The reference to `workspace.getConfiguration` to read engine settings could be used to fingerprint the user's environment.",
+        "code_reference": "globalStorageUri.fsPath;p.existsSync(n)||p.mkdirSync(n,{recursive:!0})",
+        "line_hint": 292,
+        "target": "extension/dist/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DEPENDENCIES",
+        "description": "The extracted indicators show references to `www.python.org` and `download.pytorch.org`. A simple VS Code extension for counting tasbeehs does not require downloading PyTorch or Python environments. This suggests the extension may be downloading and executing external binaries or scripts, which is a major red flag for malware delivery.",
+        "code_reference": "domain: www.python.org, domain: download.pytorch.org",
+        "line_hint": 292,
+        "target": "extension/dist/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `navigator.mediaDevices.getUserMedia` as a critical infostealer indicator. However, the code explicitly requests `{ audio: true }` (microphone only) and is triggered by a user click on a 'Start Mic' button. This is consistent with the extension's advertised 'Voice-Activated' feature for counting Azkar. There is no evidence of video capture or unauthorized access.",
+        "code_reference": "navigator.mediaDevices.getUserMedia({ audio: true })",
+        "line_hint": 149,
+        "target": "extension/dist/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `require('child_process')` as high-risk shell execution. In the context of a 'Hybrid AI Engine' that supports a 'python' backend (as seen in the config check `i==='python'?A(e,!1)`), this is likely used to spawn a local Python process for speech recognition or NLP, which is a standard pattern for local AI extensions. No malicious commands (like `bash -i` or `curl | sh`) are visible in this chunk.",
+        "code_reference": "require('child_process')",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `postMessage` as data exfiltration. The code shows `webview.postMessage` being used to communicate between the extension host and the webview UI (sending counter updates or commands). This is standard VS Code Webview architecture, not network exfiltration.",
+        "code_reference": "u&&u.webview.postMessage(e)",
+        "line_hint": 292,
+        "target": "extension/dist/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension activates on `onStartupFinished`, which is slightly broad for a utility tool but acceptable for a background voice listener. The presence of `python.org` and `pytorch.org` domains suggests it may download or reference local AI models, which is consistent with the 'Hybrid AI Engine' claim, though downloading large models on startup could be a performance concern rather than a security threat.",
+        "code_reference": "workspace.getConfiguration('tasbeeh').get('engine')",
+        "line_hint": 292,
+        "target": "extension/dist/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `require(\"child_process\")` and `navigator.mediaDevices.getUserMedia` as critical/high risk. However, the code context shows `getUserMedia` is used for local speech recognition (Web Speech API) to detect Arabic dhikr phrases, which aligns with the extension's stated purpose of being a 'Voice-Activated Tasbeeh'. The `child_process` reference is likely part of a bundled dependency or a fallback mechanism for a local Python engine (referenced in config `engine: 'python'`), which is a common pattern for extensions that bundle local AI models or scripts. There is no evidence of command injection, reverse shells, or arbitrary execution in this chunk.",
+        "code_reference": "navigator.mediaDevices.getUserMedia( / require(\"child_process\")",
+        "line_hint": "149, 230, 1",
+        "target": "extension/dist/extension.js (chunk 4/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `postMessage` as data exfiltration. The code shows `vscode.postMessage({ command: 'detected', type: type, text: rawText })`, which is the standard, secure IPC mechanism for communicating between a VS Code Webview and the extension host. The data being sent is the transcribed text of the user's voice, which is the core functionality of the extension. It is not being sent to an external network endpoint in this code path.",
+        "code_reference": "vscode.postMessage({ command: 'detected', type: type, text: rawText })",
+        "line_hint": "292",
+        "target": "extension/dist/extension.js (chunk 4/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished` and requests microphone access. While this is aggressive for a utility tool, it is consistent with the 'always-on' voice counter feature described in the README. The use of `child_process` and references to `python.org`/`pytorch.org` suggests it may download or execute a local Python-based AI model for offline speech recognition. This is a significant capability (local AI inference) that should be clearly documented, but it is not inherently malicious if the user consents to the local execution. The risk lies in the supply chain of the downloaded Python model, which cannot be fully assessed from this JS chunk alone.",
+        "code_reference": "workspace.getConfiguration(\"tasbeeh\").get(\"engine\")",
+        "line_hint": "292",
+        "target": "extension/dist/extension.js (chunk 4/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `navigator.mediaDevices.getUserMedia` as a critical infostealer indicator. However, the code context shows this is used to request microphone access for the extension's core feature: voice-activated counting (Tasbeeh). The audio stream is used for speech recognition (`recognition.start()`), not for exfiltration or recording to disk/network. This is a legitimate use of the API for the stated purpose.",
+        "code_reference": "activeMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });",
+        "line_hint": 149,
+        "target": "extension/dist/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `require(\"child_process\")` as high-risk command execution. While `child_process` is a powerful module, in the context of a 'Hybrid AI Engine' that supports a 'Python local' mode (as seen in the UI text `engineMode === 'python'`), it is highly likely used to spawn a Python process for local inference (Whisper/CRNN). Without seeing the specific `exec`/`spawn` arguments in this chunk, it is difficult to confirm malicious intent, but it aligns with the advertised 'local Python engine' feature. It is not an immediate critical risk without evidence of arbitrary command injection or exfiltration.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `postMessage` as data exfiltration. The code shows `postMessage` being used to send UI state updates (counts, running status) from the extension host to the webview. This is standard VS Code webview communication, not network exfiltration.",
+        "code_reference": "C&&C.webview.postMessage(e),u&&u.webview.postMessage(e)",
+        "line_hint": 292,
+        "target": "extension/dist/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `navigator.mediaDevices.getUserMedia` as a critical infostealer pattern. However, the code context shows this is used within a VS Code Webview to access the microphone for the extension's core feature: voice-activated counting (Tasbeeh). This is a legitimate use of the API for the stated purpose.",
+        "code_reference": "navigator.mediaDevices.getUserMedia(",
+        "line_hint": 149,
+        "target": "extension/dist/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `require('child_process')` and `exec` calls. The code uses these to check for Python installation, create a virtual environment, and install specific Python packages (`sounddevice`, `torch`, `whisper`) required for the local AI engine. The commands are hardcoded and transparent, not obfuscated or dynamic in a malicious way.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged network exfiltration patterns. The code sends messages to the webview (`postMessage`) which is standard VS Code extension communication. It also reads configuration to determine the engine mode. No data is sent to external servers; network calls are limited to downloading Python packages from official sources (python.org, pytorch.org) during setup.",
+        "code_reference": ".postMessage(e)",
+        "line_hint": 292,
+        "target": "extension/dist/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Voice Tasbeeh' counter but installs and executes a Python environment with `torch`, `torchaudio`, and `openai-whisper`. While Whisper is a legitimate speech-to-text library, the combination of local model execution, microphone access, and the specific package installation pattern is disproportionate for a simple counter and creates a high-risk attack surface for supply chain compromise or data exfiltration via the local AI engine.",
+        "code_reference": "P(`\"${R}\" install --no-cache-dir sounddevice torch torchaudio openai-whisper`)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "INFOSTEALER",
+        "description": "The code explicitly requests access to the user's microphone via `navigator.mediaDevices.getUserMedia`. In the context of a VS Code extension, this is highly suspicious as VS Code extensions do not typically have direct access to hardware media devices unless running in a specific webview context, and even then, it is a primary vector for audio recording and exfiltration.",
+        "code_reference": "navigator.mediaDevices.getUserMedia(",
+        "line_hint": 149,
+        "target": "extension/dist/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension uses `child_process.spawn` to execute a Python script (`daemon.py`) located in the extension's directory. This allows the extension to run arbitrary code on the host system with the user's privileges. If the `daemon.py` file is compromised or malicious, it can perform any action on the system.",
+        "code_reference": "l = (0, D.spawn)(o, [i])",
+        "line_hint": 20,
+        "target": "extension/dist/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUPPLY_CHAIN_ATTACK",
+        "description": "The extension dynamically installs Python packages (`torch`, `whisper`) from PyPI. This introduces a significant supply chain risk, as malicious packages or compromised dependencies could be installed on the user's system without explicit user consent for each package.",
+        "code_reference": "P(`\"${R}\" install --no-cache-dir sounddevice torch torchaudio openai-whisper`)",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION",
+        "description": "The code posts messages to the webview, which could potentially be used to exfiltrate data if the webview is compromised or if the messages contain sensitive information. The pattern `webview.postMessage(e)` is a common vector for data leakage in VS Code extensions.",
+        "code_reference": "u&&u.webview.postMessage(e)",
+        "line_hint": 292,
+        "target": "extension/dist/extension.js (chunk 7/7)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension exhibits multiple high-risk indicators that are disproportionate to its advertised function as a simple prayer counter. The most concerning finding is the use of `navigator.mediaDevices.getUserMedia` in a Webview, which is unnecessary for a counter and suggests potential audio/video capture capabilities. Additionally, the inclusion of `child_process` and references to downloading PyTorch/Python environments indicates the extension may execute external code or download large, unverified binaries at runtime. The aggressive activation on startup and the 'Hybrid AI' branding for a simple counter create a significant capability disconnect, strongly suggesting malicious intent or at least a severe supply chain vulnerability.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "5 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-08-15T13:13:32.98Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-16T08:47:41.413736+00:00Z"
+}

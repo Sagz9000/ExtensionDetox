@@ -1,0 +1,235 @@
+{
+  "extension_id": "JimmyMagbanuaJr.missionbell",
+  "display_name": "MissionBell \u2014 Claude Code sessions & alerts",
+  "version": "0.4.1",
+  "publisher": {
+    "name": "JimmyMagbanuaJr",
+    "verified": false
+  },
+  "vsix_sha256": "56fc070b7ca09f717840ab6326745a06c8cd1de165f206f5c9750d918159a71f",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6174999999999999,
+    "ai_vibe": 0.8,
+    "static": 0.9,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "const { execFile } = require('child_process')"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "const { execFile } = require('child_process')"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/hook/notify-hook.mjs",
+        "line": 28,
+        "snippet": "import { spawnSync } from 'node:child_process'"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/hook/notify-hook.mjs",
+        "line": 28,
+        "snippet": "import { spawnSync } from 'node:child_process'"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/hook/notify-hook.mjs",
+        "line": 76,
+        "snippet": "spawnSync(cmd, args, { stdio: 'ignore', windowsHide: true, timeout: 15000, env })"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/hook/notify-hook.mjs",
+        "line": 37,
+        "snippet": "readFileSync(join(hookDir, 'claude-code-notifier.config"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "bitbucket.org",
+      "source_file": "extension/package.json",
+      "line": 26,
+      "context": "\"url\": \"https://bitbucket.org/magbanuajimmya/claude-notifier-extension.git\"",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.8,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/7)",
+        "summary": "The extension exhibits high-risk behavior by using `child_process` for command execution, which isn't aligned with its stated purpose. The package size and system-level modifications further raise concerns about its true functionality."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/7)",
+        "summary": "The extension exhibits a high-risk indicator by utilizing `child_process`, which can enable arbitrary command execution. While this could be legitimate for its stated functionality, it poses a significant security risk if misused. The extension's purpose of managing Claude Code sessions does not inherently justify this capability, raising concerns about potential abuse."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/7)",
+        "summary": "The extension exhibits a capability disconnect by requiring 'child_process', which is unnecessary for its stated functionality. This raises concerns about potential unintended or malicious behavior."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/7)",
+        "summary": "The extension exhibits a high-risk indicator by importing the 'child_process' module, which could enable arbitrary command execution. While the exact usage isn't shown in the provided code, this poses a potential security risk. The extension's purpose as a session manager doesn't inherently justify this capability, raising concerns about its true intent."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/7)",
+        "summary": "The extension uses `child_process` which could enable arbitrary command execution, though the immediate usage appears legitimate for opening Code windows. This is a significant finding that warrants closer scrutiny given the extension's stated purpose."
+      },
+      {
+        "target": "extension/extension.js (chunk 6/7)",
+        "summary": "The extension exhibits a potential high-risk behavior by using `require('child_process')`, which could enable arbitrary command execution. However, based on the provided code and the extension's stated purpose, this usage might be legitimate for managing sessions and deploying assets. The overall risk is moderate due to the lack of additional malicious indicators, but further dynamic analysis would be recommended to confirm the benign nature of this capability."
+      },
+      {
+        "target": "extension/extension.js (chunk 7/7)",
+        "summary": "The extension exhibits a potential capability disconnect with the use of `child_process`, which is not clearly justified by its stated purpose of managing Claude Code sessions. While not definitive evidence of malicious intent, this indicator raises concerns about potential arbitrary command execution capabilities."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension uses `require('child_process')` which allows arbitrary command execution, a capability not advertised in the README or package description.",
+        "code_reference": "extension/extension.js",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension's VSIX package size is 0.0 MB, which is unusually small for an extension with claimed features like mission control and notifications.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension reads/writes to system directories like `~/.claude` and `HKCU`, which isn't clearly described in the README.",
+        "code_reference": "extension/extension.js",
+        "line_hint": 9,
+        "target": "extension/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which allows arbitrary command execution.",
+        "code_reference": "extension/extension.js (chunk 2/7)",
+        "line_hint": "11",
+        "target": "extension/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension requires 'child_process' which is not necessary for its stated purpose of managing Claude Code sessions.",
+        "code_reference": "line 11",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension imports the 'child_process' module, which can be used for arbitrary command execution. This could potentially be exploited for malicious purposes.",
+        "code_reference": "extension/extension.js (chunk 4/7)",
+        "line_hint": 11,
+        "target": "extension/extension.js (chunk 4/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which can enable arbitrary command execution.",
+        "code_reference": "extension/extension.js (chunk 5/7)",
+        "line_hint": "11",
+        "target": "extension/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which can be used for arbitrary command execution.",
+        "code_reference": "extension/extension.js (chunk 6/7)",
+        "line_hint": "line 11",
+        "target": "extension/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which can enable arbitrary command execution, a common vector for malicious activities.",
+        "code_reference": "extension/extension.js (chunk 7/7)",
+        "line_hint": "Line 11",
+        "target": "extension/extension.js (chunk 7/7)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits high-risk behavior by using `child_process` for command execution, which isn't aligned with its stated purpose. The package size and system-level modifications further raise concerns about its true functionality.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 18,
+    "published_date": "2026-08-15T15:49:56.543Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-15T17:10:15.524482+00:00Z"
+}

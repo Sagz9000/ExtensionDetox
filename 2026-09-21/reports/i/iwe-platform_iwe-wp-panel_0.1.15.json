@@ -1,0 +1,346 @@
+{
+  "extension_id": "iwe-platform.iwe-wp-panel",
+  "display_name": "IWE WP Panel",
+  "version": "0.1.15",
+  "publisher": {
+    "name": "iwe-platform",
+    "verified": false
+  },
+  "vsix_sha256": "ff401aa9957fbb2d96a73482ba15059167c081d9f64b10dd29b91fcbd5a47f2d",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6599999999999999,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/dashboardLogin.js",
+        "line": 47,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/dashboardLogin.js",
+        "line": 96,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/webExtension.js",
+        "line": 327,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/webExtension.js",
+        "line": 374,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/core/panelTilesParser.js",
+        "line": 6,
+        "snippet": "* Pure function, no child_process/vscode dependency \u2014 testable without mocks."
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/ui/wpDashboard.js",
+        "line": 40,
+        "snippet": "const childProcess = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/ui/wpDashboard.js",
+        "line": 40,
+        "snippet": "const childProcess = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/ui/wpDashboard.js",
+        "line": 40,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/out/ui/dashboardHtml.js",
+        "line": 137,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 17
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "iwe-llm-proxy-production.up.railway.app",
+      "source_file": "extension/package.json",
+      "line": 113,
+      "context": "\"default\": \"https://iwe-llm-proxy-production.up.railway.app\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "mcp.aisystant.com",
+      "source_file": "extension/out/dashboardLogin.js",
+      "line": 43,
+      "context": "const GATEWAY_OAUTH_ORIGIN = 'https://mcp.aisystant.com';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/webExtension.js (chunk 1/4)",
+        "summary": "The extension appears to be a legitimate internal tool for managing 'Work Products' (WPs) with a dashboard interface. However, it exhibits several suspicious network behaviors: it connects to two unknown external domains ('iwe-llm-proxy-production.up.railway.app' and 'mcp.aisystant.com') which are not standard VS Code or well-known public APIs. The use of a Railway app for an 'LLM proxy' and an unknown domain for 'MCP' suggests potential data exfiltration or reliance on unstable/unverified third-party infrastructure. The code itself in this chunk is standard TypeScript/JS boilerplate for VS Code extension activation and webview creation, with no obvious obfuscation or malicious payloads. The risk is primarily due to the unverified network endpoints and the potential for sensitive operational data (WP statuses, agent sessions) to be sent to these unknown servers. Further analysis of the network request payloads and the 'dashboardLogin' module is required to confirm if credentials or sensitive data are being transmitted."
+      },
+      {
+        "target": "extension/out/webExtension.js (chunk 2/4)",
+        "summary": "The code appears to be a legitimate internal tool for managing 'Work Products' (IWE WP Panel). It renders a dashboard in a webview, fetches data from configured API endpoints, and tracks UI state. The network calls to `railway.app` and `aisystant.com` are consistent with the described functionality of monitoring remote agent sessions. There are no signs of credential harvesting, obfuscation, or malicious payload execution. The risk is low, primarily stemming from the use of external, non-VS Code API endpoints which require trust in the vendor's infrastructure."
+      },
+      {
+        "target": "extension/out/webExtension.js (chunk 3/4)",
+        "summary": "The code is benign and aligns with the extension's stated purpose of providing a dashboard for 'IWE Work Products'. It reads user-configured API URLs (enforcing HTTPS) to fetch session snapshots and report local VS Code web session status. There are no signs of credential harvesting, obfuscation, arbitrary code execution, or unauthorized access to sensitive system files. The network activity is limited to the user-defined dashboard API and standard telemetry for the dashboard feature."
+      },
+      {
+        "target": "extension/out/webExtension.js (chunk 4/4)",
+        "summary": "The provided code chunk is minimal and appears to be the tail end of a string manipulation function. The static analysis flags regarding webview scripts are consistent with the extension's advertised purpose of providing an interactive dashboard. The external network endpoints are likely legitimate backend services for the specific 'IWE' workflow described in the README. No malicious patterns such as credential harvesting, obfuscated payloads, or unauthorized system access were detected in this file or the extracted indicators."
+      },
+      {
+        "target": "extension/out/dashboardLogin.js (chunk 1/3)",
+        "summary": "The extension exhibits a major capability disconnect. While marketed as a local tool for browsing work product files (WP-REGISTRY.md), the code implements a complex OAuth login flow against an external, unknown domain (mcp.aisystant.com). This behavior is inconsistent with a simple local file viewer and suggests hidden functionality, likely related to the 'AI' category tag, potentially exfiltrating data or acting as a proxy for an undisclosed LLM service. The use of VS Code's SecretStorage for remote tokens further confirms the remote dependency not described in the primary value proposition."
+      },
+      {
+        "target": "extension/out/dashboardLogin.js (chunk 2/3)",
+        "summary": "The code implements a standard OAuth 2.0 login flow for a VS Code extension. It uses `vscode.env.asExternalUri` to open a browser for authentication and `context.secrets` to securely store the resulting tokens. The scanner's 'credential theft' flags are false positives resulting from the legitimate use of the SecretStorage API. The network calls are limited to the OAuth provider's token endpoint. No malicious behavior, obfuscation, or suspicious system access was detected in this chunk."
+      },
+      {
+        "target": "extension/out/dashboardLogin.js (chunk 3/3)",
+        "summary": "The extension exhibits strong indicators of malicious behavior. It accesses the VS Code SecretStorage API, which is a high-value target for credential theft. Furthermore, it communicates with unknown, non-standard domains (`iwe-llm-proxy-production.up.railway.app`, `mcp.aisystant.com`) and implements an OAuth flow with `offline_access` scopes, which is disproportionate for a simple dashboard tool. The combination of secret access, suspicious network endpoints, and capability disconnect strongly suggests this is a supply-chain attack vector designed to steal credentials or exfiltrate data."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION_RISK",
+        "description": "The extension communicates with an unknown external domain 'iwe-llm-proxy-production.up.railway.app'. Railway is a PaaS often used for staging or personal projects, not typical for production enterprise extensions. The name 'llm-proxy' suggests it may be proxying LLM requests, but without seeing the payload construction, it's unclear if local data (like WP registry contents or user session data) is being sent there. This requires verification of what data is transmitted.",
+        "code_reference": "domain: iwe-llm-proxy-production.up.railway.app (extension/package.json:113)",
+        "line_hint": null,
+        "target": "extension/out/webExtension.js (chunk 1/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION_RISK",
+        "description": "The extension communicates with 'mcp.aisystant.com'. The domain 'aisystant.com' is not a well-known public service. The path 'mcp' suggests Model Context Protocol or similar AI integration. If this endpoint receives local file contents or user credentials, it poses a data leakage risk. The README mentions 'Day Open / personal page' and 'agent sessions', implying potentially sensitive operational data is involved.",
+        "code_reference": "domain: mcp.aisystant.com (extension/out/dashboardLogin.js:43)",
+        "line_hint": null,
+        "target": "extension/out/webExtension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The webview panel is created with `enableScripts: true`. While common for interactive dashboards, this increases the attack surface if the HTML/JS content is not strictly sanitized or if the webview has access to sensitive VS Code APIs via postMessage. The code shows basic message handling for UI state ('detailsState'), which appears benign, but the full scope of webview capabilities is not visible in this chunk.",
+        "code_reference": "createWebviewPanel('iweWpDashboard', '\u0414\u0430\u0448\u0431\u043e\u0440\u0434 \u0420\u041f', vscode.ViewColumn.One, { enableScripts: true })",
+        "line_hint": 49,
+        "target": "extension/out/webExtension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is aggressive for a dashboard that is primarily user-initiated (via command 'iweWpPanel.openDashboard'). It also registers a 'refresh' command that triggers 'publishBrowserPresence'. While not malicious, this implies background activity (heartbeats every 5 minutes as per PRESENCE_HEARTBEAT_MS) that may not be explicitly described in the simple 'browse and track' description. The 'presence' heartbeat suggests the extension reports its own status to a remote server, which is a form of telemetry.",
+        "code_reference": "const PRESENCE_HEARTBEAT_MS = 5 * 60_000; ... vscode.commands.registerCommand('iweWpPanel.refresh', async () => { await publishBrowserPresence(context);",
+        "line_hint": 38,
+        "target": "extension/out/webExtension.js (chunk 1/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension communicates with external domains `iwe-llm-proxy-production.up.railway.app` and `mcp.aisystant.com`. While these are not known malicious C2 servers, they are non-standard endpoints for a VS Code extension. The README mentions 'remote sites' and 'API address', suggesting this is intended functionality for fetching dashboard data, but users should verify these domains belong to the legitimate 'IWE' organization.",
+        "code_reference": "extracted_indicators",
+        "line_hint": null,
+        "target": "extension/out/webExtension.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The webview panel is created with `enableScripts: true`. The inline script only handles UI state (tracking open/closed details elements) and posts messages to the extension host. It does not appear to exfiltrate data or execute remote code. This is a standard pattern for interactive webviews.",
+        "code_reference": "createWebviewPanel... enableScripts: true",
+        "line_hint": 49,
+        "target": "extension/out/webExtension.js (chunk 2/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension sends session telemetry (session ID, timestamps, agent name) to a user-configured API endpoint. While the destination is user-controlled and requires HTTPS, this constitutes data exfiltration of local session metadata. The risk is low because the data is non-sensitive (no credentials, no file contents) and the endpoint is explicitly configured by the user in VS Code settings, aligning with the extension's purpose of syncing dashboard state.",
+        "code_reference": "fetch(`${config.url}/v1/dashboard/snapshots`, { ... body: JSON.stringify({ ... sessions: [...] }) })",
+        "line_hint": "26",
+        "target": "extension/out/webExtension.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CAPABILITY_ALIGNMENT",
+        "description": "The extension uses `enableScripts: true` in the Webview panel. This is a standard requirement for interactive dashboards that need to render dynamic content and handle user interactions (clicks, filters) without reloading. Given the extension's purpose is a 'dashboard' with 'tiles' and 'filters', this is a proportional capability, not a C2 channel.",
+        "code_reference": "createWebviewPanel('iweWpDashboard', '\u0414\u0430\u0448\u0431\u043e\u0440\u0434 \u0420\u041f', vscode.ViewColumn.One, { enableScripts: true",
+        "line_hint": "49",
+        "target": "extension/out/webExtension.js (chunk 3/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `createWebviewPanel` with `enableScripts: true` as a potential C2 channel. However, the extension's README explicitly describes a dashboard with interactive tiles, search, and filtering. Enabling scripts in a webview is a standard and necessary VS Code API pattern for building interactive UIs (like a dashboard) and does not inherently indicate malicious intent or remote code execution in this context.",
+        "code_reference": "createWebviewPanel('iweWpDashboard', '\u0414\u0430\u0448\u0431\u043e\u0440\u0434 \u0420\u041f', vscode.ViewColumn.One, { enableScripts: true",
+        "line_hint": 49,
+        "target": "extension/out/webExtension.js (chunk 4/4)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The package references external domains `iwe-llm-proxy-production.up.railway.app` and `mcp.aisystant.com`. While these are not official VS Code endpoints, they appear to be backend services for the 'IWE WP Panel' functionality (LLM proxy and MCP server). Without evidence of data exfiltration or credential harvesting in the code, these are likely legitimate backend dependencies for the extension's specific business logic. The 'railway.app' domain is a common PaaS provider, not a known C2 infrastructure.",
+        "code_reference": "iwe-llm-proxy-production.up.railway.app, mcp.aisystant.com",
+        "line_hint": null,
+        "target": "extension/out/webExtension.js (chunk 4/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a local dashboard for reading 'WP-REGISTRY.md' and 'panel.db' files, but the code implements a full OAuth login flow against an external remote server (mcp.aisystant.com). A local file browser does not require interactive cloud authentication or token management.",
+        "code_reference": "const GATEWAY_OAUTH_ORIGIN = 'https://mcp.aisystant.com'; ... registerDashboardLoginHandler",
+        "line_hint": "43",
+        "target": "extension/out/dashboardLogin.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The code connects to an unknown external domain 'mcp.aisystant.com' to handle authentication. Combined with the 'AI' category and the name 'iwe-llm-proxy', this suggests the extension may be proxying user data or credentials to a third-party LLM service not disclosed in the primary 'local dashboard' description.",
+        "code_reference": "GATEWAY_OAUTH_ORIGIN = 'https://mcp.aisystant.com'",
+        "line_hint": "43",
+        "target": "extension/out/dashboardLogin.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is overly broad for a specific dashboard panel. It also uses 'context.secrets' to store tokens, which is standard for OAuth but suspicious given the disconnect between the local file reading description and the remote authentication implementation.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/dashboardLogin.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `context.secrets.get` as credential theft. However, the code uses the standard VS Code SecretStorage API to manage OAuth tokens (access/refresh) for the extension's own service. This is the recommended and secure way to handle secrets in VS Code extensions, not a theft vector.",
+        "code_reference": "const refreshToken = await context.secrets.get(REFRESH_TOKEN_KEY);",
+        "line_hint": 96,
+        "target": "extension/out/dashboardLogin.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_COMMUNICATION",
+        "description": "The extension communicates with `mcp.aisystant.com` (via GATEWAY_OAUTH_ORIGIN) for OAuth flows. While the domain reputation is 'unknown', the behavior is consistent with a standard OAuth 2.0 authorization code flow (authorize, token exchange, refresh). There is no evidence of data exfiltration or C2 activity in this chunk.",
+        "code_reference": "const response = await fetch(`${GATEWAY_OAUTH_ORIGIN}/token`, ...)",
+        "line_hint": 10,
+        "target": "extension/out/dashboardLogin.js (chunk 2/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses `context.secrets.get()`, which is the VS Code SecretStorage API. In the context of a 'dashboard' or 'panel' extension, this is highly suspicious. While the README mentions SSH, it does not explicitly claim to manage VS Code secrets. Reading secrets from the extension's own storage is benign, but if this code is part of a larger flow that exfiltrates these secrets (as suggested by the network indicators), it constitutes credential theft. The static scanner flagged this as critical, and combined with the network exfiltration indicators, it is treated as such.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 47,
+        "target": "extension/out/dashboardLogin.js (chunk 3/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "Second instance of accessing `context.secrets.get()`. This reinforces the pattern of interacting with the secret storage. If the extension is not explicitly designed to manage user credentials (like a Git credential helper), this is a major red flag for data exfiltration.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 96,
+        "target": "extension/out/dashboardLogin.js (chunk 3/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The package contains references to `iwe-llm-proxy-production.up.railway.app` and `mcp.aisystant.com`. These are non-standard, unknown domains. The use of a 'proxy' on Railway (a PaaS) for an internal tool is suspicious and could be a C2 channel or exfiltration endpoint. The domain `mcp.aisystant.com` appears in the login flow, suggesting OAuth tokens or user data might be sent to this third-party service.",
+        "code_reference": "iwe-llm-proxy-production.up.railway.app, mcp.aisystant.com",
+        "line_hint": null,
+        "target": "extension/out/dashboardLogin.js (chunk 3/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a 'dashboard' for browsing work products and tracking statuses. However, the code implements an OAuth flow (`authorize.searchParams`, `scope: openid offline_access`) and interacts with secret storage. A simple dashboard does not typically require OAuth with `offline_access` scopes or direct access to the VS Code secret store unless it is managing credentials for external services. This disconnect suggests hidden functionality, likely related to authenticating with or exfiltrating data to the identified external domains.",
+        "code_reference": "authorize.searchParams.set('scope', 'openid offline_access')",
+        "line_hint": 4,
+        "target": "extension/out/dashboardLogin.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension appears to be a legitimate internal tool for managing 'Work Products' (WPs) with a dashboard interface. However, it exhibits several suspicious network behaviors: it connects to two unknown external domains ('iwe-llm-proxy-production.up.railway.app' and 'mcp.aisystant.com') which are not standard VS Code or well-known public APIs. The use of a Railway app for an 'LLM proxy' and an unknown domain for 'MCP' suggests potential data exfiltration or reliance on unstable/unverified third-party infrastructure. The code itself in this chunk is standard TypeScript/JS boilerplate for VS Code extension activation and webview creation, with no obvious obfuscation or malicious payloads. The risk is primarily due to the unverified network endpoints and the potential for sensitive operational data (WP statuses, agent sessions) to be sent to these unknown servers. Further analysis of the network request payloads and the 'dashboardLogin' module is required to confirm if credentials or sensitive data are being transmitted.",
+  "escalation_reasons": [
+    "4 CRITICAL findings",
+    "5 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-16T12:45:34.487Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-16T13:43:55.739061+00:00Z"
+}

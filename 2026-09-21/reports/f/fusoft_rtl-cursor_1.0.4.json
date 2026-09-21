@@ -1,0 +1,304 @@
+{
+  "extension_id": "fusoft.rtl-cursor",
+  "display_name": "RTL Cursor",
+  "version": "1.0.4",
+  "publisher": {
+    "name": "fusoft",
+    "verified": false
+  },
+  "vsix_sha256": "4f1f0e035cb62e4daaa70530d9649bd67ed10feea18714b6402de78b35f112ed",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 3
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/7)",
+        "summary": "This extension is highly suspicious and likely malicious. While it presents itself as a simple RTL text alignment tool, the source code reveals it locates the VS Code/Cursor core `main.js` file within the application's installation directory. The README explicitly admits to injecting a 'loader' into this file. Modifying the IDE's core runtime file is a critical security vulnerability that allows for arbitrary code execution, persistence, and potential data exfiltration. This behavior is completely disproportionate to a text formatting extension and represents a severe supply-chain attack vector."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/7)",
+        "summary": "This extension is highly suspicious and likely malicious. Despite its benign description as an RTL text alignment tool, it implements a binary patcher that modifies the Cursor IDE's core `main.js` file. It injects code to dynamically load an external CommonJS module (`rtl-cursor-loader.cjs`) into the IDE's main process. This technique bypasses standard extension sandboxing and grants the extension (or an attacker who compromises the extension) full code execution privileges within the IDE. The presence of backup/restore logic for the modified binary further indicates a deliberate and persistent tampering mechanism. Users should avoid installing this extension."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/7)",
+        "summary": "This extension is highly suspicious and likely malicious. Despite presenting itself as a simple RTL text alignment tool, it contains logic to directly modify the IDE's core `main.js` file and inject a separate 'loader' script into the application's resources directory. This behavior constitutes code injection and persistence, allowing the extension to execute arbitrary code with the same privileges as the IDE itself. The requirement for administrator/sudo access to modify IDE files further confirms the high-risk nature of this operation. The disconnect between the advertised function (text alignment) and the actual behavior (core file modification and code injection) is a critical red flag."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/7)",
+        "summary": "The code chunk is primarily concerned with Markdown tokenization to determine text direction (RTL/LTR) for UI rendering, which is benign and consistent with the extension's stated purpose. However, the latter part of the file reveals logic for patching the host application's `main.js` file. While this is a significant deviation from standard extension practices (modifying host binaries), the provided README explicitly discloses this behavior as a necessary workaround due to missing official APIs. There are no signs of data exfiltration, credential harvesting, or obfuscated malicious payloads in this chunk. The risk is primarily operational (instability or security exposure from patching host files) rather than malicious intent, but it warrants caution."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/7)",
+        "summary": "This extension is malicious. Despite presenting itself as a harmless RTL text alignment tool, it actively modifies the host application's core `main.js` file to inject a 'loader'. This behavior breaks the extension sandbox, allows for arbitrary code execution in the host process, and establishes a persistent backdoor that survives across sessions. The requirement to fully restart the application and the use of file watchers to monitor the patched file further confirm its intent to maintain unauthorized access to the host environment. This is a textbook supply-chain attack."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/7)",
+        "summary": "This extension is highly malicious. While it presents itself as a harmless RTL text alignment tool, the source code reveals it actively patches the core `main.js` of the Cursor IDE. It implements a persistence mechanism that automatically re-applies its modifications if the IDE is updated, and it injects a 'loader' into the IDE's application directory. This behavior is completely disproportionate to its stated function and indicates an attempt to compromise the integrity of the development environment, potentially for data exfiltration, credential theft, or further malware delivery."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 7/7)",
+        "summary": "This code chunk is the tail end of a VS Code extension designed to add RTL (Right-to-Left) support to Cursor/VS Code. It handles configuration changes for a status bar and registers a Markdown extension. The primary risk factor is the implied modification of `main.js` (referenced in `getPatchState`), which is a non-standard and potentially dangerous practice for an IDE extension, although it is disclosed in the README as a necessary workaround. The visible code itself is clean, with no obfuscation, network exfiltration, or credential harvesting patterns."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a simple RTL text alignment tool, but the code explicitly locates and prepares to modify the VS Code/Cursor core application file (`main.js`). This is a critical disconnect between the advertised 'theme/formatting' functionality and the actual 'core binary patching' behavior.",
+        "code_reference": "function getMainJsPath() { return path.join(getAppOutDir(), \"main.js\"); }",
+        "line_hint": 60,
+        "target": "extension/dist/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SYSTEM_INTEGRITY_COMPROMISE",
+        "description": "The code identifies the application's root directory (`vscode.env.appRoot`) and resolves the path to the main executable logic (`out/main.js`). Modifying this file allows for arbitrary code execution with the privileges of the IDE process, effectively turning the extension into a persistent backdoor or trojan.",
+        "code_reference": "const appRoot = vscode.env.appRoot; ... path.join(appRoot, \"out\")",
+        "line_hint": 45,
+        "target": "extension/dist/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The README explicitly states: '\u0627\u06cc\u0646 \u0627\u0641\u0632\u0648\u0646\u0647 \u0628\u0627 \u0628\u06a9\u0627\u067e\u060c \u06cc\u06a9 loader \u0628\u0647 main.js \u0627\u0636\u0627\u0641\u0647 \u0645\u06cc\u200c\u06a9\u0646\u062f' (This extension adds a loader to main.js with a backup). This confirms the intent to inject code into the IDE's core runtime, which is a severe security risk not typical for a UI styling extension.",
+        "code_reference": "README: '\u0627\u06cc\u0646 \u0627\u0641\u0632\u0648\u0646\u0647 \u0628\u0627 \u0628\u06a9\u0627\u067e\u060c \u06cc\u06a9 loader \u0628\u0647 main.js \u0627\u0636\u0627\u0641\u0647 \u0645\u06cc\u200c\u06a9\u0646\u062f'",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "UNUSUAL_FILE_SYSTEM_ACCESS",
+        "description": "The extension accesses the IDE's installation directory (`appRoot`) rather than just the workspace or extension storage. While it currently only checks existence, the presence of `fs.accessSync` and path resolution for `main.js` indicates preparation for write operations on system-critical IDE files.",
+        "code_reference": "fs.accessSync(mainJsPath, fs.constants.R_OK);",
+        "line_hint": 75,
+        "target": "extension/dist/extension.js (chunk 1/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a simple RTL text alignment tool, but the code implements a binary patcher that modifies the core `main.js` of the Cursor IDE. This is a severe behavioral mismatch; a UI styling extension should not be modifying the host application's executable code.",
+        "code_reference": "function applyPatch(mainJsPath) { ... fs2.writeFileSync(mainJsPath, patched, \"utf-8\"); }",
+        "line_hint": "42",
+        "target": "extension/dist/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_CODE_INJECTION",
+        "description": "The code injects a dynamic import statement into the IDE's main process: `import{createRequire}from\"module\";try{createRequire(import.meta.url)(\"./rtl-cursor-loader.cjs\")}...`. This forces the IDE to load an external CommonJS module (`rtl-cursor-loader.cjs`) which is not part of the standard VS Code/Cursor extension API. This is a classic technique for executing arbitrary code with the privileges of the IDE process.",
+        "code_reference": "var PATCH_LINE = 'import{createRequire}from\"module\";try{createRequire(import.meta.url)(\"./rtl-cursor-loader.cjs\")}catch(e){console.error(\"[RTL Cursor] error loading ./rtl-cursor-loader.cjs: \", e)}';",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_AND_TAMPERING",
+        "description": "The extension creates timestamped backups of the original `main.js` and modifies the file in-place. It also includes logic to detect if the patch is already applied and to strip previous patches. This indicates a persistent modification mechanism that survives IDE restarts and updates (unless the file is overwritten by an update, in which case the extension likely re-patches it).",
+        "code_reference": "function backup(mainJsPath) { ... fs2.copyFileSync(mainJsPath, backupPath); ... }",
+        "line_hint": "28",
+        "target": "extension/dist/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "UNVERIFIED_EXTERNAL_DEPENDENCY",
+        "description": "The injected code loads `./rtl-cursor-loader.cjs`. The security of the extension depends entirely on the contents of this file. If this file is updated via a remote source or if the extension package is compromised, the attacker gains code execution in the IDE's main process. The static analysis of this chunk does not show the contents of the loader, but the mechanism itself is highly dangerous.",
+        "code_reference": "createRequire(import.meta.url)(\"./rtl-cursor-loader.cjs\")",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SYSTEM_INTEGRITY_CHECK",
+        "description": "The code checks for a specific copyright string in `main.js` before patching. This is likely to ensure it is targeting the correct file version, but it also confirms the intent to modify a specific, known binary artifact of the IDE.",
+        "code_reference": "if (!content.includes(\"Copyright (C) Microsoft Corporation\")) { throw new Error(...) }",
+        "line_hint": "44",
+        "target": "extension/dist/extension.js (chunk 2/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a simple RTL text alignment tool, but the code explicitly modifies the host application's core executable file (`main.js`). This is a severe behavioral mismatch; a UI styling extension should not have write access to the IDE's core logic files.",
+        "code_reference": "fs2.copyFileSync(latestBackup, mainJsPath); ... fs2.writeFileSync(mainJsPath, stripPatchLines(content), \"utf-8\");",
+        "line_hint": "1-10",
+        "target": "extension/dist/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_INJECTION",
+        "description": "The extension implements a 'loader' mechanism that injects code into the IDE's main process. It copies a file (`LOADER_FILENAME`) into the IDE's resources directory and patches `main.js` to execute it. This allows arbitrary code execution within the IDE's context, bypassing standard extension sandboxing.",
+        "code_reference": "function copyLoader(outDir, extensionPath) { ... fs2.copyFileSync(src, dest); } ... actions.push(\"\u062f\u0631\u062c \u06cc\u06a9 \u062e\u0637 loader \u062f\u0631 main.js\");",
+        "line_hint": "18-25",
+        "target": "extension/dist/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE",
+        "description": "The extension creates backups of the original `main.js` and modifies the live file to ensure the injected loader persists across IDE restarts. It also provides instructions to the user to grant administrator/sudo privileges to modify system-protected IDE files, indicating an intent to maintain persistent, privileged access.",
+        "code_reference": "if (latestBackup) { fs2.copyFileSync(latestBackup, mainJsPath); } ... handlePermissionError ... sudo chown -R $USER /Applications/Cursor.app/...",
+        "line_hint": "1-5, 45-55",
+        "target": "extension/dist/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_INTENT",
+        "description": "The code uses Persian/Farsi strings for user-facing messages and log actions (e.g., '\u067e\u0686 RTL \u0627\u0632 \u0642\u0628\u0644 \u0631\u0648\u06cc main.js \u0641\u0639\u0627\u0644 \u0627\u0633\u062a' meaning 'RTL patch is already active on main.js'). While not inherently malicious, this obfuscates the technical nature of the file modification from casual inspection and aligns with the 'vibe' of a niche utility hiding complex system-level changes.",
+        "code_reference": "actions.push(\"\u067e\u0686 RTL \u0627\u0632 \u0642\u0628\u0644 \u0631\u0648\u06cc main.js \u0641\u0639\u0627\u0644 \u0627\u0633\u062a\");",
+        "line_hint": "32",
+        "target": "extension/dist/extension.js (chunk 3/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension modifies the host application's core runtime file (`main.js`) by injecting a loader. While the README explicitly discloses this behavior ('adds a loader to main.js'), modifying the host application's binary/source outside of the extension's sandbox is a high-risk pattern that can be abused for persistence or code injection if the patching logic is flawed or malicious. The code shows `getPatchState` and `isPatched` logic, confirming this behavior.",
+        "code_reference": "function getPatchState(mainJsPath) { ... if (isPatched(mainJsPath)) ... }",
+        "line_hint": "approx 100-110",
+        "target": "extension/dist/extension.js (chunk 4/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `fs3.existsSync` and file system operations to locate and potentially modify `main.js`. This is disproportionate for a simple 'RTL text alignment' feature, which could typically be achieved via CSS injection or webview styling without touching the host application's core files. However, given the explicit disclosure in the README regarding the lack of official Cursor API support for chat styling, this is a known limitation workaround rather than a hidden malicious intent.",
+        "code_reference": "if (!fs3.existsSync(mainJsPath)) { return \"off\"; }",
+        "line_hint": "approx 102",
+        "target": "extension/dist/extension.js (chunk 4/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a simple RTL text alignment tool, but the code explicitly modifies the host application's core executable file (`main.js`). The README admits to adding a 'loader' to `main.js` and modifying application files with backups. This is a fundamental violation of extension sandboxing and trust boundaries.",
+        "code_reference": "const mainJsPath = validation.mainJsPath; ... applyPatch(mainJsPath);",
+        "line_hint": "42-45",
+        "target": "extension/dist/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SYSTEM_TAMPERING",
+        "description": "The function `applyPatch` is called on the Cursor/VS Code `main.js` file. This allows the extension to inject arbitrary code into the host application's startup process, effectively granting the extension (and its author) persistent, privileged execution context outside the extension sandbox. This is a classic supply-chain attack vector.",
+        "code_reference": "applyPatch(mainJsPath);",
+        "line_hint": "48",
+        "target": "extension/dist/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_MECHANISM",
+        "description": "The extension uses a file watcher (`setupFileWatcher`) to monitor the patched `main.js`. If the host application updates and overwrites the patch, the extension can potentially re-apply it or detect the change to maintain its injected code. This indicates an intent for persistence against host updates.",
+        "code_reference": "setupFileWatcher(mainJsPath, context);",
+        "line_hint": "49",
+        "target": "extension/dist/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DECEPTIVE_PRACTICE",
+        "description": "The extension requires the user to completely quit and restart the application (`workbench.action.quit`) for the changes to take effect. This is highly unusual for a UI/RTL extension and is a strong indicator that it is modifying core application binaries or startup scripts, which are only loaded on a full process restart.",
+        "code_reference": "await vscode2.commands.executeCommand(\"workbench.action.quit\");",
+        "line_hint": "26",
+        "target": "extension/dist/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "UNAUTHORIZED_FILE_ACCESS",
+        "description": "The extension accesses and modifies files outside of its designated `globalStoragePath` or `storageUri`, specifically targeting the application's installation directory (`main.js`). This bypasses VS Code's file system security model for extensions.",
+        "code_reference": "validatePaths(); ... getAppOutDir();",
+        "line_hint": "40-41",
+        "target": "extension/dist/extension.js (chunk 5/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a simple RTL text alignment tool, but the code reveals it modifies the core `main.js` of the Cursor IDE. This is a severe behavioral mismatch; a UI styling extension should not be patching the host application's core executable logic.",
+        "code_reference": "getPatchState(validation.mainJsPath); ... await enableCommand(context);",
+        "line_hint": "15",
+        "target": "extension/dist/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SYSTEM_INTEGRITY_COMPROMISE",
+        "description": "The code implements a 'patching' mechanism that modifies the IDE's main JavaScript file (`main.js`). It includes logic to detect if the patch has been removed (e.g., by an update) and automatically re-applies it (`autoReapply`). This is a persistence mechanism that alters the trusted execution environment of the IDE, potentially allowing for arbitrary code execution or backdooring the IDE itself.",
+        "code_reference": "if (config.get(\"autoReapply\", true)) { await enableCommand(context); return; }",
+        "line_hint": "68",
+        "target": "extension/dist/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "UNAUTHORIZED_FILE_MODIFICATION",
+        "description": "The extension writes a 'loader' file into the IDE's application directory (`getAppOutDir()`) and modifies `main.js`. This bypasses standard extension sandboxing and grants the extension (or the code it injects) the same privileges as the IDE itself, which is highly dangerous and deceptive for a 'RTL' utility.",
+        "code_reference": "copyLoader(getAppOutDir(), context.extensionPath);",
+        "line_hint": "92",
+        "target": "extension/dist/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_MECHANISM",
+        "description": "A file watcher is set up on the IDE's `main.js` to monitor for changes. If the file is modified (e.g., by an IDE update), the extension automatically re-applies its patch. This ensures the malicious or unauthorized code persists across IDE updates, a classic malware trait.",
+        "code_reference": "fileWatcher = fs3.watch(mainJsPath, (eventType) => { ... if (config.get(\"autoReapply\", true)) { await enableCommand(context); ... } });",
+        "line_hint": "52",
+        "target": "extension/dist/extension.js (chunk 6/7)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension modifies the host application's core runtime file (`main.js`) by injecting a loader. While the README explicitly discloses this behavior ('adds a loader to main.js'), modifying the IDE's core executable file is a high-risk pattern that could be abused for persistence or code injection if the extension were malicious. In this specific context, it appears to be a workaround for missing RTL support in Cursor, but it warrants caution.",
+        "code_reference": "updateStatusBar(getPatchState(mainJsPath))",
+        "line_hint": "5",
+        "target": "extension/dist/extension.js (chunk 7/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code uses standard VS Code APIs for configuration watching and Markdown extension. The `deactivate` function properly cleans up file watchers. No network calls, credential access, or obfuscation are present in this chunk.",
+        "code_reference": "extendMarkdownIt(md) { ... }",
+        "line_hint": "10",
+        "target": "extension/dist/extension.js (chunk 7/7)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is highly suspicious and likely malicious. While it presents itself as a simple RTL text alignment tool, the source code reveals it locates the VS Code/Cursor core `main.js` file within the application's installation directory. The README explicitly admits to injecting a 'loader' into this file. Modifying the IDE's core runtime file is a critical security vulnerability that allows for arbitrary code execution, persistence, and potential data exfiltration. This behavior is completely disproportionate to a text formatting extension and represents a severe supply-chain attack vector.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 25,
+    "published_date": "2026-08-22T10:30:35.027Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-22T12:10:55.336447+00:00Z"
+}
