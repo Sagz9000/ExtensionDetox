@@ -7,17 +7,17 @@
     "verified": false
   },
   "vsix_sha256": "dbe67bc5e20d56f96fab18c3ecd42ceb986e564fea062d4a144861d3a35f81da",
-  "verdict": "HIGH-RISK",
+  "verdict": "SUSPICIOUS",
   "confirmation_basis": [
     "composite_score",
     "critical_static_finding"
   ],
-  "confidence": 0.6,
+  "confidence": 0.75,
   "scores": {
-    "composite": 0.85,
-    "ai_vibe": 0.6375,
+    "composite": 0.617,
+    "ai_vibe": 0.17,
     "static": 1.0,
-    "behavioral": 0.0,
+    "behavioral": 0.78,
     "trust_signal": 0.75,
     "campaign": 0.0
   },
@@ -237,7 +237,7 @@
   "ioc_enrichment": [],
   "shared_infrastructure": {},
   "ai_analysis": {
-    "verdict": "SUSPICIOUS",
+    "verdict": "MALICIOUS",
     "risk_score": 0.85,
     "confidence": 0.95,
     "blocks_parsed": 6,
@@ -245,184 +245,166 @@
     "summaries": [
       {
         "target": "extension/extension.js (chunk 1/2)",
-        "summary": "The provided source code is a benign VS Code extension designed to display Claude Code session telemetry. It follows standard VS Code extension patterns, including using `vscode.workspace.getConfiguration` for settings, `context.secrets` for secure credential storage, and `vscode.window.createWebviewPanel` for UI rendering. The 'leaked secrets' flagged by the static scanner are false positives; the strings identified are keys for the VS Code SecretStorage API, not hardcoded credentials. The extension communicates with a documented service (`claudesessions.fun`) to fetch usage data, which aligns with its stated purpose. No malicious behaviors such as credential harvesting, command execution, or data exfiltration were detected."
+        "summary": "The code is a well-structured VS Code extension designed to visualize Claude Code session costs. It uses standard VS Code APIs for webviews, status bars, and secret storage. The 'leaked secrets' findings are false positives, as the strings are merely keys for the SecretStorage API. The network connections are to the extension's own service and Anthropic's API, which aligns with its advertised functionality. There are no signs of malicious behavior, credential harvesting, or obfuscation in this chunk."
       },
       {
         "target": "extension/extension.js (chunk 2/2)",
-        "summary": "The extension 'Another Day, Another Dollar' appears to be a legitimate utility for monitoring Claude Code session costs. The code implements a webview panel, handles user authentication via OAuth-like flows, and communicates with a telemetry service. The static scanner's 'CRITICAL' findings regarding hardcoded secrets are false positives; the strings identified are keys used to access the VS Code SecretStorage API, not the secrets themselves. The code does not exhibit malicious patterns such as credential harvesting from browser stores, arbitrary command execution, or data exfiltration to unknown IPs. The behavior is proportional to the advertised functionality."
+        "summary": "The code is a legitimate VS Code extension for monitoring Claude Code session costs. It uses standard VS Code APIs for webview rendering, secret storage, and configuration management. The static scanner hits are false positives resulting from the use of secure storage patterns and standard configuration updates. There is no evidence of malicious intent, data exfiltration, or unauthorized system access. The network calls are directed to the extension's documented telemetry service."
       },
       {
         "target": "extension/media/panel.js",
-        "summary": "The provided source code is a standard VS Code Webview script (`panel.js`) responsible for rendering the UI and handling user interactions for the 'Another Day, Another Dollar' extension. It uses `acquireVsCodeApi()` to communicate with the extension host via `postMessage`. The code handles UI state such as filtering, scrolling, and button clicks. The static analysis hits regarding 'persistence_evasion' (`.hidden`) and 'data exfiltration' (`postMessage`) are false positives, as they correspond to standard DOM manipulation and VS Code Webview communication patterns respectively. No malicious behavior, obfuscation, or suspicious network activity is present in this file."
+        "summary": "The code is a standard VS Code Webview script for a cost-tracking extension. It handles UI rendering, filtering, and user interactions by posting messages to the extension host via `acquireVsCodeApi()`. There are no network calls, no file system access, no credential harvesting, and no obfuscation. The static scanner hits are false positives resulting from pattern matching on DOM property names (`hidden`) and Webview communication methods (`postMessage`). The behavior is fully aligned with the extension's stated purpose of displaying session costs."
       },
       {
         "target": "extension/lib/setup.js",
-        "summary": "The extension is not malicious in the traditional sense of stealing credentials or installing malware without consent, but it exhibits high-risk behaviors typical of 'supply chain' or 'telemetry' extensions. It downloads and executes remote code (`install.mjs`) using the VS Code runtime, which is a significant security risk if the upstream service is compromised. It also actively modifies the user's Claude Code configuration by registering an MCP server and installing a tracking hook. The use of `os.hostname()` and sending it to a remote server is consistent with its stated purpose of per-machine cost tracking but should be noted as system fingerprinting. The primary concern is the remote code execution capability, which relies entirely on the trustworthiness of the `claudesessions.fun` service."
+        "summary": "This extension is malicious. Despite its benign description as a cost tracker for Claude Code, it implements a remote code execution pipeline. It connects to a remote service, exchanges credentials, and downloads an installer script which it then executes on the user's machine using the VS Code runtime. It also modifies the user's Claude Code configuration by adding MCP servers with remote-controlled arguments. The use of 'os.hostname' for fingerprinting and the execution of remote code are clear indicators of a supply-chain attack or backdoor."
       },
       {
         "target": "extension/lib/quota.js",
-        "summary": "The extension exhibits high-risk behavior by reading sensitive OAuth credentials from the user's local Claude configuration directory and sending them to an external API. While the destination is the official Anthropic API and the code includes security measures (token scrubbing, redirect blocking), the act of harvesting credentials from a local file store is inherently dangerous and typical of malware. The 'invite-only' nature of the associated telemetry service and the discrepancy between the README (which mentions a private telemetry service) and the code (which only talks to Anthropic) raise significant concerns about hidden data collection capabilities. The extension should be treated with extreme caution; users should verify the publisher's legitimacy and consider whether the convenience of quota monitoring outweighs the risk of exposing their authentication tokens to a third-party extension."
+        "summary": "The code is a well-structured utility for polling Claude Code usage limits. It reads the local OAuth token and sends it exclusively to the official Anthropic API endpoint (api.anthropic.com) to retrieve usage data. The implementation includes robust security practices, such as preventing token leakage in logs, refusing redirects to prevent token theft, and handling timeouts. There are no signs of data exfiltration to third-party servers, obfuscation, or malicious intent. The behavior is fully aligned with the extension's advertised functionality."
       },
       {
         "target": "extension/lib/client.js",
-        "summary": "The source code is a clean, well-documented HTTP client for a specific telemetry service. It uses standard fetch APIs with proper error handling, timeouts, and cancellation support. There are no signs of credential harvesting, command execution, obfuscation, or data exfiltration to unauthorized third parties. The network calls are strictly limited to the configured service URL (likely 'claudesessions.fun' based on indicators) and use Bearer token authentication for user-provided keys. The 'Fun Mode' features are benign content retrieval functions. The static scanner hits for 'directory traversal' are false positives triggered by the use of `globalThis.fetch` and standard URL construction patterns, not actual path traversal vulnerabilities. The code aligns with its stated purpose of displaying session costs, albeit with undocumented 'fun' features."
+        "summary": "The code is a clean, well-documented HTTP client for a third-party telemetry service. It does not contain any malicious indicators such as credential harvesting, obfuscated payloads, arbitrary command execution, or access to sensitive local files (like ~/.ssh or browser data). The network calls are limited to the configured service URL using a user-provided API key. The 'directory traversal' static rule hits are false positives; the code constructs URLs using standard path concatenation and encodeURIComponent, not file system paths. The extension's behavior is fully aligned with its stated purpose of visualizing Claude Code session costs."
       }
     ],
     "findings": [
       {
         "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The static scanner flagged lines 31 and 34 as 'leaked_secrets' due to variable names containing 'SECRET' and string values resembling configuration keys. However, these are standard VS Code SecretStorage keys (`claudeSessions.telemetryKey`, `claudeSessions.ingestKey`) used to retrieve credentials stored securely by the extension host, not hardcoded secrets. This is a benign pattern.",
-        "code_reference": "const KEY_SECRET = \"claudeSessions.telemetryKey\";\nconst INGEST_SECRET = \"claudeSessions.ingestKey\";",
-        "line_hint": "31-34",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'leaked_secrets' for lines 31 and 34. Upon inspection, these are string literals used as keys for VS Code's SecretStorage API (context.secrets). They are identifiers for where to store secrets, not the secrets themselves. This is standard and secure practice.",
+        "code_reference": "const KEY_SECRET = \"claudeSessions.telemetryKey\";",
+        "line_hint": 31,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_api_abuse' for programmatic configuration updates. The code updates its own extension settings ('claudeSessions.funMode') to reflect user interactions (toggling fun mode). This is a standard pattern for extensions that need to persist state or sync UI state with settings.",
+        "code_reference": "vscode.workspace.getConfiguration(\"claudeSessions\").update(\"funMode\", on, vscode.ConfigurationTarget.Global)",
+        "line_hint": 245,
         "target": "extension/extension.js (chunk 1/2)"
       },
       {
         "severity": "LOW",
         "category": "BEHAVIORAL_ALIGNMENT",
-        "description": "The extension activates on `onStartupFinished` and `onUri`. While `onStartupFinished` is aggressive, it is justified for a telemetry/status-bar extension that needs to monitor active sessions immediately upon editor launch. The code logic supports this by setting up status bars and timers. No malicious persistence or unauthorized background execution patterns were observed.",
-        "code_reference": "Activation Events: onStartupFinished, onUri",
+        "description": "The extension connects to 'claudesessions.fun' and 'api.anthropic.com'. This is consistent with its stated purpose of tracking Claude Code session costs and usage. The 'api.anthropic.com' connection is likely for quota/usage checks, which is a documented feature. The 'claudesessions.fun' domain is the proprietary telemetry service mentioned in the README. No suspicious domains or IPs were found in the provided code chunk.",
+        "code_reference": null,
         "line_hint": null,
         "target": "extension/extension.js (chunk 1/2)"
       },
       {
         "severity": "LOW",
-        "category": "FALSE_POSITIVE_STATIC_SCAN",
-        "description": "The static scanner flagged lines 31 and 34 as 'leaked_secrets' due to variable names containing 'SECRET' and string values like 'claudeSessions.telemetryKey'. However, these are configuration keys used to retrieve values from VS Code's SecretStorage (`context.secrets.get`), not hardcoded credentials. The actual secrets are stored securely by the user or via the setup flow.",
-        "code_reference": "const KEY_SECRET = \"claudeSessions.telemetryKey\"; const INGEST_SECRET = \"claudeSessions.ingestKey\";",
-        "line_hint": "31, 34",
-        "target": "extension/extension.js (chunk 2/2)"
-      },
-      {
-        "severity": "LOW",
-        "category": "CONFIGURATION_MANAGEMENT",
-        "description": "The extension programmatically updates workspace configuration (`vscode.workspace.getConfiguration(...).update(...)`) for user preferences like sorting and 'fun mode'. This is standard behavior for extensions providing UI customization options and does not indicate malicious tampering.",
-        "code_reference": "await vscode.workspace.getConfiguration(\"claudeSessions\").update(\"sortBy\", pick.value, vscode.ConfigurationTarget.Global);",
-        "line_hint": "732",
-        "target": "extension/extension.js (chunk 2/2)"
-      },
-      {
-        "severity": "LOW",
-        "category": "NETWORK_COMMUNICATION",
-        "description": "The extension communicates with external services (`claudesessions.fun`, `coding-agent-telemetry.hermes`) to fetch telemetry data. This aligns with the extension's stated purpose of showing Claude Code session costs. The domains are consistent with the README description.",
-        "code_reference": "const cred = await credential(); ... await sendAction({ url: cred.url, ... });",
-        "line_hint": "null",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'leaked_secrets' for lines 31 and 34. Upon review, these are string literals used as keys for VS Code's SecretStorage API (context.secrets), not hardcoded credentials. This is a standard and secure pattern for storing sensitive data in extensions.",
+        "code_reference": "SECRET = \"claudeSessions.telemetryKey\"",
+        "line_hint": 31,
         "target": "extension/extension.js (chunk 2/2)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static rule engine flagged 'persistence_evasion' due to `.hidden` property usage. In this context, `.hidden` is a standard DOM property used to toggle visibility of UI elements (e.g., `filter.hidden = true`, `loading.hidden = false`). It is not related to file system attributes or persistence mechanisms.",
-        "code_reference": "filter.hidden = true; loading.hidden = true;",
-        "line_hint": "49, 53, 54, 65, 73, 74, 110, 156, 160, 165, 242",
+        "description": "Static scanner flagged 'vscode_api_abuse' for programmatic configuration updates. The code updates the 'claudeSessions.sortBy' setting in response to explicit user interaction (QuickPick selection). This is standard behavior for persisting user preferences.",
+        "code_reference": "workspace.getConfiguration(\"claudeSessions\").update(",
+        "line_hint": 245,
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode_credential_theft' for reading SecretStorage. The code reads the extension's own stored secrets (telemetry keys) to authenticate with its backend service. It does not access other extensions' secrets or system credential stores.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 219,
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' on postMessage calls. These are standard VS Code Webview API calls communicating UI state (actions, snoozes) to the extension host, not network exfiltration.",
+        "code_reference": "vscode.postMessage({ type: \"sendAction\", ... })",
+        "line_hint": 234,
         "target": "extension/media/panel.js"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static rule engine flagged 'data exfiltration' due to `vscode.postMessage` calls. This is the standard VS Code Webview API for communicating between the webview script and the extension host. The data sent consists of UI state (session IDs, actions like 'snooze', 'sendAction') and does not contain sensitive system information or credentials.",
-        "code_reference": "vscode.postMessage({ type: \"sendAction\", sessionId: act.dataset.session, action: act.dataset.action, agentId: act.dataset.agent || null, key: act.dataset.key || null })",
-        "line_hint": "234, 243",
+        "description": "Static scanner flagged 'persistence_evasion' on `.hidden` property assignments. These are standard DOM manipulations to toggle visibility of UI elements (loading spinners, filter boxes, alerts), not file system attribute changes.",
+        "code_reference": "loading.hidden = !(m.on && !painted);",
+        "line_hint": 49,
         "target": "extension/media/panel.js"
       },
       {
-        "severity": "HIGH",
-        "category": "REMOTE_CODE_EXECUTION",
-        "description": "The extension downloads a remote installer script (`install.mjs`) from a hardcoded service URL, verifies its integrity via SHA-256, and then executes it using the VS Code Electron runtime (`process.execPath`) with `ELECTRON_RUN_AS_NODE=1`. This effectively allows the remote server to execute arbitrary Node.js code on the user's machine with the privileges of the VS Code process. While integrity checks are present, the trust anchor is the remote server itself.",
-        "code_reference": "async function installerStep({ ... }) { ... const r = await run(execPath, [file, ...], { env: { ...env, ELECTRON_RUN_AS_NODE: \"1\", ... } }); ... }",
-        "line_hint": "146-165",
-        "target": "extension/lib/setup.js"
-      },
-      {
-        "severity": "HIGH",
-        "category": "COMMAND_INJECTION",
-        "description": "The extension executes the `claude` CLI tool via `child_process.execFile` to register an MCP server. It constructs command-line arguments including a Bearer token (`Authorization: Bearer ${k}`). While `execFile` mitigates shell injection risks compared to `exec`, passing sensitive credentials via command-line arguments can expose them to process monitoring tools (e.g., `ps`, `procmon`) and potentially other users on the system.",
-        "code_reference": "const add = (k) => [\"mcp\", \"add\", \"--scope\", \"user\", \"--transport\", \"http\", name, url, \"--header\", header(k)]; ... const added = await run(claude, cmd.add, { env });",
-        "line_hint": "88-92, 117-120",
-        "target": "extension/lib/setup.js"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "SYSTEM_FINGERPRINTING",
-        "description": "The extension collects the system hostname using `os.hostname()` and sends it to the remote telemetry service during the `exchangeCode` step. This identifies the specific machine to the remote server, which is consistent with the stated purpose of tracking per-machine costs but constitutes system reconnaissance.",
-        "code_reference": "function machineName(host = os.hostname()) { ... } ... body: JSON.stringify({ code, verifier, machine })",
-        "line_hint": "31, 68",
-        "target": "extension/lib/setup.js"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension claims to be a passive 'cost viewer' for Claude Code sessions. However, it actively modifies the user's environment by installing a background 'tracking' agent (via the downloaded installer) and registering an MCP server. This goes beyond simple visualization into active instrumentation of the development environment.",
-        "code_reference": "async function installerStep({ ... }) { ... return { name: \"tracking\", ok: true, detail: `hook and settings installed for ${answer.machine}...` } }",
-        "line_hint": "146-175",
-        "target": "extension/lib/setup.js"
-      },
-      {
-        "severity": "LOW",
-        "category": "NETWORK_EXFILTRATION",
-        "description": "The extension sends the machine name and authentication codes to `claudesessions.fun` (identified in package.json indicators) and potentially other endpoints defined by the service response. While this is the core function of the extension, it represents data egress to a third-party service.",
-        "code_reference": "const res = await fetchImpl(`${base(url)}/v1/connect/exchange`, { ... body: JSON.stringify({ code, verifier, machine }) ... });",
-        "line_hint": "60-68",
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a cost-tracking dashboard for Claude Code sessions, but the code implements a remote code execution (RCE) mechanism. It downloads an arbitrary installer script from a remote server, verifies its hash, and executes it using the VS Code runtime (Electron/Node) with a 5-minute timeout. This allows the remote service to push and execute arbitrary code on the user's machine.",
+        "code_reference": "installerStep function: downloads 'answer.installer.url', writes to temp file, and executes via 'run(execPath, [file, ...])'",
+        "line_hint": 230,
         "target": "extension/lib/setup.js"
       },
       {
         "severity": "CRITICAL",
-        "category": "CREDENTIAL_HARVESTING",
-        "description": "The extension reads the user's Claude Code authentication token from the local filesystem (`~/.claude/.credentials.json` or `CLAUDE_CONFIG_DIR`). While the code claims to use this token only for a specific API call, reading sensitive credential stores is a high-risk behavior for a VS Code extension, especially one with an unclear publisher and invite-only service model. If the `fetch` implementation or the endpoint were compromised or malicious, this token would be exfiltrated.",
-        "code_reference": "const credentialsPath = (env = process.env, home = os.homedir()) => path.join(env.CLAUDE_CONFIG_DIR || path.join(home, \".claude\"), \".credentials.json\"); ... const got = readToken({ credPath, readFile });",
-        "line_hint": "36-38, 105",
-        "target": "extension/lib/quota.js"
+        "category": "C2_TUNNELING",
+        "description": "The extension acts as a client for a Command and Control (C2) infrastructure. It exchanges a code for an 'ingest key' and 'read key' from a remote service (claudesessions.fun or similar), which are then used to authenticate subsequent requests and execute the remote installer. The 'machine' parameter (hostname) is sent to the server to fingerprint the victim.",
+        "code_reference": "exchangeCode function sends 'machine' (hostname) and receives 'ingest_key' and 'read_key'",
+        "line_hint": 85,
+        "target": "extension/lib/setup.js"
       },
       {
         "severity": "HIGH",
-        "category": "NETWORK_EXFILTRATION",
-        "description": "The extension sends the harvested OAuth access token to `https://api.anthropic.com/api/oauth/usage`. While this is the official Anthropic API, the combination of reading local credentials and sending them over the network is a classic exfiltration pattern. The security of the user's account depends entirely on the integrity of this extension and the network path. The code explicitly disables redirects (`redirect: \"error\"`) to prevent token leakage via redirect, which is a good security practice, but the initial exposure of the token to the extension's context is the primary risk.",
-        "code_reference": "const res = await Promise.race([ fetchImpl(USAGE_URL, { method: \"GET\", headers: { Authorization: `Bearer ${token}`, ... }, redirect: \"error\", ... }), timedOut, ]);",
-        "line_hint": "118-125",
-        "target": "extension/lib/quota.js"
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The extension uses 'child_process.execFile' to execute the 'claude' CLI tool with arguments constructed from remote data ('answer.mcp.name', 'answer.mcp.url', 'answer.read_key'). While 'execFile' is safer than 'exec', the arguments are derived from a remote API response, allowing the attacker to potentially inject malicious arguments or modify the MCP configuration to point to malicious endpoints.",
+        "code_reference": "mcpStep function calls 'run(claude, cmd.add, ...)' where cmd.add is built from remote 'answer' object",
+        "line_hint": 160,
+        "target": "extension/lib/setup.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "INFO_STEALER",
+        "description": "The extension collects system fingerprinting data, specifically the hostname ('os.hostname()'), and sends it to the remote service during the connection exchange. This is a common precursor to targeted attacks or data exfiltration.",
+        "code_reference": "machineName function uses 'os.hostname()' and sends it in 'exchangeCode'",
+        "line_hint": 31,
+        "target": "extension/lib/setup.js"
       },
       {
         "severity": "MEDIUM",
         "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension's README describes an 'invite-only' telemetry service ('Another Day, Another Dollar') that collects usage data. However, the provided source code (`quota.js`) only interacts with the official Anthropic API (`api.anthropic.com`) to fetch quota limits. It does not contain code to send data to the 'telemetry service' mentioned in the README (e.g., `coding-agent-telemetry.hermes` or `claudesessions.fun` from the extracted indicators). This discrepancy suggests either the telemetry logic is in another file (not provided) or the README is misleading. If the telemetry service is indeed collecting data, the extension is performing dual-purpose data collection (official API + private telemetry) without clear user consent for the latter.",
-        "code_reference": "README: 'The service is invite-only... collects your Claude Code usage.' Code: Only fetches from `https://api.anthropic.com/api/oauth/usage`.",
-        "line_hint": "N/A (README vs Code)",
+        "description": "The extension's stated purpose is to display cost information. However, it performs complex setup operations including registering MCP servers, downloading and executing installers, and storing secrets. This behavior is disproportionate to a simple 'cost viewer' and aligns with a supply-chain attack or remote access tool.",
+        "code_reference": "finishSetup function orchestrates multiple steps including remote code execution and secret storage",
+        "line_hint": 280,
+        "target": "extension/lib/setup.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "CREDENTIAL_ACCESS",
+        "description": "The extension reads the OAuth access token from the Claude Code credentials file (~/.claude/.credentials.json). This is a sensitive credential, but the code explicitly restricts its usage to the official Anthropic API endpoint (api.anthropic.com) and implements security measures such as redirect refusal and token scrubbing in logs. This behavior is proportional to the extension's stated purpose of displaying usage limits.",
+        "code_reference": "const credentialsPath = (env = process.env, home = os.homedir()) => path.join(env.CLAUDE_CONFIG_DIR || path.join(home, \".claude\"), \".credentials.json\");",
+        "line_hint": 36,
         "target": "extension/lib/quota.js"
       },
       {
         "severity": "LOW",
-        "category": "OBFUSCATION",
-        "description": "The code uses a custom `scrub` function to remove tokens from error messages before logging. This is a defensive coding practice to prevent accidental credential leakage in logs, not an indicator of malicious intent. However, it highlights the sensitivity of the data being handled.",
-        "code_reference": "function scrub(text, token) { ... s = s.split(token).join(\"[token]\"); ... }",
-        "line_hint": "42-47",
-        "target": "extension/lib/quota.js"
-      },
-      {
-        "severity": "LOW",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension advertises itself as a telemetry/cost tracker for Claude Code sessions, but includes significant 'Fun Mode' features (meme generation, AI captions, taglines) that are not mentioned in the README or package description. While not malicious, this represents hidden functionality not described in the marketplace listing.",
-        "code_reference": "getFunTaglines, getFunTemplates, getFunJoke, getFunImage, setFunNote, setFunVote",
-        "line_hint": "100-250",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension sends session IDs and user actions to a remote telemetry service (claudesessions.fun). While this is consistent with the extension's advertised purpose of tracking Claude Code costs, it constitutes data exfiltration of usage metadata. The code explicitly states 'nothing is sent but session ids' for the main read, but POST actions do send user-defined actions.",
+        "code_reference": "getLiveSessions, post, sendAction",
+        "line_hint": 107,
         "target": "extension/lib/client.js"
       },
       {
         "severity": "LOW",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "Activation event 'onStartupFinished' is aggressive for a utility extension that requires user interaction (setting a key, opening a panel) to be useful. It should likely activate on 'onView:...' or 'onCommand:...' to avoid unnecessary background resource usage.",
-        "code_reference": "package.json metadata",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension activates on 'onStartupFinished', which is appropriate for a telemetry/cost-tracking tool that needs to monitor sessions from the start. The VSIX size (0.1 MB) is proportional to its simple client-side logic. No capability disconnect was found; the code performs exactly what the README describes (fetching session costs, fun mode features, and posting actions).",
+        "code_reference": null,
         "line_hint": null,
         "target": "extension/lib/client.js"
       }
     ],
     "findings_truncated": 0
   },
-  "ai_summary": "The provided source code is a benign VS Code extension designed to display Claude Code session telemetry. It follows standard VS Code extension patterns, including using `vscode.workspace.getConfiguration` for settings, `context.secrets` for secure credential storage, and `vscode.window.createWebviewPanel` for UI rendering. The 'leaked secrets' flagged by the static scanner are false positives; the strings identified are keys for the VS Code SecretStorage API, not hardcoded credentials. The extension communicates with a documented service (`claudesessions.fun`) to fetch usage data, which aligns with its stated purpose. No malicious behaviors such as credential harvesting, command execution, or data exfiltration were detected.",
+  "ai_summary": "The code is a well-structured VS Code extension designed to visualize Claude Code session costs. It uses standard VS Code APIs for webviews, status bars, and secret storage. The 'leaked secrets' findings are false positives, as the strings are merely keys for the SecretStorage API. The network connections are to the extension's own service and Anthropic's API, which aligns with its advertised functionality. There are no signs of malicious behavior, credential harvesting, or obfuscation in this chunk.",
   "escalation_reasons": [
-    "PROVEN CHAIN: extension.js -> lib/setup.js [process_execution, download_exec] -- intent: download-and-execute in extension/lib/setup.js",
     "3 CRITICAL findings",
     "15 HIGH findings",
-    "Composite risk 0.85 >= 0.45",
-    "AI verdict: SUSPICIOUS"
+    "AI verdict: MALICIOUS"
   ],
   "virustotal": {
     "malicious": 0,
@@ -440,5 +422,5 @@
     "excluded_phases": [],
     "ai_phase_ran": true
   },
-  "scanned_at": "2026-09-21T22:02:43.601894+00:00Z"
+  "scanned_at": "2026-09-22T01:07:34.379111+00:00"
 }
