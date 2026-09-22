@@ -1,0 +1,313 @@
+{
+  "extension_id": "kortex-possensors.kortex-vscode",
+  "display_name": "KORTEX",
+  "version": "0.7.0",
+  "publisher": {
+    "name": "kortex-possensors",
+    "verified": false
+  },
+  "vsix_sha256": "09b4e6dbb500ef92fd23076cd3bf1510df931adc269289e22377b2785e53d26f",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 40,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 40,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 42,
+        "snippet": "const execFileAsync = (0, util_1.promisify)(child_process_1.execFile);"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 40,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/14)",
+        "summary": "This extension exhibits strong indicators of a supply-chain attack. While it presents itself as an AI chat integration, the inclusion of `child_process` for shell execution is a severe capability disconnect for a chat provider. The presence of a hardcoded, non-public IP address (`10.210.68.182`) as a backend URL suggests a Command & Control server. The combination of an AI interface (which can be used to obfuscate instructions) with shell execution capabilities and a hardcoded C2 endpoint is a classic pattern for malware that uses LLMs to decode or direct malicious commands. The `onStartupFinished` activation event further supports a persistence and immediate execution strategy."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/14)",
+        "summary": "The code in this chunk is benign and consistent with the extension's advertised functionality. It implements safe file path resolution to prevent directory traversal attacks and handles the conversion of VS Code Language Model message parts (text, images, tool calls) into a format suitable for the backend API. The hardcoded IPs are local development defaults, not C2 endpoints. The `child_process` reference is likely for managing the local backend process, which is a standard pattern for extensions that bundle local servers. No malicious behavior, data exfiltration, or obfuscation was detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/14)",
+        "summary": "The code in this chunk implements standard VS Code workspace tools (ReadFile, ListFiles, SearchText) for an AI agent extension. The flagged indicators (hardcoded IPs, child_process, config reading) are consistent with the extension's stated purpose of connecting to a local KORTEX backend and providing file system tools to the AI. The IPs are local/private, and the file operations are scoped to the workspace. No malicious intent, obfuscation, or exfiltration patterns are observed in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/14)",
+        "summary": "This extension exhibits critical malicious behavior by implementing a shell execution tool (`KortexShellExecuteTool`) that allows arbitrary command execution via `child_process`. This capability is completely disproportionate to its advertised function as an 'AI Chat' integration and represents a severe security risk, likely enabling remote code execution or data exfiltration. The presence of hardcoded private IP addresses further raises suspicion of a Command and Control (C2) channel. The combination of an AI agent interface with unrestricted shell access is a known malware pattern."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/14)",
+        "summary": "The code appears to be a legitimate implementation of a VS Code extension for AI-assisted file editing. The primary concern is the hardcoded internal IP address, which suggests poor configuration hygiene but is not inherently malicious. The `child_process` usage is likely benign in this context. No clear evidence of credential harvesting, data exfiltration, or malicious payload execution was found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 8/14)",
+        "summary": "This extension exhibits multiple critical red flags. It registers a shell execution tool, checks for sensitive enterprise credentials in environment variables, and defaults to a hardcoded private IP address for its backend connection. The combination of arbitrary code execution capabilities, credential awareness, and a suspicious default network endpoint strongly suggests malicious intent, likely for data exfiltration or remote code execution via the AI agent interface."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 9/14)",
+        "summary": "The code appears to be a legitimate implementation of a VS Code extension for connecting to a local 'KORTEX' AI backend. The flagged indicators (hardcoded IPs, child_process import, config reading) are consistent with the extension's stated purpose of providing AI chat and agent capabilities via a local server. The hardcoded IPs are private/localhost addresses, typical for local development tools. There is no evidence of data exfiltration, credential harvesting, or malicious command execution in this chunk. The 'child_process' import is a standard pattern for agent-based extensions that may need to execute tools, though it warrants monitoring in other chunks for specific dangerous commands. Overall, the behavior aligns with the advertised functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as an AI chat integration ('KORTEX AI') but imports `child_process` and uses `execFile`. An AI chat provider does not require arbitrary shell command execution. This is a classic stager pattern where the 'AI' interface is used to obfuscate the delivery of a remote payload or to execute commands sent via the LLM backend.",
+        "code_reference": "const child_process_1 = require(\"child_process\"); ... const execFileAsync = (0, util_1.promisify)(child_process_1.execFile);",
+        "line_hint": 40,
+        "target": "extension/dist/extension.js (chunk 1/14)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "C2_COMMUNICATION",
+        "description": "Hardcoded internal IP address `10.210.68.182:5000` is used as a fallback or primary backend URL. This is not a public, documented API endpoint for a commercial AI service. It strongly suggests a Command & Control (C2) server or a staging server for a specific threat actor's infrastructure.",
+        "code_reference": "'http://10.210.68.182:5000'",
+        "line_hint": 522,
+        "target": "extension/dist/extension.js (chunk 1/14)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CONFIG_EXFILTRATION",
+        "description": "The code reads the `kortex.baseUrl` configuration. If this value is user-controlled or if the extension defaults to the hardcoded C2 IP, it establishes a channel for data exfiltration or remote code execution via the 'AI' interface.",
+        "code_reference": "workspace.getConfiguration('kortex').get('baseUrl') || 'http://10.210.68.182:5000'",
+        "line_hint": 522,
+        "target": "extension/dist/extension.js (chunk 1/14)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`, which is aggressive for a chat plugin but common for malicious extensions to ensure the C2 connection is established immediately upon VS Code launch. Combined with `child_process`, this allows for persistent, background execution.",
+        "code_reference": "activationEvents: [\"onStartupFinished\"]",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses 'http://10.210.68.182:5000' and 'http://127.0.0.1:5000' are detected. However, these appear to be default/fallback values for the local KORTEX backend proxy (port 5000 is standard for local dev servers). The code logic `workspace.getConfiguration('kortex').get('baseUrl') || 'http://127.0.0.1:5000'` indicates these are defaults used only if the user has not configured a custom URL. This is consistent with the extension's stated purpose of connecting to a local backend.",
+        "code_reference": "workspace.getConfiguration('kortex').get('baseUrl') || 'http://127.0.0.1:5000'",
+        "line_hint": 522,
+        "target": "extension/dist/extension.js (chunk 2/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')`. In this chunk, the code focuses on file path safety (`safeJoin`) and message conversion for the VS Code Language Model API. The `child_process` import is likely used in other chunks for legitimate backend management (e.g., starting/stopping the local proxy server) or is a false positive from a bundled dependency. No malicious command execution is visible in this specific code segment.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 40,
+        "target": "extension/dist/extension.js (chunk 2/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP addresses (10.210.68.182, 127.0.0.1) are detected. However, these appear to be default configuration values for a local backend service (KORTEX) as described in the README ('Set kortex.baseUrl to the running KORTEX backend URL'). 127.0.0.1 is localhost, and 10.x.x.x is a private IP range, typical for local development or internal network services, not public C2 servers.",
+        "code_reference": "'http://10.210.68.182:5000', 'http://127.0.0.1:5000'",
+        "line_hint": "522, 530",
+        "target": "extension/dist/extension.js (chunk 3/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `require('child_process')` is flagged. In the context of an AI agent extension that provides 'tools' (like file reading, listing, searching), this is likely used for legitimate system interaction or is part of a broader toolset not fully visible in this chunk. Without evidence of malicious command execution (e.g., `exec` with user input or hardcoded malicious commands), this is likely a false positive or standard functionality for an agent framework.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": "40",
+        "target": "extension/dist/extension.js (chunk 3/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Reading `kortex.baseUrl` from configuration is expected behavior for an extension that connects to a user-configured backend. It is not harvesting secrets for exfiltration but rather retrieving the endpoint to connect to, which is the core function of the extension.",
+        "code_reference": "workspace.getConfiguration('kortex').get('baseUrl')",
+        "line_hint": "522",
+        "target": "extension/dist/extension.js (chunk 3/14)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises itself as an AI chat integration ('KORTEX AI') but implements a `KortexShellExecuteTool` that allows arbitrary shell command execution via `child_process.execFile`. This is a classic 'AI Agent' malware pattern where the LLM is used to obfuscate or trigger malicious payloads, or the tool itself is exposed to prompt injection attacks allowing remote code execution. A standard AI chat extension should not have unrestricted shell access.",
+        "code_reference": "class KortexShellExecuteTool ... const result = await execFileAsync(shell, args, ...)",
+        "line_hint": "40-60",
+        "target": "extension/dist/extension.js (chunk 4/14)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code uses `child_process.execFile` to run commands in `powershell.exe` or `/bin/bash`. The command string is taken directly from `options.input?.command`. If this tool is exposed to an LLM or user interface without strict allow-listing, it allows arbitrary code execution on the host system.",
+        "code_reference": "const shell = process.platform === 'win32' ? 'powershell.exe' : '/bin/bash'; ... execFileAsync(shell, args, ...)",
+        "line_hint": "55",
+        "target": "extension/dist/extension.js (chunk 4/14)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "HARDCODED_ENDPOINT",
+        "description": "Hardcoded IP addresses `10.210.68.182` and `127.0.0.1` are present. While `127.0.0.1` is a local default, the private IP `10.210.68.182` suggests a specific backend or potential C2 channel if the 'baseUrl' configuration is ignored or overridden in other chunks. The static scanner flagged this as a potential C2.",
+        "code_reference": "'http://10.210.68.182:5000'",
+        "line_hint": "522",
+        "target": "extension/dist/extension.js (chunk 4/14)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CONFIG_EXFILTRATION_RISK",
+        "description": "The code reads `workspace.getConfiguration('kortex').get('baseUrl')`. If the extension sends this configuration or other workspace data to the hardcoded IPs or external servers, it could leak internal network topology or API keys configured in VS Code settings.",
+        "code_reference": "workspace.getConfiguration('kortex').get('baseUrl')",
+        "line_hint": "522",
+        "target": "extension/dist/extension.js (chunk 4/14)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "HARDCODED_ENDPOINT",
+        "description": "Hardcoded internal IP address 'http://10.210.68.182:5000' found as a fallback or default configuration value. While likely a developer's local environment, shipping hardcoded internal IPs is a security hygiene issue and could indicate a lack of proper configuration management or potential C2 if the extension logic allows overriding this to external servers without validation.",
+        "code_reference": "'http://10.210.68.182:5000'",
+        "line_hint": 522,
+        "target": "extension/dist/extension.js (chunk 6/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `require('child_process')` is flagged by static analysis, but in the context of an AI agent extension that applies file edits, this is likely used for legitimate workspace operations or is a false positive from a bundled dependency. No evidence of malicious command execution (e.g., reverse shells, credential theft) is visible in this chunk.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 40,
+        "target": "extension/dist/extension.js (chunk 6/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIG_ACCESS",
+        "description": "The extension reads `kortex.baseUrl` from VS Code configuration. This is expected behavior for an extension that connects to a user-configured backend. The risk is low unless the code allows arbitrary URL injection or exfiltrates other sensitive data, which is not evident in this snippet.",
+        "code_reference": "workspace.getConfiguration('kortex').get('baseUrl')",
+        "line_hint": 522,
+        "target": "extension/dist/extension.js (chunk 6/14)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension registers a tool named 'kortex_shell_execute' which implies arbitrary shell command execution. While the README mentions 'Apply file edits', it does not explicitly advertise arbitrary shell execution capabilities. Combined with the presence of `require('child_process')` in the static evidence, this is a major disconnect and a high-risk capability for an AI chat extension.",
+        "code_reference": "vscode.lm.registerTool('kortex_shell_execute', new KortexShellExecuteTool())",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 8/14)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code explicitly checks for and displays the presence of sensitive environment variables containing credentials: JIRA_PAT, CONFLUENCE_PAT, GERRIT_USERNAME, GERRIT_HTTP_PASSWORD, and BMF_API_KEY. While it only checks for existence in the status bar, the presence of these specific enterprise credential variables in a third-party VS Code extension is a strong indicator of credential harvesting or exfiltration preparation, especially if the backend URL is compromised or malicious.",
+        "code_reference": "const pats = { jira: !!process.env.JIRA_PAT, confluence: !!process.env.CONFLUENCE_PAT, gerrit: !!(process.env.GERRIT_USERNAME && process.env.GERRIT_HTTP_PASSWORD) };",
+        "line_hint": 25,
+        "target": "extension/dist/extension.js (chunk 8/14)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "HARDCODED_C2_ENDPOINT",
+        "description": "The function `getBaseUrl()` defaults to a hardcoded private IP address `http://10.210.68.182:5000` if the user configuration is missing. This is a classic Command and Control (C2) pattern where the extension attempts to connect to a specific, potentially attacker-controlled server by default. Even if it's a private IP, it indicates a pre-configured backdoor or test endpoint left in production code.",
+        "code_reference": "vscode.workspace.getConfiguration('kortex').get('baseUrl') || 'http://10.210.68.182:5000'",
+        "line_hint": 522,
+        "target": "extension/dist/extension.js (chunk 8/14)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The static evidence indicates `require('child_process')` is used. For an AI chat extension, direct shell access is highly unusual and dangerous unless explicitly documented as a 'terminal' feature. Given the 'shell_execute' tool, this confirms the capability to run arbitrary commands, which is a severe security risk if the AI model is prompt-injected or if the backend is malicious.",
+        "code_reference": "require('child_process')",
+        "line_hint": 40,
+        "target": "extension/dist/extension.js (chunk 8/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "HARDCODED_IP",
+        "description": "Hardcoded IP addresses '10.210.68.182' and '127.0.0.1' are present. These appear to be default/fallback values for a local development backend (KORTEX) rather than C2 servers. 127.0.0.1 is localhost, and 10.x.x.x is a private IP range. This is consistent with the extension's purpose of connecting to a local AI backend.",
+        "code_reference": "getBaseUrl() logic (implied by context of lines 522/530)",
+        "line_hint": "522",
+        "target": "extension/dist/extension.js (chunk 9/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CHILD_PROCESS_IMPORT",
+        "description": "The file imports 'child_process'. While this is a high-risk indicator in isolation, in the context of an AI/Agent extension, it is likely used for legitimate purposes such as spawning language servers, running linters, or executing shell commands for agent tools. Without evidence of malicious command execution (e.g., reverse shells, credential theft), this is likely a false positive or benign usage.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": "40",
+        "target": "extension/dist/extension.js (chunk 9/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIG_ACCESS",
+        "description": "The code reads 'kortex.baseUrl' from VS Code configuration. This is expected behavior for an extension that connects to a user-configured backend. The value is used for local network calls (fetch), not exfiltrated to third parties in this snippet.",
+        "code_reference": "workspace.getConfiguration('kortex').get('baseUrl')",
+        "line_hint": "522",
+        "target": "extension/dist/extension.js (chunk 9/14)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension exhibits strong indicators of a supply-chain attack. While it presents itself as an AI chat integration, the inclusion of `child_process` for shell execution is a severe capability disconnect for a chat provider. The presence of a hardcoded, non-public IP address (`10.210.68.182`) as a backend URL suggests a Command & Control server. The combination of an AI interface (which can be used to obfuscate instructions) with shell execution capabilities and a hardcoded C2 endpoint is a classic pattern for malware that uses LLMs to decode or direct malicious commands. The `onStartupFinished` activation event further supports a persistence and immediate execution strategy.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-21T06:33:48.637Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-21T07:04:45.108507+00:00Z"
+}
