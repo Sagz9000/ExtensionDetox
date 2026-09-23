@@ -1,0 +1,193 @@
+{
+  "extension_id": "yinloonga.float-outline",
+  "display_name": "Float Outline",
+  "version": "0.1.10",
+  "publisher": {
+    "name": "yinloonga",
+    "verified": false
+  },
+  "vsix_sha256": "5815b21a5947e0e35e601407cc0ea263492bf8b0048d134fd1db1991e5af07d0",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.645,
+    "ai_vibe": 0.95,
+    "static": 0.8,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "AWS Access Key ID",
+        "file": "extension/codicon-base64.js",
+        "line": 1,
+        "snippet": "AKIAoQCgAJcAlgCVAJMA"
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "AWS Access Key ID",
+        "file": "extension/codicon-base64.js",
+        "line": 1,
+        "snippet": "AkiAAAEAAAAAAEtARoAF"
+      }
+    ],
+    "high": [],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.9,
+    "blocks_parsed": 6,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/codicon-base64.js (chunk 1/63)",
+        "summary": "The analyzed file is a Base64-encoded binary font file (likely a .woff or .ttf) used for the extension's UI icons. The 'CRITICAL' scanner hits for AWS keys are false positives caused by the scanner matching substrings within the Base64-encoded binary data. There is no executable logic, network calls, or credential harvesting in this file. The extension's purpose (UI outline dock) is consistent with bundling custom font assets."
+      },
+      {
+        "target": "extension/codicon-base64.js (chunk 3/63)",
+        "summary": "The provided code chunk is a large block of Base64-encoded data, likely representing a binary asset (such as an icon, font, or image) embedded in the extension. The static scanner's 'leaked_secrets' hits are false positives caused by the Base64 encoding coincidentally containing the 'AKIA' prefix. There is no executable logic, network activity, or malicious behavior in this specific chunk. The extension's purpose (UI outline strip) is consistent with embedding such assets."
+      },
+      {
+        "target": "extension/codicon-base64.js (chunk 4/63)",
+        "summary": "The provided code chunk consists entirely of Base64-encoded binary data, likely representing an embedded asset such as a font file (given the filename 'codicon-base64.js') or image. There is no executable JavaScript logic, network calls, file system access, or credential handling visible in this chunk. The static scanner hits for AWS keys are false positives resulting from pattern matching on the Base64 string. The extension's purpose (UI outline strip) is consistent with embedding assets. No malicious behavior is detected in this specific file chunk."
+      },
+      {
+        "target": "extension/codicon-base64.js (chunk 5/63)",
+        "summary": "The extension exhibits critical risk indicators including hardcoded AWS access keys and large blocks of base64-encoded data. The presence of secrets in a simple UI extension is a strong indicator of malicious intent, likely for credential theft or data exfiltration. The encoded data may contain a stager or payload. The behavioral mismatch between the simple UI description and the complex, obfuscated code further supports a malicious verdict."
+      },
+      {
+        "target": "extension/codicon-base64.js (chunk 6/63)",
+        "summary": "The provided code chunk consists entirely of binary data or encoded font/icon definitions (indicated by the repetitive hex/base64-like structure and the filename 'codicon-base64.js'). The 'leaked secrets' alerts are false positives caused by random byte sequences matching AWS key regex patterns. There is no executable logic, network activity, or malicious behavior in this chunk. The extension's purpose (UI outline strip) is consistent with containing icon/font data."
+      },
+      {
+        "target": "extension/codicon-base64.js (chunk 28/63)",
+        "summary": "The file contains a large Base64-encoded string, consistent with the filename `codicon-base64.js` and the extension's purpose of providing UI elements (outline strip, icons). The static scanner hits for AWS keys are false positives resulting from random character sequences within the Base64 payload. No executable code, network calls, or suspicious logic is present in this chunk. The extension's behavior aligns with its description of a UI enhancement tool."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'AKIAoQCgAJcAlgCVAJMA' and 'AkiAAAEAAAAAAEtARoAF' as AWS Access Key IDs. However, the file content is a Base64-encoded binary font file (indicated by the 'AAEAAA' header and internal table names like 'cGx5ZnM' for 'glyf' and 'aWRlbnRpdHk' for 'identity'). The 'AKIA' string is a coincidental substring within the encoded binary data, not a hardcoded credential in the source logic.",
+        "code_reference": "module.exports = 'AAEAAA...'",
+        "line_hint": 1,
+        "target": "extension/codicon-base64.js (chunk 1/63)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While common for UI extensions that need to be ready immediately, it is slightly aggressive for a simple outline dock. However, given the file is just a font resource, this is likely standard practice for ensuring the UI assets are loaded, not a malicious persistence mechanism.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/codicon-base64.js (chunk 1/63)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'AKIAoQCgAJcAlgCVAJMA' and 'AkiAAAEAAAAAAEtARoAF' as AWS Access Key IDs. However, the source code consists entirely of a long string of Base64-encoded characters (likely binary data, such as an image, font, or asset). The 'AKIA' prefix is a common substring in Base64 encoding and does not indicate a hardcoded credential in this context. No network exfiltration or credential usage logic is present in this chunk.",
+        "code_reference": "AKIAoQCgAJcAlgCVAJMA",
+        "line_hint": 1,
+        "target": "extension/codicon-base64.js (chunk 3/63)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'AWS Access Key ID' matches (AKIAoQCgAJcAlgCVAJMA, AkiAAAEAAAAAAEtARoAF). However, the source code is a continuous stream of Base64-encoded binary data (likely a font file, image, or asset) with no JavaScript logic, string delimiters, or context indicating these are actual credentials. The pattern 'AKIA' is a common substring in Base64 encoding of binary data. This is a false positive.",
+        "code_reference": "AKIAoQCgAJcAlgCVAJMA",
+        "line_hint": 1,
+        "target": "extension/codicon-base64.js (chunk 4/63)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Static analysis detected an AWS Access Key ID pattern (`AKIAoQCgAJcAlgCVAJMA`) embedded in the source code. This indicates potential credential leakage or hardcoded secrets.",
+        "code_reference": "AKIAoQCgAJcAlgCVAJMA",
+        "line_hint": 1,
+        "target": "extension/codicon-base64.js (chunk 5/63)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Static analysis detected a second AWS Access Key ID pattern (`AkiAAAEAAAAAAEtARoAF`) embedded in the source code. This confirms the presence of multiple hardcoded credentials.",
+        "code_reference": "AkiAAAEAAAAAAEtARoAF",
+        "line_hint": 1,
+        "target": "extension/codicon-base64.js (chunk 5/63)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_PAYLOAD",
+        "description": "The file content consists of a large block of base64-encoded data. Given the presence of detected secrets and the extension's simple UI purpose, this likely contains a stager, payload, or exfiltration logic that is obfuscated to evade detection.",
+        "code_reference": "AA69oAAAFpAADr2wAA69sAAAFlAADr3AAA69wAAAHVAADr3QAA690AAAHEAADr3gAA694AAACZAADr3wAA698AAAF8AADr4AAA6+AAAAHGAADr4QAA6+EAAAI/AADr4gAA6+IAAAFSAADr4wAA6+MAAAFRAADr5AAA6+QAAADaAADr5QAA6+UAAAI1AADr5gAA6+YAAAI0AADr5wAA6+cAAAEMAADr6AAA6+gAAAJCAADr6QAA6+kAAAAkAADr6gAA6+oAAADwAADr6wAA6+sAAAEfAADr7AAA6+wAAAExAADr7QAA6+0AAAEwAADr7gAA6+4AAAEqAADr7wAA6+8AAAEtAADr8AAA6/AAAAErAADr8QAA6/EAAAEoAADr8gAA6/IAAAEnAADr8wAA6/MAAAEkAADr9AAA6/QAAAEhAADr9QAA6/UAAAEgAADr9gAA6/YAAAEuAADr9wAA6/cAAAEvAADr+AAA6/gAAABLAADr+QAA6/kAAAFEAADr+gAA6/oAAADFAADr+wAA6/sAAAGaAADr/AAA6/wAAAJTAADr/QAA6/0AAAJSAADr/gAA6/4AAAJRAADr/wAA6/8AAAJQAADsAAAA7AAAAAEiAADsAQAA7AEAAAEpAADsAgAA7AIAAAElAADsAwAA7AMAAAI5AADsBAAA7AQAAAFNAADsBQAA7AUAAAEEAADsBgAA7AYAAAEHAADsBwAA7AcAAAIMAADsCAAA7AgAAAI7AADsCQAA7AkAAAI8AADsCgAA7AoAAAHtAADsCwAA7AsAAAFjAADsDAAA7AwAAAFiAADsDQAA7A0AAACQAADsDgAA7A4AAAHvAADsDwAA7A8AAACKAADsEAAA7BAAAAB0AADsEQAA7BEAAAFBAADsEgAA7BIAAAD7AADsEwAA7BMAAAA6AADsFAAA7BQAAAA4AADsFQAA7BUAAAH6AADsFgAA7BYAAAB5AADsFwAA7BcAAAF3AADsGAAA7BgAAAAXAADsGQAA7BkAAAIZAADsGgAA7BoAAADbAADsGwAA7BsAAAD2AADsHAAA7BwAAAD8AADsHQAA7B0AAACzAADsHgAA7B4AAAHdAADsHwAA7B8AAAEaAADsIAAA7CAAAACmAADsIQAA7CEAAAB1AADsIgAA7CIAAACpAADsIwAA7CMAAAGqAADsJAAA7CQAAABrAADsJQAA7CUAAACAAADsJgAA7CYAAAFeAADsJwAA7CcAAAFgAADsKAAA7CgAAAFfAADsKQAA7CkAAAATAADsKgAA7CoAAAAVAADsKwAA7CsAAAH9AADsLAAA7CwAAACaAADsLQAA7C0AAACeAADsLgAA7C4AAAHbAADsLwAA7C8AAAFaAADsMAAA7DAAAAEFAADsMQAA7DEAAAEGAADsMgAA7DIAAAFVAADsMwAA7DMAAADeAADsNAAA7DQAAAJDAADsNQAA7DUAAAFXAADsNgAA7DYAAAGiAADsNwAA7DcAAAH8AADsOAAA7DgAAAHeAADsOQAA7DkAAADNAADsOgAA7DoAAAHkAADsOwAA7DsAAAHfAADsPAAA7DwAAAE2AADsPQAA7D0AAAHoAADsPgAA7D4AAAHjAADsPwAA7D8AAAGDAADsQAAA7EAAAAEZAADsQQAA7EEAAABdAADsQgAA7EIAAAHgAADsQwAA7EMAAACvAADsRAAA7EQAAAE4AADsRQAA7EUAAAE3AADsRgAA7EYAAAFmAADsRwAA7EcAAAECAADsSAAA7EgAAAGVAADsSQAA7EkAAAEsAADsSgAA7EoAAAEmAADsSwAA7EsAAAEjAADsTAAA7EwAAAHlAADsTQAA7E0AAAHmAADsTgAA7E4AAAHhAADsTwAA7E8AAAInAADsUAAA7FAAAACOAADsUQAA7FEAAAGhAADsUgAA7FIAAAHiAADsUwAA7FMAAACLAADsVAAA7FQAAAHxAADsVQAA7FUAAAIoAADsVgAA7FYAAAIpAADsVwAA7FcAAAH2AADsWAAA7FgAAAD0AADsWQAA7FkAAAA8AADsWgAA7FoAAAIwAADsWwAA7FsAAAHyAADsXAAA7FwAAAHZAADsXQAA7F0AAAGcAADsXgAA7F4AAAGIAADsYAAA7GAAAADKAADsYQAA7GEAAAC5AADsYgAA7GIAAACYAADsYwAA7GMAAAHIAADsZAAA7GQAAABsAADsZQAA7GUAAADqAADsZgAA7GYAAAFDAADsZwAA7GcAAAJWAADsaAAA7GgAAAGkAADsaQAA7GkAAACsAADsagAA7GoAAAB7AADsawAA7GsAAAD+AADsbAAA7GwAAAFxAADsbQAA7G0AAAFuAADsbgAA7G4AAAFvAADsbwAA7G8AAAB3AADscAAA7HAAAACPAADscQAA7HEAAABEAADscgAA7HIAAAAMAADscwAA7HMAAAF4AADsdAAA7HQAAAGlAADsdQAA7HUAAAIGAADsdgAA7HYAAAAsAADsdwAA7HcAAACFAADseAAA7HgAAAH3AADseQAA7HkAAAAbAADsegAA7HoAAAIAAADsewAA7HsAAAJZAADsfAAA7HwAAAC7AADsfQAA7H0AAAAEAADsfgAA7H4AAAADAADsfwAA7H8AAACUAADsgAAA7IAAAAJFAADsgQAA7IEAAADnAADsggAA7IIAAAIJAADsgwAA7IMAAADpAADshAAA7IQAAADxAADshQAA7IUAAABBAADshgAA7IYAAAIqAADshwAA7IcAAAIrAADsiAAA7IgAAACBAADsiQAA7IkAAAIQAADsigAA7IoAAAHnAADsiwAA7IsAAAF7AADsjAAA7IwAAAF9AADsjQAA7I0AAAF2AADsjgAA7I4AAAFwAADsjwAA7I8AAAEeAADskAAA7JAAAADHAADskQAA7JEAAAC+AADskgAA7JIAAACxAADskwAA7JMAAAC0AADslAAA7JQAAAB/AADslQAA7JUAAAB2AADslgAA7JYAAA",
+        "line_hint": 1,
+        "target": "extension/codicon-base64.js (chunk 5/63)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is described as a simple UI outline strip, but the code contains large blocks of encoded data and detected secrets. This is disproportionate to the stated functionality and suggests hidden capabilities.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/codicon-base64.js (chunk 5/63)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'AWS Access Key ID' patterns, but the code is a binary buffer (likely font data or icon map) containing base64/hex-like strings. The matches are coincidental substrings within binary data, not actual credentials.",
+        "code_reference": "AKIAoQCgAJcAlgCVAJMA",
+        "line_hint": 1,
+        "target": "extension/codicon-base64.js (chunk 6/63)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'AWS Access Key ID' matches. Upon inspection, the strings `AKIAoQCgAJcAlgCVAJMA` and `AkiAAAEAAAAAAEtARoAF` are substrings of a large Base64-encoded blob. The context (surrounding characters, lack of `=` padding in a valid key structure, and the file name `codicon-base64.js`) indicates this is binary data (likely font or icon definitions) encoded in Base64, not actual credentials. The 'AKIA' prefix is a common false positive in Base64 data.",
+        "code_reference": "AKIAoQCgAJcAlgCVAJMA",
+        "line_hint": 1,
+        "target": "extension/codicon-base64.js (chunk 28/63)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The analyzed file is a Base64-encoded binary font file (likely a .woff or .ttf) used for the extension's UI icons. The 'CRITICAL' scanner hits for AWS keys are false positives caused by the scanner matching substrings within the Base64-encoded binary data. There is no executable logic, network calls, or credential harvesting in this file. The extension's purpose (UI outline dock) is consistent with bundling custom font assets.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-08-22T08:55:40.413Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-22T13:46:59.478508+00:00Z"
+}

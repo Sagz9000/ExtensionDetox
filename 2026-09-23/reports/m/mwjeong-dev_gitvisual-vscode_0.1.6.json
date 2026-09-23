@@ -1,0 +1,435 @@
+{
+  "extension_id": "mwjeong-dev.gitvisual-vscode",
+  "display_name": "GitVisual (Preview)",
+  "version": "0.1.6",
+  "publisher": {
+    "name": "mwjeong-dev",
+    "verified": false
+  },
+  "vsix_sha256": "4f74f8b751e2e14c1d41e607846969a51263253e4de944adeec722ebf75abd94",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6074999999999999,
+    "ai_vibe": 0.7,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Base64 encoding data then sending over network (data exfil)",
+        "file": "extension/dist/extension.js",
+        "line": 17,
+        "snippet": "Buffer.from(s))}break}case\"cherryPick\":await d(r,[\"cherry-pick\",e]);break;case\"checkout\":await i.checkout(e);break;case\"compareHead\":await this.openComparison(\"HEAD\",e);break;case\"reset\":await this.re"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "\"use strict\";var De=Object.create;var U=Object.defineProperty;var Ce=Object.getOwnPropertyDescriptor;var Ee=Object.getOwnPropertyNames;var xe=Object.getPrototypeOf,Re=Object.prototype.hasOwnProperty;v"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "\"use strict\";var De=Object.create;var U=Object.defineProperty;var Ce=Object.getOwnPropertyDescriptor;var Ee=Object.getOwnPropertyNames;var xe=Object.getPrototypeOf,Re=Object.prototype.hasOwnProperty;v"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": ".postMessage(e)}async sendFileList(){let e=this.repo;if(!e){this.view&&(this.view.badge=void 0),this.post({type:\"fileList\",files:[],changelists:[]});return}let t=I(e,this.changelistStore);this.view&&("
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 17,
+        "snippet": ".postMessage(e)}async loadAndSend(){let e=++this.loadGeneration,t=this.repo;if(!t){this.post({type:\"commits\",commits:[]});return}let i=p.workspace.getConfiguration(\"gitTools\").get(\"graph.maxCommits\",3"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 29,
+        "snippet": ".post({type:\"busy\",busy:!1}),this.post({type:\"error\",message:e instanceof Error?e.message:String(e)})}}post(e){this.view?.webview.postMessage(e)}async sendBranches(){let e=this.repo;if(!e){this.post({"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/webviews/pushPreview/main.js",
+        "line": 20,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 14
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 14,
+    "blocks_seen": 14,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/23)",
+        "summary": "The GitVisual extension exhibits several suspicious patterns, including potential data exfiltration, use of child_process for command execution, and configuration harvesting. While these activities may align with legitimate Git operations, the presence of multiple exfiltration patterns and direct command execution capabilities raises concerns about potential misuse. The extension's size and dependencies appear proportional to its stated\u529f\u80fd, but the observed code patterns warrant further investigation to rule out malicious intent."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/23)",
+        "summary": "The GitVisual extension exhibits some concerning patterns, such as network activity and command execution, which could indicate potential malicious behavior. However, these activities may also be legitimate given the extension's purpose as a Git tool. Further dynamic analysis is recommended to confirm the nature of these activities."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/23)",
+        "summary": "The GitVisual extension exhibits patterns indicative of potential data exfiltration and network activity, which may be inconsistent with its stated purpose as a visual Git workspace tool. While some findings could be legitimate for its functionality, others raise concerns about its behavior."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 7/23)",
+        "summary": "The extension exhibits suspicious patterns including direct system command execution and potential data exfiltration. While some behaviors may align with legitimate Git operations, the use of `child_process` and network-based actions raise concerns about its true purpose, especially given the extension's stated functionality."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 13/23)",
+        "summary": "The extension exhibits patterns that could indicate potential abuse, such as use of `child_process` and data transmission mechanisms. However, without evidence of malicious intent or clear exfiltration of sensitive data, the findings remain suspicious rather than definitive."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 14/23)",
+        "summary": "The extension exhibits suspicious patterns including potential data exfiltration and arbitrary command execution. While not definitively malicious, these indicators merit closer scrutiny, especially given the extension's stated purpose as a Git visualization tool."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 17/23)",
+        "summary": "The extension exhibits suspicious patterns including potential command execution and data exfiltration. While it aligns with its stated purpose as a Git tool, the use of `child_process` and network operations raises concerns about possible malicious intent or poor security practices."
+      },
+      {
+        "target": "extension/dist/webviews/pushPreview/main.js (chunk 1/9)",
+        "summary": "The provided code appears to be part of a translation system for a VS Code extension, handling localization strings. No malicious or suspicious patterns were identified. The code is consistent with the extension's stated purpose as a Git visualization tool, and no critical, high-risk, or medium-risk indicators were detected. The static analysis did not reveal any secrets, credential harvesting, or network exfiltration activities. The code is well-structured and appears benign."
+      },
+      {
+        "target": "extension/dist/webviews/pushPreview/main.js (chunk 2/9)",
+        "summary": "The provided code appears to be part of a legitimate VS Code extension for Git visualization. The code contains translation strings and does not exhibit any malicious or suspicious behavior. The static analysis did not uncover any critical, high-risk, or medium-risk indicators. The extension's functionality aligns with its stated purpose, and there are no obvious capability disconnects or behavioral mismatches."
+      },
+      {
+        "target": "extension/dist/webviews/pushPreview/main.js (chunk 3/9)",
+        "summary": "The provided code snippet appears to be part of a legitimate VS Code extension focused on Git visualization and version control functionality. The code contains localization strings for different languages and does not exhibit any malicious or suspicious behavior. The static analysis identified a potential false positive for persistence evasion, but no actual implementation of such functionality was found in the provided code. The extension's purpose, as described in the README, aligns with its code functionality, and no critical-risk indicators were identified."
+      },
+      {
+        "target": "extension/dist/webviews/pushPreview/main.js (chunk 4/9)",
+        "summary": "The provided code snippet appears to be part of a user interface translation file, containing localized strings for German and French. No malicious or suspicious code was detected in this snippet. The code does not exhibit any signs of secret leakage, credential harvesting, information stealing, or network exfiltration. The functionality appears to be related to Git version control visualization, which aligns with the extension's stated purpose. No critical-risk, high-risk, or medium-risk indicators were identified in this portion of the code."
+      },
+      {
+        "target": "extension/dist/webviews/pushPreview/main.js (chunk 5/9)",
+        "summary": "The extension exhibits a potential suspicious activity by setting a file's hidden attribute, which could indicate persistence or evasion techniques. However, without full context, it's uncertain if this is malicious or a legitimate feature. The extension's overall functionality appears to align with its stated purpose as a Git workspace tool, but the hidden file setting raises concern."
+      },
+      {
+        "target": "extension/dist/webviews/pushPreview/main.js (chunk 6/9)",
+        "summary": "The analyzed code appears to be part of a legitimate VS Code extension for Git visualization. No malicious or suspicious patterns were detected. The functionality aligns with the extension's stated purpose, and there are no critical or high-risk indicators present."
+      },
+      {
+        "target": "extension/dist/webviews/pushPreview/main.js (chunk 8/9)",
+        "summary": "The provided code snippet from the GitVisual extension appears to be part of a webview handling UI elements and git commit information display. No critical, high-risk, or medium-risk indicators were identified. The code aligns with the extension's stated purpose as a visual git workspace tool. The static analysis did not uncover any malicious patterns or capabilities beyond the extension's intended functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "code_reference",
+        "description": "Usage of `require('child_process')` which can allow arbitrary command execution.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "code_reference",
+        "description": "Pattern suggesting data exfiltration detected in multiple lines.",
+        "code_reference": "lines 5, 17, 29",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 1/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "code_reference",
+        "description": "WebView panel combined with external HTTP detected, potential phishing overlay.",
+        "code_reference": "line 29",
+        "line_hint": 29,
+        "target": "extension/dist/extension.js (chunk 1/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "code_reference",
+        "description": "Harvesting VSCode configuration and sending over network detected.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 1/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "code_reference",
+        "description": "Enumerating installed extensions (reconnaissance) detected.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 1/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Pattern suggesting data exfiltration detected in network calls.",
+        "code_reference": "line 5, line 17, line 29",
+        "line_hint": "5, 17, 29",
+        "target": "extension/dist/extension.js (chunk 3/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "command_execution",
+        "description": "Direct command execution using child_process detected.",
+        "code_reference": "line 1",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VS Code configuration and sending over network detected.",
+        "code_reference": "line 17",
+        "line_hint": "17",
+        "target": "extension/dist/extension.js (chunk 3/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Enumerating installed extensions detected.",
+        "code_reference": "line 1",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 3/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Pattern suggesting data exfiltration detected in the code.",
+        "code_reference": "line 5",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 4/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Pattern suggesting data exfiltration detected in the code.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 4/23)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "network_activity",
+        "description": "Base64 encoding data then sending over network (data exfil) detected.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 4/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network detected.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 4/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Enumerating installed extensions detected.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 4/23)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which allows arbitrary command execution.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Capability Disconnect",
+        "description": "Extension's stated purpose as a Git visualization tool does not justify direct system command execution.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Data Exfiltration",
+        "description": "Pattern suggesting data exfiltration via network calls and base64 encoding.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 7/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "WebView Security",
+        "description": "WebView panel combined with external HTTP, potential phishing overlay.",
+        "code_reference": "line 29",
+        "line_hint": 29,
+        "target": "extension/dist/extension.js (chunk 7/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Configuration Harvesting",
+        "description": "Harvesting VSCode configuration and sending over network.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 7/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "vscode_api_abuse",
+        "description": "Usage of `require('child_process')` which allows arbitrary command execution.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 13/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Pattern suggesting data exfiltration via `.postMessage` and `.post` methods.",
+        "code_reference": "lines 5, 17, 29",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 13/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VS Code configuration and potential network transmission.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 13/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "reconnaissance",
+        "description": "Enumerating installed extensions via `extensions.getExtension`.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 13/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Usage of `child_process` which allows arbitrary command execution.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 14/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Pattern suggesting data exfiltration via `.postMessage(e)` and `.post` methods.",
+        "code_reference": "lines 5, 17, 29",
+        "line_hint": 5,
+        "target": "extension/dist/extension.js (chunk 14/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and potential network transmission.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 14/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Enumerating installed extensions via `extensions.getExtension`.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 14/23)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "code_execution",
+        "description": "Usage of `require('child_process')` which allows arbitrary command execution, commonly seen in malicious code.",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 17/23)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "data_exfiltration",
+        "description": "Pattern suggesting base64 encoding data for network transmission, potentially indicating data exfiltration.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 17/23)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "api_abuse",
+        "description": "Harvesting VS Code configuration and sending over network, which could expose sensitive information.",
+        "code_reference": "line 17",
+        "line_hint": 17,
+        "target": "extension/dist/extension.js (chunk 17/23)"
+      }
+    ],
+    "findings_truncated": 1
+  },
+  "ai_summary": "The GitVisual extension exhibits several suspicious patterns, including potential data exfiltration, use of child_process for command execution, and configuration harvesting. While these activities may align with legitimate Git operations, the presence of multiple exfiltration patterns and direct command execution capabilities raises concerns about potential misuse. The extension's size and dependencies appear proportional to its stated\u529f\u80fd, but the observed code patterns warrant further investigation to rule out malicious intent.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "7 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-13T00:58:14.647Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-13T05:46:39.181979+00:00Z"
+}

@@ -1,0 +1,377 @@
+{
+  "extension_id": "u-agentix.u-agentix-community-hub",
+  "display_name": "U_Agentix Community Hub",
+  "version": "1.1.0",
+  "publisher": {
+    "name": "u-agentix",
+    "verified": false
+  },
+  "vsix_sha256": "bafca13d89a7fefadedac20f156da3cb8a3657a81b2756671835edcfc7589b14",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6599999999999999,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": ".postCount} posts`,this.tooltip=`Rank #${t}: ${e.displayName} \u2014 ${e.karma} karma from ${e.postCount} real posts`,this.iconPath=this.getRankIcon(t),this.contextValue=\"leaderboard-entry\"):this.iconPath="
+      }
+    ],
+    "total": 15
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "community-hub-api-production.up.railway.app",
+      "source_file": "extension/dist/extension.js",
+      "line": 1,
+      "context": "(()=>{\"use strict\";var e={55:function(e,t,o){var r=this&&this.__createBinding||(Object.create?function(e,t,o,r){void 0===r&&(r=o);var a=Object.getOwnPropertyDescriptor(t,o);a&&!(\"get\"in a?!t.__esModul",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "img.shields.io",
+      "source_file": "extension/package.json",
+      "line": 368,
+      "context": "\"url\": \"https://img.shields.io/badge/U_Agentix-Community%20Hub-blue\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 4/18)",
+        "summary": "This extension exhibits critical malicious behavior. It accesses the VS Code SecretStorage API (`context.secrets.get`), which is highly unusual for a social/community extension and indicates an intent to steal stored credentials or API keys. It then communicates with an external, low-reputation domain (`community-hub-api-production.up.railway.app`), likely to exfiltrate this sensitive data. The 'Community Hub' branding appears to be a social engineering wrapper to trick users into installing a credential stealer."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/18)",
+        "summary": "This extension exhibits strong indicators of malicious intent, specifically credential theft. The most critical finding is the access to `context.secrets.get()`, which allows the extension to read sensitive data stored in VS Code's secret storage. This capability is entirely disproportionate to the extension's advertised function as a social/community hub for traders. Furthermore, the extension sends data to an unknown third-party domain (`community-hub-api-production.up.railway.app`), which is a common pattern for exfiltrating stolen credentials or user data. The combination of secret storage access, network exfiltration to an untrusted domain, and the disconnect between the code's capabilities and its stated purpose warrants a MALICIOUS verdict."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/18)",
+        "summary": "The extension exhibits critical malicious behavior by accessing the VS Code SecretStorage API (`context.secrets.get`) and communicating with an unverified external domain (`community-hub-api-production.up.railway.app`). While the code chunk provided shows benign UI logic for a leaderboard, the presence of secret reading combined with network egress to a suspicious backend strongly indicates credential theft or data exfiltration. The 'Community Hub' branding is likely a cover for an info-stealer or supply-chain attack."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 7/18)",
+        "summary": "This extension exhibits strong indicators of malicious intent. The most critical finding is the access to `context.secrets.get()`, which allows the extension to read sensitive credentials stored in VS Code's SecretStorage. This is combined with network communication to an untrusted, attacker-friendly domain (`up.railway.app`). The 'Community Hub' functionality serves as a plausible cover for a credential stealer. The presence of webviews with scripts enabled further increases the attack surface. This extension should be considered malicious and removed immediately."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 8/18)",
+        "summary": "This extension exhibits strong indicators of malicious intent. The most critical finding is the access to `context.secrets.get()`, which allows the extension to read sensitive credentials stored in VS Code's secret storage. This behavior is completely disproportionate to its advertised function as a 'Community Hub' for social learning. Furthermore, the extension sends data to an unknown external domain (`community-hub-api-production.up.railway.app`), which is a common pattern for data exfiltration. The combination of credential harvesting and network exfiltration to an untrusted endpoint strongly suggests this is a malware dropper or info-stealer disguised as a productivity/social tool."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 16/18)",
+        "summary": "The extension exhibits multiple high-risk behaviors. It connects to an unverified external API (`community-hub-api-production.up.railway.app`) and uses VS Code's SecretStorage to store and retrieve keys (`communityHub.moderatorKey`, `communityHubDisplayName`). The combination of secret storage access, external network calls, and a script-enabled WebView creates a significant attack surface for credential theft, data exfiltration, and phishing. The 'moderatorKey' stored in secrets is particularly suspicious for a social feed extension. While some behaviors (like fetching a feed) are consistent with the stated purpose, the security posture is poor, and the potential for malicious use is high. The code should be treated as malicious until proven otherwise, and users should avoid installing it."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 18/18)",
+        "summary": "This extension exhibits multiple high-risk behaviors consistent with a supply-chain attack targeting developers and traders. The most critical finding is the access to `context.secrets.get()`, which allows the extension to read sensitive credentials stored in VS Code's secret storage. Combined with network communication to an unverified Railway app (`community-hub-api-production.up.railway.app`) and the ability to share code snippets (which may contain sensitive logic or keys), this strongly suggests data exfiltration. The 'Community Hub' branding is likely a social engineering lure to trick users into installing an extension that harvests their credentials and code. The use of `crypto` and webviews with scripts enabled further supports the potential for obfuscated exfiltration or phishing. This extension should be considered malicious."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses `context.secrets.get()`, which is the VS Code SecretStorage API. For a 'Community Hub' extension, there is no legitimate reason to read stored secrets (API keys, tokens) unless it is exfiltrating them. Combined with the network endpoint, this is a strong indicator of credential harvesting.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 4/18)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension communicates with `community-hub-api-production.up.railway.app`. Railway is a PaaS often used for quick deployments, including malicious infrastructure. The combination of reading secrets and sending data to an unknown, low-reputation domain suggests exfiltration of stolen credentials or user data.",
+        "code_reference": "community-hub-api-production.up.railway.app",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 4/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension claims to be a social/collaboration tool. While webviews are expected, the specific pattern of polling an external API for 'posts' while simultaneously accessing local secrets is disproportionate and suspicious. The 'social' aspect may be a cover for a botnet or data collection service.",
+        "code_reference": "f.refreshFromApi(), w.refreshFromApi()",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 4/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule hit for 'data exfiltration' matching `.postCount} posts` is a false positive; this is simply UI text rendering karma/post counts in a tooltip.",
+        "code_reference": "this.tooltip=`Rank #${t}: ${e.displayName} \u2014 ${e.karma} karma from ${e.postCount}`",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 4/18)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses `context.secrets.get()`, which is the VS Code SecretStorage API. This is a critical red flag for a 'Community Hub' extension. Legitimate social extensions do not require access to the user's stored secrets (API keys, tokens, passwords) unless explicitly documented for a specific integration (e.g., GitHub auth), and even then, they usually use the `vscode.authentication` provider, not raw secret storage reads for exfiltration. Combined with network calls to an unknown Railway domain, this strongly suggests credential harvesting.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension communicates with `community-hub-api-production.up.railway.app`. Railway is a PaaS often used for quick deployments, including by attackers for C2 or data collection. The combination of reading secrets and posting to this endpoint indicates potential exfiltration of stolen credentials or user data.",
+        "code_reference": "community-hub-api-production.up.railway.app",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Social learning and collaboration platform'. While social features are plausible, the access to `SecretStorage` is completely disproportionate to the stated purpose of sharing code snippets and chatting. A social feed does not need to read the user's private API keys or tokens stored in VS Code's secret storage.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The extension creates WebviewPanels with `enableScripts: true` and loads content. If the remote content from the Railway API is not strictly sanitized, this could be a vector for XSS or further client-side attacks, though the primary risk here is the backend data flow.",
+        "code_reference": "createWebviewPanel(\"communityFeed\",\"Community Feed\",i.ViewColumn.One,{enableScripts:!0})",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/18)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses `context.secrets.get()`, which is the VS Code SecretStorage API. For a 'Community Hub' extension, there is no legitimate reason to read user secrets (API keys, tokens) unless it is explicitly documented as a credential manager or specific service authenticator. Combined with the network exfiltration indicators, this strongly suggests credential harvesting.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 6/18)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension communicates with an unknown, low-reputation domain `community-hub-api-production.up.railway.app`. Railway is a common platform for hosting disposable or malicious backends. The combination of reading secrets and sending data to an unverified external API is a classic exfiltration pattern.",
+        "code_reference": "community-hub-api-production.up.railway.app",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 6/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Social learning and collaboration platform'. While social features are common, the specific combination of reading VS Code secrets (`context.secrets`) and connecting to an obscure Railway app is disproportionate to a simple social feed. A legitimate social extension would typically use OAuth or user-provided API keys stored in settings, not silently read all secrets.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 6/18)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule hit for 'data exfiltration' on line 1 matching `.postCount} posts` is a false positive. This is simply HTML template string interpolation for displaying leaderboard data in a WebView.",
+        "code_reference": ".postCount} posts",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 6/18)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses `context.secrets.get()`, which is the VS Code SecretStorage API. For a 'Community Hub' extension, there is no legitimate reason to read arbitrary secrets from the user's VS Code credential store. This is a classic pattern for harvesting API keys, tokens, or other sensitive data stored in VS Code.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/18)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension communicates with an unknown, low-reputation domain `community-hub-api-production.up.railway.app`. Combined with the credential theft indicator, this suggests that harvested secrets or user data are being sent to an attacker-controlled server. Railway.app is a PaaS often used for staging malicious backdoors due to its free tier and ease of deployment.",
+        "code_reference": "community-hub-api-production.up.railway.app",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a social/collaboration tool. While webviews are expected, the combination of `enableScripts: true` in webviews, access to `SecretStorage`, and external API calls to an untrusted domain creates a high-risk profile that is disproportionate to a simple 'community feed' feature. The 'Live Collaboration' and 'Voice Chat' features mentioned in the README are not standard for a simple VS Code extension and may be used to justify complex network permissions.",
+        "code_reference": "createWebviewPanel... enableScripts: !0",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_NETWORK",
+        "description": "The use of `img.shields.io` in package.json is benign, but the primary API endpoint `community-hub-api-production.up.railway.app` is not a known, reputable service. The 'production' naming in a Railway subdomain is a common tactic to make malicious infrastructure appear legitimate.",
+        "code_reference": "community-hub-api-production.up.railway.app",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 7/18)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses `context.secrets.get()`, which is the VS Code SecretStorage API. For a 'Community Hub' extension, there is no legitimate reason to read arbitrary secrets from the user's VS Code credential store. This is a classic pattern for harvesting API keys, tokens, or passwords stored in VS Code (e.g., for Git, Azure, or other extensions).",
+        "code_reference": "context.secrets.get(",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 8/18)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension communicates with an unknown, low-reputation domain `community-hub-api-production.up.railway.app`. Combined with the credential theft behavior, this endpoint is likely the destination for stolen data. Railway.app is a PaaS often used for quick deployments, including malicious infrastructure.",
+        "code_reference": "community-hub-api-production.up.railway.app",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 8/18)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Social learning and collaboration platform'. While social features might involve webviews, the combination of reading VS Code secrets (`context.secrets`) and sending data to an external API is a major behavioral mismatch. A legitimate social feed does not require access to the user's local credential store.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 8/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "WEBVIEW_SECURITY",
+        "description": "The extension creates WebviewPanels with `enableScripts: true` and loads content. While not inherently malicious, if the remote API (`community-hub-api-production.up.railway.app`) is compromised or malicious, it could serve malicious HTML/JS to the user's browser context within VS Code, potentially leading to further data theft or phishing.",
+        "code_reference": "createWebviewPanel(\"communityFeed\", \"Community Feed\", i.ViewColumn.One, {enableScripts: !0})",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 8/18)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The extension reads from `context.secrets` using the key `communityHub.moderatorKey`. While the variable name suggests a 'moderator key', storing and retrieving arbitrary secrets from VS Code's SecretStorage is a common pattern for stealing credentials or API keys if the key name is misleading or if the code logic changes. More critically, the combination of reading secrets and sending data to an external, unverified API (`community-hub-api-production.up.railway.app`) creates a direct path for credential exfiltration. The `identityHeaders` method sends an `X-Community-Id` (a UUID generated and stored in secrets) to this external server, effectively tracking the user and potentially linking their local identity to the remote service.",
+        "code_reference": "async getModeratorKey() { return this.context.secrets.get(l) } ... async identityHeaders() { return { \"X-Community-Id\": await this.getIdentityId() } }",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 16/18)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension sends user-generated data (posts, identity IDs) to a hardcoded, non-official domain: `https://community-hub-api-production.up.railway.app`. Railway is a PaaS often used for quick deployments, and this domain has no established reputation. The `request` method constructs URLs based on this base URL and sends JSON payloads. Given the 'Social Hub' nature, this is expected behavior for the feature, BUT combined with the secret storage access and the lack of transparency on what data is sent (e.g., does it send workspace context? file paths? code snippets?), it poses a significant risk. The static scanner flagged 'data exfiltration' patterns, and while the code shown is for a feed, the `createPost` method (cut off) likely sends content that could include sensitive code or data if the user shares it, or if the extension automatically includes context.",
+        "code_reference": "return e && e.trim() || \"https://community-hub-api-production.up.railway.app\"",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 16/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PHISHING_OVERLAY",
+        "description": "The extension creates a WebView panel (`createWebviewPanel`) with `enableScripts: true`. While this is standard for rich UIs, combined with external API calls, it allows the extension to render arbitrary HTML/JS. If the API response is compromised or if the extension is malicious, it could render a phishing page that mimics VS Code or other services to steal credentials. The static scanner flagged this as a potential phishing overlay.",
+        "code_reference": "createWebviewPanel(\"communityFeed\",\"Community Feed\",i.ViewColumn.One,{enableScripts:!0})",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 16/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a 'Social learning and collaboration platform'. However, the use of `context.secrets` to store a 'moderatorKey' is unusual for a simple social feed. Moderation keys are typically server-side. Storing a 'key' in local secrets that is then potentially sent to the server (or used to sign requests) is a red flag for unauthorized access or privilege escalation. The disconnect between a 'community hub' and the need for a local 'moderator key' stored in secrets is suspicious.",
+        "code_reference": "l = \"communityHub.moderatorKey\"; ... async getModeratorKey() { return this.context.secrets.get(l) }",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 16/18)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses `context.secrets.get()`, which is the VS Code SecretStorage API. For a 'Community Hub' extension, there is no legitimate reason to read arbitrary secrets from the user's keychain/secret store unless it is specifically storing its own API token. However, combined with the network exfiltration patterns and the 'trader' theme (high value targets), this is a strong indicator of credential harvesting or token theft to be sent to the C2 server.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 18/18)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension communicates with `community-hub-api-production.up.railway.app`. Railway is a common platform for hosting disposable or malicious backends. The combination of reading local secrets, code snippets, and potentially system info (implied by the 'trader' context and generic 'community' features) and sending it to an unknown, low-reputation domain is a classic exfiltration pattern.",
+        "code_reference": "community-hub-api-production.up.railway.app",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 18/18)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Social learning and collaboration platform'. While webviews are expected, the specific combination of `SecretStorage` access, code snippet sharing (which can contain sensitive logic or keys), and communication with an unverified Railway app is disproportionate to a simple social feed. A legitimate social extension would not need to read the user's VS Code secrets unless explicitly managing its own auth, but the risk of harvesting other secrets (like GitHub tokens stored in VS Code) is high.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 18/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The code explicitly requires the `crypto` module (`require('crypto')`). While `crypto` is a standard Node.js module, its presence in a social extension is unusual unless it is used for signing requests or hashing. In the context of potential malware, it may be used to obfuscate exfiltrated data or verify C2 commands.",
+        "code_reference": "require(\"crypto\")",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 18/18)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "POTENTIAL_PHISHING",
+        "description": "The extension creates a WebviewPanel with `enableScripts: true`. If the content loaded into this webview is fetched from the remote `railway.app` domain, it could serve malicious JavaScript that runs in the context of the extension, potentially bypassing some VS Code security boundaries or displaying phishing UIs that look like VS Code notifications.",
+        "code_reference": "createWebviewPanel(\"communityFeed\",\"Community Feed\",i.ViewColumn.One,{enableScripts:!0})",
+        "line_hint": "1",
+        "target": "extension/dist/extension.js (chunk 18/18)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension exhibits critical malicious behavior. It accesses the VS Code SecretStorage API (`context.secrets.get`), which is highly unusual for a social/community extension and indicates an intent to steal stored credentials or API keys. It then communicates with an external, low-reputation domain (`community-hub-api-production.up.railway.app`), likely to exfiltrate this sensitive data. The 'Community Hub' branding appears to be a social engineering wrapper to trick users into installing a credential stealer.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 37,
+    "published_date": "2026-08-17T18:26:54.45Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-18T00:36:41.258026+00:00Z"
+}

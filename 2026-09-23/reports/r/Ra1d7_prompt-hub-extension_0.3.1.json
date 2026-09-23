@@ -1,0 +1,354 @@
+{
+  "extension_id": "Ra1d7.prompt-hub-extension",
+  "display_name": "AI Prompts Hub: Recommender & Saver",
+  "version": "0.3.1",
+  "publisher": {
+    "name": "Ra1d7",
+    "verified": false
+  },
+  "vsix_sha256": "538a9b2dc1dda0785d75c586e798c80e5b482ad7e27ecf823864856434abe01f",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6775,
+    "ai_vibe": 0.9,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Machine ID harvesting",
+        "file": "extension/dist/extension.js",
+        "line": 188,
+        "snippet": "machineId"
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.js",
+        "line": 50,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 64,
+        "snippet": "method: \"POST\", body: JSON.stringify({ deviceName: `${vscode.env"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/extension.js",
+        "line": 342,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/extension.js",
+        "line": 342,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 9
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "prompts.devqr.org",
+      "source_file": "extension/package.json",
+      "line": 15,
+      "context": "\"homepage\": \"https://prompts.devqr.org\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.4,
+    "confidence": 0.7,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/21)",
+        "summary": "The extension exhibits several concerning patterns including potential unauthorized access to VS Code secrets, network communication with unverified domains, and behavioral mismatches with its stated purpose. While not overtly malicious, these indicators raise significant red flags about its true intentions and data handling practices."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/21)",
+        "summary": "The extension exhibits several high-risk patterns including potential credential exposure and data exfiltration. While not overtly malicious, these behaviors raise concerns about data handling and could indicate a disconnect between stated purposes and actual capabilities."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/21)",
+        "summary": "The extension exhibits suspicious behavior by harvesting VSCode configuration and potentially accessing secret storage, which is inconsistent with its stated purpose of managing AI prompts. While no direct malicious code is evident, the flagged activities raise concerns about potential credential theft or unauthorized data transmission."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/21)",
+        "summary": "The extension exhibits several suspicious patterns, including potential information harvesting and misuse of VS Code APIs. While not overtly malicious, these activities raise concerns about data handling and alignment with the extension's stated purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 14/21)",
+        "summary": "The extension exhibits several concerning patterns including potential credential theft via SecretStorage API access, machine ID harvesting, and suspicious network activity. These behaviors significantly deviate from the extension's stated purpose of managing AI prompts, raising concerns about its true intent."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 15/21)",
+        "summary": "The extension exhibits critical risks including potential credential theft via SecretStorage API access and high-risk data exfiltration patterns. The inclusion of hidden file attributes raises concerns about persistence or data hiding. The extension's functionality, particularly its access to sensitive APIs and environment variables, significantly exceeds its advertised purpose of managing AI prompts, indicating a capability disconnect."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 19/21)",
+        "summary": "The extension exhibits critical risks including potential credential theft via secret storage access and machine ID harvesting. It also shows high-risk patterns like data exfiltration and VS Code configuration harvesting. These activities significantly deviate from the extension's stated purpose, raising concerns about its benign nature."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Access to VS Code SecretStorage API which could potentially expose sensitive session tokens.",
+        "code_reference": "line 50",
+        "line_hint": 50,
+        "target": "extension/dist/extension.js (chunk 1/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "Extension claims to be a prompt saver but connects to unknown domain 'prompts.devqr.org' which may imply data collection beyond its scope.",
+        "code_reference": "extension/package.json:15",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/21)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Network requests to potentially unknown domains with device identification data which could be used for tracking.",
+        "code_reference": "line 64",
+        "line_hint": 64,
+        "target": "extension/dist/extension.js (chunk 1/21)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration settings and sending over network which could expose sensitive URLs or endpoints.",
+        "code_reference": "line 47",
+        "line_hint": 47,
+        "target": "extension/dist/extension.js (chunk 1/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "credential_theft",
+        "description": "Access to VS Code's secret storage API which could expose sensitive information.",
+        "code_reference": "line 50",
+        "line_hint": 50,
+        "target": "extension/dist/extension.js (chunk 2/21)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Network requests that include potentially sensitive environment information.",
+        "code_reference": "line 47",
+        "line_hint": 47,
+        "target": "extension/dist/extension.js (chunk 2/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "machine_id_harvesting",
+        "description": "Collection of machine ID which could be used for tracking or persistence.",
+        "code_reference": "line 188",
+        "line_hint": 188,
+        "target": "extension/dist/extension.js (chunk 2/21)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network",
+        "code_reference": "line 47",
+        "line_hint": 47,
+        "target": "extension/dist/extension.js (chunk 3/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API",
+        "code_reference": "line 50",
+        "line_hint": 50,
+        "target": "extension/dist/extension.js (chunk 3/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "info-stealer_patterns",
+        "description": "Use of `vscode.env.machineId` which could be used for system identification or tracking.",
+        "code_reference": "line 188",
+        "line_hint": 188,
+        "target": "extension/dist/extension.js (chunk 4/21)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network.",
+        "code_reference": "line 47 and line 462",
+        "line_hint": 47,
+        "target": "extension/dist/extension.js (chunk 4/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API.",
+        "code_reference": "line 50",
+        "line_hint": 50,
+        "target": "extension/dist/extension.js (chunk 4/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "credential_theft",
+        "description": "Access to VS Code's SecretStorage API which can retrieve securely stored credentials.",
+        "code_reference": "src/store.ts line 50",
+        "line_hint": 50,
+        "target": "extension/dist/extension.js (chunk 14/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "info-stealer",
+        "description": "Harvesting machine ID using `machineId` which can uniquely identify the system.",
+        "code_reference": "src/store.ts line 188",
+        "line_hint": 188,
+        "target": "extension/dist/extension.js (chunk 14/21)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Pattern suggesting data exfiltration via POST request including system environment data.",
+        "code_reference": "extension/dist/extension.js line 64",
+        "line_hint": 64,
+        "target": "extension/dist/extension.js (chunk 14/21)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "persistence",
+        "description": "Setting file hidden attribute which could be used for persistence or hiding malicious files.",
+        "code_reference": "src/store.ts line 342",
+        "line_hint": 342,
+        "target": "extension/dist/extension.js (chunk 14/21)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network, potentially exposing sensitive settings.",
+        "code_reference": "src/store.ts line 47",
+        "line_hint": 47,
+        "target": "extension/dist/extension.js (chunk 14/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "credential_theft",
+        "description": "Access to VSCode SecretStorage API which could expose sensitive secrets.",
+        "code_reference": "line 50",
+        "line_hint": 50,
+        "target": "extension/dist/extension.js (chunk 15/21)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Potential data exfiltration via POST request including VSCode environment variables.",
+        "code_reference": "line 64",
+        "line_hint": 64,
+        "target": "extension/dist/extension.js (chunk 15/21)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "persistence",
+        "description": "Setting hidden file attributes which could be used for persistence or hiding malicious files.",
+        "code_reference": "line 342",
+        "line_hint": 342,
+        "target": "extension/dist/extension.js (chunk 15/21)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network, potentially including sensitive URLs.",
+        "code_reference": "line 47",
+        "line_hint": 47,
+        "target": "extension/dist/extension.js (chunk 15/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "credential_theft",
+        "description": "Access to VS Code's secret storage which can expose sensitive user credentials.",
+        "code_reference": "line 50",
+        "line_hint": 50,
+        "target": "extension/dist/extension.js (chunk 19/21)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Pattern suggesting data exfiltration via POST method with device information.",
+        "code_reference": "line 64",
+        "line_hint": 64,
+        "target": "extension/dist/extension.js (chunk 19/21)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "machine_id_harvesting",
+        "description": "Harvesting machine ID which could be used for tracking or malicious purposes.",
+        "code_reference": "line 188",
+        "line_hint": 188,
+        "target": "extension/dist/extension.js (chunk 19/21)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_config_harvesting",
+        "description": "Retrieving VS Code configuration settings which might be used for unintended purposes.",
+        "code_reference": "line 47",
+        "line_hint": 47,
+        "target": "extension/dist/extension.js (chunk 19/21)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits several concerning patterns including potential unauthorized access to VS Code secrets, network communication with unverified domains, and behavioral mismatches with its stated purpose. While not overtly malicious, these indicators raise significant red flags about its true intentions and data handling practices.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "3 HIGH findings",
+    "Composite risk 0.54 >= 0.5",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 13,
+    "published_date": "2026-08-12T20:39:28.92Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-12T22:49:12.948234+00:00Z"
+}
