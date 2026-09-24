@@ -1,0 +1,157 @@
+{
+  "extension_id": "ReadyStack.cert-lifetime-lint",
+  "display_name": "Cert Lifetime Lint - TLS validity caps 200/100/47",
+  "version": "0.1.6",
+  "publisher": {
+    "name": "ReadyStack",
+    "verified": false
+  },
+  "vsix_sha256": "c7cb9bdefb09b4bd36f42bf5f6e170a8a7b319605846207f03559e76d51055b4",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.325,
+    "static": 0.21875,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Crontab / cron directory write",
+        "file": "extension/extension.js",
+        "line": 5,
+        "snippet": "crontab"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "buy.polar.sh",
+      "source_file": "extension/license.js",
+      "line": 4,
+      "context": "const BUY_URL = 'https://buy.polar.sh/polar_cl_WKA2GllrJspsrScNLUGtqn4DgnIEsTN1FpAtT42RfQY';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "getreadystack.com",
+      "source_file": "extension/license.js",
+      "line": 38,
+      "context": "hostname: 'getreadystack.com',",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.65,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "The extension appears to be a legitimate linter for certificate validity periods, but it exhibits suspicious behaviors typical of aggressive commercial extensions. The primary concerns are: 1) Activation on 'onStartupFinished' which is inappropriate for a linter and can degrade user experience; 2) A remote feed mechanism (`lic.pullFeed`) that dynamically updates scanning rules from external servers (`buy.polar.sh`, `getreadystack.com`). This remote control over the extension's logic is a significant supply-chain risk, as a compromise of these servers could lead to ReDoS attacks or malicious rule injection. The code itself does not show direct credential theft or command execution, but the architecture allows for remote manipulation of its core behavior."
+      },
+      {
+        "target": "extension/license.js",
+        "summary": "The provided source code implements a standard commercial licensing mechanism for a VS Code extension. It uses `https` to validate license keys against `api.polar.sh` (a known legitimate licensing platform) and a custom backend at `getreadystack.com`. It includes telemetry for paywall conversion tracking, which is anonymized and respects user privacy settings. There are no indicators of malicious behavior such as credential theft, command execution, obfuscation, or unauthorized data exfiltration. The code aligns with the advertised functionality of a linter that requires a license for full features."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished' (as per metadata) and immediately attempts to run a scan on the active file if the configuration 'show_on_start' is true. For a linter, activation on startup is aggressive and unnecessary; it should typically activate on 'onLanguage' or 'onCommand'. This behavior can cause performance issues and unexpected UI popups upon VS Code launch.",
+        "code_reference": "activationEvents: [\"onStartupFinished\"] (from metadata); activate() function checks show_on_start",
+        "line_hint": "activate function, line ~140",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "REMOTE_CODE_EXECUTION_RISK",
+        "description": "The extension implements a 'remote feed' mechanism via `lic.pullFeed`. It fetches data from an external source (likely `buy.polar.sh` or `getreadystack.com` based on extracted indicators) and injects these rules into the local scanning engine via `globalThis.__yjFeed`. While the rules are used as regex patterns, allowing remote control over the logic (even if just regexes) is a significant supply-chain risk. If the remote server is compromised or malicious, it could inject regexes that cause ReDoS (Regular Expression Denial of Service) or potentially exploit regex engine vulnerabilities, although direct code execution is not explicitly shown here, the pattern is dangerous.",
+        "code_reference": "lic.pullFeed(ctx, \"cert-lifetime-lint\").then(function(f) { if (f && Array.isArray(f.rules)) globalThis.__yjFeed = f; })",
+        "line_hint": "activate function, line ~135",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "INFORMATION_DISCLOSURE",
+        "description": "The `scanWorkspace` function (paid feature) uses `vscode.workspace.findFiles('**/*', ...)` to enumerate all files in the workspace. While this is standard for a linter, combined with the `exportReport` function which writes findings to the workspace root, it creates a potential vector for information leakage if the workspace contains sensitive files that match the regex patterns (e.g., private keys in PEM files might trigger 'openssl' rules, though the regexes are specific to validity periods). The primary risk is the broad file enumeration capability.",
+        "code_reference": "const files = await vscode.workspace.findFiles('**/*', _skip, _max);",
+        "line_hint": "scanWorkspace function, line ~105",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "LICENSE_VERIFICATION",
+        "description": "The extension relies on an external license verification system (`lic.ensure`) and remote domains (`buy.polar.sh`, `getreadystack.com`). While not malicious in itself, it introduces a dependency on third-party infrastructure for core functionality (paid features). If these domains are hijacked, the license check could be bypassed or manipulated.",
+        "code_reference": "const lic = require('./license.js'); ... lic.ensure(vscode, ctx, S)",
+        "line_hint": "top of file, line ~3",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "TELEMETRY",
+        "description": "The extension sends anonymous telemetry data (paywall views, review interactions) to `getreadystack.com/api/ev`. The payload includes the extension slug and event type but explicitly excludes keys, paths, names, or workspace data. It respects `vscode.env.isTelemetryEnabled` and `READYSTACK_NO_TELEMETRY`.",
+        "code_reference": "function pingPaywall(vscode, why) { ... const body = JSON.stringify({ t: 'paywall', slug: SLUG, src: 'vsix', why: why || 'panel' }); ... }",
+        "line_hint": "105-125",
+        "target": "extension/license.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK",
+        "description": "The extension communicates with `api.polar.sh` for license validation and `getreadystack.com` for license fallback validation and rule updates. These are standard commercial licensing and content delivery patterns for a paid extension.",
+        "code_reference": "const req = https.request({ hostname: 'api.polar.sh', ... }); const req = https.request({ hostname: 'getreadystack.com', ... });",
+        "line_hint": "45-55, 160-170",
+        "target": "extension/license.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension appears to be a legitimate linter for certificate validity periods, but it exhibits suspicious behaviors typical of aggressive commercial extensions. The primary concerns are: 1) Activation on 'onStartupFinished' which is inappropriate for a linter and can degrade user experience; 2) A remote feed mechanism (`lic.pullFeed`) that dynamically updates scanning rules from external servers (`buy.polar.sh`, `getreadystack.com`). This remote control over the extension's logic is a significant supply-chain risk, as a compromise of these servers could lead to ReDoS attacks or malicious rule injection. The code itself does not show direct credential theft or command execution, but the architecture allows for remote manipulation of its core behavior.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: extension.js -> license.js [persistence] -- intent: persistence in extension/extension.js | IOCs: https://getreadystack.com/api/rules/, getreadystack.com",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-09-24T09:09:22.057Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-24T09:25:01.824799+00:00"
+}
