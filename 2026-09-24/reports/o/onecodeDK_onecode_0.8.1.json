@@ -7,17 +7,17 @@
     "verified": false
   },
   "vsix_sha256": "4331cad62ff31bc3df8225f3de2400aa9fcc16750f2282b1a92f23b7c9893511",
-  "verdict": "SUSPICIOUS",
+  "verdict": "HIGH-RISK",
   "confirmation_basis": [
     "composite_score",
     "critical_static_finding"
   ],
-  "confidence": 0.6,
+  "confidence": 0.75,
   "scores": {
-    "composite": 0.6845000000000001,
-    "ai_vibe": 0.92,
+    "composite": 0.85,
+    "ai_vibe": 0.6786,
     "static": 1.0,
-    "behavioral": 0.0,
+    "behavioral": 0.85,
     "trust_signal": 0.75,
     "campaign": 0.0
   },
@@ -218,208 +218,210 @@
   "shared_infrastructure": {},
   "ai_analysis": {
     "verdict": "MALICIOUS",
-    "risk_score": 0.92,
-    "confidence": 0.88,
-    "blocks_parsed": 5,
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 7,
     "blocks_seen": 7,
     "summaries": [
       {
-        "target": "extension/out/extension.js (chunk 90/149)",
-        "summary": "The visible code is mostly benign color utilities and bundled Supabase/GoTrue authentication client exports. The main concern is the presence of child_process, which is high-risk and not clearly justified by the advertised theme/dashboard purpose; it could be legitimate for git detection or helper processes, but the provided chunk does not show its usage. Most other scanner hits look like false positives from the Supabase library. Full-file review is needed to determine whether child_process is used for arbitrary command execution or whether network/auth flows leak sensitive data."
+        "target": "extension/out/extension.js (chunk 2/14)",
+        "summary": "The analyzed code chunk consists of standard library implementations for Phoenix (WebSocket/LongPoll transport) and Supabase (Postgres types, Storage API). The static rule engine hits are false positives caused by generic string matching on legitimate library functions (e.g., `postMessage` for IPC, `btoa` for encoding, `download` for file retrieval). The code aligns with the extension's purpose of connecting to a backend service (OnePro/Supabase) for dashboard and workspace features. No malicious behavior, credential harvesting, or unauthorized command execution was identified in this source."
       },
       {
-        "target": "extension/out/extension.js (chunk 115/149)",
-        "summary": "The analyzed chunk is highly suspicious and likely malicious because it contains an undisclosed GitHub repository transfer feature. It requests a GitHub token with broad 'repo' and 'admin:org' scopes, transfers repositories to the hardcoded organization 'OneCodeApS', and updates the local git remote accordingly. This behavior is not advertised in the README and is disproportionate to a theme/dashboard extension. The use of child_process.execSync for git commands is high-risk in this context. Some static scanner hits appear to be false positives from bundled Supabase/realtime code, but the repository transfer capability alone is sufficient for a malicious verdict."
+        "target": "extension/out/extension.js (chunk 4/14)",
+        "summary": "The analyzed code chunk is primarily the bundled source code for the Supabase JavaScript SDK (version 2.101.1), including modules for Realtime, Auth, and utilities. The static rule engine hits for 'data exfiltration', 'cookie theft', and 'shell execution' are false positives resulting from the presence of standard library code (e.g., error messages mentioning cookies for SSR, standard Base64 encoding for JWTs, and potential child_process usage for legitimate tooling). The network endpoints identified (Supabase and onepro.onecode.dk) align with the extension's stated purpose of connecting to OnePro boards. There is no evidence of malicious intent, credential harvesting, or unauthorized command execution in this specific chunk."
       },
       {
-        "target": "extension/out/extension.js (chunk 123/149)",
-        "summary": "The analyzed code chunk is part of a VS Code extension that integrates with OnePro boards and uses Supabase for backend services. The static rule engine hits are false positives caused by the presence of the Supabase client library, which includes standard authentication, realtime, and storage functionality. The code shown in this chunk is primarily HTML/JS for a webview panel that allows users to transfer repositories and view board information. There is no evidence of malicious behavior, credential harvesting, or unauthorized command execution in this specific chunk. The extension's capabilities align with its stated purpose of connecting VS Code to OnePro boards."
+        "target": "extension/out/extension.js (chunk 9/14)",
+        "summary": "The analyzed code chunk is primarily composed of the Supabase JavaScript client library (supabase-js) and utility functions for color manipulation. The 'suspicious' hits from the static scanner (e.g., 'cookies', 'child_process', 'base64') are false positives resulting from the inclusion of standard, well-known third-party libraries and legitimate extension logic. There is no evidence of malicious intent, credential harvesting, or unauthorized command execution in this specific chunk. The behavior is consistent with a productivity/developer tool extension that connects to a cloud backend."
       },
       {
-        "target": "extension/out/extension.js (chunk 139/149)",
-        "summary": "This extension exhibits critical malicious behavior by disguising an AI agent execution and data exfiltration mechanism as a simple theme/dashboard tool. It writes a script to the temporary directory that spawns a Node.js process, executes an AI skill, and streams all terminal output to a remote Supabase database. This constitutes a capability disconnect, arbitrary code execution, and data exfiltration, posing a severe risk to user privacy and system integrity."
+        "target": "extension/out/extension.js (chunk 11/14)",
+        "summary": "The extension 'Onecode' is a legitimate productivity tool that connects VS Code to a Supabase backend for workspace management, board linking, and document sharing. The code aligns with its advertised features: it uses the Supabase SDK for data persistence, `child_process` for Git operations, and VS Code APIs for UI customization (colors) and file management. All static analysis alerts regarding 'exfiltration' or 'infostealer' behavior are false positives resulting from the standard usage of the Supabase library and legitimate Git integration. No malicious code, credential harvesting, or unauthorized network activity was detected."
       },
       {
-        "target": "extension/out/extension.js (chunk 142/149)",
-        "summary": "The code is a legitimate VS Code extension for integrating with 'OnePro' boards and Claude AI. The static analysis hits are false positives caused by the inclusion of the Supabase client library (which handles auth, realtime, and storage) and standard Node.js terminal execution for local AI tooling. There are no indicators of credential theft, malicious network exfiltration, or unauthorized system access. The domains identified (supabase.co, onepro.onecode.dk) are consistent with the extension's stated purpose."
+        "target": "extension/out/extension.js (chunk 12/14)",
+        "summary": "The provided code chunk consists entirely of UI rendering functions for VS Code Webviews, including HTML templates, CSS styles, and client-side JavaScript for interacting with the OnePro dashboard. It handles displaying todos, board information, and login states. The static rule engine hits are false positives caused by the presence of the Supabase client library (which handles auth and data fetching) and standard Webview messaging patterns. There is no evidence of malicious behavior, credential harvesting, or unauthorized command execution in this specific chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 13/14)",
+        "summary": "The 'Onecode' extension is malicious. While it presents itself as a benign dashboard and theme integration, it contains hidden functionality that spawns the `claude` AI CLI with permissions disabled (`--dangerously-skip-permissions`). It then captures all output from this AI agent\u2014including potentially sensitive code and system data\u2014and exfiltrates it to a remote Supabase instance. The use of temporary script generation and execution, combined with the severe disconnect between the advertised 'theme' functionality and the actual 'AI agent execution and data logging' capabilities, confirms malicious intent."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 14/14)",
+        "summary": "This extension is malicious. It masquerades as a simple theme/dashboard extension for 'OnePro' but actually implements a complex AI agent runner that spawns the `claude` CLI. It writes and executes dynamic Node.js scripts, which is a severe security risk. The extension connects to a remote Supabase instance to manage sessions and audit logs, creating a channel for data exfiltration. The capability disconnect between the advertised 'theme' functionality and the actual 'AI agent execution' behavior is a strong indicator of malicious intent."
       }
     ],
     "findings": [
       {
-        "severity": "HIGH",
-        "category": "CAPABILITY_DISCONNECT",
-        "description": "The chunk imports child_process, which is not obviously required for a theme/dashboard extension that advertises OnePro board integration and workspace colors. It may be used for git detection or helper processes, but no exec/spawn/execSync usage is visible in this 5% chunk, so malicious command execution cannot be ruled out.",
-        "code_reference": "As = require(\"child_process\")",
-        "line_hint": "41",
-        "target": "extension/out/extension.js (chunk 90/149)"
-      },
-      {
-        "severity": "HIGH",
-        "category": "ARBITRARY_COMMAND_EXECUTION",
-        "description": "Direct require of child_process is present. If later code calls exec, spawn, or execSync, it could execute arbitrary commands. No such call is visible in this chunk.",
-        "code_reference": "As = require(\"child_process\")",
-        "line_hint": "41",
-        "target": "extension/out/extension.js (chunk 90/149)"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "NETWORK_EGRESS",
-        "description": "The extension communicates with external Supabase and onecode.dk endpoints for authentication/dashboard functionality. This is consistent with the advertised Microsoft/OnePro integration but still represents external data flow that should be reviewed for payload contents.",
-        "code_reference": "xzyzdingiziysbpfefty.supabase.co; onepro.onecode.dk",
-        "line_hint": "9611,10758",
-        "target": "extension/out/extension.js (chunk 90/149)"
-      },
-      {
         "severity": "LOW",
-        "category": "STATIC_FALSE_POSITIVE",
-        "description": "Several scanner hits (cookies, postMessage, base64 auth token, download) appear to originate from bundled Supabase/GoTrue auth and storage libraries rather than custom exfiltration logic in this chunk.",
-        "code_reference": "SupabaseClient, GoTrueClient, AuthClient exports",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'infostealer' patterns due to the presence of `postMessage`, `btoa`, and `cookies` strings. Upon review, these are standard components of the Phoenix/Supabase client libraries (WebSocket transport, Base64 encoding for binary data, and authentication error handling). There is no evidence of malicious data exfiltration or credential theft in this chunk.",
+        "code_reference": "postMessage, btoa, cookies",
         "line_hint": null,
-        "target": "extension/out/extension.js (chunk 90/149)"
-      },
-      {
-        "severity": "CRITICAL",
-        "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension contains an undisclosed GitHub repository transfer capability. It obtains a GitHub authentication session with broad scopes ('repo', 'admin:org'), then sends a POST request to api.github.com/repos/{owner}/{name}/transfer with new_owner set to the hardcoded organization 'OneCodeApS'. This can move a user's repository to an attacker-controlled or undisclosed organization. The advertised README describes only OnePro board integration, dashboard, and workspace colors, not repository transfer.",
-        "code_reference": "r = await R.authentication.getSession(\"github\", [\"repo\", \"admin:org\"], { createIfNone: !0 }); ... Zt.request({ hostname: \"api.github.com\", path: `/repos/${e.owner}/${e.name}/transfer`, method: \"POST\", ... body: JSON.stringify({ new_owner: Ts }) ... });",
-        "line_hint": "approx. 40-70",
-        "target": "extension/out/extension.js (chunk 115/149)"
-      },
-      {
-        "severity": "CRITICAL",
-        "category": "CREDENTIAL_ABUSE",
-        "description": "The code requests a GitHub OAuth token with privileged scopes ('repo', 'admin:org') and uses it to perform a repository transfer. This is a high-impact credential abuse pattern because the token is used for an action not described in the extension's advertised functionality.",
-        "code_reference": "R.authentication.getSession(\"github\", [\"repo\", \"admin:org\"], { createIfNone: !0 })",
-        "line_hint": "approx. 45",
-        "target": "extension/out/extension.js (chunk 115/149)"
-      },
-      {
-        "severity": "HIGH",
-        "category": "COMMAND_EXECUTION",
-        "description": "child_process.execSync is used to execute git commands. While reading the git remote URL may be legitimate, the same code also executes 'git remote set-url origin ...' after a repository transfer, changing the user's local repository remote to the hardcoded organization. This is dangerous when combined with the undisclosed transfer capability.",
-        "code_reference": "(0, As.execSync)(\"git remote get-url origin\", { cwd: t, encoding: \"utf-8\" }); ... (0, As.execSync)(`git remote set-url origin ${o}.git`, { cwd: a })",
-        "line_hint": "approx. 25-75",
-        "target": "extension/out/extension.js (chunk 115/149)"
-      },
-      {
-        "severity": "HIGH",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension is advertised as a theme/dashboard integration extension for OnePro boards, but the analyzed code contains child_process execution, GitHub OAuth token acquisition with admin scopes, and repository transfer logic. These capabilities are disproportionate to the stated purpose and represent a major behavioral mismatch.",
-        "code_reference": "As.execSync; R.authentication.getSession(\"github\", [\"repo\", \"admin:org\"]); POST /repos/.../transfer",
-        "line_hint": "approx. 25-75",
-        "target": "extension/out/extension.js (chunk 115/149)"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "HIDDEN_NETWORK_BACKEND",
-        "description": "The code interacts with a Supabase-like backend through w.from(\"timers\") and package indicators include an unknown Supabase domain. This may be legitimate for timer/dashboard functionality, but it is not clearly described in the README and should be verified against the extension's actual backend endpoints.",
-        "code_reference": "await w.from(\"timers\").insert({ todo_id: t, user_id: e, start_time: new Date().toISOString() });",
-        "line_hint": "approx. 1-15",
-        "target": "extension/out/extension.js (chunk 115/149)"
+        "target": "extension/out/extension.js (chunk 2/14)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Several static rule hits for cookie exfiltration, base64 encoding, postMessage, and installer downloads appear to be false positives caused by bundled Supabase/realtime/auth library code or generic strings. The provided chunk does not contain direct browser cookie theft, clipboard harvesting, keylogging, or remote shell payloads.",
-        "code_reference": null,
+        "description": "Static analysis flagged 'Direct command / shell execution' and 'RMM tool abuse' (MSI/EXE download). The `require('child_process')` hits are likely false positives from string matching in minified code or unrelated to this specific chunk's logic (which is primarily network transport). The 'download' match is part of the Supabase Storage API client (`download(t,e,r)`), which is a legitimate feature for fetching files from the cloud storage backend, not an RMM installer.",
+        "code_reference": "require(\"child_process\"), download(t,e,r)",
         "line_hint": null,
-        "target": "extension/out/extension.js (chunk 115/149)"
+        "target": "extension/out/extension.js (chunk 2/14)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static rule engine flagged 'data exfiltration' and 'infostealer' patterns, but the code context reveals these are standard Supabase client library implementations (Postgres types, Realtime listeners, Auth PKCE flow, Storage bucket operations). The 'cookies' references are part of Supabase's authentication documentation/error messages, not browser credential harvesting.",
-        "code_reference": "var B;(function(t){t.abstime=\"abstime\"...}",
-        "line_hint": 5,
-        "target": "extension/out/extension.js (chunk 123/149)"
+        "description": "Static analysis flagged 'data exfiltration' and 'browser cookie exfiltration' due to the presence of the Supabase JS SDK. The code contains standard library definitions for authentication (PKCE, JWT parsing) and real-time channels. The references to 'cookies' are part of error messages regarding SSR frameworks (Next.js/SvelteKit) and do not indicate actual credential theft. The `btoa` usage is for standard Base64 encoding of auth tokens for API transmission, not malicious obfuscation.",
+        "code_reference": "var Gr = class extends ie { constructor() { super(\"PKCE code verifier not found in storage... use @supabase/ssr... to store the code verifier in cookies.\", \"AuthPKCECodeVerifierMissingError\", 400, \"pkce_code_verifier_not_found\") } };",
+        "line_hint": 24,
+        "target": "extension/out/extension.js (chunk 4/14)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static rule engine flagged 'Base64 encoding data then sending over network'. The code `btoa(this.authToken)` is standard practice for encoding JWTs or auth tokens for HTTP headers (e.g., Authorization: Bearer <token>), not data exfiltration.",
-        "code_reference": "btoa(this.authToken).replace(/=/g,\"\")",
-        "line_hint": 6,
-        "target": "extension/out/extension.js (chunk 123/149)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "Static rule engine flagged 'Direct command / shell execution'. The `require(\"child_process\")` hits are likely part of the bundled dependencies or standard VS Code extension patterns for executing git commands or node processes, which is consistent with the extension's purpose of integrating with git repositories and OnePro boards.",
+        "description": "Static analysis flagged 'Direct command / shell execution' and 'Stealthy terminal command injection'. While `require(\"child_process\")` is present in the full file (referenced in static hits), this chunk primarily contains the Supabase SDK implementation. The `sendText` command mentioned in static hits (`node --no-deprecation`) is likely part of a language server or tooling integration (e.g., for a linter or formatter) and is not inherently malicious without context of arbitrary user input execution. Given the extension is a 'Themes/Dashboard' tool, this might be a false positive from a bundled dependency or a specific utility command, but no malicious payload is visible in this chunk.",
         "code_reference": "require(\"child_process\")",
         "line_hint": 41,
-        "target": "extension/out/extension.js (chunk 123/149)"
+        "target": "extension/out/extension.js (chunk 4/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension connects to `xzyzdingiziysbpfefty.supabase.co` and `onepro.onecode.dk`. These are consistent with the advertised 'OnePro integration' and 'Sign in with Microsoft' features. The use of Supabase for backend services (auth, database, realtime) is a common and legitimate architectural choice for modern web/extension applications. No suspicious third-party C2 domains or tunneling services were identified.",
+        "code_reference": "domain: xzyzdingiziysbpfefty.supabase.co",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 4/14)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static rule engine flagged 'RMM tool abuse' due to 'download' keyword. The code context `download(t,e,r)` is part of the Supabase Storage API client, used for downloading files from the cloud storage bucket, not downloading remote management tools.",
-        "code_reference": "download(t,e,r){let s=typeof e?.transform<\"u\"?\"render/image/authenticated\":\"object\"...",
-        "line_hint": 44,
-        "target": "extension/out/extension.js (chunk 123/149)"
+        "description": "The static scanner flagged 'data exfiltration' and 'infostealer' patterns due to the presence of Supabase/PostgREST client code. This is a standard third-party library (supabase-js) used for backend communication. The 'cookies' references are part of the Supabase Auth error handling and documentation strings, not browser credential harvesting. The 'child_process' import is present but not used in this chunk for malicious execution; it is likely used for legitimate extension functionality (e.g., git operations) in other chunks.",
+        "code_reference": "var As = require(\"child_process\"); ... var hr = class extends Error { ... }",
+        "line_hint": "41",
+        "target": "extension/out/extension.js (chunk 9/14)"
       },
       {
-        "severity": "CRITICAL",
-        "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a 'Themes' and 'Dashboard' integration tool, but the code contains logic to spawn a Node.js process that executes an AI agent ('Onecode: [label]') and streams its output to a terminal. This is a significant functional disconnect from the stated purpose of applying workspace colors and viewing board links.",
-        "code_reference": "f = require(\"path\").join(d, `onecode-claude-${Date.now()}.js`)",
-        "line_hint": 1717,
-        "target": "extension/out/extension.js (chunk 139/149)"
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code implements color calculation (WCAG contrast), Supabase client initialization, and PostgREST query building. This aligns with the extension's stated purpose of 'OnePro boards with workspace colors and dashboard integration'. The use of Supabase is consistent with a SaaS-backed extension requiring authentication and data fetching.",
+        "code_reference": "function Cs(t) { ... } ... var b = {}; rr(b, { ... SupabaseClient: () => hi ... });",
+        "line_hint": "100",
+        "target": "extension/out/extension.js (chunk 9/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' and 'infostealer' patterns due to the presence of the Supabase SDK. The code uses standard Supabase client methods (postMessage, fetch, base64 encoding for auth tokens) to communicate with the extension's backend. This is expected behavior for a cloud-connected extension and does not indicate malicious exfiltration of local secrets or credentials.",
+        "code_reference": "var fi = \"https://xzyzdingiziysbpfefty.supabase.co\"; ... w = ys(fi, pi, ...)",
+        "line_hint": 9611,
+        "target": "extension/out/extension.js (chunk 11/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process.execSync` is limited to running `git remote get-url origin` and `git remote set-url origin`. This is a standard and necessary operation for an extension that integrates with GitHub repositories to identify and update the remote URL. It does not execute arbitrary user input or shell commands.",
+        "code_reference": "(0, As.execSync)(\"git remote get-url origin\", ...)",
+        "line_hint": 1720,
+        "target": "extension/out/extension.js (chunk 11/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The code contains a blocklist of executable file extensions (e.g., .exe, .bat, .dll) which is used to prevent uploading potentially dangerous files to the cloud storage. This is a security feature, not an indicator of malicious intent.",
+        "code_reference": "var Al = new Set([\".bat\", \".cmd\", ... \".dll\", ...]);",
+        "line_hint": 1650,
+        "target": "extension/out/extension.js (chunk 11/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'infostealer' patterns, but the code is standard Supabase client library code (Postgres types, realtime listeners, auth tokens) and VS Code Webview postMessage communication. No malicious intent found.",
+        "code_reference": "var B;(function(t){t.abstime=\"abstime\"...}",
+        "line_hint": 5,
+        "target": "extension/out/extension.js (chunk 12/14)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'child_process' usage, but this chunk contains only UI rendering logic (HTML/CSS/JS templates for Webviews). The actual command execution likely occurs in other chunks and is likely for legitimate git operations or node script execution related to the extension's functionality.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 41,
+        "target": "extension/out/extension.js (chunk 12/14)"
       },
       {
         "severity": "CRITICAL",
         "category": "ARBITRARY_CODE_EXECUTION",
-        "description": "The extension writes a JavaScript file to the system temporary directory (`os.tmpdir()`) containing a script that uses `child_process.spawn`. This script is then executed via the VS Code terminal (`sendText`). This allows the extension to run arbitrary code on the user's machine outside the sandboxed extension host.",
-        "code_reference": "const { spawn } = require(\"child_process\"); ... sendText(`node --no-deprecation \"${f}\"`)",
+        "description": "The extension generates and executes a temporary Node.js script that spawns the `claude` CLI with the `--dangerously-skip-permissions` flag. This allows the AI agent to execute arbitrary shell commands, modify files, and access system resources without user confirmation, effectively granting the extension (and the remote AI service) root-level control over the user's environment.",
+        "code_reference": "const cmd = 'claude -p --dangerously-skip-permissions --output-format stream-json --verbose'; const claude = spawn(cmd, [], { ... });",
+        "line_hint": 1985,
+        "target": "extension/out/extension.js (chunk 13/14)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "DATA_EXFILTRATION",
+        "description": "The generated script captures all standard output from the `claude` process (which includes file contents, code snippets, and potentially secrets read by the AI) and periodically flushes this data to a remote Supabase instance (`xzyzdingiziysbpfefty.supabase.co`) via HTTPS POST/PATCH requests. This constitutes a continuous exfiltration channel for workspace data.",
+        "code_reference": "async function flushLog(sessionId) { ... await supaRequest(\"PATCH\", \"/rest/v1/ai_runner_sessions?session_id=eq.\" + encodeURIComponent(sessionId), { log }); }",
+        "line_hint": 1717,
+        "target": "extension/out/extension.js (chunk 13/14)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Themes' and 'Dashboard' integration for OnePro boards. However, the code contains complex logic to spawn external AI agents, execute shell commands, and stream logs to a third-party cloud database. This functionality is completely disproportionate to the stated purpose of applying workspace colors and viewing board links.",
+        "code_reference": "runClaudeSkill(e, r, s) { ... require(\"child_process\") ... }",
         "line_hint": 1720,
-        "target": "extension/out/extension.js (chunk 139/149)"
+        "target": "extension/out/extension.js (chunk 13/14)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "OBSCURED_NETWORK_ACTIVITY",
+        "description": "The extension writes a script to the OS temporary directory (`os.tmpdir()`) and executes it via `node`. This technique is often used to bypass VS Code's sandboxing or security restrictions and to hide the execution of malicious payloads from simple static analysis of the extension's main entry point.",
+        "code_reference": "d = require(\"os\").tmpdir(), f = require(\"path\").join(d, `onecode-claude-${Date.now()}.js`)",
+        "line_hint": 1985,
+        "target": "extension/out/extension.js (chunk 13/14)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Themes' and 'Dashboard' integration for OnePro boards, but the code contains a complete implementation of a CLI-based AI agent runner (Claude Code). It dynamically generates a Node.js script that spawns the `claude` CLI, captures its output, and manages session state. This is a massive functional disconnect from a simple color/theme extension.",
+        "code_reference": "runClaudeSkill, claude.stderr.on, claude.on('close')",
+        "line_hint": "1985",
+        "target": "extension/out/extension.js (chunk 14/14)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension writes a generated JavaScript file to the filesystem and executes it via a new VS Code terminal using `node --no-deprecation`. This allows the extension to execute arbitrary logic defined in the generated script, bypassing standard extension sandboxing.",
+        "code_reference": "require(\"fs\").writeFileSync(f, h, \"utf-8\"); ... p.sendText(`node --no-deprecation \"${f}\"`)",
+        "line_hint": "1985",
+        "target": "extension/out/extension.js (chunk 14/14)"
       },
       {
         "severity": "HIGH",
         "category": "DATA_EXFILTRATION",
-        "description": "The generated script captures all standard output (`process.stdout`) into a `logBuffer` and periodically flushes this data to a remote Supabase instance (`xzyzdingiziysbpfefty.supabase.co`). This effectively exfiltrates the output of any commands or AI interactions executed in the terminal, potentially including sensitive information, file contents, or credentials echoed by the AI agent.",
-        "code_reference": "async function flushLog(sessionId) { ... await supaRequest(\"POST\", \"/rest/v1/ai_runner_sessions\", ...)",
-        "line_hint": 1750,
-        "target": "extension/out/extension.js (chunk 139/149)"
+        "description": "The code uses Supabase (a BaaS) to store and retrieve data. While Supabase is a legitimate service, the combination of storing authentication tokens in VS Code secrets and using it to drive an AI agent that has access to the local filesystem (via the spawned CLI) creates a high-risk exfiltration vector. The 'audit' logs and session data are sent to the remote Supabase instance.",
+        "code_reference": "supabase.auth.setSession, finalizeAuditRow, xzyzdingiziysbpfefty.supabase.co",
+        "line_hint": "9611",
+        "target": "extension/out/extension.js (chunk 14/14)"
       },
       {
         "severity": "MEDIUM",
-        "category": "OBSCURED_NETWORK_ACTIVITY",
-        "description": "The network requests are made from the spawned child process rather than the extension host, making them harder to detect by VS Code's network monitoring or user inspection of the extension's direct network calls. The use of `https.request` directly in the spawned script bypasses standard extension API network logging.",
-        "code_reference": "const req = https.request({ hostname: u.hostname, ...",
-        "line_hint": 1735,
-        "target": "extension/out/extension.js (chunk 139/149)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "Static scanner flagged 'data exfiltration' and 'infostealer' patterns. Upon review, these are standard library implementations for Supabase (realtime channels, auth PKCE, storage) and internal Webview communication (postMessage). The 'cookies' references are part of Supabase's authentication documentation/error strings, not browser credential harvesting.",
-        "code_reference": "var B;(function(t){t.abstime=\"abstime\"...}",
-        "line_hint": 5,
-        "target": "extension/out/extension.js (chunk 142/149)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "Static scanner flagged 'child_process' usage. The code uses `require('child_process')` indirectly via `node --no-deprecation` execution in a terminal to run a local script for Claude AI integration. This is a legitimate feature for running local AI tools, not arbitrary command injection or reverse shell.",
-        "code_reference": "p.sendText(`node --no-deprecation \"${f}\"`)",
-        "line_hint": 1985,
-        "target": "extension/out/extension.js (chunk 142/149)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "Static scanner flagged 'RMM tool abuse' due to 'download' keyword. The code context is `supabase.storage.from(...).download(...)`, which is a standard API call to download files from the user's own cloud storage bucket, not downloading remote management tools.",
-        "code_reference": "download(t,e,r){let s=typeof e?.transform<\"u\"?\"render/image/authenticated\":\"object\"...",
-        "line_hint": 44,
-        "target": "extension/out/extension.js (chunk 142/149)"
+        "category": "OBSCURED_INTENT",
+        "description": "The use of a local HTTP server for OAuth callback is standard, but the overall architecture of spawning external CLI tools and writing temporary scripts is a common pattern in supply-chain attacks to hide malicious payloads from static analysis of the main extension bundle.",
+        "code_reference": "Gi.createServer, s.listen(0, \"127.0.0.1\")",
+        "line_hint": "2050",
+        "target": "extension/out/extension.js (chunk 14/14)"
       }
     ],
     "findings_truncated": 0
   },
-  "ai_summary": "The visible code is mostly benign color utilities and bundled Supabase/GoTrue authentication client exports. The main concern is the presence of child_process, which is high-risk and not clearly justified by the advertised theme/dashboard purpose; it could be legitimate for git detection or helper processes, but the provided chunk does not show its usage. Most other scanner hits look like false positives from the Supabase library. Full-file review is needed to determine whether child_process is used for arbitrary command execution or whether network/auth flows leak sensitive data.",
+  "ai_summary": "The analyzed code chunk consists of standard library implementations for Phoenix (WebSocket/LongPoll transport) and Supabase (Postgres types, Storage API). The static rule engine hits are false positives caused by generic string matching on legitimate library functions (e.g., `postMessage` for IPC, `btoa` for encoding, `download` for file retrieval). The code aligns with the extension's purpose of connecting to a backend service (OnePro/Supabase) for dashboard and workspace features. No malicious behavior, credential harvesting, or unauthorized command execution was identified in this source.",
   "escalation_reasons": [
+    "PROVEN CHAIN: out/extension.js [process_execution] -- intent: download, write and execute in extension/out/extension.js | IOCs: https://developer.mozilla.org/en-us/docs/web/api/lockmanager/request, https://xzyzdingiziysbpfefty.supabase.co, xzyzdingiziysbpfefty.supabase.co",
     "4 CRITICAL findings",
     "16 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
     "AI verdict: MALICIOUS"
   ],
   "virustotal": {
@@ -428,7 +430,7 @@
     "known_malicious": false
   },
   "marketplace": {
-    "install_count": 12,
+    "install_count": 13,
     "published_date": "2026-04-15T18:43:28.053+00:00",
     "removed_by_microsoft": false,
     "removal_type": null
@@ -438,5 +440,5 @@
     "excluded_phases": [],
     "ai_phase_ran": true
   },
-  "scanned_at": "2026-09-08T21:30:55.830873+00:00Z"
+  "scanned_at": "2026-09-24T01:05:54.088918+00:00"
 }
