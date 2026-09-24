@@ -1,0 +1,190 @@
+{
+  "extension_id": "Bihrys.codebuddy-credits-radar",
+  "display_name": "CodeBuddy Radar",
+  "version": "0.9.5",
+  "publisher": {
+    "name": "Bihrys",
+    "verified": false
+  },
+  "vsix_sha256": "472e37190708964c44590cedae20f3ed9b15275d422d0d00e9da86b9bea87bfe",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.85,
+    "static": 0.28656015629507225,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/auth.js",
+        "line": 42,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/auth.js",
+        "line": 42,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/auth.js",
+        "line": 49,
+        "snippet": "const execFileAsync = (0, util_1.promisify)(child_process_1.execFile);"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/auth.js",
+        "line": 42,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "www.workbuddy.cn",
+      "source_file": "extension/package.json",
+      "line": 99,
+      "context": "\"default\": \"https://www.workbuddy.cn\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "ip",
+      "value": "153.0.0.0",
+      "source_file": "extension/out/extension.js",
+      "line": 115,
+      "context": "const DEFAULT_UA = \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/out/auth.js",
+        "summary": "The extension 'CodeBuddy Radar' exhibits malicious behavior by implementing a credential harvester for VS Code-based IDEs. It does not simply use the VS Code API to access its own secrets; instead, it directly reads the `state.vscdb` SQLite database of multiple IDEs (including Cursor and Trae) and decrypts the secrets using system-level credential stores (macOS Keychain via `security` command, Windows DPAPI via PowerShell). This allows it to steal the `accessToken` of the Tencent Cloud CodeBuddy extension. While the stated purpose is to display credit balance, the method of accessing other extensions' secrets via OS-level decryption is a severe security violation and a common pattern in infostealer malware. The use of `child_process` to execute system commands for credential decryption is a critical red flag."
+      },
+      {
+        "target": "extension/out/sqlite-reader.js",
+        "summary": "This extension is malicious. It contains a custom, minimal SQLite parser explicitly written to read VS Code's `state.vscdb` file and extract values from the 'ItemTable' (SecretStorage). The README claims it reads login tokens from another extension ('Tencent Cloud CodeBuddy') to display credits, but the mechanism used (direct binary parsing of the VS Code state database) is a classic credential theft technique. The presence of a low-level database parser in a simple UI extension is a major capability disconnect and a strong indicator of malicious intent to steal secrets."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The extension explicitly targets and reads the VS Code SecretStorage database (`state.vscdb`) of multiple IDEs (Code, CodeBuddy, Trae, Cursor, Kiro, Qoder) to extract the `accessToken` for the `tencent-cloud.coding-copilot` extension. This involves bypassing standard extension isolation to access another extension's secrets.",
+        "code_reference": "const SECRET_KEY = \"Tencent-Cloud.coding-copilot.new.accessToken\"; ... async function readAutoToken() { ... }",
+        "line_hint": "118",
+        "target": "extension/out/auth.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SYSTEM_CREDENTIAL_ACCESS",
+        "description": "The code implements logic to decrypt VS Code's safeStorage secrets by accessing system-level credential stores. On macOS, it uses `security find-generic-password` to retrieve the Keychain password. On Windows, it uses PowerShell to invoke DPAPI (`ProtectedData.Unprotect`) to decrypt the `Local State` file. This is a high-risk technique often used by infostealers to bypass application-level security.",
+        "code_reference": "async function readMacKey(service, account) { ... execFileAsync(\"security\", [\"find-generic-password\"...]) ... } ... async function readWindowsKey(localStatePath) { ... execFileAsync(powershellPath(), [\"-NoProfile\", \"-NonInteractive\", \"-EncodedCommand\", encoded]) ... }",
+        "line_hint": "215",
+        "target": "extension/out/auth.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Credits Radar' to display balance and auto-claim credits. While reading the token is technically necessary to call the API, the implementation goes far beyond standard VS Code extension capabilities by directly manipulating OS-level credential stores (Keychain/DPAPI) and reading other extensions' internal storage files. This behavior is disproportionate to a simple status bar widget and indicates a design that prioritizes credential extraction over standard API integration.",
+        "code_reference": "hostCandidates() ... PRODUCT_NAMES = [\"Code\", \"Code - Insiders\", \"CodeBuddy\", ...]",
+        "line_hint": "128",
+        "target": "extension/out/auth.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_EXECUTION",
+        "description": "The Windows credential decryption logic uses PowerShell with `-EncodedCommand` (Base64 encoded UTF-16LE script) to execute DPAPI decryption. While the script content is visible in the source, this technique is commonly used to evade simple command-line logging and is a hallmark of stagers or credential stealers.",
+        "code_reference": "const encoded = Buffer.from(script, \"utf16le\").toString(\"base64\"); ... execFileAsync(powershellPath(), [\"-NoProfile\", \"-NonInteractive\", \"-EncodedCommand\", encoded] ...",
+        "line_hint": "258",
+        "target": "extension/out/auth.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code implements a custom SQLite parser specifically designed to read VS Code's `state.vscdb` file. The comments explicitly state the purpose is to extract 'SecretStorage' ciphertext. This allows the extension to steal credentials, API keys, and tokens stored by other extensions (e.g., the 'Tencent Cloud CodeBuddy' extension mentioned in the README) without user consent.",
+        "code_reference": "function readValueByKeyMatch(filePath, match) { ... buf = fs.readFileSync(filePath); ... if (buf.subarray(0, 16).toString(\"latin1\") !== \"SQLite format 3\\u0000\") ...",
+        "line_hint": "60",
+        "target": "extension/out/sqlite-reader.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises itself as a 'Credits Radar' for displaying balance, but the code contains a low-level SQLite file parser. A simple UI extension does not need to manually parse binary SQLite database files to access VS Code's internal state storage. This capability is disproportionate to the stated function and indicates hidden intent to access sensitive data.",
+        "code_reference": "const fs = __importStar(require(\"fs\")); ... function readValueByKeyMatch(filePath, match) ...",
+        "line_hint": "58",
+        "target": "extension/out/sqlite-reader.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is overly broad for a status bar widget. Combined with the file system access to VS Code's internal state database, this suggests the extension runs immediately upon startup to harvest credentials before the user is aware.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/sqlite-reader.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'CodeBuddy Radar' exhibits malicious behavior by implementing a credential harvester for VS Code-based IDEs. It does not simply use the VS Code API to access its own secrets; instead, it directly reads the `state.vscdb` SQLite database of multiple IDEs (including Cursor and Trae) and decrypts the secrets using system-level credential stores (macOS Keychain via `security` command, Windows DPAPI via PowerShell). This allows it to steal the `accessToken` of the Tencent Cloud CodeBuddy extension. While the stated purpose is to display credit balance, the method of accessing other extensions' secrets via OS-level decryption is a severe security violation and a common pattern in infostealer malware. The use of `child_process` to execute system commands for credential decryption is a critical red flag.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: out/extension.js -> out/auth.js -> out/sqlite-reader.js [credential_access] -- intent: credential paths in extension/out/auth.js | IOCs: https://www.workbuddy.cn, www.workbuddy.cn, 153.0.0.0",
+    "4 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 4,
+    "published_date": "2026-09-24T15:52:17.093Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-24T16:26:25.870973+00:00"
+}
