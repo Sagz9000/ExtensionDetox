@@ -1,0 +1,141 @@
+{
+  "extension_id": "Natsummerance.readmd-vscode",
+  "display_name": "ReadMD \u2014\u2014 \u9ad8\u6027\u80fd Markdown \u667a\u80fd\u9884\u89c8\u4e0e\u81ea\u6108\u4fee\u590d",
+  "version": "2.3.3",
+  "publisher": {
+    "name": "Natsummerance",
+    "verified": false
+  },
+  "vsix_sha256": "c2e04368191e326324d163ee0534fac74fe307679e388073f48559bfa3138ea4",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 6,
+        "snippet": "const cp = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 6,
+        "snippet": "const cp = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 6,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 43,
+        "snippet": "spawn('python"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/2)",
+        "summary": "The code is a standard VS Code extension implementation for a Markdown preview and repair tool. It uses `child_process` to invoke a local Python script for text processing, which aligns with the extension's stated purpose of providing 'smart repair' capabilities. No malicious patterns such as data exfiltration, credential harvesting, or obfuscated payloads were detected. The static rule hits regarding `child_process` are false positives in the context of this specific extension's functionality."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/2)",
+        "summary": "The extension exhibits critical behavioral mismatches and security risks. Despite claiming to be a 'local' tool, it loads remote JavaScript from a CDN, which is a significant supply-chain risk. Furthermore, it spawns `python` processes, which is disproportionate for a Markdown previewer and indicates hidden capabilities or potential for arbitrary code execution. The combination of remote code loading, local process spawning, and potential XSS via innerHTML injection makes this extension highly suspicious and likely malicious or at least extremely dangerous."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process.spawn` to execute a Python script is consistent with the extension's advertised functionality of 'Markdown smart repair' (\u81ea\u6108\u4fee\u590d). The command executes a local Python script (`readmd_fix.py`) located within the extension's directory structure to process the current document's text. There is no evidence of arbitrary command injection, network exfiltration, or access to sensitive system files. The input is piped via stdin, and the output is parsed as JSON to update the editor. This is a legitimate implementation for a tool that relies on a Python backend for complex text processing.",
+        "code_reference": "const proc = cp.spawn('python', ['-c', `...`]);",
+        "line_hint": 43,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'local' Markdown preview tool, but the code loads a remote script from `https://cdn.jsdelivr.net/npm/marked/marked.min.js` inside a Webview. This violates the 'local' claim and introduces a supply-chain risk where the remote content can be compromised or modified to execute arbitrary code in the context of the user's editor.",
+        "code_reference": "<script src=\"https://cdn.jsdelivr.net/npm/marked/marked.min.js\"></script>",
+        "line_hint": 18,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The code imports `child_process` and spawns a `python` process. This is highly suspicious for a Markdown previewer. While it might be intended for LaTeX or BibTeX processing (as hinted in the description), spawning arbitrary interpreters without strict argument validation or sandboxing is a major security risk and a significant behavioral mismatch for a simple preview tool.",
+        "code_reference": "require(\"child_process\") ... spawn('python",
+        "line_hint": 6,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "XSS_VULNERABILITY",
+        "description": "The Webview HTML template injects raw Markdown content directly into the DOM via `innerHTML` after parsing with `marked`. If `marked` is configured to allow raw HTML (default behavior often does), this allows for Cross-Site Scripting (XSS) attacks if the Markdown file contains malicious scripts. Combined with the remote script loading, this creates a potential vector for code execution.",
+        "code_reference": "document.getElementById('content').innerHTML = marked.parse(raw);",
+        "line_hint": 23,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension implementation for a Markdown preview and repair tool. It uses `child_process` to invoke a local Python script for text processing, which aligns with the extension's stated purpose of providing 'smart repair' capabilities. No malicious patterns such as data exfiltration, credential harvesting, or obfuscated payloads were detected. The static rule hits regarding `child_process` are false positives in the context of this specific extension's functionality.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 10,
+    "published_date": "2026-08-19T15:07:59.243Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-19T16:21:04.621931+00:00Z"
+}

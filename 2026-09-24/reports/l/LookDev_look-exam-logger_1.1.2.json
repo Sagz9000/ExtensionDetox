@@ -1,0 +1,312 @@
+{
+  "extension_id": "LookDev.look-exam-logger",
+  "display_name": "Look Exam Logger",
+  "version": "1.1.2",
+  "publisher": {
+    "name": "LookDev",
+    "verified": false
+  },
+  "vsix_sha256": "2de3f753e3d3c9ad6922fe9d7d5afcdbd7fab08b283bd8604b975772eae223a9",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6599999999999999,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Machine ID harvesting",
+        "file": "extension/dist/extension.js",
+        "line": 93,
+        "snippet": "machine_id"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Machine ID harvesting",
+        "file": "extension/dist/extension.js",
+        "line": 93,
+        "snippet": "machineId"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Machine ID harvesting",
+        "file": "extension/dist/extension.js",
+        "line": 98,
+        "snippet": "machine_id"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Machine ID harvesting",
+        "file": "extension/dist/extension.js",
+        "line": 98,
+        "snippet": "machineId"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Machine ID harvesting",
+        "file": "extension/dist/extension.js",
+        "line": 1059,
+        "snippet": "machineId"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Machine ID harvesting",
+        "file": "extension/dist/extension.js",
+        "line": 1059,
+        "snippet": "machineId"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 93,
+        "snippet": "method: \"POST\", body: JSON.stringify({ passkey: config.passkey"
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "prof.lucasluz.me",
+      "source_file": "extension/dist/extension.js",
+      "line": 41,
+      "context": "var EXAM_API_BASE_URL = \"https://prof.lucasluz.me\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/22)",
+        "summary": "The extension exhibits multiple high-risk behaviors consistent with a supply-chain attack or data exfiltration tool disguised as an educational utility. The presence of a hardcoded API key ('SENAI2026'), system fingerprinting (machine ID harvesting), and data transmission to a personal domain ('prof.lucasluz.me') are strong indicators of malicious intent. The 'exam logger' functionality serves as a plausible cover for tracking users and exfiltrating system information. The discrepancy between the 'local evidence' claim in the README and the active cloud sync to an unverified external server further raises suspicion. Immediate removal and investigation of the backend server are recommended."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/22)",
+        "summary": "The code is a standard HTTP client for an educational exam logging extension. It collects machine identifiers (hostname, machine_id) and file activity events to send to a backend server for audit purposes. This behavior is fully aligned with the extension's stated purpose of monitoring programming evaluations. The 'infostealer' flags are false positives resulting from the legitimate need to fingerprint the student's machine for academic integrity. No malicious patterns, obfuscation, or unauthorized access to sensitive system files were detected in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/22)",
+        "summary": "The code in this chunk implements a cloud API client and a document edit batcher. The 'suspicious' hits from the static scanner regarding machine ID and passkeys are false positives in the context of an exam logging tool that requires device identification and server authentication. The logic for batching document changes (tracking characters added/removed) is consistent with the extension's goal of monitoring file evolution during an exam. No malicious patterns such as obfuscation, arbitrary command execution, or access to sensitive local paths outside the workspace were observed in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 4/22)",
+        "summary": "The code appears to be a legitimate implementation of an exam logging and synchronization service. The 'suspicious' indicators (machine_id, passkey) are standard fields for an audit trail in an educational context, not signs of malware. The file operations are limited to local queue management (JSON files) and the network activity is a simple POST to a specific backend. There are no signs of credential theft, reverse shells, or obfuscated payloads. The behavior is proportional to the extension's advertised purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/22)",
+        "summary": "The code is a standard implementation of an offline-first synchronization service for an educational exam logging extension. It manages a local queue of events, retries failed uploads, and sends heartbeats to a remote server. The 'suspicious' hits from the static analyzer (machine_id, passkey) are false positives in this context, as they refer to device identification and API authentication for the specific exam platform, not general credential theft. The network activity is limited to the documented sync endpoint. There is no evidence of malicious intent, credential harvesting, or unauthorized system access."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 7/22)",
+        "summary": "The code in this chunk appears to be a legitimate implementation of an exam monitoring and logging tool. The 'suspicious' hits from the static scanner regarding machine ID and passkeys are consistent with the extension's advertised functionality of tracking student identity and device integrity for academic assessments. The code handles session lifecycle events (start/finish), generates reports, and manages local storage within the VS Code extension context. There are no signs of malicious intent, such as credential theft, reverse shells, or unauthorized data exfiltration to external C2 servers. The network activity is limited to the extension's own backend service."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 21/22)",
+        "summary": "The code is consistent with the extension's advertised purpose: an educational tool for logging programming exam sessions. The 'suspicious' indicators (machine ID, hostname, POST requests) are standard components of an audit/telemetry system for an exam proctoring tool. There is no evidence of credential harvesting, reverse shells, obfuscated payloads, or unauthorized access to sensitive system files. The behavior is proportional to the 'Education' category and the README description."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "HARDCODED_CREDENTIALS",
+        "description": "Hardcoded API passkey 'SENAI2026' found in source code. This allows anyone with access to the source or decompiled extension to authenticate against the backend server, potentially compromising the integrity of exam logs or accessing other users' data if the backend is shared.",
+        "code_reference": "var EXAM_CLIENT_PASSKEY = \"SENAI2026\";",
+        "line_hint": 42,
+        "target": "extension/dist/extension.js (chunk 1/22)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension sends system identifiers (machine_id, machineId) and configuration data to a hardcoded external domain (prof.lucasluz.me) via POST requests. While framed as 'cloud sync', the combination of hardcoded credentials, system fingerprinting, and external transmission to a personal-looking domain (not a corporate or official SENAI domain) is a classic info-stealer pattern.",
+        "code_reference": "method: \"POST\", body: JSON.stringify({ passkey: config.passkey, machine_id: ... })",
+        "line_hint": 93,
+        "target": "extension/dist/extension.js (chunk 1/22)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "The code harvests machine-specific identifiers (machineId) which are often used to track users across sessions or devices. In the context of an 'exam logger', this could be used to identify specific students or machines for targeted attacks or to bypass local-only logging claims.",
+        "code_reference": "machine_id, machineId",
+        "line_hint": 93,
+        "target": "extension/dist/extension.js (chunk 1/22)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The extension communicates with 'prof.lucasluz.me', a personal domain, rather than an official institutional or corporate domain. This is a common tactic in supply-chain attacks to host C2 servers or data exfiltration endpoints under the guise of legitimate service integration.",
+        "code_reference": "var EXAM_API_BASE_URL = \"https://prof.lucasluz.me\";",
+        "line_hint": 41,
+        "target": "extension/dist/extension.js (chunk 1/22)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension claims to be a local logging tool ('mant\u00e9m evid\u00eancias locais') but actively synchronizes data with an external server using hardcoded credentials. The 'local' claim is misleading if data is being sent to a third-party personal domain.",
+        "code_reference": "README: 'mant\u00e9m evid\u00eancias locais' vs Code: 'CloudApiClient' with external URL",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'machine_id' and 'hostname' collection as infostealer behavior. However, the extension is explicitly an 'Exam Logger' for auditing programming evaluations. Collecting machine identifiers and hostnames is standard practice for academic integrity tools to bind session data to a specific physical device and prevent session replay or impersonation. The data is sent to a configured server (`prof.lucasluz.me`) which appears to be the legitimate backend for this educational tool, not a C2 server.",
+        "code_reference": "body: JSON.stringify({ passkey: config.passkey, machine_id: config.machineId, hostname: config.hostname ... })",
+        "line_hint": "93",
+        "target": "extension/dist/extension.js (chunk 2/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The code sends session data, file events, and heartbeats to a remote server. This is consistent with the advertised functionality of 'synchronizing data with the configured server'. The domain `prof.lucasluz.me` is a personal/academic domain, which is common for university or professor-developed tools, though it lacks the trust signals of a major corporate domain. No evidence of data exfiltration to third-party or malicious endpoints was found in this chunk.",
+        "code_reference": "this.request(\"/api/v1/health\")",
+        "line_hint": "41",
+        "target": "extension/dist/extension.js (chunk 2/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'machine_id' and 'passkey' as credential harvesting/exfiltration. However, the code context shows these are part of a structured JSON payload for a cloud API (`CloudHttpError`, `Bearer` token auth). Given the extension's purpose is an 'Exam Logger' that synchronizes data to a server, sending a machine ID for device identification and a passkey for authentication is consistent with its stated functionality, not malicious exfiltration.",
+        "code_reference": "method: \"POST\", body: JSON.stringify({ passkey: config.passkey ... machine_id ... })",
+        "line_hint": "93",
+        "target": "extension/dist/extension.js (chunk 3/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension makes network requests to `prof.lucasluz.me`. While the domain reputation is unknown, the code structure (REST API with Bearer tokens, JSON payloads, error handling) is standard for a SaaS-backed extension. The behavior aligns with the 'synchronize data with the configured server' feature described in the README.",
+        "code_reference": "this.fetcher(apiUrl(baseUrl, path6), ...)",
+        "line_hint": "20",
+        "target": "extension/dist/extension.js (chunk 3/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'machine_id' and 'passkey' as credential harvesting/exfiltration. However, the code context shows these are part of a structured event payload for an educational exam logging tool. The 'machine_id' is likely used to identify the student's machine for audit purposes, and 'passkey' is likely a session or authentication token for the specific exam server, not a generic credential theft. The data is sent to a configured server (prof.lucasluz.me) which aligns with the extension's stated purpose of syncing exam data.",
+        "code_reference": "method: \"POST\", body: JSON.stringify({ passkey: config.passkey, machine_id: ... })",
+        "line_hint": "93",
+        "target": "extension/dist/extension.js (chunk 4/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension sends data to a hardcoded domain 'prof.lucasluz.me'. While this is a custom domain, it is consistent with the extension's description of syncing data to a 'configured server'. The domain reputation is unknown, but the behavior is proportional to the 'Exam Logger' functionality. No obfuscation or suspicious tunneling services are observed.",
+        "code_reference": "domain: prof.lucasluz.me",
+        "line_hint": "41",
+        "target": "extension/dist/extension.js (chunk 4/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'machine_id' and 'passkey' as credential harvesting/exfiltration. However, the code context shows these are part of a structured API payload for an educational exam logging tool. The 'machine_id' is likely a VS Code machine ID used for device identification in the audit log, and 'passkey' is a configuration token for the specific exam server, not a user credential like a password or SSH key. The behavior aligns with the extension's stated purpose of synchronizing exam session data to a configured server.",
+        "code_reference": "method: \"POST\", body: JSON.stringify({ passkey: config.passkey, machine_id: ... })",
+        "line_hint": "93",
+        "target": "extension/dist/extension.js (chunk 5/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension sends data to a hardcoded domain 'prof.lucasluz.me'. While this is a custom domain, it is consistent with the extension's description of syncing data to a 'configured server'. The data being sent (session events, file evolution, heartbeats) matches the 'Exam Logger' functionality. No sensitive system files (like ~/.ssh or browser cookies) are being read and sent; only VS Code workspace/session events are involved.",
+        "code_reference": "domain: prof.lucasluz.me",
+        "line_hint": "41",
+        "target": "extension/dist/extension.js (chunk 5/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'machine_id' and 'passkey' as credential harvesting/exfiltration. In the context of an exam logger, 'machine_id' is a standard identifier for device fingerprinting to prevent cheating (e.g., ensuring the exam is taken on the registered device), and 'passkey' is likely an authentication token for the specific exam session, not a user's system credential. The code shown in this chunk does not display the actual transmission logic, but the variable names align with the extension's stated purpose of audit and identity verification.",
+        "code_reference": "method: \"POST\", body: JSON.stringify({ passkey: config.passkey",
+        "line_hint": "93",
+        "target": "extension/dist/extension.js (chunk 7/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension communicates with a hardcoded domain 'prof.lucasluz.me'. While this is a custom domain, it is consistent with the extension's function of syncing exam data to a server. The domain reputation is unknown, but the behavior is proportional to the 'sync data with configured server' feature described in the README. No evidence of C2, tunneling, or data exfiltration to third-party malicious endpoints was found in this chunk.",
+        "code_reference": "domain: prof.lucasluz.me",
+        "line_hint": "41",
+        "target": "extension/dist/extension.js (chunk 7/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'machine_id' and 'hostname' collection as info-stealer behavior. However, the code explicitly uses `vscode.env.machineId` and `os.hostname()` to identify the student's machine for an educational exam logging tool. This is a standard and expected behavior for an audit/anti-cheat extension to attribute logs to specific devices, not malicious exfiltration.",
+        "code_reference": "machineId: vscode5.env.machineId, hostname: import_node_os.default.hostname()",
+        "line_hint": "93",
+        "target": "extension/dist/extension.js (chunk 21/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged a POST request with a 'passkey' as data exfiltration. The code sends a `passkey` (likely a client-side API key or shared secret for the exam service) along with session data to a configured backend. Given the extension's purpose is to 'synchronize data with the configured server', this is the core functionality, not malicious exfiltration.",
+        "code_reference": "method: \"POST\", body: JSON.stringify({ passkey: config.passkey",
+        "line_hint": "93",
+        "target": "extension/dist/extension.js (chunk 21/22)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension communicates with `prof.lucasluz.me`. While the domain reputation is unknown, it aligns with the extension's stated purpose of syncing exam logs to a server. The code allows configuration of the base URL, suggesting it is intended for institutional use (e.g., SENAI, as mentioned in the output channel name).",
+        "code_reference": "domain: prof.lucasluz.me",
+        "line_hint": "41",
+        "target": "extension/dist/extension.js (chunk 21/22)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits multiple high-risk behaviors consistent with a supply-chain attack or data exfiltration tool disguised as an educational utility. The presence of a hardcoded API key ('SENAI2026'), system fingerprinting (machine ID harvesting), and data transmission to a personal domain ('prof.lucasluz.me') are strong indicators of malicious intent. The 'exam logger' functionality serves as a plausible cover for tracking users and exfiltrating system information. The discrepancy between the 'local evidence' claim in the README and the active cloud sync to an unverified external server further raises suspicion. Immediate removal and investigation of the backend server are recommended.",
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-19T03:36:00.527Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-19T04:23:49.062078+00:00Z"
+}

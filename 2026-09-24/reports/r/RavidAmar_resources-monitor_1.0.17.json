@@ -1,0 +1,268 @@
+{
+  "extension_id": "RavidAmar.resources-monitor",
+  "display_name": "System Metrics Lens",
+  "version": "1.0.17",
+  "publisher": {
+    "name": "RavidAmar",
+    "verified": false
+  },
+  "vsix_sha256": "16beac14ed005c40600ffc85d930c652791c4cfbf0540babe0bb70755ee0349f",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 0.6110625,
+    "ai_vibe": 0.42,
+    "static": 0.40625,
+    "behavioral": 0.85,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "ACTIVATION_WILDCARD",
+        "severity": "HIGH",
+        "description": "Extension uses wildcard activation: ['*', 'onCommand:resmon.openSettings']",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 97,
+        "snippet": "let childProcess = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 97,
+        "snippet": "let childProcess = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/extension.js",
+        "line": 348,
+        "snippet": "let childProcess = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/extension.js",
+        "line": 348,
+        "snippet": "let childProcess = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 97,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/extension.js",
+        "line": 348,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 9
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "resmon.show.net",
+      "source_file": "extension/package.json",
+      "line": 62,
+      "context": "\"resmon.show.net\": {",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 17,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.42,
+    "confidence": 0.62,
+    "blocks_parsed": 11,
+    "blocks_seen": 12,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/10)",
+        "summary": "The visible code is broadly consistent with a VS Code status-bar resource monitor: it registers a settings command, uses configuration, and relies on systeminformation to collect metrics. No secrets, eval, clipboard access, persistence, remote shells, or credential harvesting are visible in this chunk. The main concerns are the detected child_process usage and the broad '*' activation event; both can be legitimate for a system metrics extension but require review of the remaining chunks to confirm that executed commands and network activity are limited to benign system information collection."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/10)",
+        "summary": "The analyzed code chunk is part of a legitimate system monitoring extension ('System Metrics Lens', a fork of 'Resource Monitor'). It implements classes for displaying CPU temperature and frequency using the `systeminformation` library and direct file reads from `/sys` and `/proc` on Linux. The use of `child_process` is consistent with the extension's stated purpose of gathering system metrics. No malicious indicators, data exfiltration, or obfuscation were detected in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/10)",
+        "summary": "The analyzed code chunk is part of a legitimate system metrics extension ('System Metrics Lens'). It implements logic for displaying CPU frequency and battery status in the VS Code status bar. The use of `child_process` is consistent with the extension's stated purpose of gathering system resource data. There are no indicators of credential theft, data exfiltration, obfuscation, or malicious command execution. The static rule hits are false positives in this context."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/10)",
+        "summary": "The code is a legitimate implementation of a system resource monitor. It uses the `systeminformation` library and native PowerShell commands to gather CPU, memory, and GPU statistics. The detected `child_process` usage is necessary for the advertised functionality (GPU metrics on Windows) and does not exhibit any malicious patterns such as data exfiltration, credential harvesting, or obfuscated payload execution. The extension's capabilities are proportional to its description."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 6/10)",
+        "summary": "The code is a legitimate implementation of a system resource monitor. It uses the `systeminformation` library to gather network and GPU stats and employs `child_process` to execute specific OS commands for detailed GPU metrics on Windows. The behavior is fully proportional to the extension's advertised functionality (displaying CPU, memory, disk, network, and battery statistics). No malicious patterns, data exfiltration, or suspicious network connections were identified in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 7/10)",
+        "summary": "The analyzed code chunk is part of a legitimate VS Code extension ('System Metrics Lens') designed to display system resource statistics (CPU, memory, disk, network) in the status bar. The code shown handles network interface statistics and disk space formatting. The flagged `child_process` usage is a false positive, as it is a standard mechanism for such extensions to query system metrics. There are no indicators of malicious behavior, data exfiltration, or obfuscation in this segment."
+      },
+      {
+        "target": "extension/out/constants.js",
+        "summary": "The provided source file `constants.js` is a benign TypeScript/JavaScript module containing only static enum definitions and mapping objects for unit conversions (e.g., KB, MB, GB) and display formats. It contains no executable logic, network calls, file system access, or obfuscated code. The extracted indicators (domains like `systeminformation.io`, `raspberrypi.org`) originate from the `systeminformation` dependency, which is a legitimate and widely used library for gathering system metrics, consistent with the extension's stated purpose of displaying CPU/memory/disk stats. No malicious behavior or capability disconnects were identified in this file."
+      },
+      {
+        "target": "extension/out/metrics.js (chunk 1/4)",
+        "summary": "The provided code chunk is a benign utility module for parsing system metrics, specifically handling CPU speed and GPU counter data. It contains standard data transformation logic (parsing JSON, regex matching for GPU identifiers, numeric validation) and does not exhibit any malicious behavior, network exfiltration, credential harvesting, or obfuscation. The activation event '*' is appropriate for a status bar metrics extension that needs to be available immediately, and the dependencies align with the stated purpose of displaying system resource statistics."
+      },
+      {
+        "target": "extension/out/metrics.js (chunk 2/4)",
+        "summary": "The provided code chunk is a pure data transformation module responsible for parsing and normalizing GPU metrics (utilization, memory, temperature) from raw system information objects. It performs mathematical operations and string formatting without any network communication, file system access, process execution, or access to sensitive user data. The logic is consistent with the extension's stated purpose of displaying system metrics in the VS Code status bar, and no malicious or suspicious patterns were identified."
+      },
+      {
+        "target": "extension/out/metrics.js (chunk 3/4)",
+        "summary": "The provided code chunk consists of pure utility functions for formatting and normalizing GPU and CPU metrics (e.g., `formatGpuMemory`, `normalizeCpuLoad`). It performs no I/O, network communication, or system interaction. The behavior is fully consistent with the extension's stated purpose of displaying system statistics in the VS Code status bar. No malicious or suspicious indicators were found."
+      },
+      {
+        "target": "extension/out/metrics.js (chunk 4/4)",
+        "summary": "This code chunk is a benign utility module for the 'System Metrics Lens' extension. It contains pure mathematical functions for calculating network throughput rates and formatting byte rates into human-readable strings (KB/s, MB/s). It also includes a parser for Windows Processor Utility data. There are no network calls, file system access, process execution, or obfuscation present in this file. The behavior is fully consistent with the extension's stated purpose of displaying system metrics in the status bar."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "Static scanner detected require(\"child_process\") in the extension code. For a system metrics extension this may be legitimate because systeminformation commonly executes OS commands to collect CPU, memory, disk, network, and battery data. However, child_process grants arbitrary command execution capability and should be reviewed for hardcoded commands, user-controlled arguments, or exfiltration paths.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": "97, 348",
+        "target": "extension/out/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*', meaning it runs for every VS Code session. A persistent status-bar resource monitor can reasonably activate at startup, but '*' is broader than necessary and increases exposure if hidden capabilities exist in later chunks.",
+        "code_reference": "Activation Events: *, onCommand:resmon.openSettings",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "DEPENDENCY_USAGE",
+        "description": "The extension uses the systeminformation package, which is appropriate for the advertised CPU/memory/disk/network/battery metrics but has a large attack surface because it may execute system commands and perform connectivity checks. No malicious behavior is visible in this chunk.",
+        "code_reference": "var si = require('systeminformation');",
+        "line_hint": "27",
+        "target": "extension/out/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_NETWORK_INDICATOR",
+        "description": "Extracted indicators such as 8.8.8.8 and domains from systeminformation appear to come from bundled dependency metadata or connectivity checks rather than visible exfiltration code in this chunk.",
+        "code_reference": "ip: 8.8.8.8 (extension/node_modules/systeminformation/lib/internet.js:123)",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, in the context of a system metrics extension (Resource Monitor fork), this is a standard and necessary dependency for executing system commands (e.g., `top`, `ps`, `df`) to gather CPU, memory, and disk statistics. The code shown in this chunk does not exhibit malicious command execution patterns (like piping to shell interpreters or executing encoded payloads).",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 97,
+        "target": "extension/out/extension.js (chunk 3/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, in the context of a system resource monitor extension, this is a standard and necessary dependency for executing system commands (e.g., `lscpu`, `free`, `df`) to retrieve metrics that are not exposed via standard Node.js APIs or the `systeminformation` library on all platforms. The code shown in this chunk does not exhibit malicious command execution patterns (such as piping to shell interpreters, downloading payloads, or accessing sensitive user directories).",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 97,
+        "target": "extension/out/extension.js (chunk 4/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process.execFile` to execute PowerShell commands is a false positive for malicious intent. The command is strictly limited to querying WMI/CIM instances (`Win32_PerfFormattedData_GPUPerformanceCounters`) to retrieve GPU metrics, which aligns with the extension's stated purpose of displaying system resource statistics. The execution is sandboxed with a timeout and does not perform file system modifications, network exfiltration, or credential access.",
+        "code_reference": "childProcess.execFile(\"powershell.exe\", [\"-NoLogo\", \"-NoProfile\", \"-NonInteractive\", \"-Command\", command], ...)",
+        "line_hint": 97,
+        "target": "extension/out/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, in the context of a system resource monitor, this is a standard and necessary technique to execute OS-specific commands (e.g., `nvidia-smi` or `wmic`) to retrieve GPU metrics that are not available via standard Node.js APIs or the `systeminformation` library alone. The code shown handles the output of these commands to parse GPU counters, which aligns perfectly with the extension's stated purpose.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 97,
+        "target": "extension/out/extension.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, in the context of a system resource monitor extension, this is a standard and necessary dependency for executing system commands (e.g., `df`, `ps`, `netstat`) to gather CPU, memory, and network statistics. The code snippet provided shows standard data formatting and display logic, with no evidence of malicious command execution, data exfiltration, or obfuscation.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 97,
+        "target": "extension/out/extension.js (chunk 7/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on '*' (startup), which is more aggressive than necessary for a status bar widget. While common for performance monitors to ensure immediate data availability, it is technically a broader activation scope than strictly required for a passive display tool.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/constants.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged domains like 'resmon.show.net' and 'plus-innovations.com'. These are likely the extension's homepage or the author's website, which is standard for VS Code extensions. The other domains (systeminformation.io, elinux.org, etc.) are references within the 'systeminformation' library documentation or code comments, not active network calls in this file.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/metrics.js (chunk 4/4)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The visible code is broadly consistent with a VS Code status-bar resource monitor: it registers a settings command, uses configuration, and relies on systeminformation to collect metrics. No secrets, eval, clipboard access, persistence, remote shells, or credential harvesting are visible in this chunk. The main concerns are the detected child_process usage and the broad '*' activation event; both can be legitimate for a system metrics extension but require review of the remaining chunks to confirm that executed commands and network activity are limited to benign system information collection.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-04T10:55:52.58Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Impersonation"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-17T03:01:06.918453+00:00Z"
+}
