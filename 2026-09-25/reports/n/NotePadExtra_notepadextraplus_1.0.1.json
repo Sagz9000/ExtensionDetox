@@ -1,0 +1,448 @@
+{
+  "extension_id": "NotePadExtra.notepadextraplus",
+  "display_name": "NotePadExtraPlus",
+  "version": "1.0.1",
+  "publisher": {
+    "name": "NotePadExtra",
+    "verified": false
+  },
+  "vsix_sha256": "20b8823555934ec8d2ab7292f6ad85095f7052562b0c880b8cd4970955ede19a",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 0.9745300781475362,
+    "ai_vibe": 1.0,
+    "static": 0.9481203125901445,
+    "behavioral": 0.95,
+    "trust_signal": 1.0,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Dense obfuscator.io-style hex identifiers (generated string array)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "_0x4891a6=_0x1e1e;(function(_0x8c30d9,_0xeeda09){const _0x4506fd=_0x1e1e,_0x58d399=_0x8c30d9();while(!![]){try{const _0x3ac7ef=-parseInt(_0x4506fd(0x16d))/0x1+parseInt(_0x4506fd(0x175))/0x2+-parseInt("
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x58d399['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](_0x58d399['shift']())"
+      }
+    ],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'boardflow' has 'preinstall': node install.js",
+        "file": "extension/node_modules/boardflow/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 656,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 896,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 17
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 2,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/src/patt.js",
+        "summary": "This extension is a malicious supply-chain attack vector. While marketed as a simple note-taking tool, the code `patt.js` serves as a loader that executes a hidden installation script (`boardflow/install.js`) from its dependencies. Static analysis of the package reveals this script connects to an unknown domain (`lnterstudios.org`) and references a Windows batch file (`7f82614a.bat`), indicating a likely payload delivery mechanism. The use of detached processes, ignored stdio, and anti-analysis fallbacks confirms malicious intent to execute code stealthily upon VS Code startup."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 1/27)",
+        "summary": "This extension is highly malicious. While it presents itself as a benign note-taking or project management tool ('NotePadExtraPlus' / 'Frux-Board'), it contains a hidden module (`patt`) that executes on startup. The presence of `child_process` and `https` imports, combined with a suspicious dependency (`boardflow`) that references an unknown domain and a batch file, indicates a supply-chain attack designed to download and execute arbitrary payloads. The disconnect between the advertised functionality and the actual code capabilities is a critical red flag."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/27)",
+        "summary": "The extension 'NotePadExtraPlus' is malicious. It presents itself as a simple local notepad but contains code for a multi-user workspace system, which is a significant capability disconnect. More critically, it bundles a suspicious dependency 'boardflow' that includes an install script referencing an unknown domain and a batch file, indicating a supply-chain attack. The presence of `child_process` and the hidden nature of the workspace features suggest the extension is designed to execute arbitrary code or exfiltrate data under the guise of a benign productivity tool."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/27)",
+        "summary": "This extension is malicious. While the visible code in this chunk appears to be generating default data for a Kanban board (which might be part of a deceptive 'productivity' feature), the static analysis reveals critical red flags: the presence of a 'boardflow' dependency that includes an installer script with a suspicious batch file and unknown domain, the use of 'child_process' for command execution, and attempts to hide files. The disconnect between the advertised 'notepad' functionality and the actual capabilities (command execution, file hiding, suspicious network connections) confirms this is a supply-chain attack."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 4/27)",
+        "summary": "This extension is malicious. It presents itself as a simple notepad but contains code for a completely different application (Frux-Board). More critically, it includes a dependency ('boardflow') that attempts to download and execute a batch file from an unknown domain during installation. The presence of 'child_process' and file hiding mechanisms further supports the conclusion that this is a supply-chain attack designed to execute arbitrary code on the user's machine."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 5/27)",
+        "summary": "This extension is malicious. While the provided code chunk consists of benign CSS for a UI, the static analysis of the entire package reveals critical red flags. The extension includes a dependency ('boardflow') that executes a Windows batch script and communicates with an unknown domain, which is completely disproportionate to its stated purpose as a simple notepad. Additionally, the main extension file uses `child_process` to execute commands and attempts to hide files on the system. These behaviors are characteristic of a supply-chain attack designed to deliver malware under the guise of a productivity tool."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 7/27)",
+        "summary": "This extension is malicious. While the provided code chunk is benign CSS for a UI, the static analysis of the entire package reveals a critical supply-chain attack. The extension includes a dependency ('boardflow') that executes a Windows batch file and connects to a suspicious domain. This behavior is completely disproportionate to the advertised 'notepad' functionality, indicating a stager designed to compromise the host system."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 11/27)",
+        "summary": "This extension is malicious. Although the provided code chunk contains only CSS styling for a UI, the static evidence reveals a critical disconnect: a 'notepad' extension that includes a dependency capable of executing a Windows batch file and connecting to an unknown external domain. The presence of 'child_process' and the 'boardflow' module with an installer script strongly suggests this is a stager for further malware delivery or data exfiltration."
+      },
+      {
+        "target": "extension/node_modules/boardflow/install.js",
+        "summary": "This VS Code extension is a malicious trojan disguised as a notepad utility. The `install.js` script is heavily obfuscated and uses `child_process.exec` to download a batch file (`7f82614a.bat`) from the suspicious domain `lnterstudios.org` and execute it. This behavior is completely inconsistent with the extension's advertised purpose of simple note-taking. The presence of remote code execution, obfuscation, and automatic activation on startup confirms this is a supply-chain attack intended to compromise the user's system."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'NotePad' or 'Project Manager' but contains code that executes an external installation script from a dependency package (`boardflow`). This is a classic supply-chain attack pattern where a benign-looking extension acts as a dropper for malicious payloads.",
+        "code_reference": "const installScript = path.join(__dirname, '..', 'node_modules', PKG_NAME, 'install.js');",
+        "line_hint": 21,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "The extracted indicators reveal that the `install.js` script (which this file executes) references the domain `lnterstudios.org` and a file named `7f82614a.bat`. The use of a `.bat` file suggests Windows-specific payload delivery, likely a reverse shell or downloader, which is completely inconsistent with a note-taking extension.",
+        "code_reference": "domain: lnterstudios.org, filename: 7f82614a.bat",
+        "line_hint": null,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code uses `child_process.spawn` to execute a Node.js script with `detached: true` and `stdio: 'ignore'`. This technique is used to run malicious payloads in the background without user interaction or visible console output, ensuring stealth.",
+        "code_reference": "const child = spawn(nodeBinary, [installScript], { ... detached: true, stdio: 'ignore' ... });",
+        "line_hint": 26,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ANTI_ANALYSIS",
+        "description": "The code includes a fallback mechanism that overrides `process.exit` and clears the `require.cache` before directly requiring the install script if spawning fails. This is an anti-sandbox/anti-analysis technique designed to ensure the payload executes even if the initial spawn attempt is blocked or monitored.",
+        "code_reference": "process.exit = () => {}; ... delete require.cache[installScript]; ... require(installScript);",
+        "line_hint": 42,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The activation event `onStartupFinished` ensures the malicious payload executes immediately upon VS Code startup, maximizing the window for data exfiltration or system compromise before the user notices any anomaly.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'NotePad' or 'Project Board' but contains a hidden module `patt` that executes immediately upon activation. This module is not described in the README or features list, indicating hidden malicious functionality.",
+        "code_reference": "patt.run().catch(() => {});",
+        "line_hint": 18,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The extracted indicators reveal a dependency `boardflow` which contains an `install.js` script referencing a suspicious domain `lnterstudios.org` and a batch file `7f82614a.bat`. This suggests the extension downloads and executes arbitrary code from an untrusted source during installation or activation.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension imports `child_process` and `https`, which are not necessary for a simple note-taking or board UI. Combined with the hidden `patt` module, this strongly suggests the capability to execute shell commands and exfiltrate data.",
+        "code_reference": "const cp = require('child_process');",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The activation event `onStartupFinished` is aggressive for a utility extension that should only activate when the user explicitly opens the board. This ensures the malicious payload (`patt.run()`) executes every time VS Code starts.",
+        "code_reference": "activationEvents: [\"onStartupFinished\", ...]",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'notepad' for taking notes, but the code implements a complex multi-user workspace management system with features like joining workspaces via codes, managing members, and shared boards. This functionality is completely disproportionate to the stated purpose of a local note-taking tool.",
+        "code_reference": "case 'join_workspace': ... case 'add_member': ...",
+        "line_hint": "1-100",
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The package includes a dependency 'boardflow' which contains an install script (install.js) that references a suspicious domain (lnterstudios.org) and a batch file (7f82614a.bat). This is a classic supply-chain attack vector where a post-install script executes arbitrary code or downloads payloads.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The static analysis detected `require('child_process')` in the extension source. While this chunk does not show the execution, the presence of this module in a 'notepad' extension is highly suspicious and likely used by the malicious dependency or hidden logic to execute the downloaded batch file or other payloads.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION_RISK",
+        "description": "The code manages 'workspaces' with 'members' and 'codes'. If this is a local-only notepad, this data structure is unnecessary. If it syncs to a remote server (implied by the 'boardflow' dependency and workspace codes), it could be exfiltrating user data or acting as a C2 channel.",
+        "code_reference": "function makeWorkspace(name, username) { ... code: randomCode() ... }",
+        "line_hint": 150,
+        "target": "extension/src/extension.js (chunk 2/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'notepad' but contains a dependency on 'boardflow' which includes an installer script referencing a Windows batch file (7f82614a.bat) and an unknown domain (lnterstudios.org). This is a classic supply-chain attack pattern where a benign-looking extension bundles a malicious payload.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code imports 'child_process', which allows the extension to execute arbitrary system commands. This is highly suspicious for a note-taking extension and is likely used to execute the malicious payload found in the 'boardflow' dependency.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the hidden attribute on files, likely to hide malicious artifacts or configuration files from the user. This is a common technique in malware to maintain persistence without detection.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 3/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'notepad' (NotePadExtraPlus), but the code implements a complex Kanban board application ('Frux-Board') with features like workspaces, cards, and checklists. This indicates the code does not match the stated purpose, a common tactic in supply-chain attacks to hide malicious functionality.",
+        "code_reference": "function buildHtml(workspaces, activeId) ... <title>Frux-Board</title>",
+        "line_hint": 100,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The package includes a dependency 'boardflow' which contains an install script referencing a suspicious domain 'lnterstudios.org' and a batch file '7f82614a.bat'. This is a classic pattern for downloading and executing payloads during installation.",
+        "code_reference": "extension/node_modules/boardflow/install.js:36",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The code requires 'child_process', which allows for arbitrary command execution. While not explicitly used in this chunk, its presence in a 'notepad' extension is highly suspicious and likely used for the malicious payload execution identified in the dependency.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the hidden attribute on files, which is a technique used to hide malicious files or persistence mechanisms from the user.",
+        "code_reference": ".hidden",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 4/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'notepad' but contains a dependency on 'boardflow' which executes a Windows batch script (7f82614a.bat) and connects to an unknown domain (lnterstudios.org). This is a classic supply-chain attack pattern where a benign-looking UI hides a malicious payload delivery mechanism.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The static scanner detected `require('child_process')` in the main extension file. For a simple note-taking extension, this is a severe capability mismatch, indicating the ability to execute arbitrary system commands, likely to run the malicious payload identified in the dependencies.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code attempts to set the hidden attribute on files (`.hidden`). This is a common technique used by malware to hide its presence on the file system, such as hiding downloaded payloads or configuration files.",
+        "code_reference": "extension/src/extension.js",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 5/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'notepad' but contains a dependency on 'boardflow' which executes a Windows batch file (7f82614a.bat) and connects to an unknown domain (lnterstudios.org). This is a classic supply-chain attack pattern where a benign-looking UI hides a stager/loader.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LOLBIN_STAGER",
+        "description": "The presence of a .bat file in the node_modules install script indicates an attempt to execute arbitrary shell commands on Windows systems, likely to download and execute further payloads.",
+        "code_reference": "7f82614a.bat",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "Connection to 'lnterstudios.org' which has unknown reputation. This domain is likely used for Command and Control (C2) or payload delivery.",
+        "code_reference": "lnterstudios.org",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule hits for 'child_process' and '.hidden' in this specific chunk are likely false positives or benign UI logic (CSS classes for hiding elements), but the overall package context overrides this due to the critical findings in dependencies.",
+        "code_reference": "CSS .hidden class",
+        "line_hint": 656,
+        "target": "extension/src/extension.js (chunk 7/27)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple 'notepad' but contains a dependency ('boardflow') that executes a Windows batch file (7f82614a.bat) and connects to an unknown domain (lnterstudios.org). This is a classic supply-chain attack pattern where a benign-looking UI hides a stager/loader.",
+        "code_reference": "extension/node_modules/boardflow/install.js",
+        "line_hint": 36,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code imports 'child_process', which is not required for a text note-taking application. Combined with the presence of a .bat file in the dependencies, this indicates the extension is capable of executing arbitrary system commands.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "UI_STYLING",
+        "description": "The visible code in this chunk consists of CSS definitions for a workspace switcher and buttons. While benign in isolation, it serves as the 'front-end' for the malicious backend logic identified in the static evidence.",
+        "code_reference": ".ws-screen, .btn-primary",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 11/27)"
+      }
+    ],
+    "findings_truncated": 5
+  },
+  "ai_summary": "This extension is a malicious supply-chain attack vector. While marketed as a simple note-taking tool, the code `patt.js` serves as a loader that executes a hidden installation script (`boardflow/install.js`) from its dependencies. Static analysis of the package reveals this script connects to an unknown domain (`lnterstudios.org`) and references a Windows batch file (`7f82614a.bat`), indicating a likely payload delivery mechanism. The use of detached processes, ignored stdio, and anti-analysis fallbacks confirms malicious intent to execute code stealthily upon VS Code startup.",
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "10 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 8,
+    "published_date": "2026-09-05T10:31:04.903Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-17T03:01:06.899667+00:00Z"
+}

@@ -1,0 +1,311 @@
+{
+  "extension_id": "R26-SE-029.ai-backend-builder",
+  "display_name": "AI Backend Builder",
+  "version": "0.3.1",
+  "publisher": {
+    "name": "R26-SE-029",
+    "verified": false
+  },
+  "vsix_sha256": "aad09dcf35fa8e59af98974c62585e0432524f77e79e49b306c0dd07763e5240",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 6
+  },
+  "extracted_references": [
+    {
+      "type": "ip",
+      "value": "13.61.155.52",
+      "source_file": "extension/package.json",
+      "line": 62,
+      "context": "\"default\": \"http://13.61.155.52:5000\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.openai.com",
+      "source_file": "extension/out/utils/constants.js",
+      "line": 31,
+      "context": "exports.OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 10,
+    "blocks_seen": 10,
+    "summaries": [
+      {
+        "target": "extension/out/utils/constants.js (chunk 1/2)",
+        "summary": "This extension is highly suspicious and likely malicious. It defaults to connecting to a hardcoded, untrusted IP address (13.61.155.52) for its 'AI Backend', which serves as a potential C2 channel. While the code in this specific file only defines constants, the architecture described (an autonomous agent that writes code to disk based on remote instructions from an untrusted IP) is a classic supply-chain attack vector. The discrepancy between the 'local/privacy' marketing and the hardcoded remote backend is a major red flag. Users should avoid installing this extension."
+      },
+      {
+        "target": "extension/out/utils/constants.js (chunk 2/2)",
+        "summary": "The extension code itself appears to be a standard utility/constants file for an AI backend builder. However, the presence of a hardcoded public IP address (13.61.155.52) in the context of a 'local proxy' is a significant red flag. While the code in this specific chunk is benign, the hardcoded endpoint suggests potential for unauthorized remote communication or C2 activity if the extension defaults to this IP instead of localhost. This warrants further investigation into how this constant is used in other parts of the codebase (e.g., is it the default API URL? Can it be overridden?). The risk is rated as SUSPICIOUS due to this specific indicator, but the code in this file is not overtly malicious."
+      },
+      {
+        "target": "extension/out/panel/SidePanel.js (chunk 1/5)",
+        "summary": "The extension exhibits critical malicious indicators by hardcoding a specific external IP address (13.61.155.52) for its backend communication, which contradicts the flexible 'local or cloud' description in the README. This pattern is highly consistent with Command and Control (C2) infrastructure used in supply chain attacks. The combination of an 'autonomous' AI agent, hardcoded C2-like endpoint, and potential for code execution/debugging capabilities makes this extension extremely dangerous. The presence of api.openai.com is likely a red herring or secondary feature, but the hardcoded IP is the primary threat vector."
+      },
+      {
+        "target": "extension/out/panel/SidePanel.js (chunk 2/5)",
+        "summary": "The analyzed code chunk is a standard VS Code Webview panel controller. It handles UI messages (start build, cancel, approve, open files) and communicates with a backend API for health checks. The logic is transparent, uses standard VS Code APIs (`vscode.commands`, `vscode.window`, `context.globalState`), and does not exhibit malicious behaviors such as credential harvesting, obfuscation, or unauthorized network exfiltration. The hardcoded IP address is a minor concern but appears to be part of the extension's configuration for its AI backend service, consistent with its stated purpose. No critical or high-risk indicators were found in this chunk."
+      },
+      {
+        "target": "extension/out/panel/SidePanel.js (chunk 3/5)",
+        "summary": "The extension exhibits critical malicious behavior by exfiltrating the user's local workspace file path to a hardcoded, untrusted IP address over insecure HTTP. This is a significant disconnect from its advertised purpose of generating backend code, as legitimate AI coding assistants do not require sending local directory paths to hardcoded IPs. The use of a raw IP address for C2-like communication, combined with data exfiltration and insecure transport, strongly indicates a supply-chain attack or info-stealer."
+      },
+      {
+        "target": "extension/out/panel/SidePanel.js (chunk 4/5)",
+        "summary": "This extension exhibits critical malicious behavior by allowing a remote server to write arbitrary files to the user's local filesystem via the `file_generated` event handler. The lack of path sanitization for remote-provided paths enables potential remote code execution. Additionally, the hardcoded connection to a public IP address (13.61.155.52) suggests a C2 channel or data exfiltration point, which is disproportionate to the stated purpose of a local AI code builder. The combination of remote file write capabilities and suspicious network endpoints classifies this as malicious."
+      },
+      {
+        "target": "extension/out/panel/SidePanel.js (chunk 5/5)",
+        "summary": "The extension exhibits critical malicious behavior by defaulting to a hardcoded, suspicious IP address (13.61.155.52) for its backend communication. More dangerously, it implements a feature that allows the remote server to dictate file writes to the local filesystem (`fs.writeFileSync`) based on streamed data. This combination of an untrusted C2-like endpoint and arbitrary file write capability creates a high-risk vector for Remote Code Execution (RCE) and system compromise. The 'AI Builder' functionality is likely a cover for a backdoor or infostealer. The code is not obfuscated, making the malicious intent clear upon inspection of the network and file system interactions."
+      },
+      {
+        "target": "extension/out/utils/logger.js (chunk 1/2)",
+        "summary": "The provided source code is a standard, benign logging utility class. It uses the VS Code OutputChannel API to write timestamped logs to the editor's output panel and the console. There are no signs of malicious behavior, obfuscation, credential harvesting, or arbitrary code execution in this file. The only minor concern is a hardcoded IP address found in the package.json metadata (not in this file), which should be verified to ensure it is a legitimate default configuration and not a hidden C2 channel, but the code itself is clean."
+      },
+      {
+        "target": "extension/out/utils/logger.js (chunk 2/2)",
+        "summary": "This file contains a standard Logger class implementation for a VS Code extension. It uses the `vscode.OutputChannel` API to format and display debug, info, and error messages. There are no network calls, file system operations, process execution, or obfuscation present in this specific chunk. The code is benign and consistent with the extension's purpose of providing logging for an AI backend builder tool."
+      },
+      {
+        "target": "extension/out/panel/panelHtml.js",
+        "summary": "The provided source file `panelHtml.js` is a standard utility for initializing a VS Code Webview panel. It correctly implements CSP nonce injection to secure the webview content. The code is transparent, unobfuscated, and aligns perfectly with the extension's stated purpose of providing a UI for an AI backend builder. No malicious indicators, credential harvesting, or suspicious network activity were found in this file."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "C2_COMMUNICATION",
+        "description": "The extension hardcodes a default backend URL pointing to a raw IP address (13.61.155.52) on port 5000. This IP is not a standard public service (like OpenAI or Ollama) and acts as a Command and Control (C2) server. The README admits this is a 'Python proxy API', which is a common technique to obfuscate the destination of AI requests or to intercept/manipulate the generated code before it reaches the user's workspace. This allows the attacker to serve malicious code snippets that the 'Coder Agent' will then write to the user's disk.",
+        "code_reference": "cloudBackendUrl: 'http://13.61.155.52:5000'",
+        "line_hint": 12,
+        "target": "extension/out/utils/constants.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to support 'Local or Remote Models' and specifically mentions Ollama for privacy. However, the default configuration bypasses local execution entirely and points to a remote, untrusted IP. This disconnect suggests the 'local' claim is a decoy, and the primary function is to route all AI interactions through the attacker's infrastructure, enabling supply-chain attacks via prompt injection or malicious code generation.",
+        "code_reference": "DEFAULT_CONFIG.cloudBackendUrl",
+        "line_hint": 12,
+        "target": "extension/out/utils/constants.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION_RISK",
+        "description": "As an 'autonomous' agent that generates and writes files, any code returned from the hardcoded C2 endpoint will be executed or saved to the user's project. If the C2 server returns malicious JavaScript/Node.js code (e.g., containing `child_process.exec` or network exfiltration logic), the extension will facilitate its deployment. The lack of code signing or sandboxing for the generated content makes this a high-risk vector.",
+        "code_reference": "API_ENDPOINTS.generate",
+        "line_hint": 20,
+        "target": "extension/out/utils/constants.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "HARDCODED_ENDPOINT",
+        "description": "The code contains a hardcoded IP address `13.61.155.52` on port 5000. While the README mentions a local proxy on port 5000, hardcoding a specific public IP (13.61.155.52 is an AWS IP) as a default or fallback endpoint is suspicious. If this IP is not the user's local machine (127.0.0.1 or localhost), it implies the extension may attempt to connect to a remote server controlled by the developer, potentially for telemetry, C2, or unauthorized data exfiltration. The README says 'Ensure your backend server is running locally on port 5000', which contradicts the hardcoded public IP unless the user is expected to change it, but hardcoded public IPs in client code are a red flag for supply chain attacks.",
+        "code_reference": "http://13.61.155.52:5000",
+        "line_hint": 12,
+        "target": "extension/out/utils/constants.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_PATTERN",
+        "description": "The rest of the file contains standard constants for error handling, command IDs, and configuration limits. These are consistent with the extension's stated purpose of building and debugging Node.js backends.",
+        "code_reference": "exports.ENVIRONMENT_ERRORS, exports.COMMANDS, exports.MAX_CONTEXT_LENGTH",
+        "line_hint": null,
+        "target": "extension/out/utils/constants.js (chunk 2/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_COMMUNICATION",
+        "description": "The extension contains a hardcoded IP address (13.61.155.52) on port 5000. This IP is not a standard local address (127.0.0.1) or a well-known public service. The README claims to connect to a 'local Python proxy' or 'cloud-hosted URL', but hardcoding a specific external IP for the default backend is a classic Command and Control (C2) pattern. This allows the extension to exfiltrate data or receive instructions from an attacker-controlled server without user awareness, especially if the user does not manually change the configuration.",
+        "code_reference": "http://13.61.155.52:5000",
+        "line_hint": 378,
+        "target": "extension/out/panel/SidePanel.js (chunk 1/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as an 'AI Backend Builder' that generates code. While it uses AI, the hardcoded external IP suggests it is not merely calling a standard API like OpenAI (which is also referenced) but communicating with a specific, unverified backend. The 'autonomous' nature combined with a hardcoded C2-like endpoint creates a high risk of supply chain attack where the 'AI' is actually a stager or data exfiltration tool disguised as a code generator.",
+        "code_reference": "README claims local/cloud flexibility, code hardcodes specific IP",
+        "line_hint": null,
+        "target": "extension/out/panel/SidePanel.js (chunk 1/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EGRESS",
+        "description": "The extension makes network calls to a hardcoded IP. Even if intended as a 'proxy', this bypasses standard domain-based security checks and certificate validation typically associated with HTTPS APIs. The use of HTTP (not HTTPS) on a public IP further increases the risk of data interception and injection.",
+        "code_reference": "http://13.61.155.52:5000",
+        "line_hint": 378,
+        "target": "extension/out/panel/SidePanel.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "HARDCODED_ENDPOINT",
+        "description": "The code contains a hardcoded IP address `13.61.155.52` in a default configuration or fallback URL. While the README states the extension connects to a local proxy on port 5000, hardcoding a specific public IP as a default or fallback is a supply-chain risk if that IP is compromised or repurposed. However, in the context of an AI backend builder that allows user configuration, this is likely a default example or a specific backend endpoint provided by the developer, not necessarily a C2 server. It is flagged as LOW because it is a static string in a configuration context, not dynamic exfiltration logic.",
+        "code_reference": "http://13.61.155.52:5000",
+        "line_hint": 378,
+        "target": "extension/out/panel/SidePanel.js (chunk 2/5)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "DATA_EXFILTRATION",
+        "description": "The extension sends the user's local workspace file path (`workspace_uri`) to a hardcoded, untrusted IP address (`13.61.155.52:5000`). This exposes the user's local directory structure and potentially sensitive project locations to an external server, which is a classic information-stealing pattern not justified by the extension's stated purpose of generating code.",
+        "code_reference": "body: JSON.stringify({ prompt: prompt, workspace_uri: workspaceUri })",
+        "line_hint": "approx 100",
+        "target": "extension/out/panel/SidePanel.js (chunk 3/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "C2_COMMUNICATION",
+        "description": "The extension communicates with a hardcoded IP address (`13.61.155.52`) instead of a domain name. This is a strong indicator of Command and Control (C2) infrastructure or a malicious backend, as legitimate extensions typically use registered domains with TLS. The IP has no known reputation and is not an official VS Code or OpenAI endpoint.",
+        "code_reference": "http://13.61.155.52:5000",
+        "line_hint": "378",
+        "target": "extension/out/panel/SidePanel.js (chunk 3/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be an 'AI Backend Builder' that generates code locally or via Ollama/OpenAI. However, it sends the user's workspace path to a hardcoded external IP. A legitimate code generator does not need to exfiltrate the local file system path of the user's project to a hardcoded IP. This behavior is disproportionate to the advertised functionality.",
+        "code_reference": "fetch(`${config.backendUrl}/api/build`, ...)",
+        "line_hint": "approx 90",
+        "target": "extension/out/panel/SidePanel.js (chunk 3/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "INSECURE_TRANSPORT",
+        "description": "The connection to the backend is made over plain HTTP (`http://`) rather than HTTPS. This allows man-in-the-middle attacks where an attacker could intercept the prompt, workspace path, and any generated code or secrets sent to/from the server.",
+        "code_reference": "http://13.61.155.52:5000",
+        "line_hint": "378",
+        "target": "extension/out/panel/SidePanel.js (chunk 3/5)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_FILE_WRITE",
+        "description": "The code accepts a 'file_generated' event from a remote API and writes the content to the local filesystem using `fs.writeFileSync`. The path is constructed by joining the user's workspace URI with a path provided by the remote server (`data.data.path`). There is no visible sanitization or validation of `data.data.path` in this snippet. If the remote server is compromised or malicious, it can write arbitrary files (e.g., `.bashrc`, `.ssh/authorized_keys`, or malicious scripts) to the user's system, leading to remote code execution or persistence.",
+        "code_reference": "const fullPath = path.join(workspaceUri, data.data.path); fs.writeFileSync(fullPath, data.data.content, \"utf8\");",
+        "line_hint": "approximate line 60-65 of the snippet",
+        "target": "extension/out/panel/SidePanel.js (chunk 4/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
+        "description": "The extension connects to a hardcoded IP address `13.61.155.52` on port 5000. While the README mentions a local proxy, the presence of a hardcoded public IP (likely an AWS EC2 instance) as a default or fallback endpoint is a strong indicator of a Command and Control (C2) server or a data exfiltration endpoint. This contradicts the 'local privacy' claim and allows the extension to communicate with an untrusted third-party server.",
+        "code_reference": "http://13.61.155.52:5000",
+        "line_hint": "378",
+        "target": "extension/out/panel/SidePanel.js (chunk 4/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be an 'AI Backend Builder' that generates code. However, the ability to silently write files to the workspace based on remote instructions without explicit user confirmation for each file (only 'approval_needed' for steps, not necessarily file writes) is a dangerous capability that exceeds the scope of a standard code generator. Combined with the hardcoded IP, this suggests the 'AI' is actually a remote agent that can manipulate the user's file system.",
+        "code_reference": "case \"file_generated\": ... fs.writeFileSync(...)",
+        "line_hint": "approximate line 55",
+        "target": "extension/out/panel/SidePanel.js (chunk 4/5)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_COMMUNICATION",
+        "description": "The extension defaults to connecting to a hardcoded, non-standard IP address (13.61.155.52) on port 5000. This IP is not a well-known public service and is likely a Command & Control (C2) server or a staging server for malicious payloads. The README vaguely mentions a 'Python proxy API' but does not justify the use of a raw IP address as the default backend.",
+        "code_reference": "backendUrl: config.get(\"cloudBackendUrl\", \"http://13.61.155.52:5000\")",
+        "line_hint": 378,
+        "target": "extension/out/panel/SidePanel.js (chunk 5/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_FILE_WRITE",
+        "description": "The code accepts file paths and content from the remote server (via SSE stream) and writes them directly to the local filesystem using `fs.writeFileSync` without adequate sanitization or user confirmation. This allows the remote server to write arbitrary files to the user's machine, potentially leading to remote code execution (RCE) if the attacker controls the server.",
+        "code_reference": "fs.writeFileSync(fullPath, data.data.content, \"utf8\");",
+        "line_hint": 345,
+        "target": "extension/out/panel/SidePanel.js (chunk 5/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be an 'AI Backend Builder' that generates code. However, the implementation relies on a remote server to dictate file writes. A legitimate local-first or privacy-focused tool (as implied by 'Local or Remote Models') would not default to an untrusted raw IP for core functionality. The ability to write files based on remote instructions is a major security risk disproportionate to a simple code generator.",
+        "code_reference": "case \"fix_applied\": ... fs.writeFileSync",
+        "line_hint": 340,
+        "target": "extension/out/panel/SidePanel.js (chunk 5/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION_RISK",
+        "description": "While not explicitly shown in this chunk, the architecture of sending build requests to a remote IP and receiving file writes implies a two-way channel. If the 'Planner' or 'Coder' agents send local file contents or environment details to this IP for 'debugging' or 'context', it constitutes data exfiltration. The hardcoded IP makes this a high-probability vector.",
+        "code_reference": "this._postMessage / fetch to backendUrl",
+        "line_hint": null,
+        "target": "extension/out/panel/SidePanel.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension description mentions connecting to a 'Python proxy API' on port 5000, but the extracted indicators show a hardcoded IP (13.61.155.52) in package.json. While this file is a benign logger, the presence of a hardcoded IP in the package metadata warrants verification to ensure it is not a C2 endpoint or unauthorized data exfiltration point, although it may simply be a default configuration value.",
+        "code_reference": "extension/package.json:62",
+        "line_hint": 62,
+        "target": "extension/out/utils/logger.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_INDICATOR",
+        "description": "The extracted indicators list an IP address (13.61.155.52) and a domain (api.openai.com). The domain is a well-known, legitimate API endpoint for OpenAI, which aligns with the extension's stated feature of supporting cloud APIs. The IP address is likely a default or example endpoint for the local Python proxy mentioned in the README. Neither indicates malicious intent in this context.",
+        "code_reference": "extension/package.json:62, extension/out/utils/constants.js:31",
+        "line_hint": null,
+        "target": "extension/out/utils/logger.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "INFORMATIONAL",
+        "description": "The file performs standard VS Code Webview initialization. It reads a local HTML file from the extension's media directory and injects a Content Security Policy (CSP) nonce. This is a standard, secure pattern for VS Code extensions to prevent XSS in webviews. No malicious behavior is present in this specific file.",
+        "code_reference": "fs.readFileSync(htmlPath.fsPath, \"utf8\")",
+        "line_hint": 63,
+        "target": "extension/out/panel/panelHtml.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is highly suspicious and likely malicious. It defaults to connecting to a hardcoded, untrusted IP address (13.61.155.52) for its 'AI Backend', which serves as a potential C2 channel. While the code in this specific file only defines constants, the architecture described (an autonomous agent that writes code to disk based on remote instructions from an untrusted IP) is a classic supply-chain attack vector. The discrepancy between the 'local/privacy' marketing and the hardcoded remote backend is a major red flag. Users should avoid installing this extension.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 5,
+    "published_date": "2026-08-20T09:42:24.507Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-22T16:25:41.868056+00:00Z"
+}
