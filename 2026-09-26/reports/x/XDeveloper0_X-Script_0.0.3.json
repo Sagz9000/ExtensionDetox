@@ -1,0 +1,96 @@
+{
+  "extension_id": "XDeveloper0.X-Script",
+  "display_name": "X Script",
+  "version": "0.0.3",
+  "publisher": {
+    "name": "XDeveloper0",
+    "verified": false
+  },
+  "vsix_sha256": "9b371a815f3f9db61a3a866227e04f338c350072c8ea23b597157924180c03a8",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 3
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "This extension exhibits a critical capability disconnect. It presents itself as a harmless custom language definition but actually executes a bundled Python script (`script.py`) via the system terminal. This is a classic supply-chain attack pattern where a seemingly benign language extension is used to deliver and execute arbitrary code on the user's machine. The execution of external binaries/scripts is completely disproportionate to the advertised function of providing syntax highlighting. The presence of a 0.9MB package for a simple language definition further supports the suspicion of hidden payloads. This should be treated as malicious until the contents of `script.py` are proven benign, which is highly unlikely given the deceptive nature of the extension's primary function."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises itself as a simple custom language definition ('A custom language i made all by myself just for fun') but the code executes an external Python script (`script.py`) located within the extension's own directory. A language definition extension should only provide syntax highlighting and grammar rules, not execute arbitrary code from its package.",
+        "code_reference": "const interpreterPath = path.join(context.extensionPath, 'script.py'); ... xTerminal.sendText(`python \"${interpreterPath}\" \"${targetFilePath}\"`);",
+        "line_hint": "10-38",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension spawns a system process (`python`) via the VS Code terminal API to execute a script bundled with the extension. This allows the extension to run arbitrary native code on the user's machine, bypassing the sandboxed nature of VS Code extensions. The content of `script.py` is not visible in this file but is a critical vector for malware.",
+        "code_reference": "xTerminal.sendText(`python \"${interpreterPath}\" \"${targetFilePath}\"`);",
+        "line_hint": "38",
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX package size is 0.9 MB. While not huge, this is disproportionately large for a simple language definition (which typically consists of JSON grammar files and a small JS activation script, usually < 100KB). The size suggests the presence of the `script.py` file and potentially other hidden payloads or dependencies not disclosed in the README.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension exhibits a critical capability disconnect. It presents itself as a harmless custom language definition but actually executes a bundled Python script (`script.py`) via the system terminal. This is a classic supply-chain attack pattern where a seemingly benign language extension is used to deliver and execute arbitrary code on the user's machine. The execution of external binaries/scripts is completely disproportionate to the advertised function of providing syntax highlighting. The presence of a 0.9MB package for a simple language definition further supports the suspicion of hidden payloads. This should be treated as malicious until the contents of `script.py` are proven benign, which is highly unlikely given the deceptive nature of the extension's primary function.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-20T17:18:56.36Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-21T02:13:05.195670+00:00Z"
+}

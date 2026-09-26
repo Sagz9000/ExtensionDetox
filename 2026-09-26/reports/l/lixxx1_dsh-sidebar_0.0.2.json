@@ -1,0 +1,341 @@
+{
+  "extension_id": "lixxx1.dsh-sidebar",
+  "display_name": "DSH Sidebar",
+  "version": "0.0.2",
+  "publisher": {
+    "name": "lixxx1",
+    "verified": false
+  },
+  "vsix_sha256": "76272c03012871204f3f9fdbed7804770028bf27bda8a4df8b3c22e0f30bc634",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.75,
+  "scores": {
+    "composite": 0.6503125000000001,
+    "ai_vibe": 0.85,
+    "static": 0.78125,
+    "behavioral": 0.18,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/runtime.js",
+        "line": 93,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/dist/credentials.js",
+        "line": 5,
+        "snippet": "SECRET = 'deepseekHarness.deepseekApiKey'"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/runtime.js",
+        "line": 37,
+        "snippet": "const node_child_process_1 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/runtime.js",
+        "line": 109,
+        "snippet": "child = (0, node_child_process_1.spawn)(launch.command, launch.args, {"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/plugin-manager.js",
+        "line": 37,
+        "snippet": "const node_child_process_1 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/plugin-manager.js",
+        "line": 499,
+        "snippet": "const child = (0, node_child_process_1.spawn)(launch.command, launch.args, {"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/webview.js",
+        "line": 196,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/conversation.js",
+        "line": 80,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/conversation.js",
+        "line": 190,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/conversation.js",
+        "line": 206,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 16
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "awesome-dsh-plugin.com",
+      "source_file": "extension/dist/plugin-catalog.js",
+      "line": 7,
+      "context": "exports.COMMUNITY_REGISTRY_URL = 'https://awesome-dsh-plugin.com/plugins.json';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 10,
+    "blocks_seen": 10,
+    "summaries": [
+      {
+        "target": "extension/dist/webview.js (chunk 1/28)",
+        "summary": "The analyzed code chunk is a standard VS Code webview HTML/CSS template generator. It implements proper security practices, including CSP nonce generation and HTML escaping. The code is consistent with the extension's advertised function of providing a chat sidebar UI. The static scanner hit for 'persistence_evasion' is a false positive likely caused by matching a CSS class name. No malicious behavior, obfuscation, or capability disconnects were identified in this portion of the code."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 2/28)",
+        "summary": "The analyzed code chunk contains only CSS styling rules for a webview interface, including layout grids, typography, and UI component definitions. There is no executable JavaScript logic, network calls, file system access, or obfuscation present in this specific chunk. The static scanner hit for 'persistence_evasion' is a false positive caused by matching a standard CSS class name. The code is consistent with a legitimate UI component for a chat sidebar extension."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 3/28)",
+        "summary": "The analyzed code chunk is purely presentational CSS for a VS Code webview, defining styles for chat messages, avatars, and markdown content. It contains no executable JavaScript logic, network calls, file system access, or suspicious behavior. The static rule hit regarding 'persistence_evasion' is a false positive caused by matching a standard CSS class name. The code aligns perfectly with the extension's stated purpose of providing a chat sidebar UI."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 8/28)",
+        "summary": "The provided code chunk consists entirely of CSS styling and HTML structure for a VS Code webview sidebar. It defines UI components for a chat interface (sessions, jobs, composer, conversation area) using standard VS Code CSS variables. There is no executable JavaScript logic, network calls, file system access, or obfuscation present in this specific chunk. The static rule hit regarding 'persistence_evasion' is a false positive caused by matching the CSS class name `.hidden`. The code is consistent with the extension's stated purpose of providing a UI for an AI assistant."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 10/28)",
+        "summary": "The analyzed code chunk is standard webview UI logic for a VS Code extension. It handles DOM element creation, state management, and message passing to the VS Code extension host via `vscode.postMessage`. The code is clean, unobfuscated, and consistent with the advertised functionality of a chat sidebar. The static scanner hit for 'persistence_evasion' is a false positive related to DOM manipulation, not file system operations. No malicious indicators such as credential harvesting, C2 communication, or code injection were found in this segment."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 12/28)",
+        "summary": "The analyzed code chunk is a standard webview renderer for a VS Code extension. It implements Markdown parsing (headings, lists, blockquotes, code blocks) and DOM construction for displaying AI tool results (images, terminal output). There are no network calls, no file system access, no child process execution, and no obfuscation. The code aligns perfectly with the extension's stated purpose of providing a chat sidebar UI. The static rule hit for 'persistence_evasion' is not supported by the visible code in this chunk and appears to be a false positive or refers to benign UI logic not shown here."
+      },
+      {
+        "target": "extension/dist/webview.js (chunk 20/28)",
+        "summary": "The provided code chunk is a standard webview UI controller for a VS Code extension. It handles DOM rendering for context chips (active file/selection) and an autocomplete menu for file/folder mentions. The logic is transparent, uses standard DOM APIs, and communicates with the extension host via `vscode.postMessage` for expected UI interactions (removing context, requesting mentions). There are no signs of malicious behavior, obfuscation, or capability disconnects in this specific file."
+      },
+      {
+        "target": "extension/dist/runtime.js (chunk 1/3)",
+        "summary": "The extension exhibits multiple critical indicators of compromise. It combines credential harvesting (via `context.secrets.get`), arbitrary command execution capabilities (`child_process`), and connections to an unverified third-party domain (`awesome-dsh-plugin.com`). The behavioral profile is inconsistent with a simple AI chat sidebar, strongly suggesting a malicious intent to steal credentials or establish persistence/remote access on the user's machine."
+      },
+      {
+        "target": "extension/dist/runtime.js (chunk 2/3)",
+        "summary": "The code is a standard runtime launcher for an external CLI tool (DeepSeek Harness). It correctly uses VS Code's SecretStorage API to retrieve an API key and passes it to the spawned process via environment variables, which is a secure practice. The use of `child_process.spawn` is appropriate for an extension that wraps a local runtime. No malicious behavior, obfuscation, or unauthorized data exfiltration was detected in this chunk."
+      },
+      {
+        "target": "extension/dist/runtime.js (chunk 3/3)",
+        "summary": "The analyzed code chunk is a standard process manager for a child process (the DSH runtime). It handles starting, stopping, and parsing output from a local executable. The logic is clean, uses standard Node.js `child_process` patterns (implied by the `child` object methods like `kill`, `once('exit')`), and does not exhibit any malicious behavior such as data exfiltration, credential harvesting, or obfuscated payloads. The static scanner hit for credential theft is a false positive for this specific file content. The extension appears to be a legitimate AI assistant sidebar that manages a local runtime process."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'persistence_evasion' hit for `.hidden` on line 196. However, the provided source code chunk (lines 1-100) does not contain this string. In the context of a VS Code webview UI, `.hidden` is a standard CSS class name used for toggling element visibility (e.g., `class=\"hidden\"`), not a file system attribute. This is a false positive from a generic regex rule.",
+        "code_reference": "N/A in current chunk",
+        "line_hint": 196,
+        "target": "extension/dist/webview.js (chunk 1/28)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_DOMAIN",
+        "description": "The package references the domain `awesome-dsh-plugin.com` in `plugin-catalog.js`. While the reputation is unknown, this is consistent with the extension's stated purpose of managing plugins for the 'DeepSeek Harness' runtime. It is not a known C2 or tunneling domain. No exfiltration logic is visible in this chunk.",
+        "code_reference": "extension/dist/plugin-catalog.js:7",
+        "line_hint": null,
+        "target": "extension/dist/webview.js (chunk 1/28)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'persistence_evasion' hit for `.hidden` on line 196. However, the provided code chunk consists entirely of CSS definitions (class names like `.jobs-title`, `.job-row`, `.message`). The string `.hidden` is a standard CSS class name used for toggling UI element visibility (display: none), not a file system attribute or OS-level persistence mechanism. This is a clear false positive.",
+        "code_reference": ".hidden (CSS class context)",
+        "line_hint": 196,
+        "target": "extension/dist/webview.js (chunk 2/28)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'persistence_evasion' hit for `.hidden` at line 196. However, the provided source code chunk consists entirely of CSS definitions for a chat interface (avatars, message bubbles, markdown styling). The string `.hidden` is a standard CSS class name used for toggling UI element visibility, not a file system attribute or persistence mechanism. This is a clear false positive.",
+        "code_reference": ".hidden (CSS class context)",
+        "line_hint": 196,
+        "target": "extension/dist/webview.js (chunk 3/28)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'persistence_evasion' hit for `.hidden` on line 196. Upon inspection, this is a standard CSS class definition (`.hidden { display: none !important; }`) used for UI toggling in the webview, not a file system attribute modification.",
+        "code_reference": ".hidden { display: none !important; }",
+        "line_hint": 196,
+        "target": "extension/dist/webview.js (chunk 8/28)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'persistence_evasion' hit for `.hidden` on line 196. However, the provided code chunk (lines 1-50 approx) does not contain this string. Even if present in the full file, setting a `hidden` attribute on a DOM element is standard UI behavior for toggling visibility of menus or panels in a webview, not file system persistence evasion.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/webview.js (chunk 10/28)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_DOMAIN",
+        "description": "The package contains a reference to `awesome-dsh-plugin.com`. Given the extension is a 'DeepSeek Harness' sidebar, this domain likely hosts a plugin catalog or model registry. While the domain reputation is 'unknown', the context (plugin catalog for an AI tool) is consistent with the extension's purpose. No exfiltration logic is visible in this chunk.",
+        "code_reference": "awesome-dsh-plugin.com",
+        "line_hint": null,
+        "target": "extension/dist/webview.js (chunk 10/28)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'persistence_evasion' hit for `.hidden` at line 196. However, the provided code chunk (12/28) contains no reference to `.hidden` or file system operations. This is likely a false positive from a different part of the file or a misinterpretation of CSS class names or DOM properties in the context of a webview renderer. The visible code is purely DOM manipulation for rendering Markdown and tool results.",
+        "code_reference": null,
+        "line_hint": 196,
+        "target": "extension/dist/webview.js (chunk 12/28)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` as a persistence/evasion indicator. In this context, `classList.toggle('hidden', ...)` and `classList.add('hidden')` are standard DOM manipulation patterns used to show or hide UI elements (context chips and mention menus) within the VS Code webview. This is benign UI logic, not file system attribute modification.",
+        "code_reference": "elements.contextChips.classList.toggle('hidden', references.length === 0);",
+        "line_hint": 196,
+        "target": "extension/dist/webview.js (chunk 20/28)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code explicitly accesses the VS Code SecretStorage API (`context.secrets.get`) to retrieve stored credentials. For an extension described as a 'sidebar' or 'chat' interface, directly reading secrets from the host environment is a high-risk pattern often used to exfiltrate API keys or tokens. Combined with the presence of `child_process`, this suggests a potential stager or info-stealer capability.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 93,
+        "target": "extension/dist/runtime.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The module imports `node:child_process` and defines a class `DshRuntime` that manages a child process. While the README claims to use an 'official DSH runtime', the direct use of `child_process` in a VS Code extension is a major red flag. It allows the extension to execute arbitrary system commands, which is disproportionate for a UI sidebar component and enables potential remote code execution (RCE) or lateral movement.",
+        "code_reference": "const node_child_process_1 = require(\"node:child_process\");",
+        "line_hint": 68,
+        "target": "extension/dist/runtime.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
+        "description": "The package contains a reference to the domain `awesome-dsh-plugin.com` in `plugin-catalog.js`. This domain has an unknown reputation and does not appear to be an official DeepSeek or Microsoft domain. Loading plugins or configurations from an unverified third-party domain is a classic supply-chain attack vector for delivering malicious payloads.",
+        "code_reference": "awesome-dsh-plugin.com",
+        "line_hint": null,
+        "target": "extension/dist/runtime.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is marketed as a 'Sidebar' and 'Chat' UI (Category: AI, Other), but it exhibits capabilities typical of a remote access tool or stager: reading system secrets, spawning child processes, and fetching remote plugins. A legitimate AI chat sidebar should communicate via HTTP/WebSocket to a known API, not manage local child processes and read host secrets directly.",
+        "code_reference": "class DshRuntime",
+        "line_hint": 80,
+        "target": "extension/dist/runtime.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `context.secrets.get()` as credential theft. However, the code retrieves a specific secret (`DEEPSEEK_API_KEY_SECRET`) and passes it to a child process as an environment variable (`DEEPSEEK_API_KEY`). This is the standard and secure way to pass secrets to external tools in VS Code extensions, not an exfiltration pattern.",
+        "code_reference": "const storedApiKey = await this.context.secrets.get(credentials_js_1.DEEPSEEK_API_KEY_SECRET);",
+        "line_hint": 93,
+        "target": "extension/dist/runtime.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension spawns a child process (`node_child_process_1.spawn`). This is consistent with the extension's stated purpose of running the 'DeepSeek Harness' runtime locally. The command is resolved via `resolveLaunch` and configured via workspace settings, which is expected behavior for a tool wrapper.",
+        "code_reference": "child = (0, node_child_process_1.spawn)(launch.command, launch.args, { ... });",
+        "line_hint": 105,
+        "target": "extension/dist/runtime.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `context.secrets.get(` as credential theft. However, the provided source code chunk (chunk 3/3) does not contain this string. The code shown is a process lifecycle manager for a child process (likely the DSH runtime). Using VS Code's SecretStorage API is a standard, secure pattern for extensions to store API keys (like DeepSeek keys) and is not malicious in itself. Since the code is not present in this chunk, it is likely a false positive from a different file or a misinterpretation of the extension's legitimate need to manage API credentials.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": null,
+        "target": "extension/dist/runtime.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_DOMAIN",
+        "description": "The domain `awesome-dsh-plugin.com` was extracted from the package. While the domain name is generic and has unknown reputation, it is likely used for the 'plugin catalog' mentioned in the file path `plugin-catalog.js`. Without evidence of exfiltration or malicious payloads served from this domain, it is noted as a low-risk indicator requiring monitoring but not indicative of malware in this specific code chunk.",
+        "code_reference": "awesome-dsh-plugin.com",
+        "line_hint": null,
+        "target": "extension/dist/runtime.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The analyzed code chunk is a standard VS Code webview HTML/CSS template generator. It implements proper security practices, including CSP nonce generation and HTML escaping. The code is consistent with the extension's advertised function of providing a chat sidebar UI. The static scanner hit for 'persistence_evasion' is a false positive likely caused by matching a CSS class name. No malicious behavior, obfuscation, or capability disconnects were identified in this portion of the code.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "8 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 18,
+    "published_date": "2026-08-17T13:25:37.443Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T00:41:37.108189+00:00Z"
+}

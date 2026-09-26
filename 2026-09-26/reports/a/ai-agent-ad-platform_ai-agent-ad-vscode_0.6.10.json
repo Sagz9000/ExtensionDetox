@@ -1,0 +1,158 @@
+{
+  "extension_id": "ai-agent-ad-platform.ai-agent-ad-vscode",
+  "display_name": "AI Agent Ad (VS Code)",
+  "version": "0.6.10",
+  "publisher": {
+    "name": "ai-agent-ad-platform",
+    "verified": false
+  },
+  "vsix_sha256": "a1ad4a3bb76e338e94c358fe25e88b0ba526d51e83c8ddf6e2526b77619019d3",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "huikou.fun",
+      "source_file": "extension/dist/config.js",
+      "line": 11,
+      "context": "apiBase: process.env.AI_AGENT_AD_API_BASE || \"https://huikou.fun\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/dist/api/http.js (chunk 1/2)",
+        "summary": "This extension exhibits strong indicators of malicious intent. While it presents itself as a simple ad display tool for AI coding wait times, the underlying implementation involves a sophisticated device registration system with cryptographic signing, trust levels, and communication with a suspicious, unknown domain (huikou.fun). The activation on startup and the complexity of the network layer suggest a focus on persistent, reliable data exfiltration or remote access rather than legitimate advertising. The disconnect between the simple advertised function and the complex, security-focused backend communication is a major red flag."
+      },
+      {
+        "target": "extension/dist/api/http.js (chunk 2/2)",
+        "summary": "This extension exhibits classic supply-chain attack characteristics. It disguises a complex, signed communication channel as a simple 'ad display' feature. The use of an unknown domain (huikou.fun), device fingerprinting/trust levels, and HMAC-signed requests strongly suggests it is a backdoor or data exfiltration tool rather than a legitimate advertising solution. The disconnect between the benign 'status bar ad' description and the sophisticated security/communication infrastructure is a major red flag."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a simple status bar ad display tool, but the code implements a complex device registration and tracking system with HMAC-SHA256 signing, device trust levels (NEW/NORMAL/TRUSTED/BLOCKED), and anti-replay protection. This level of security infrastructure is disproportionate to a simple ad viewer and suggests a data exfiltration or C2 channel disguised as an ad service.",
+        "code_reference": "README description of 'Production-grade security' and 'Device trust levels'",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
+        "description": "The extension communicates with the domain 'huikou.fun', which has an unknown reputation and does not correspond to any known legitimate advertising or VS Code service. The use of a custom domain for 'ad' delivery is a common vector for malware distribution or data exfiltration.",
+        "code_reference": "domain: huikou.fun (extension/dist/config.js:11)",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is inappropriate for a status bar ad component that should only activate when AI coding features are in use. This ensures the malicious payload or tracking code runs immediately upon VS Code startup, maximizing exposure and potential for data collection before the user interacts with any AI features.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION_PATTERN",
+        "description": "The code implements a robust 'safeFetch' wrapper that handles timeouts and fallbacks to native HTTP/HTTPS modules. While the code itself is a standard network utility, its purpose in this context is to ensure reliable communication with the suspicious backend (huikou.fun) for device registration and data transmission, bypassing potential network restrictions or fetch unavailability.",
+        "code_reference": "async function safeFetch(url, init = {})",
+        "line_hint": 49,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DEVICE_FINGERPRINTING",
+        "description": "The README mentions 'X-Device-ID' and 'Device trust levels', implying the extension collects unique device identifiers and potentially other system information to track users and manage access to the backend. This is a classic info-stealer or botnet recruitment pattern.",
+        "code_reference": "README: 'X-Device-ID' / 'Device trust levels'",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Status Bar Ad' display tool, but the code implements a complex HMAC-SHA256 signed communication protocol with device fingerprinting, trust levels (NEW/NORMAL/TRUSTED/BLOCKED), and anti-replay mechanisms. This level of security infrastructure is disproportionate and deceptive for a simple ad display, indicating a hidden C2 or data exfiltration channel.",
+        "code_reference": "README description vs http.js implementation",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
+        "description": "The package contains a hardcoded domain 'huikou.fun' in the configuration. This domain has unknown reputation and is used as the API base for the signed requests. The use of a non-standard, potentially disposable domain for 'ad' delivery is a strong indicator of malicious infrastructure.",
+        "code_reference": "extension/dist/config.js:11",
+        "line_hint": 11,
+        "target": "extension/dist/api/http.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CREDENTIAL_HARVESTING_PATTERN",
+        "description": "The README explicitly mentions 'device trust levels' and 'exposure risk control' with automatic banning. Combined with the HMAC signing using a 'bootstrapping secret' and device-specific tokens, this suggests the extension is registering devices and potentially harvesting unique identifiers or credentials to track users or exfiltrate data under the guise of ad analytics.",
+        "code_reference": "README: 'device trust levels', 'exposure risk control'",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EGRESS",
+        "description": "The code implements a custom fetch wrapper ('safeFetch') that sends data to the remote server. While the specific payload is not visible in this chunk, the presence of signed requests to an unknown domain confirms active network egress.",
+        "code_reference": "globalThis.fetch / req.write(init.body)",
+        "line_hint": 49,
+        "target": "extension/dist/api/http.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension exhibits strong indicators of malicious intent. While it presents itself as a simple ad display tool for AI coding wait times, the underlying implementation involves a sophisticated device registration system with cryptographic signing, trust levels, and communication with a suspicious, unknown domain (huikou.fun). The activation on startup and the complexity of the network layer suggest a focus on persistent, reliable data exfiltration or remote access rather than legitimate advertising. The disconnect between the simple advertised function and the complex, security-focused backend communication is a major red flag.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 12,
+    "published_date": "2026-08-21T06:28:50.993Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-21T11:33:50.242462+00:00Z"
+}
