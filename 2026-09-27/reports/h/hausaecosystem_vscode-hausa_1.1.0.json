@@ -1,0 +1,169 @@
+{
+  "extension_id": "hausaecosystem.vscode-hausa",
+  "display_name": "Hausa Programming Language Support",
+  "version": "1.1.0",
+  "publisher": {
+    "name": "hausaecosystem",
+    "verified": false
+  },
+  "vsix_sha256": "1957d5df620882526e5cf4fb99fcd22f27821bef75da1d92d04b095f7c19dc20",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "const { execFile } = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "const { execFile } = require(\"child_process\");"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 6
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/5)",
+        "summary": "The code is a standard VS Code extension for a custom programming language ('Hausa'). It uses `child_process.execFile` to invoke an external CLI tool for diagnostics and translation, which is a legitimate and common pattern for language support extensions. The behavior is proportional to the advertised functionality (syntax highlighting, snippets, and running/checking files). No malicious indicators such as data exfiltration, credential harvesting, or obfuscation were found in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/5)",
+        "summary": "The code is a standard implementation of VS Code language support features, specifically task execution for running and checking files using an external CLI tool. The use of `vscode.ProcessExecution` is the recommended and safe way to run external processes in VS Code extensions, as it does not spawn a shell by default. The logic is consistent with the extension's stated purpose of providing 'Run, check, and translate commands' for the Hausa language ecosystem. No malicious patterns, data exfiltration, or obfuscation were detected in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/5)",
+        "summary": "The code is a standard VS Code extension implementation for a language support tool. It handles file translation via a CLI tool, provides completion and hover providers based on a vocabulary object, and manages workspace configuration. The use of `child_process` is justified by the extension's stated purpose of running translation commands. No malicious patterns, data exfiltration, or suspicious network activity were detected in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/5)",
+        "summary": "The code is benign and consistent with the extension's stated purpose of providing language support for 'Hausa Python' and 'Hausa Rust'. It implements standard VS Code APIs for hover providers, completion items, and diagnostics. The `child_process` usage is limited to executing a specific CLI binary for language checking/translation, which is a legitimate feature for a language toolchain extension. No malicious patterns, data exfiltration, or obfuscation were detected."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/5)",
+        "summary": "This extension exhibits critical signs of a supply-chain attack. While it presents itself as a harmless syntax highlighter for 'Hausa Python' and 'Hausa Rust', it imports `child_process`, a module that enables arbitrary shell command execution. There is no legitimate technical reason for a syntax highlighting extension to require shell access. This 'capability disconnect' strongly suggests the extension is a stager or payload delivery mechanism for malware, likely using the 'Hausa' language support as a cover to execute malicious commands on the user's system."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "STATIC_RULE_FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, the code explicitly imports `execFile` (not `exec` or `spawn`) and uses it to run a specific, user-configurable external binary (`hausa`) for linting/translation. This is a standard pattern for language server integrations or linters that rely on external CLI tools. There is no evidence of arbitrary command injection, shell metacharacter usage, or execution of untrusted payloads in this chunk.",
+        "code_reference": "const { execFile } = require(\"child_process\");",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` (likely in a previous chunk or implied by `vscode.ProcessExecution` usage context), but the visible code uses `vscode.ProcessExecution` and `vscode.Task` to run a specific CLI tool (`hausa`). This is standard behavior for a language support extension that provides 'Run' and 'Check' commands. It does not execute arbitrary shell commands or pipe user input to a shell in a dangerous manner; it passes file paths as arguments to a configured executable.",
+        "code_reference": "const execution = new vscode.ProcessExecution(executablePath(), args, { cwd: path.dirname(document.fileName) });",
+        "line_hint": 35,
+        "target": "extension/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, in the context of this extension, the code uses `executeCli` to run a translation tool (likely a local binary or script) to convert between Hausa and English/Rust/Python syntax. This is a standard pattern for language support extensions that rely on external tools for code generation or translation. The arguments passed are controlled by the user's file selection and configuration, not by arbitrary network input or obfuscated strings. There is no evidence of command injection or malicious payload execution.",
+        "code_reference": "const result = await executeCli(args, path.dirname(document.fileName));",
+        "line_hint": "42",
+        "target": "extension/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `child_process.execFile` is flagged by static analysis, but in this context it is used to execute a specific, configured CLI tool (`executablePath()`) for language diagnostics and translation. This is a standard and expected behavior for a language support extension that relies on an external compiler or linter, not arbitrary command execution or shell injection.",
+        "code_reference": "function executeCli(args, cwd) { ... execFile(executablePath(), args, ...",
+        "line_hint": "63",
+        "target": "extension/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Syntax highlighting' and 'Language support' tool for Hausa Python/Rust. However, the code imports `child_process` (confirmed by static analysis on line 4 of the full file, though this chunk shows the tail end of the logic). A pure syntax highlighting extension has no legitimate reason to execute shell commands. This is a classic supply-chain attack pattern where a benign-looking language pack is used to execute arbitrary code on the user's machine.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The presence of `child_process` in a VS Code extension that claims to only provide syntax highlighting and snippets is a severe red flag. This capability allows the extension to run any system command, potentially leading to remote code execution (RCE), data exfiltration, or installation of further malware. The error message 'Hausa command failed' suggests it is attempting to run external binaries or scripts associated with the 'Hausa Ecosystem', which is not a standard or well-known language toolchain.",
+        "code_reference": "vscode.window.showErrorMessage(\"Hausa command failed. See the Hausa Ecosystem output channel.\");",
+        "line_hint": 1,
+        "target": "extension/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The extension references a 'Hausa Ecosystem' which is not a recognized standard programming language or toolset. The combination of a niche/fictional language name with shell execution capabilities is a common tactic to evade detection and user scrutiny.",
+        "code_reference": "Hausa Ecosystem",
+        "line_hint": 1,
+        "target": "extension/extension.js (chunk 5/5)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard VS Code extension for a custom programming language ('Hausa'). It uses `child_process.execFile` to invoke an external CLI tool for diagnostics and translation, which is a legitimate and common pattern for language support extensions. The behavior is proportional to the advertised functionality (syntax highlighting, snippets, and running/checking files). No malicious indicators such as data exfiltration, credential harvesting, or obfuscation were found in this chunk.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 20,
+    "published_date": "2026-08-18T23:37:32.837Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-19T01:21:01.464393+00:00Z"
+}

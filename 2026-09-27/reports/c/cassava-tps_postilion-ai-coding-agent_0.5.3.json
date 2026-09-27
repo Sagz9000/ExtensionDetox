@@ -1,0 +1,383 @@
+{
+  "extension_id": "cassava-tps.postilion-ai-coding-agent",
+  "display_name": "Postilion AI Coding Agent",
+  "version": "0.5.3",
+  "publisher": {
+    "name": "cassava-tps",
+    "verified": false
+  },
+  "vsix_sha256": "618b1df3134776b18eca413b32f6684447564b1e05009ca1046b363f5eb1d443",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6425000000000001,
+    "ai_vibe": 0.8,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/extension.js",
+        "line": 123,
+        "snippet": "SECRET = \"postilionAi.apiKey\""
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 184,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/localTools.js",
+        "line": 39,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/localTools.js",
+        "line": 39,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/localTools.js",
+        "line": 261,
+        "snippet": "const child = (0, child_process_1.spawn)(command, {"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/localTools.js",
+        "line": 39,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.7,
+    "confidence": 0.8,
+    "blocks_parsed": 11,
+    "blocks_seen": 11,
+    "summaries": [
+      {
+        "target": "extension/out/localTools.js (chunk 1/4)",
+        "summary": "The extension exhibits high-risk behavior due to the use of `child_process`, which can enable arbitrary command execution. Additionally, the package size appears disproportionately small for its stated functionality, raising concerns about its completeness or potential misuse."
+      },
+      {
+        "target": "extension/out/localTools.js (chunk 2/4)",
+        "summary": "The extension includes a HIGH-RISK indicator with the use of `require('child_process')`, which can enable arbitrary command execution. This could potentially be abused for malicious purposes such as executing shell commands. However, the code appears to be part of a legitimate feature for running terminal commands, as indicated by the `runTerminal` function. The extension's stated purpose as a coding agent aligns with this functionality, but there is a risk of improper usage or escalation. Confidence is high due to the clear static evidence of the risk indicator and the behavioral alignment with the extension's stated capabilities."
+      },
+      {
+        "target": "extension/out/localTools.js (chunk 3/4)",
+        "summary": "The extension includes a `runTerminal` function that executes arbitrary commands using `child_process.exec()`, which is not aligned with its stated purpose as a coding agent. This indicates potential misuse or unintended functionality, raising security concerns."
+      },
+      {
+        "target": "extension/out/localTools.js (chunk 4/4)",
+        "summary": "The extension contains high-risk code that uses `child_process.spawn()`, enabling arbitrary command execution. While this might be legitimate for its stated purpose of interacting with a backend, it poses a significant security risk if not properly validated and controlled. The extension's description does not mention such capabilities, creating a capability disconnect."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 1/12)",
+        "summary": "The extension exhibits several critical security issues including hardcoded secrets and potential credential harvesting. The VSIX package size is suspiciously small, and there are signs of potential command-and-control communication. These findings suggest a high risk of malicious intent."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/12)",
+        "summary": "The extension exhibits critical risks related to hardcoded secrets and potential unauthorized access to user credentials. The inclusion of a hardcoded IP address adds a medium-risk concern for potential command-and-control communication. While the extension's functionality aligns with its stated purpose, these security issues raise significant red flags."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/12)",
+        "summary": "The extension exhibits critical risks related to secret handling and credential storage. The use of hardcoded secrets and direct access to VS Code's SecretStorage API pose significant security risks. While the functionality aligns with the extension's purpose, the handling of sensitive information is concerning and could be exploited maliciously."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/12)",
+        "summary": "The extension exhibits potential security risks with hardcoded secrets and use of VS Code's SecretStorage API, which could expose sensitive information. While the functionality aligns with its purpose, the handling of secrets raises concerns about security practices."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/12)",
+        "summary": "The extension exhibits critical risks related to hardcoded secrets and potential credential harvesting. The inclusion of a hardcoded API key and access to VSCode's SecretStorage API pose significant security risks. Additionally, a hardcoded IP address raises concerns about potential command-and-control activities. While the extension's functionality aligns with its stated purpose, these security issues necessitate immediate attention."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 6/12)",
+        "summary": "The extension exhibits critical security risks with hardcoded secrets and potential credential leakage. While the functionality may align with its purpose, the implementation of secret handling is insecure and raises concerns about proper security practices. The presence of a hardcoded IP address adds to the suspicion of unintended communication channels."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 7/12)",
+        "summary": "The extension exhibits critical risks including hardcoded API keys and access to VS Code's SecretStorage, which could expose sensitive user data. While its functionality aligns with its purpose, the insecure handling of credentials raises significant security concerns."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension uses `require('child_process')`, which can execute arbitrary commands if not properly sanitized.",
+        "code_reference": "extension/out/localTools.js",
+        "line_hint": 39,
+        "target": "extension/out/localTools.js (chunk 1/4)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The VSIX package size is 0.0 MB, which is unusually small for an extension with stated backend and AI capabilities.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/localTools.js (chunk 1/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "Use of `require('child_process')` which can enable arbitrary command execution.",
+        "code_reference": "extension/out/localTools.js",
+        "line_hint": 39,
+        "target": "extension/out/localTools.js (chunk 2/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension contains functionality to execute arbitrary terminal commands via `child_process.exec()`, which is not advertised in the extension's purpose as a coding agent. This represents a capability disconnect.",
+        "code_reference": "extension/out/localTools.js",
+        "line_hint": "line 222",
+        "target": "extension/out/localTools.js (chunk 3/4)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "Use of `child_process.spawn()` which allows arbitrary command execution. This could be leveraged for malicious activities if not properly controlled.",
+        "code_reference": "extension/out/localTools.js",
+        "line_hint": 39,
+        "target": "extension/out/localTools.js (chunk 4/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRETS_LEAKAGE",
+        "description": "Hardcoded API key found in the source code.",
+        "code_reference": "line 123",
+        "line_hint": 123,
+        "target": "extension/out/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIALS_THEFT",
+        "description": "Reading from VSCode SecretStorage API which could access stored secrets.",
+        "code_reference": "line 184",
+        "line_hint": 184,
+        "target": "extension/out/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2",
+        "description": "Hardcoded IP address potentially used for command-and-control communication.",
+        "code_reference": "line 125",
+        "line_hint": 125,
+        "target": "extension/out/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "VSIX package size is 0.0 MB, which is unusually small for an AI coding agent extension.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Hardcoded API key assignment and potential secret storage access.",
+        "code_reference": "line 123 and line 184",
+        "line_hint": 123,
+        "target": "extension/out/extension.js (chunk 2/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "VS Code SecretStorage API access which could expose sensitive user secrets.",
+        "code_reference": "line 184",
+        "line_hint": 184,
+        "target": "extension/out/extension.js (chunk 2/12)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "C2 & Tunneling",
+        "description": "Hardcoded IP address potentially indicating a C2 server or unauthorized communication endpoint.",
+        "code_reference": "line 125",
+        "line_hint": 125,
+        "target": "extension/out/extension.js (chunk 2/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Hardcoded secret reference that could expose sensitive information.",
+        "code_reference": "line 123",
+        "line_hint": 123,
+        "target": "extension/out/extension.js (chunk 3/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Credential Harvesting",
+        "description": "Accessing VS Code's SecretStorage API which could potentially expose stored secrets.",
+        "code_reference": "line 184",
+        "line_hint": 184,
+        "target": "extension/out/extension.js (chunk 3/12)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Info-Stealer Patterns",
+        "description": "Hardcoded IP address that may indicate a potential command-and-control (C2) server or unintended communication.",
+        "code_reference": "line 125",
+        "line_hint": 125,
+        "target": "extension/out/extension.js (chunk 3/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRETS_CREDENTIAL_LEAKAGE",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder) found in the code.",
+        "code_reference": "line 123",
+        "line_hint": 123,
+        "target": "extension/out/extension.js (chunk 4/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "VS_CODE_CREDENTIAL_THEFT",
+        "description": "Reading from VSCode SecretStorage API which could potentially access stored secrets.",
+        "code_reference": "line 184",
+        "line_hint": 184,
+        "target": "extension/out/extension.js (chunk 4/12)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "HARDcoded_IP_ADDRESS",
+        "description": "Hardcoded IP address (potential C2) found in the code.",
+        "code_reference": "line 125",
+        "line_hint": 125,
+        "target": "extension/out/extension.js (chunk 4/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Hardcoded API key assignment detected.",
+        "code_reference": "line 123",
+        "line_hint": 123,
+        "target": "extension/out/extension.js (chunk 5/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Credential Harvesting",
+        "description": "Access to VSCode SecretStorage API which could retrieve sensitive user secrets.",
+        "code_reference": "line 184",
+        "line_hint": 184,
+        "target": "extension/out/extension.js (chunk 5/12)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "C2 & Tunneling",
+        "description": "Hardcoded IP address potentially indicating a C2 server.",
+        "code_reference": "line 125",
+        "line_hint": 125,
+        "target": "extension/out/extension.js (chunk 5/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Hardcoded API key and secret management that may expose sensitive information.",
+        "code_reference": "line 123",
+        "line_hint": 123,
+        "target": "extension/out/extension.js (chunk 6/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Reading from VS Code's SecretStorage API, which could potentially access sensitive user credentials.",
+        "code_reference": "line 184",
+        "line_hint": 184,
+        "target": "extension/out/extension.js (chunk 6/12)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Capability Disconnect",
+        "description": "Hardcoded IP address (potential C2 server) found in the source code, which may indicate unintended communication channels.",
+        "code_reference": "line 125",
+        "line_hint": 125,
+        "target": "extension/out/extension.js (chunk 6/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Hardcoded API key assignment found in the source code.",
+        "code_reference": "line 123",
+        "line_hint": 123,
+        "target": "extension/out/extension.js (chunk 7/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Access to VS Code's SecretStorage API which can retrieve sensitive user credentials.",
+        "code_reference": "line 184",
+        "line_hint": 184,
+        "target": "extension/out/extension.js (chunk 7/12)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "C2 & Tunneling",
+        "description": "Hardcoded IP address potentially indicating a C2 server.",
+        "code_reference": "line 125",
+        "line_hint": 125,
+        "target": "extension/out/extension.js (chunk 7/12)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits high-risk behavior due to the use of `child_process`, which can enable arbitrary command execution. Additionally, the package size appears disproportionately small for its stated functionality, raising concerns about its completeness or potential misuse.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "4 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 33,
+    "published_date": "2026-08-13T09:44:12.62Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-13T17:16:38.284734+00:00Z"
+}

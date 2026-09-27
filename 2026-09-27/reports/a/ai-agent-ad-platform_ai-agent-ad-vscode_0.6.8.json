@@ -1,0 +1,150 @@
+{
+  "extension_id": "ai-agent-ad-platform.ai-agent-ad-vscode",
+  "display_name": "AI Agent Ad (VS Code)",
+  "version": "0.6.8",
+  "publisher": {
+    "name": "ai-agent-ad-platform",
+    "verified": false
+  },
+  "vsix_sha256": "52af71281d5d3642c406f4afe4b348ddb816ac33fa7a1b6f3dabb3b5f6d3e070",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [],
+    "total": 8
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "huikou.fun",
+      "source_file": "extension/dist/config.js",
+      "line": 11,
+      "context": "apiBase: process.env.AI_AGENT_AD_API_BASE || \"https://huikou.fun\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/dist/api/http.js (chunk 1/2)",
+        "summary": "This extension exhibits strong indicators of malicious behavior disguised as an ad-serving tool. The implementation of complex device registration, HMAC-SHA256 signing, and trust-level management is disproportionate to the stated purpose of displaying status bar ads. The communication with the unknown domain 'huikou.fun' and the aggressive activation event ('onStartupFinished') further raise concerns. The code structure suggests a potential C2 channel or data exfiltration mechanism rather than a legitimate advertising solution."
+      },
+      {
+        "target": "extension/dist/api/http.js (chunk 2/2)",
+        "summary": "This extension exhibits strong indicators of malicious behavior. While it presents itself as a harmless ad display tool, the underlying implementation includes a sophisticated, signed communication protocol with device fingerprinting and trust scoring, which is typical of malware C2 channels. The communication endpoint 'huikou.fun' is unverified and suspicious. The discrepancy between the simple advertised function (showing ads) and the complex, security-hardcoded network behavior (HMAC signing, replay protection, device blocking) is a major red flag for data theft or remote access."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a simple status bar ad display tool, but the code implements a complex device registration and telemetry system with HMAC-SHA256 signing, device trust levels (NEW/NORMAL/TRUSTED/BLOCKED), and anti-replay protection. This level of security infrastructure is disproportionate for a simple ad viewer and suggests a data exfiltration or C2 channel.",
+        "code_reference": "README description of 'Production-grade security' and 'Device trust levels'",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
+        "description": "The extension communicates with the domain 'huikou.fun', which has an unknown reputation and does not correspond to any known legitimate advertising or VS Code service. The use of a custom domain for 'ad' delivery is a common vector for malware distribution or data exfiltration.",
+        "code_reference": "domain: huikou.fun (extension/dist/config.js:11)",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is overly broad for a status bar ad component. This ensures the network client is initialized and potentially active immediately upon VS Code startup, maximizing the window for data collection or payload delivery.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EGRESS",
+        "description": "The code implements a robust `safeFetch` wrapper that handles timeouts and falls back to native Node.js HTTP/HTTPS modules. This ensures reliable network connectivity for the extension's backend, which is suspicious given the lack of transparency about the data being sent.",
+        "code_reference": "async function safeFetch(url, init = {})",
+        "line_hint": 49,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_INTENT",
+        "description": "The README describes 'ad revenue sharing' but the technical implementation details (HMAC signing, device IDs, trust levels) are typical of botnet or info-stealer architectures, not standard ad networks. The disconnect between the benign 'ad' label and the sophisticated client-side security logic is a strong indicator of malicious intent.",
+        "code_reference": "README: 'Production-grade security (Phase 6)'",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Status Bar Ad' display tool, but the code implements a complex HMAC-SHA256 signed communication protocol with device fingerprinting (X-Device-ID), replay protection, and trust levels (NEW/NORMAL/TRUSTED/BLOCKED). This infrastructure is disproportionate to a simple ad display and is characteristic of a Command & Control (C2) channel or data exfiltration pipeline.",
+        "code_reference": "README: 'Production-grade security... HMAC-SHA256... Device trust level...'",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
+        "description": "The extension communicates with the domain 'huikou.fun', which has an unknown reputation and does not correspond to a known advertising network or VS Code service. Combined with the 'device trust' logic, this suggests unauthorized data transmission or remote control.",
+        "code_reference": "domain: huikou.fun (extension/dist/config.js:11)",
+        "line_hint": null,
+        "target": "extension/dist/api/http.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EGRESS",
+        "description": "The code implements a custom 'safeFetch' wrapper using Node.js http/https modules to send data to the remote server. While the specific payload is not visible in this chunk, the presence of signed requests to an unknown domain confirms active network exfiltration capability.",
+        "code_reference": "globalThis.fetch / req.write(init.body)",
+        "line_hint": 49,
+        "target": "extension/dist/api/http.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension exhibits strong indicators of malicious behavior disguised as an ad-serving tool. The implementation of complex device registration, HMAC-SHA256 signing, and trust-level management is disproportionate to the stated purpose of displaying status bar ads. The communication with the unknown domain 'huikou.fun' and the aggressive activation event ('onStartupFinished') further raise concerns. The code structure suggests a potential C2 channel or data exfiltration mechanism rather than a legitimate advertising solution.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-21T06:28:50.993Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-21T07:29:42.747305+00:00Z"
+}

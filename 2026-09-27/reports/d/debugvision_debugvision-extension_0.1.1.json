@@ -1,0 +1,523 @@
+{
+  "extension_id": "debugvision.debugvision-extension",
+  "display_name": "DebugVision",
+  "version": "0.1.1",
+  "publisher": {
+    "name": "debugvision",
+    "verified": false
+  },
+  "vsix_sha256": "3a78d899b32ca3cfba651146f4d7bd24627302448f5d23c3bd5bf3d12537cda1",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6599999999999999,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.js",
+        "line": 11933,
+        "snippet": "Object.keys(process.env)"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 13445,
+        "snippet": ".postMessage(token"
+      },
+      {
+        "check": "crypto_mining",
+        "severity": "HIGH",
+        "description": "Known miner executable reference",
+        "file": "extension/dist/extension.js",
+        "line": 3542,
+        "snippet": "claymore"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7371,
+        "snippet": "virtualbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7375,
+        "snippet": "virtualbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7379,
+        "snippet": "virtualbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7383,
+        "snippet": "virtualbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7383,
+        "snippet": "vbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7385,
+        "snippet": "vbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7387,
+        "snippet": "virtualbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7387,
+        "snippet": "vbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7389,
+        "snippet": "vbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7391,
+        "snippet": "virtualbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7395,
+        "snippet": "virtualbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Virtual machine detection strings",
+        "file": "extension/dist/extension.js",
+        "line": 7399,
+        "snippet": "virtualbox"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/extension.js",
+        "line": 18377,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/panels/DebugPanel.js",
+        "line": 410,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 28
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 18,
+    "blocks_seen": 18,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 33/201)",
+        "summary": "The extension 'DebugVision' exhibits critical malicious behavior. While it correctly connects to a local Ollama instance for its advertised AI debugging features, it also contains code to serialize all environment variables (`Object.keys(process.env)`), which is a hallmark of credential stealers. The other static hits (claymore, virtualbox) are false positives resulting from MIME type definitions in a bundled library. The presence of environment variable harvesting in a tool that does not require access to system secrets is a definitive indicator of malicious intent, likely aimed at exfiltrating user credentials and API keys."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 68/201)",
+        "summary": "The analyzed code chunk consists entirely of MIME type definitions (likely from the 'mime-db' or 'mime-types' npm package) bundled into the extension. The static scanner hits for 'virtualbox', 'claymore', 'process.env', and '127.0.0.1' are either false positives due to keyword matching in library data or benign functionality consistent with the extension's stated purpose (local AI debugging via Ollama). There is no evidence of malicious intent, obfuscation, or data exfiltration in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 109/201)",
+        "summary": "The analyzed chunk consists primarily of the `debug` npm package source code, which is a standard, well-known utility for logging. The flagged indicators (environment variable access, localhost IP, specific strings) are either standard library behaviors or false positives in the context of an AI debugging extension using local LLMs (Ollama). There is no evidence of malicious intent, obfuscation, or data exfiltration in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 127/201)",
+        "summary": "The analyzed code chunk consists primarily of standard utility functions from the `axios` HTTP client library (e.g., `toJSONObject`, `isAsyncFn`, `asap`, `utils`). The static scanner hits are all explainable as false positives or benign library behavior: the IP address is the local Ollama server, the `postMessage` is an internal async mechanism, and the environment/VM strings are typical for runtime detection in development tools. There is no evidence of malicious intent, obfuscation, or capability disconnect in this specific chunk. The extension's purpose (AI debugging via local Ollama) aligns with the observed code patterns."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 153/201)",
+        "summary": "The analyzed code chunk consists primarily of standard HTTP/HTTPS agent configuration, proxy handling, and stream utilities, likely from a bundled dependency like Axios or a similar HTTP client. The static scanner hits for 'claymore', 'virtualbox', and 'process.env' are highly likely to be false positives arising from bundled libraries or standard environment detection logic. The reference to 127.0.0.1:11434 aligns with the extension's stated purpose of using Ollama for local AI inference. No malicious intent, obfuscation, or data exfiltration patterns are observed in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 171/201)",
+        "summary": "The analyzed chunk of code appears to be standard, unmodified library code (likely `axios` or a similar HTTP client) bundled into the extension. The static rule hits for 'credential harvesting', 'crypto mining', and 'VM detection' are highly likely to be false positives resulting from scanning the entire large bundle where these strings might appear in unrelated context or other chunks, or simply due to the sensitivity of the scanner on generic terms. The visible code in this specific chunk is benign infrastructure code for handling HTTP requests. No malicious behavior is evident in this portion of the source."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 183/201)",
+        "summary": "The analyzed code chunk is part of a VS Code extension named 'DebugVision', which is an AI-powered debugging assistant. The code primarily consists of bundled dependencies (Axios) and the implementation of an 'OllamaProvider' class that connects to a local Ollama instance at 127.0.0.1:11434. All static scanner hits (hardcoded IP, VM strings, 'claymore', env vars) are assessed as false positives or benign behaviors consistent with a local AI integration tool. The hardcoded IP is localhost, the VM strings are likely from a system info library, and there is no evidence of data exfiltration, remote code execution, or malicious intent in this specific chunk. The behavior aligns perfectly with the extension's stated purpose of local AI-assisted debugging."
+      },
+      {
+        "target": "extension/dist/panels/DebugPanel.js (chunk 1/13)",
+        "summary": "The provided code chunk is a standard TypeScript-compiled JavaScript module for a VS Code Webview panel. It initializes a `DebugPanel` class, sets up listeners for VS Code diagnostics and editor changes, and manages a Webview panel. The code uses standard VS Code APIs (`vscode.window.createWebviewPanel`, `vscode.languages.onDidChangeDiagnostics`) and local service imports. There are no signs of malicious behavior, obfuscation, credential harvesting, or unauthorized network activity in this specific chunk. The activation event `onStartupFinished` is aggressive for a debugger but not inherently malicious, though it may impact performance. The overall structure aligns with the advertised 'AI-powered debugging assistant' functionality."
+      },
+      {
+        "target": "extension/dist/panels/DebugPanel.js (chunk 2/13)",
+        "summary": "The analyzed code chunk is benign and consistent with the extension's stated purpose of providing AI-powered debugging assistance. It implements standard VS Code Webview communication patterns, handling messages for applying AI-generated fixes and global chat interactions. No malicious indicators such as credential harvesting, obfuscated payloads, or unauthorized network exfiltration are present in this segment. The static rule hit for 'persistence_evasion' is not supported by the visible code in this chunk."
+      },
+      {
+        "target": "extension/dist/panels/DebugPanel.js (chunk 3/13)",
+        "summary": "The provided code chunk is benign and consistent with the extension's stated purpose of being an AI-powered debugging assistant. It handles webview messaging for chat, code fixing, and explanation generation. It interacts with an `AIService` and `WorkspaceService` to retrieve diagnostics and apply fixes to the editor. There are no signs of malicious behavior such as data exfiltration, credential harvesting, obfuscated payloads, or unauthorized system access. The static rule hit for 'persistence_evasion' is not supported by the visible code and is likely a false positive or refers to code outside this specific chunk."
+      },
+      {
+        "target": "extension/dist/panels/DebugPanel.js (chunk 4/13)",
+        "summary": "The code snippet is a standard VS Code Webview panel implementation for a debugging assistant. It handles UI rendering of diagnostics, manages message passing between the extension host and the webview, and integrates with an AI service for explanations. The logic is transparent, uses standard VS Code APIs (`vscode.window`, `webview.postMessage`), and contains no obfuscation, network exfiltration, credential harvesting, or suspicious system calls. The static rule hit for 'persistence_evasion' is a false positive likely triggered by UI-related string patterns or CSS classes, not actual file system manipulation."
+      },
+      {
+        "target": "extension/dist/panels/DebugPanel.js (chunk 5/13)",
+        "summary": "This chunk of code consists entirely of CSS styles and HTML template literals for a VS Code Webview panel. It defines visual elements such as content panels, code blocks, typing indicators, and chat history cards. There is no executable logic, network activity, file system access, or suspicious behavior present in this specific segment. The scanner hit regarding 'persistence' is a clear false positive caused by the CSS class name '.hidden'. The code aligns perfectly with the extension's stated purpose of providing a debugging UI."
+      },
+      {
+        "target": "extension/dist/panels/DebugPanel.js (chunk 6/13)",
+        "summary": "This chunk of the DebugVision extension source code contains only HTML and CSS definitions for a webview panel. It defines the UI structure for a debugging assistant, including headers, buttons, and a chat sidebar. There are no network calls, file system operations, child process executions, or obfuscated code in this specific segment. The behavior is fully consistent with the extension's stated purpose of providing an AI-powered debugging interface. The static rule hit for 'persistence_evasion' is a false positive in the context of this UI-only code block."
+      },
+      {
+        "target": "extension/dist/panels/DebugPanel.js (chunk 10/13)",
+        "summary": "The analyzed code chunk is a standard VS Code webview script handling UI interactions for a debugging assistant. It manages toggling between 'diagnostics' and 'chat' views, handles clipboard copying of code snippets, and sends messages to the extension host via `vscode.postMessage` for actions like 'confirmFix', 'explain', and 'applyFix'. There are no signs of malicious behavior, obfuscation, credential harvesting, or unauthorized network activity. The code aligns perfectly with the extension's stated purpose of providing an AI-powered debugging interface."
+      },
+      {
+        "target": "extension/dist/ai/providers/OllamaProvider.js",
+        "summary": "The code is a standard implementation of an Ollama API client. It connects to the local Ollama service at 127.0.0.1:11434, which is the default and expected address for local LLM inference. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious command execution. The hardcoded IP is a false positive from the static scanner, as it refers to the local loopback interface for a legitimate local service. The extension's capabilities are proportional to its advertised function as an AI debugging assistant."
+      },
+      {
+        "target": "extension/dist/services/DiagnosticsService.js (chunk 1/2)",
+        "summary": "The provided code chunk is a standard TypeScript-compiled service class for managing VS Code diagnostics. It uses standard VS Code APIs (`vscode.languages.getDiagnostics`, `vscode.window.activeTextEditor`) to retrieve compiler errors and warnings. There are no signs of malicious behavior, such as network exfiltration, credential harvesting, obfuscation, or arbitrary command execution. The code aligns with the advertised functionality of an AI debugging assistant that needs to read diagnostic information. The only minor note is the activation event, which is broader than strictly necessary but common for extensions that want to be ready immediately."
+      },
+      {
+        "target": "extension/dist/services/DiagnosticsService.js (chunk 2/2)",
+        "summary": "The provided code chunk is a benign implementation of a DiagnosticsService class. It exclusively uses standard VS Code APIs to filter, count, and log compiler diagnostics (errors, warnings, info, hints). There are no network calls, file system operations outside the VS Code API, child process executions, or obfuscated logic. The behavior is fully consistent with the extension's advertised purpose of an AI-powered debugging assistant that explains compiler errors."
+      },
+      {
+        "target": "extension/dist/ai/index.js",
+        "summary": "The provided source file is a standard TypeScript-compiled barrel export module that re-exports symbols from local modules (AIProvider, AIService, PromptBuilder). It contains no executable logic, network calls, file system access, or obfuscation. The code is benign and consistent with the advertised 'AI-powered debugging' functionality, assuming the underlying modules (not provided) are also benign. The only minor concern is the broad activation event, which is a common but suboptimal practice for non-essential extensions."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code serializes all environment variables (`Object.keys(process.env)`). This is a classic info-stealer pattern used to exfiltrate API keys, tokens, and secrets stored in the environment. This behavior is completely disproportionate to an 'AI debugging assistant' and indicates malicious intent to steal credentials.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 11933,
+        "target": "extension/dist/extension.js (chunk 33/201)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "Detected `postMessage` usage which, in the context of the environment variable harvesting, suggests a mechanism to pass sensitive data to a webview or external process for exfiltration. Combined with the env var dump, this confirms a data theft pipeline.",
+        "code_reference": ".postMessage(token",
+        "line_hint": 13445,
+        "target": "extension/dist/extension.js (chunk 33/201)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The reference to `claymore` is a false positive. It appears within the `mime-db` library data as a MIME type definition (`application/vnd.claymore`), not as a reference to the Claymore crypto-miner executable. No mining logic is present in this chunk.",
+        "code_reference": "\"application/vnd.claymore\"",
+        "line_hint": 3542,
+        "target": "extension/dist/extension.js (chunk 33/201)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The references to `virtualbox` and `vbox` are false positives. These strings appear within the `mime-db` library data as MIME type definitions (e.g., `application/vnd.virtualbox...`), not as anti-VM detection logic. No sandbox evasion code is visible in this chunk.",
+        "code_reference": "virtualbox, vbox",
+        "line_hint": 7371,
+        "target": "extension/dist/extension.js (chunk 33/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN",
+        "description": "The hardcoded IP `127.0.0.1:11434` is the standard local address for the Ollama AI service. This is consistent with the extension's advertised functionality of using local AI models for debugging assistance.",
+        "code_reference": "http://127.0.0.1:11434",
+        "line_hint": 17794,
+        "target": "extension/dist/extension.js (chunk 33/201)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension claims to be a simple AI debugging assistant, but the code contains logic to harvest all environment variables. A legitimate debugging tool has no need to access or serialize the entire process environment. This is a major capability disconnect indicating malicious intent.",
+        "code_reference": "README vs Code",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 33/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'virtualbox' and 'vbox' strings as VM detection. Context shows these are MIME type definitions (application/x-virtualbox-*) within a standard library (likely mime-db), not anti-analysis logic.",
+        "code_reference": "\"application/x-virtualbox-hdd\": { ... }",
+        "line_hint": "7371",
+        "target": "extension/dist/extension.js (chunk 68/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'claymore' as a crypto miner. In the context of a large bundled file, this is likely a false positive from a string match in a library or unrelated data, or a very specific false positive from the scanner's keyword list matching a non-malicious context (e.g. a name in a list). Given the surrounding code is MIME types, this is highly suspicious as a scanner error or the string is far removed from the visible chunk. However, based on the visible chunk being pure MIME definitions, no malicious intent is present in this specific code segment.",
+        "code_reference": "claymore",
+        "line_hint": "3542",
+        "target": "extension/dist/extension.js (chunk 68/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Object.keys(process.env)' as credential harvesting. While this pattern can be malicious, it is also common in legitimate tools that need to pass environment variables to child processes (e.g., language servers, linters). Without seeing the destination of the data, and given the extension is an AI debugger that likely spawns local processes (Ollama), this is likely benign functionality to configure the local AI runtime.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": "11933",
+        "target": "extension/dist/extension.js (chunk 68/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'http://127.0.0.1:11434' as a hardcoded IP/C2. This is the default localhost port for Ollama, the local AI model server mentioned in the README. This is expected behavior for a local-first AI extension.",
+        "code_reference": "\"http://127.0.0.1:11434\"",
+        "line_hint": "17794",
+        "target": "extension/dist/extension.js (chunk 68/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `Object.keys(process.env)` as credential harvesting. However, the code explicitly filters keys matching `/^debug_/i` and maps them to `exports2.inspectOpts`. This is standard behavior for the `debug` npm package to allow users to configure logging levels via environment variables (e.g., `DEBUG_COLORS`). It does not exfiltrate data.",
+        "code_reference": "exports2.inspectOpts = Object.keys(process.env).filter((key) => { return /^debug_/i.test(key); })",
+        "line_hint": 11933,
+        "target": "extension/dist/extension.js (chunk 109/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `http://127.0.0.1:11434` as a potential C2. This is the default localhost address for Ollama, a local LLM inference engine. Given the extension is an 'AI-powered debugging assistant' using Ollama, this is expected and benign local communication.",
+        "code_reference": "http://127.0.0.1:11434",
+        "line_hint": 17794,
+        "target": "extension/dist/extension.js (chunk 109/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'claymore' and 'virtualbox' strings. In the context of a large bundled file (201 chunks), these are likely part of a dependency's test fixtures, a list of known processes for detection, or unrelated string constants within a large library (like a linter or security scanner dependency). Without evidence of execution or network exfiltration in this chunk, and given the low obfuscation score, these are likely benign artifacts of bundled dependencies rather than active malware components.",
+        "code_reference": "claymore, virtualbox",
+        "line_hint": 3542,
+        "target": "extension/dist/extension.js (chunk 109/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'http://127.0.0.1:11434' as a potential C2 hardcoded IP. However, 127.0.0.1 is the loopback interface, and port 11434 is the standard default port for Ollama, a local LLM inference engine. Given the extension is an 'AI-powered debugging assistant' using Ollama, this is expected and benign behavior for local model communication.",
+        "code_reference": "http://127.0.0.1:11434",
+        "line_hint": 17794,
+        "target": "extension/dist/extension.js (chunk 127/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged '.postMessage(token' as data exfiltration. The code context shows this is part of the `axios` library's internal implementation for `setImmediate` polyfilling in browser-like environments. It uses `postMessage` to trigger callbacks asynchronously, not to send data to a remote server. The token is a random string generated locally (`axios@${Math.random()}`) used for message matching.",
+        "code_reference": "_global.postMessage(token, \"*\")",
+        "line_hint": 13445,
+        "target": "extension/dist/extension.js (chunk 127/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Object.keys(process.env)' as credential harvesting. While this pattern can be malicious, in the context of a bundled library (likely `axios` or a similar utility), it is often used for environment detection (e.g., checking for `NODE_ENV` or `DEBUG` flags). Without evidence of this data being sent over the network in this specific chunk, and given the high obfuscation score is low (0.10), this is likely a standard library feature for configuration or logging, not exfiltration. However, it warrants monitoring if other chunks show network egress of env vars.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 11933,
+        "target": "extension/dist/extension.js (chunk 127/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'claymore' as a crypto miner reference. In the context of a large bundled file, this string is highly likely to be part of a dictionary, a test fixture, or a false positive from a string matching algorithm that picked up a substring in a larger, unrelated string (e.g., a hash or a base64 blob). There is no executable context or network connection to mining pools visible in this chunk.",
+        "code_reference": "claymore",
+        "line_hint": 3542,
+        "target": "extension/dist/extension.js (chunk 127/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'virtualbox' and 'vbox' as VM detection. These strings are commonly found in libraries that detect the runtime environment (e.g., `is-docker`, `is-wsl`, or similar utility libraries) to adjust behavior (like disabling certain features in CI/CD or VMs). This is a standard practice for development tools to avoid false positives in automated testing environments, not necessarily malicious evasion.",
+        "code_reference": "virtualbox",
+        "line_hint": 7371,
+        "target": "extension/dist/extension.js (chunk 127/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'claymore' as a crypto miner reference. In the context of an AI debugging extension, this is likely a false positive from a bundled library (e.g., a list of known processes, a test fixture, or a string in a dependency like a linter or security scanner) rather than active mining code. No execution logic is visible in this chunk.",
+        "code_reference": "claymore",
+        "line_hint": 3542,
+        "target": "extension/dist/extension.js (chunk 153/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'virtualbox' and 'vbox' strings. These are likely part of a dependency that performs environment detection (e.g., to adjust performance settings or avoid certain optimizations in VMs) or a security library checking for sandbox environments. Without evidence of exfiltration or malicious payload execution, this is not indicative of malware.",
+        "code_reference": "virtualbox, vbox",
+        "line_hint": 7371,
+        "target": "extension/dist/extension.js (chunk 153/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Object.keys(process.env)' as credential harvesting. This is a standard pattern in Node.js libraries (like Axios or HTTP clients) to determine proxy settings (HTTP_PROXY, HTTPS_PROXY) or environment configuration. It is not inherently malicious unless combined with network exfiltration, which is not evident in this chunk.",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 11933,
+        "target": "extension/dist/extension.js (chunk 153/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'http://127.0.0.1:11434' as a potential C2. This is the default local endpoint for Ollama, a local LLM server. The extension's README explicitly mentions Ollama support. This is a benign local connection for AI inference.",
+        "code_reference": "http://127.0.0.1:11434",
+        "line_hint": 17794,
+        "target": "extension/dist/extension.js (chunk 153/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP 127.0.0.1:11434 is the standard local port for Ollama, a local LLM inference engine. This is consistent with the extension's stated purpose of using local AI models and does not indicate C2 activity.",
+        "code_reference": "http://127.0.0.1:11434",
+        "line_hint": 17794,
+        "target": "extension/dist/extension.js (chunk 171/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The code snippet provided is standard boilerplate from the `axios` library (specifically the `fetch` adapter implementation). The references to `virtualbox`, `claymore`, and `process.env` in the static rule hits likely originate from other chunks of this large bundled file or are false positives from generic string matching within the library code (e.g., environment detection logic in axios or similar utilities). The visible code in this chunk shows no malicious intent, only standard HTTP client setup.",
+        "code_reference": "axios fetch adapter logic",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 171/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP 127.0.0.1:11434 is the standard localhost address for the Ollama AI service, which is explicitly documented in the extension's README and purpose (local AI debugging). This is not a C2 channel.",
+        "code_reference": "this.baseUrl = \"http://127.0.0.1:11434\"",
+        "line_hint": 17794,
+        "target": "extension/dist/extension.js (chunk 183/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The string 'claymore' detected by the scanner is likely a false positive from a substring match within a larger, unrelated string or variable name in the bundled dependencies (e.g., a hash, a random ID, or a different library's constant). In the context of an AI debugging tool, there is no logical connection to crypto mining, and no other mining indicators (stratum, pool domains) are present in this chunk.",
+        "code_reference": "claymore",
+        "line_hint": 3542,
+        "target": "extension/dist/extension.js (chunk 183/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "References to 'virtualbox' and 'vbox' are likely part of a system information gathering library (such as `systeminformation` or similar) bundled within the extension to detect the host environment for compatibility or performance tuning. While VM detection can be used for evasion, in the context of a local AI tool, it is more likely benign environment profiling. No exfiltration of this data is observed in this chunk.",
+        "code_reference": "virtualbox, vbox",
+        "line_hint": 7371,
+        "target": "extension/dist/extension.js (chunk 183/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The pattern `.postMessage(token` is a standard Web Worker or Webview communication pattern used to pass data between the extension host and the UI. It is not an exfiltration endpoint.",
+        "code_reference": ".postMessage(token",
+        "line_hint": 13445,
+        "target": "extension/dist/extension.js (chunk 183/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The reference to `Object.keys(process.env)` is likely part of a generic environment inspection utility or a dependency that logs available environment variables for debugging purposes. Without evidence of this data being sent over the network to an external server in this chunk, it does not constitute credential harvesting. The extension's primary network traffic is to localhost (Ollama).",
+        "code_reference": "Object.keys(process.env)",
+        "line_hint": 11933,
+        "target": "extension/dist/extension.js (chunk 183/201)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a 'persistence_evasion' hit for `.hidden` at line 410. However, the provided source code chunk (lines 1-100) does not contain this string. In the context of a VS Code extension, `.hidden` is a standard CSS class used to toggle UI element visibility (e.g., hiding a 'loading' spinner or an empty state message). It is not a file system attribute modification. This is a false positive from a generic rule engine.",
+        "code_reference": "N/A (not present in provided chunk)",
+        "line_hint": 410,
+        "target": "extension/dist/panels/DebugPanel.js (chunk 1/13)"
+      }
+    ],
+    "findings_truncated": 9
+  },
+  "ai_summary": "The extension 'DebugVision' exhibits critical malicious behavior. While it correctly connects to a local Ollama instance for its advertised AI debugging features, it also contains code to serialize all environment variables (`Object.keys(process.env)`), which is a hallmark of credential stealers. The other static hits (claymore, virtualbox) are false positives resulting from MIME type definitions in a bundled library. The presence of environment variable harvesting in a tool that does not require access to system secrets is a definitive indicator of malicious intent, likely aimed at exfiltrating user credentials and API keys.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "16 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 9,
+    "published_date": "2026-08-22T14:01:44.703Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-22T15:11:57.897806+00:00Z"
+}

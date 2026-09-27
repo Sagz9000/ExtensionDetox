@@ -1,0 +1,405 @@
+{
+  "extension_id": "MadPonyInteractive.mpi-kanban",
+  "display_name": "Mpi-Kanban",
+  "version": "0.1.15",
+  "publisher": {
+    "name": "MadPonyInteractive",
+    "verified": false
+  },
+  "vsix_sha256": "ed6026498a112e21cec8f1d05f4338d5b49674e1041c1e8a68ec1bff5b5d116f",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.75,
+  "scores": {
+    "composite": 0.7228125000000001,
+    "ai_vibe": 0.85,
+    "static": 0.53125,
+    "behavioral": 0.72,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": ".postBoard()},null,this._disposables),this._panel.webview.onDidReceiveMessage(e=>this._handleMessage(e),null,this._disposables)}async _handleMessage(e){switch(e.type){case\"moveTask\":await this.moveTas"
+      },
+      {
+        "check": "terminal_injection",
+        "severity": "HIGH",
+        "description": "Stealthy terminal command injection via VS Code API",
+        "file": "extension/dist/extension.js",
+        "line": 55,
+        "snippet": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\"),m.show()}),n=u.workspace.createFileSystemWatcher(\"**/.agents/mpi-kanban/board.json\"),l=u.workspace.createFileSystemWatcher(\"**/.age"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/src/html/taskBoardScript.js",
+        "line": 399,
+        "snippet": ".postMessage({ type: 'openTaskLink', taskId: task.id, linkKey"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/src/html/taskBoardScript.js",
+        "line": 263,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/dist/src/html/taskBoardScript.js",
+        "line": 266,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 14
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 14,
+    "blocks_seen": 14,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/13)",
+        "summary": "The extension exhibits critical malicious behavior by attempting to execute a global npm package installation (`npx skills add ... -y -g`) via the VS Code terminal API. This action is completely disproportionate to its advertised function of rendering a local Kanban board. The use of the `-y` (auto-yes) and `-g` (global) flags indicates an intent to modify the user's system environment and execute untrusted code from a remote source, which is a hallmark of supply-chain attacks. The static rule hits regarding 'data exfiltration' and 'configuration tampering' are likely secondary to this primary vector of code execution. The extension should be considered malicious."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 5/13)",
+        "summary": "The code is a standard implementation of a Kanban board viewer for VS Code. It manages file paths for `.agents/mpi-kanban/` directories, handles file system events for live reloading, and provides UI interactions. The static scanner hits are false positives caused by generic pattern matching on strings like 'post' and 'sendText' without understanding the context of VS Code APIs and the extension's specific domain logic. There is no evidence of malicious intent, data exfiltration, or unauthorized command execution."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 6/13)",
+        "summary": "The extension exhibits a critical disconnect between its advertised functionality (a local Kanban board viewer) and its actual behavior (executing global npm package installations via terminal injection). The command `npx skills add ... -g` is a high-risk action that allows for potential supply-chain compromise or unauthorized code execution. The presence of configuration tampering further elevates the risk. This is not a benign viewer; it is a potential stager for malicious code execution."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 8/13)",
+        "summary": "This extension exhibits critical malicious behavior that is completely disproportionate to its stated purpose. While it presents itself as a local Kanban board viewer, it contains code to automatically execute `npx skills add ... -g`, which installs a third-party package globally. This is a textbook supply-chain attack pattern where a seemingly benign UI extension is used to bootstrap a malicious payload or backdoor. The 'disconnect' between the passive UI description and the active command execution is definitive evidence of malicious intent."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 9/13)",
+        "summary": "This extension is malicious. It disguises itself as a local Kanban board viewer but contains a critical supply-chain attack mechanism. It programmatically executes `npx skills add ... -g -y` to globally install a potentially compromised package from a remote repository without user interaction. This allows the attacker to execute arbitrary code on the victim's machine. The 'disconnect' between the advertised passive UI functionality and the active global package installation is a definitive indicator of malicious intent."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 10/13)",
+        "summary": "The code is benign and consistent with the extension's stated purpose of providing a Kanban board view for the MPI agent workflow. The file contains logic for managing task file structures (creating folders, writing markdown/json files) and handling VS Code configuration for the board root path. All scanner hits are false positives resulting from standard VS Code API usage (Webview messaging, user-initiated terminal commands for setup, and workspace configuration persistence). There is no evidence of malicious intent, data exfiltration, or unauthorized system access."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 12/13)",
+        "summary": "The code is a standard VS Code extension implementation for a Kanban board view. It uses standard VS Code APIs for webviews, file system watchers, and command registration. The flagged 'terminal command' is a transparent, user-initiated installation of a companion tool, not malicious injection. The 'configuration' access is for local settings, not exfiltration. No malicious behavior, obfuscation, or credential harvesting was detected."
+      },
+      {
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 1/7)",
+        "summary": "The code is a standard VS Code Webview script for a Kanban board extension. It uses `acquireVsCodeApi()` for IPC and standard DOM manipulation for UI rendering. The static scanner hits are false positives resulting from pattern matching on legitimate Webview APIs and HTML properties. The behavior is fully consistent with the extension's stated purpose of providing a visual interface for a JSON-based task board."
+      },
+      {
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 2/7)",
+        "summary": "The code is a standard DOM manipulation script for a VS Code Webview implementing a Kanban board. It handles rendering columns, task cards, and UI state (scroll position, modals). The static analysis hits are false positives resulting from generic pattern matching on `postMessage` (standard VS Code IPC) and `.hidden` (standard UI visibility toggle). There is no evidence of malicious intent, data exfiltration, or unauthorized system access."
+      },
+      {
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 3/7)",
+        "summary": "The code is a standard UI rendering script for a Kanban board Webview. It handles DOM manipulation, drag-and-drop events, and local state updates. The use of `escapeHtml` indicates good security practices against XSS. The flagged patterns are false positives resulting from generic keyword matching that does not account for the Webview context. There is no evidence of malicious behavior, network exfiltration, or credential harvesting."
+      },
+      {
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 4/7)",
+        "summary": "The code is a standard Webview script for a Kanban board extension. It handles DOM manipulation for drag-and-drop, checklist toggling, and UI notifications. All flagged items are false positives resulting from generic pattern matching that does not account for the specific VS Code Webview API context (`vscode.postMessage`) or standard DOM properties (`.hidden`). There is no evidence of malicious intent, network exfiltration, or credential harvesting."
+      },
+      {
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 5/7)",
+        "summary": "The code is a standard Webview script for a Kanban board UI. It handles drag-and-drop events, calculates drop indices, and renders task details using DOM manipulation. All flagged items are false positives resulting from generic pattern matching on UI-related code (postMessage for IPC, .hidden for CSS/DOM). There is no evidence of malicious behavior, network exfiltration, or credential harvesting."
+      },
+      {
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 6/7)",
+        "summary": "The code is a standard VS Code Webview script for a Kanban board extension. It handles DOM manipulation, event listeners for drag-and-drop and modal interactions, and communicates with the extension host via `vscode.postMessage`. All flagged items are false positives resulting from generic pattern matching on standard web development and VS Code API usage. There is no evidence of malicious intent, data exfiltration, or unauthorized system access."
+      },
+      {
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 7/7)",
+        "summary": "The provided code chunk is a standard client-side script for a VS Code Webview implementing a Kanban board. It handles UI state management, task CRUD operations via `vscode.postMessage` (local IPC), and HTML escaping. There are no network calls, no file system access, no obfuscation, and no suspicious behaviors. The static scanner hits are false positives resulting from pattern matching on standard Webview communication and UI visibility toggles. The code aligns perfectly with the extension's stated purpose of providing a visual Kanban board for agent workflows."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension executes a command to install a third-party package globally via npx (`npx skills add MadPonyInteractive/mpi-kanban --all -y -g`). This is a classic supply-chain attack vector where a seemingly benign UI extension triggers the execution of arbitrary code from a remote repository. The `-y` flag auto-confirms the installation, and `-g` installs it globally, potentially modifying the user's system environment outside the VS Code sandbox.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 1/13)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_INJECTION",
+        "description": "The code uses `sendText` to inject a shell command into the terminal. While `sendText` is a standard VS Code API, using it to execute `npx` with a remote package name and auto-accept flags is highly suspicious and disproportionate for a Kanban board viewer. This allows the extension to execute arbitrary code with the user's privileges.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 1/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension's stated purpose is to render a Kanban board from local JSON files. It does not claim to install agent skills or modify the global npm environment. The presence of logic to install external packages is a hidden capability not disclosed in the README or description.",
+        "code_reference": "async function U(r){await u.workspace.g...",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 1/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'data exfiltration' based on the string '.postBoard()'. Context analysis shows this is a method call on a local object (likely `this.postBoard()` or similar) related to updating the Kanban board state, not an HTTP POST request to an external server. No network egress is visible in this chunk.",
+        "code_reference": "this._panel.webview.onDidReceiveMessage(e=>this._handleMessage",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 5/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'terminal command injection' for `sendText(\"npx skills add ...\")`. This is a standard VS Code API usage (`vscode.window.activeTextEditor.edit` or similar) to insert text into the terminal or editor. The command `npx skills add` is a legitimate installation command for the associated 'MadPonyInteractive/mpi-kanban' skills pack mentioned in the README. It is not executing arbitrary code silently; it is providing a copy-paste or auto-insert command for the user to run.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 5/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'configuration harvesting' and 'tampering'. The code `workspace.getConfiguration(I).inspect(L)?.workspaceValue` is a standard read operation to retrieve a setting value. The subsequent `workspace.g...` (likely `workspace.getConfiguration().update`) is likely used to persist the user's choice of workspace folder or board path, which is standard behavior for a Kanban extension that needs to remember state. No sensitive data (secrets, keys) is being read or sent.",
+        "code_reference": "workspace.getConfiguration(I).inspect(L)?.workspaceValue??\"\"",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 5/13)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a passive Kanban board viewer for local JSON files. However, the code contains logic to programmatically execute `npx skills add MadPonyInteractive/mpi-kanban --all -y -g`. This command installs a third-party package globally (`-g`) and automatically (`-y`) without explicit user consent for that specific action, which is a classic supply-chain attack vector or unauthorized remote code execution primitive. A 'viewer' extension should not be installing global npm packages.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 6/13)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "UNAUTHORIZED_COMMAND_EXECUTION",
+        "description": "The code uses `sendText` to inject a shell command into a terminal. While `npx` is a standard tool, the combination of global installation flags and automatic execution in a context not described in the README (which claims to only 'render' JSON) is highly suspicious. This allows the extension to execute arbitrary code from the npm registry under the user's privileges.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 6/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CONFIGURATION_TAMPERING",
+        "description": "The code accesses and potentially modifies workspace configuration settings (`workspace.getConfiguration`). While the specific modification isn't fully visible in this chunk, the static scanner flagged 'Programmatic tampering with workspace configuration settings'. Combined with the command execution, this could be used to persist malicious settings or disable security features.",
+        "code_reference": "workspace.getConfiguration(I).inspect(L)?.workspaceValue??\"\"}async function U(r){await u.workspace.g",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 6/13)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a passive Kanban board viewer for local JSON files. However, the code contains logic to programmatically execute `npx skills add MadPonyInteractive/mpi-kanban --all -y -g`. This command installs a third-party package globally (`-g`) and automatically (`-y`), which is a classic supply-chain attack vector. A simple UI extension should never execute arbitrary shell commands or install global packages without explicit, granular user consent for each action, and certainly not as part of its core logic.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 8/13)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The code uses `sendText` (likely a wrapper around `child_process` or terminal execution) to run an `npx` command. This allows the extension to execute arbitrary code from the npm registry. Combined with the global install flag, this grants the attacker persistent access to the user's system environment.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 8/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE_ANALYSIS",
+        "description": "The static scanner flagged `workspace.getConfiguration` as potential data exfiltration. In the context of a Kanban board, reading configuration is likely benign (e.g., to determine board paths or theme settings). However, given the critical finding above, any configuration reading should be treated with suspicion until proven otherwise, as it could be used to fingerprint the environment before exfiltration.",
+        "code_reference": "workspace.getConfiguration(I).inspect(L)?.workspaceValue??\"\"",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 8/13)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a passive Kanban board viewer for local JSON files. However, the code contains logic to programmatically execute `npx skills add MadPonyInteractive/mpi-kanban --all -y -g`. This is a supply-chain attack vector: it silently installs a third-party package globally (`-g`) and with auto-accept (`-y`), bypassing user consent for arbitrary code execution. A 'viewer' extension should never install global packages.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 9/13)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The code uses `sendText` (likely wrapping `vscode.window.activeTextEditor.edit` or a terminal command) to inject a shell command. The use of `npx` with a remote repository name (`MadPonyInteractive/mpi-kanban`) allows the attacker to serve malicious code via the npm registry or GitHub repository at any time, creating a persistent backdoor.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 9/13)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.getConfiguration` as potential data exfiltration. In this context, it appears to be reading local configuration values (likely for the Kanban board path or agent settings) to determine where to read/write the `board.json` file. While reading config is standard, it is part of the setup for the malicious command execution flow, but the read itself is not exfiltration.",
+        "code_reference": "workspace.getConfiguration(I).inspect(L)?.workspaceValue",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 9/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'data exfiltration' based on the string `.postBoard()`. Context analysis shows this is a local method call on the extension's internal state object to update the UI panel, not a network POST request. The code `this._panel.webview.onDidReceiveMessage` confirms this is standard VS Code Webview communication.",
+        "code_reference": "this._panel.webview.onDidReceiveMessage(e=>this._handleMessage",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 10/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'terminal command injection' for `npx skills add ...`. This is a user-initiated command triggered by a specific UI action ('Install or Update Skills') to install the companion CLI tool required by the extension's documented workflow. It is not hidden or automatic, and it installs a known package from the same publisher.",
+        "code_reference": "sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 10/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'configuration harvesting' and 'tampering'. The code `workspace.getConfiguration(I).inspect(L)` reads a specific, documented setting (`mpi-kanban.kanbanRoot`) to determine the board location. The `update` call writes this same setting to the workspace configuration when the user selects a new root. This is standard VS Code extension behavior for persisting user preferences.",
+        "code_reference": "u.workspace.getConfiguration(I).inspect(L)?.workspaceValue ?? \"\"",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 10/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `sendText(\"npx skills add ...\")` as terminal command injection. However, this is a legitimate feature of the extension to install its companion CLI skills pack. The command is hardcoded, visible to the user, and executed in a named terminal window, not hidden or obfuscated. It aligns with the extension's purpose of integrating with the 'Mpi-Kanban Agent Skills pack'.",
+        "code_reference": "m.sendText(\"npx skills add MadPonyInteractive/mpi-kanban --all -y -g\")",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 12/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.getConfiguration` as potential data exfiltration or tampering. In context, this is used to read local workspace settings related to the Kanban board configuration (e.g., root path). There is no network transmission of this data in the provided snippet, and it is standard VS Code API usage for reading extension-specific settings.",
+        "code_reference": "workspace.getConfiguration(I).inspect(L)?.workspaceValue",
+        "line_hint": 55,
+        "target": "extension/dist/extension.js (chunk 12/13)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'postMessage' as data exfiltration. In the context of a VS Code Webview, `vscode.postMessage` is the standard, secure IPC mechanism for communicating between the webview and the extension host. It does not send data to external networks.",
+        "code_reference": "vscode.postMessage({ type: 'openTaskLink', taskId: task.id, linkKey",
+        "line_hint": 399,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged '.hidden' as persistence evasion. In this context, `.hidden` is a standard HTML DOM property used to toggle the visibility of UI elements (like notification banners) within the webview. It is not related to file system attributes.",
+        "code_reference": ".hidden",
+        "line_hint": 263,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 1/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `postMessage` as data exfiltration. In the context of a VS Code Webview, `vscode.postMessage` is the standard, secure IPC mechanism for communicating between the webview and the extension host. It is not a network exfiltration vector.",
+        "code_reference": "vscode.postMessage({ type: 'openTaskLink', taskId: task.id, linkKey",
+        "line_hint": 399,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 2/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` as persistence evasion. In this context, `.hidden` is likely a CSS class or DOM property used to toggle the visibility of UI elements (e.g., modals or task cards) within the Kanban board interface, not a file system attribute.",
+        "code_reference": ".hidden",
+        "line_hint": 263,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 2/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `postMessage` as data exfiltration. In the context of a VS Code Webview, `postMessage` is the standard, secure IPC mechanism for communicating between the Webview UI and the Extension Host. It does not send data to external networks.",
+        "code_reference": "postMessage({ type: 'openTaskLink', taskId: task.id, linkKey",
+        "line_hint": 399,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` as persistence evasion. In this context, `.hidden` is a standard DOM property used to toggle the visibility of UI elements (likely the detail panel or modal) within the Webview. It is not related to file system attributes.",
+        "code_reference": ".hidden",
+        "line_hint": 263,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 3/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `vscode.postMessage` as potential data exfiltration. However, in the context of a VS Code Webview, `vscode.postMessage` is the standard, secure mechanism for communicating between the Webview UI and the Extension Host. It does not send data over the network; it sends data to the local extension process. The payload contains only UI state (task ID, link key) consistent with a Kanban board interaction.",
+        "code_reference": "vscode.postMessage({ type: 'openTaskLink', taskId: task.id, linkKey",
+        "line_hint": 399,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 4/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` as persistence evasion. In this context, `notice.hidden = false` and `notice.hidden = true` are standard DOM property manipulations used to show and hide a UI notification element (`#board-notice`). This is benign UI logic.",
+        "code_reference": "notice.hidden = false",
+        "line_hint": 263,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 4/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `postMessage` as data exfiltration. However, the code uses `postMessage` to communicate between the Webview and the extension host (standard VS Code pattern) to open a link, not to send data to an external server. The payload contains only local task IDs and link keys.",
+        "code_reference": "postMessage({ type: 'openTaskLink', taskId: task.id, linkKey",
+        "line_hint": 399,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 5/7)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `.hidden` as persistence evasion. In this context, `.hidden` is likely a CSS class or DOM property used for UI visibility toggling (e.g., hiding the detail panel or specific elements), not setting the file system hidden attribute on a file.",
+        "code_reference": ".hidden",
+        "line_hint": 263,
+        "target": "extension/dist/src/html/taskBoardScript.js (chunk 5/7)"
+      }
+    ],
+    "findings_truncated": 4
+  },
+  "ai_summary": "The extension exhibits critical malicious behavior by attempting to execute a global npm package installation (`npx skills add ... -y -g`) via the VS Code terminal API. This action is completely disproportionate to its advertised function of rendering a local Kanban board. The use of the `-y` (auto-yes) and `-g` (global) flags indicates an intent to modify the user's system environment and execute untrusted code from a remote source, which is a hallmark of supply-chain attacks. The static rule hits regarding 'data exfiltration' and 'configuration tampering' are likely secondary to this primary vector of code execution. The extension should be considered malicious.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 19,
+    "published_date": "2026-05-13T05:35:16.72+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T00:41:35.973977+00:00Z"
+}

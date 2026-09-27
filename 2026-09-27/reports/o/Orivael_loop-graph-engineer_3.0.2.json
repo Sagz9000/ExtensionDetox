@@ -1,0 +1,432 @@
+{
+  "extension_id": "Orivael.loop-graph-engineer",
+  "display_name": "NodeXLoop",
+  "version": "3.0.2",
+  "publisher": {
+    "name": "Orivael",
+    "verified": false
+  },
+  "vsix_sha256": "9c54962a0424ffc4a31c94b43b34788bbc2a16cee04115f416235f8b7f476239",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6599999999999999,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/extension.js",
+        "line": 611,
+        "snippet": "vscode.authentication.getSession"
+      },
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "SSH key/config file access",
+        "file": "extension/out/extension.js",
+        "line": 424,
+        "snippet": "/.ssh/authorized_keys"
+      },
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "SSH key/config file access",
+        "file": "extension/out/extension.js",
+        "line": 448,
+        "snippet": "/.ssh/id_rsa"
+      },
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "SSH key/config file access",
+        "file": "extension/out/extension.js",
+        "line": 448,
+        "snippet": "/.ssh/id_rsa"
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Accessing VSCode authentication session (GitHub/Azure tokens)",
+        "file": "extension/out/extension.js",
+        "line": 611,
+        "snippet": "authentication.getSession("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 296,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 307,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 317,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/out/extension.js",
+        "line": 619,
+        "snippet": ".postMessage({ type: 'githubAuth', ok: true, login: u.login, avatar: u.avatar_url, token: session.accessToken"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Sandbox environment detection",
+        "file": "extension/out/extension.js",
+        "line": 132,
+        "snippet": "sandbox"
+      }
+    ],
+    "total": 22
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "nodexloop.orivael.dev",
+      "source_file": "extension/package.json",
+      "line": 8,
+      "context": "\"homepage\": \"https://nodexloop.orivael.dev\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/10)",
+        "summary": "The code appears to be a legitimate VS Code extension for visualizing and running AI agent loops. The high-risk static hits are largely false positives resulting from the extension's legitimate features: using VS Code's GitHub authentication for user identification, defining sensitive file paths (like SSH keys) to protect them from AI agent access, and checking for updates. The code structure is standard TypeScript-compiled JavaScript with no obfuscation. The network activity is limited to a documented update check and model API calls (implied by the description). No evidence of malicious intent, data exfiltration, or credential theft was found in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/10)",
+        "summary": "This extension exhibits multiple critical indicators of malicious behavior. It harvests GitHub authentication tokens and checks for SSH key files, which are classic signs of credential theft and lateral movement preparation. Additionally, it uses a non-standard, potentially compromised auto-update mechanism to distribute updates outside the official VS Code Marketplace. The combination of these behaviors, which are disproportionate to its stated purpose as an AI graph builder, strongly suggests it is a malicious supply-chain attack vector designed to steal credentials and maintain persistence."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 5/10)",
+        "summary": "The code is consistent with the extension's stated purpose: a visual graph builder for AI agent loops. The 'critical' findings from the static scanner are false positives resulting from the legitimate use of VS Code's SecretStorage API for managing LLM API keys and the standard Webview API for the UI. The network proxy logic (`fetch` case) includes a host denial check (`hostDenialReason`), which suggests a security-conscious design rather than malicious exfiltration. No evidence of credential harvesting, reverse shells, or unauthorized data exfiltration was found in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 6/10)",
+        "summary": "The code in this chunk is consistent with the extension's advertised functionality: a visual graph builder for LLM agents that allows users to attach workspace files and manage API keys securely. The static scanner hits for credential theft and SSH access are false positives resulting from the use of standard VS Code APIs (SecretStorage, Authentication) and file enumeration logic intended for user-controlled file attachment. There is no evidence of malicious intent, data exfiltration, or unauthorized access in this portion of the code."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 7/10)",
+        "summary": "The code exhibits strong defensive security practices, specifically path traversal prevention for file operations, which directly contradicts the 'credential harvesting' flags raised by the static scanner. The use of VS Code's SecretStorage and Authentication APIs is standard and appropriate for an extension that manages API keys and GitHub integration. The 'sandbox' reference is likely benign configuration handling. No evidence of data exfiltration, obfuscation, or malicious intent was found in this chunk. The extension's behavior is proportional to its advertised functionality as a visual graph builder for AI agent loops."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 9/10)",
+        "summary": "The code appears to be a legitimate VS Code extension for building and running AI agent graphs. The 'critical' and 'high' severity hits from the static scanner are false positives resulting from standard VS Code API usage for authentication (GitHub sign-in) and secret storage (API keys for LLM providers). The file operations and webview interactions are consistent with the extension's stated purpose of managing local files and visualizing graph states. No evidence of data exfiltration, malicious command execution, or obfuscation was found in this chunk."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 10/10)",
+        "summary": "This extension exhibits critical malicious behavior. It steals the user's GitHub OAuth token by exposing it to the webview context, which is a severe security flaw. Additionally, static analysis reveals attempts to read sensitive SSH key files, which is completely unrelated to its advertised function as a graph builder. The combination of credential theft, sensitive file access, and sandbox detection strongly indicates this is a malware package disguised as a productivity tool."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode.authentication.getSession' and token transmission as credential theft. Context indicates this is the documented 'GitHub sign-in' feature using VS Code's built-in auth provider. The token is likely used for GitHub API calls (e.g., fetching user info) rather than exfiltration, consistent with the README.",
+        "code_reference": "vscode.authentication.getSession",
+        "line_hint": 611,
+        "target": "extension/out/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged SSH key paths (.ssh/authorized_keys, .ssh/id_rsa). In the context of an AI agent extension, these are likely part of a list of 'sensitive file patterns' that the extension checks to prevent the AI agent from accidentally reading or modifying them, or to warn the user. It is not evidence of active harvesting.",
+        "code_reference": "/.ssh/authorized_keys",
+        "line_hint": 424,
+        "target": "extension/out/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'sandbox' string. This is likely a configuration option or environment check for running AI agents in a sandboxed environment, which is a security feature, not an evasion technique.",
+        "code_reference": "sandbox",
+        "line_hint": 132,
+        "target": "extension/out/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension makes network calls to 'nodexloop.orivael.dev' for update checks. While the code comments explain this is for self-hosted .vsix users, any external network call from a local tool warrants verification that the domain is legitimate and not a C2 channel. However, the logic appears benign (version check only).",
+        "code_reference": "nodexloop.orivael.dev",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses VS Code's authentication session for GitHub and explicitly extracts the access token (`session.accessToken`). It then posts this token to the webview via `postMessage`. This is a classic credential harvesting pattern, allowing an attacker to impersonate the user's GitHub account, access private repositories, or pivot to other services if the token has broad scopes. The README mentions 'GitHub sign-in', but sending the raw token to a webview (which may be compromised or exfiltrated) is highly suspicious and disproportionate to a simple sign-in feature.",
+        "code_reference": "vscode.authentication.getSession ... postMessage({ type: 'githubAuth', ok: true, login: u.login, avatar: u.avatar_url, token: session.ac",
+        "line_hint": 611,
+        "target": "extension/out/extension.js (chunk 2/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code contains explicit file path checks for sensitive SSH credential files (`~/.ssh/authorized_keys` and `~/.ssh/id_rsa`). While the snippet provided is truncated, the presence of these specific paths in a 'Graph Builder' extension is a strong indicator of an attempt to locate and potentially exfiltrate SSH keys, which are critical for lateral movement and persistence.",
+        "code_reference": "/.ssh/authorized_keys, /.ssh/id_rsa",
+        "line_hint": 424,
+        "target": "extension/out/extension.js (chunk 2/10)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUPPLY_CHAIN_ATTACK",
+        "description": "The extension implements a custom auto-update mechanism that fetches a version check from `nodexloop.orivael.dev` and allows downloading a new `.vsix` file from a URL specified in the JSON response. This bypasses the official VS Code Marketplace update channel. An attacker who compromises the domain or the JSON endpoint can push a malicious update to all users, leading to remote code execution. The domain `orivael.dev` has unknown reputation.",
+        "code_reference": "const UPDATE_URL = 'https://nodexloop.orivael.dev/version.json'; ... fetch(UPDATE_URL ...",
+        "line_hint": 1,
+        "target": "extension/out/extension.js (chunk 2/10)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is described as a 'Loop Graph Engineer' for AI models. However, it exhibits behaviors typical of info-stealers or backdoors: checking for SSH keys, harvesting GitHub tokens, and using a non-standard update mechanism. A legitimate graph builder does not need to read SSH keys or bypass the official update channel.",
+        "code_reference": "Extension README vs. Code Logic",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `context.secrets.get` is likely a false positive for malicious intent if it is used to retrieve API keys for the AI models (OpenAI, Anthropic, etc.) as described in the README. However, combined with the other findings, it adds to the overall risk profile.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 296,
+        "target": "extension/out/extension.js (chunk 2/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `vscode.authentication.getSession` and `context.secrets.get` as credential theft. However, the code explicitly uses these APIs to retrieve API keys for LLM providers (OpenAI, Anthropic, etc.) and GitHub login status, which is consistent with the extension's documented purpose of running agent loops against real models. The keys are stored in the OS keychain via SecretStorage, which is the secure, recommended practice for VS Code extensions.",
+        "code_reference": "const k = await context.secrets.get('lge_key_' + m.id);",
+        "line_hint": 296,
+        "target": "extension/out/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged SSH key access (`.ssh/authorized_keys`, `.ssh/id_rsa`). In the context of a 'Graph Engineer' extension that allows attaching workspace files, this is likely a file picker or validation logic to ensure users don't accidentally attach sensitive files, or it is part of a broader file enumeration feature described in the README ('attach files from your workspace'). Without evidence of exfiltration (sending these files to a remote server), this is not malicious.",
+        "code_reference": "/.ssh/authorized_keys",
+        "line_hint": 424,
+        "target": "extension/out/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `workspace.findFiles('**')` as broad enumeration. This is standard behavior for a graph builder that needs to allow users to select any file in the workspace to attach to a node. It is not combined with network exfiltration in this chunk.",
+        "code_reference": "workspace.findFiles('**'",
+        "line_hint": 396,
+        "target": "extension/out/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `createWebviewPanel` with `enableScripts` as a potential C2 channel. This is the standard mechanism for VS Code extensions to provide a rich UI (the 'Graph Builder' mentioned in the README). The webview communicates via `postMessage`, which is a secure, sandboxed channel.",
+        "code_reference": "createWebviewPanel('loopGraph', 'NodeXLoop \u2014 Graph Builder', vscode.ViewColumn.One, { enableScripts:",
+        "line_hint": 662,
+        "target": "extension/out/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `sandbox` detection. This is likely a check to ensure the extension behaves correctly in different environments or is part of the 'guard' logic mentioned in the comments ('The guard's firewall key...'). It is not indicative of anti-analysis evasion in this context.",
+        "code_reference": "sandbox",
+        "line_hint": 132,
+        "target": "extension/out/extension.js (chunk 5/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'vscode.authentication.getSession' and token transmission as credential theft. However, the code explicitly uses the 'github' provider and sends the token to the webview for GitHub sign-in, which is a documented feature in the README ('GitHub sign-in \u2014 uses VS Code's built-in GitHub authentication'). This is standard VS Code API usage for OAuth flows, not exfiltration.",
+        "code_reference": "vscode.authentication.getSession('github', ...)",
+        "line_hint": 611,
+        "target": "extension/out/extension.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'context.secrets.get' as credential theft. The extension uses SecretStorage to store API keys (OpenAI, Anthropic, etc.) locally in the OS keychain, as described in the README ('API keys are stored in the OS keychain via SecretStorage'). This is the recommended secure storage mechanism for VS Code extensions.",
+        "code_reference": "context.secrets.get(...)",
+        "line_hint": 296,
+        "target": "extension/out/extension.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged SSH key paths ('.ssh/authorized_keys', '.ssh/id_rsa'). In the context of a 'Graph Engineer' tool that allows attaching workspace files, these are likely part of a list of ignored files or a specific file picker filter to prevent users from accidentally attaching sensitive keys to LLM prompts, or simply part of a generic file enumeration that was flagged by a broad regex. There is no evidence of reading or exfiltrating these files in this chunk.",
+        "code_reference": "/.ssh/authorized_keys",
+        "line_hint": 424,
+        "target": "extension/out/extension.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'sandbox' string. This is likely a comment or a check for environment variables related to development/testing, not anti-VM evasion. No malicious logic is associated with it in this context.",
+        "code_reference": "sandbox",
+        "line_hint": 132,
+        "target": "extension/out/extension.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses 'workspace.findFiles' to list files for attachment to LLM nodes. This is consistent with the stated feature 'attach files from your workspace to run nodes'. The glob pattern excludes node_modules and .git, which is standard practice.",
+        "code_reference": "vscode.workspace.findFiles('**/*', ...)",
+        "line_hint": 396,
+        "target": "extension/out/extension.js (chunk 6/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `vscode.authentication.getSession` and `postMessage` with token as credential theft. However, the code explicitly uses the standard VS Code GitHub authentication API to retrieve a session for the user's own use (likely for GitHub integration features described in the README). The token is passed to the webview for local UI state (avatar/login), not exfiltrated to an external server in this snippet. This is standard behavior for extensions requiring GitHub auth.",
+        "code_reference": "vscode.authentication.getSession",
+        "line_hint": 611,
+        "target": "extension/out/extension.js (chunk 7/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `.ssh/authorized_keys` and `.ssh/id_rsa` as credential harvesting. The code actually contains defensive logic (`isInsideFolder`) that explicitly REFUSES to open or write files outside the workspace, citing these paths as examples of what it prevents. The comments state: 'otherwise a graph could open ~/.ssh/id_rsa...'. This is a security mitigation, not an exploit.",
+        "code_reference": "if (!isInsideFolder(folder.uri, uri))",
+        "line_hint": 424,
+        "target": "extension/out/extension.js (chunk 7/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `context.secrets.get` as credential theft. This is the standard VS Code SecretStorage API used to retrieve API keys (OpenAI, Anthropic, etc.) that the user has explicitly configured for the extension to make model calls. This is the intended and secure way to handle secrets in VS Code extensions.",
+        "code_reference": "context.secrets.get",
+        "line_hint": 296,
+        "target": "extension/out/extension.js (chunk 7/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `sandbox` string as anti-VM detection. In the context of a VS Code extension, this likely refers to checking if the extension is running in a sandboxed environment or handling sandbox-related configuration, not detecting analysis sandboxes to evade detection. No other anti-analysis indicators are present.",
+        "code_reference": "sandbox",
+        "line_hint": 132,
+        "target": "extension/out/extension.js (chunk 7/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses `workspace.findFiles` with broad globs to find `.loop.yaml` files. This is consistent with its stated purpose of managing graph projects within the workspace. The webview panel is used for the visual graph builder, which is the core feature. The capabilities align with the 'Loop Graph Engineer' description.",
+        "code_reference": "workspace.findFiles('**/*.loop.yaml', ...)",
+        "line_hint": 396,
+        "target": "extension/out/extension.js (chunk 7/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `vscode.authentication.getSession` and `postMessage` with token as credential theft. However, the code explicitly uses the 'github' provider and sends the token to the local webview for UI display (avatar/login), which is standard behavior for VS Code extensions integrating with GitHub. The token is not exfiltrated to an external domain in this snippet.",
+        "code_reference": "vscode.authentication.getSession('github', ...)",
+        "line_hint": 611,
+        "target": "extension/out/extension.js (chunk 9/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `context.secrets.get` as credential theft. This is the standard VS Code API for retrieving user-provided API keys (e.g., OpenAI, Anthropic) stored in the OS keychain. This is expected behavior for an extension that makes API calls to LLM providers.",
+        "code_reference": "context.secrets.get(...)",
+        "line_hint": 296,
+        "target": "extension/out/extension.js (chunk 9/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `.ssh/` paths. In the context of a 'Graph Engineer' or code analysis tool, checking for SSH keys is likely part of a security audit feature or a check for sensitive files that should not be processed by the LLM (PII/Secrets filtering). Without evidence of exfiltration (network send of file content), this is likely a benign feature to warn users or exclude sensitive files from processing.",
+        "code_reference": "/.ssh/authorized_keys",
+        "line_hint": 424,
+        "target": "extension/out/extension.js (chunk 9/10)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged `sandbox` string. This is likely a configuration option or environment check for running local models (Ollama) or detecting if the extension is running in a restricted environment, not anti-analysis evasion.",
+        "code_reference": "sandbox",
+        "line_hint": 132,
+        "target": "extension/out/extension.js (chunk 9/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The extension retrieves the user's GitHub OAuth token via `vscode.authentication.getSession` and explicitly sends the raw `accessToken` to the webview via `postMessage`. This exposes the user's GitHub credentials to the extension's webview context, which is a severe security violation and likely a vector for token theft or replay attacks if the webview is compromised or if the token is logged/exfiltrated elsewhere in the codebase.",
+        "code_reference": "webview.postMessage({ type: 'githubAuth', ok: true, login: u.login, avatar: u.avatar_url, token: session.accessToken });",
+        "line_hint": 619,
+        "target": "extension/out/extension.js (chunk 10/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code contains logic to read sensitive SSH key files (`~/.ssh/authorized_keys`, `~/.ssh/id_rsa`). While the specific lines are in a previous chunk, the presence of these paths in the static analysis combined with the credential theft behavior in this chunk suggests a broader info-stealer capability. Even if intended for 'file attachment', reading private keys is highly suspicious for a graph builder.",
+        "code_reference": "Static hits for /.ssh/authorized_keys and /.ssh/id_rsa",
+        "line_hint": 424,
+        "target": "extension/out/extension.js (chunk 10/10)"
+      }
+    ],
+    "findings_truncated": 3
+  },
+  "ai_summary": "The code appears to be a legitimate VS Code extension for visualizing and running AI agent loops. The high-risk static hits are largely false positives resulting from the extension's legitimate features: using VS Code's GitHub authentication for user identification, defining sensitive file paths (like SSH keys) to protect them from AI agent access, and checking for updates. The code structure is standard TypeScript-compiled JavaScript with no obfuscation. The network activity is limited to a documented update check and model API calls (implied by the description). No evidence of malicious intent, data exfiltration, or credential theft was found in this chunk.",
+  "escalation_reasons": [
+    "8 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-21T04:07:53.793Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-21T05:10:37.513423+00:00Z"
+}

@@ -1,0 +1,242 @@
+{
+  "extension_id": "AndrewHaigh.flm-vscode",
+  "display_name": "FastFlowLM-VSCode",
+  "version": "0.1.7",
+  "publisher": {
+    "name": "AndrewHaigh",
+    "verified": false
+  },
+  "vsix_sha256": "808b202bafe2c5848b0660c6ea8234645c881124db97ad2526c67110646f5da4",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6001550781475361,
+    "ai_vibe": 0.85,
+    "static": 0.7606203125901445,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Keyboard event listener with buffer/send pattern (keylogger)",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": "addEventListener('keydown',event=>{if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))submit()});document.querySelectorAll('[data-action]').forEach(button=>button.addEventListener('click',()=>vsco"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "\"use strict\";var Ue=Object.create;var R=Object.defineProperty;var De=Object.getOwnPropertyDescriptor;var je=Object.getOwnPropertyNames;var qe=Object.getPrototypeOf,Be=Object.prototype.hasOwnProperty;v"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 6,
+        "snippet": "readFile(e,\"utf8\")}if(s===\"workspace_write_file\"){if(typeof t.content!=\"string\")throw new Error(\"File content must be a string.\");if(Buffer.byteLength(t.content,\"utf8\")>we)throw new Error(\"Files large"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "method:\"POST\",headers:this.headers(),body:JSON.stringify({model:e,messages:t,stream:!1,max_tokens:J})});if(!n.ok)throw new Error(`Chat request failed (${n.status}): ${(await n.text()).slice(0,240)}`);"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 2,
+        "snippet": ".post({type:\"models\",models:await this.client.listModels()});break;case\"start\":await this.server.start(),this.post({type:\"status\",status:this.server.snapshot()});break;case\"stop\":this.server.stop(),th"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": ".postMessage({type:'send',text});prompt.value=''}send.addEventListener('click',submit);prompt.addEventListener('keydown',event=>{if(event.key==='Enter'&&(event.ctrlKey||event.metaKey"
+      },
+      {
+        "check": "rmm_tool_abuse",
+        "severity": "HIGH",
+        "description": "Downloading MSI/EXE installer (potential RMM deployment)",
+        "file": "extension/dist/extension.js",
+        "line": 1,
+        "snippet": "fetch(Xe,{headers:{Accept:\"application/vnd.github+json\",\"User-Agent\":\"flm-vscode\"}});if(!s.ok)return;let t=await s.json();return typeof t.tag_name==\"string\"?ne(t.tag_name):void 0}catch{return}}functio"
+      }
+    ],
+    "total": 20
+  },
+  "extracted_references": [
+    {
+      "type": "filename",
+      "value": "flm-setup.msi",
+      "source_file": "extension/dist/extension.js",
+      "line": 58,
+      "context": "Ye = \"https://github.com/ROCm/FastFlowLM/releases/latest/download/flm-setup.msi\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/2)",
+        "summary": "The extension is a legitimate client for a local FastFlowLM AI server. It uses standard VS Code APIs for chat integration, webviews, and configuration. The flagged behaviors (keylogging, C2, exfiltration) are false positives resulting from standard UI event handling in a webview, localhost communication, and GitHub-based software updates. The code includes security best practices such as path traversal checks for file operations and signature verification for the downloaded installer. No malicious intent or capability disconnect was found."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/2)",
+        "summary": "The extension is a legitimate tool for interacting with a local FastFlowLM server, but it possesses high-risk capabilities by design. It allows executing arbitrary external commands (spawn/exec) based on user configuration for 'external agents' and can install software via MSI/EXE installers. While these features are intended for integrating AI harnesses like DeepSeek or Hermes, they create a significant attack surface. If an attacker can modify the extension's configuration (e.g., via a compromised workspace or social engineering), they could achieve arbitrary code execution and software installation on the victim's machine. The code itself does not contain hardcoded malicious payloads, but its architecture enables remote code execution if misconfigured or exploited."
+      },
+      {
+        "target": "extension/dist/mcp-server.js",
+        "summary": "The provided source code implements a Model Context Protocol (MCP) server that bridges VS Code with a local FastFlowLM server. It exposes tools for listing models, chatting, and managing project files/memory. The code uses standard Node.js APIs (`fs`, `path`, `readline`) and `fetch` for local network communication. The hardcoded IP is a safe default for localhost. There are no signs of credential theft, remote code execution, or malicious persistence mechanisms. The code is benign and aligns with the extension's stated purpose."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_KEYLOGGER",
+        "description": "The static scanner flagged a 'keydown' event listener as a keylogger. However, the code is inside a Webview HTML string (`html()` method) and specifically listens for `Enter` + `Ctrl/Meta` to trigger the `submit()` function for the chat input. This is standard UI behavior for a chat interface, not malicious keylogging.",
+        "code_reference": "prompt.addEventListener('keydown',event=>{if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))submit()})",
+        "line_hint": "approx line 450 (inside html() template string)",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_C2",
+        "description": "The hardcoded IP `127.0.0.1:8000` is the default localhost address for the FastFlowLM server. This is expected behavior for an extension that manages a local AI server.",
+        "code_reference": "return this.settings.get(\"serverUrl\", \"http://127.0.0.1:8000/v1\")",
+        "line_hint": "approx line 150",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_EXFILTRATION",
+        "description": "Network calls to `github.com` and `api.github.com` are used to check for the latest version of the `flm-setup.msi` installer and to download it if the user explicitly requests an update/installation. This is standard software update behavior, not data exfiltration.",
+        "code_reference": "let e = await fetch(Ye); ... await k.promises.writeFile(t, Buffer.from(await e.arrayBuffer()))",
+        "line_hint": "approx line 100",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_CREDENTIAL_READ",
+        "description": "The code reads configuration values like `apiKey` from VS Code settings (`workspace.getConfiguration`) to authenticate requests to the local FastFlowLM server. It does not read system credential stores (browser, SSH, etc.).",
+        "code_reference": "let t = this.settings.get(\"apiKey\", \"\").trim();",
+        "line_hint": "approx line 160",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The extension implements a generic external agent runner (`N` function) that executes arbitrary commands defined in user settings (`flm-vscode.externalAgents`). It uses `child_process.spawn` and `execFileSync` with arguments derived from configuration. While intended for 'harnesses' like DeepSeek/Hermes, this pattern allows arbitrary code execution if the configuration is tampered with or if the extension is used to run malicious binaries via the 'installCommand' feature.",
+        "code_reference": "function $e(s, t, e = {}) { ... return (0, M.spawn)(n, t, ...) }",
+        "line_hint": "function $e",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SOFTWARE_INSTALLER",
+        "description": "The extension contains logic to download and install external software (`flm-setup.msi` or similar) via `installCommand` and `installArgs` from the configuration. The `ye` function executes these install commands. This is a high-risk capability as it allows the extension to install arbitrary software on the host system, potentially bypassing security controls if the source URL or command is manipulated.",
+        "code_reference": "async function ye(s, t) { ... let o = $e(e, n, ...); ... }",
+        "line_hint": "async function ye",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The `st` function provides tools for `workspace_read_file` and `workspace_write_file`. While it checks for workspace boundaries (`ee` function likely validates paths) and file size limits, it allows the AI model to read and write files within the workspace. If the AI is prompt-injected, this could lead to data exfiltration or malicious file modification.",
+        "code_reference": "async function st(s, t) { ... if (s === \"workspace_read_file\") { ... return k.promises.readFile(e, \"utf8\") } ... }",
+        "line_hint": "async function st",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_KEYLOGGER",
+        "description": "The static scanner flagged a keylogger pattern due to `addEventListener('keydown', ...)` in the WebView. However, inspection shows this is a standard UI event listener for submitting chat messages via Enter key, not a malicious keylogger.",
+        "code_reference": "addEventListener('keydown',event=>{if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))submit()})",
+        "line_hint": "WebView script",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_C2",
+        "description": "The hardcoded IP `127.0.0.1:8000` is the default localhost address for the FastFlowLM server, which is consistent with the extension's purpose of interacting with a local LLM server. It is not a C2 server.",
+        "code_reference": "get baseUrl(){return this.settings.get(\"serverUrl\",\"http://127.0.0.1:8000/\")}",
+        "line_hint": "class FastFlowLMClient",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged the hardcoded IP `127.0.0.1` as a potential C2 indicator. However, this is the standard loopback address used as a default fallback for the local FastFlowLM server URL (`process.env.FLM_SERVER_URL ?? \"http://127.0.0.1:8000/v1\"`). This is expected behavior for a local AI server integration.",
+        "code_reference": "g = (process.env.FLM_SERVER_URL ?? \"http://127.0.0.1:8000/v1\").replace(/\\/$/, \"\")",
+        "line_hint": 4,
+        "target": "extension/dist/mcp-server.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The file `flm-setup.msi` was flagged in the package metadata. However, the provided source code (`extension/dist/mcp-server.js`) does not contain any logic to download, execute, or install this MSI file. The code strictly implements an MCP (Model Context Protocol) server over stdio for interacting with a local LLM. The presence of an installer in the package is likely for setting up the external FastFlowLM server dependency, which is consistent with the extension's purpose.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/mcp-server.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is a legitimate client for a local FastFlowLM AI server. It uses standard VS Code APIs for chat integration, webviews, and configuration. The flagged behaviors (keylogging, C2, exfiltration) are false positives resulting from standard UI event handling in a webview, localhost communication, and GitHub-based software updates. The code includes security best practices such as path traversal checks for file operations and signature verification for the downloaded installer. No malicious intent or capability disconnect was found.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "6 HIGH findings",
+    "Composite risk 0.54 >= 0.45",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 5,
+    "published_date": "2026-09-15T18:46:00.65Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-17T19:39:17.688443+00:00Z"
+}

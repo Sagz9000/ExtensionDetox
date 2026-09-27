@@ -1,0 +1,142 @@
+{
+  "extension_id": "jasonbg-test.koi-market-poc",
+  "display_name": "Koi Security Test",
+  "version": "0.0.1",
+  "publisher": {
+    "name": "jasonbg-test",
+    "verified": false
+  },
+  "vsix_sha256": "f849857b276b47e7d893704ab2689ebc0dd6a6ac4a5d935eb048979e072fc02b",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.75,
+  "scores": {
+    "composite": 0.7903125,
+    "ai_vibe": 0.95,
+    "static": 0.53125,
+    "behavioral": 0.85,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 27,
+        "snippet": "os.hostname()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 28,
+        "snippet": "os.userInfo()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 67,
+        "snippet": "os.hostname()"
+      },
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/extension.js",
+        "line": 68,
+        "snippet": "os.userInfo()"
+      }
+    ],
+    "high": [],
+    "total": 11
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "This extension is a malicious proof-of-concept (PoC) payload disguised as a security assessment tool. Despite the README claiming it is 'harmless' and performs 'no exfiltrating actions', the code explicitly contains a `sendBeacon` function that exfiltrates system identity (hostname, username) to a remote URL. It also writes fingerprinting data to world-readable locations (`/tmp` and home directory). The 'authorized security assessment' framing is a social engineering tactic to lower the victim's guard. The presence of a C2 callback and system fingerprinting makes this a clear malware implant."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a harmless 'security assessment' tool that only writes a local marker file. However, the code explicitly implements a 'beacon' function (`sendBeacon`) that exfiltrates system information (hostname, username, timestamp) to a remote URL. This is a classic Command and Control (C2) callback mechanism, directly contradicting the 'no exfiltrating actions' claim.",
+        "code_reference": "function sendBeacon() { ... const target = CALLBACK_URL + \"?h=\" + ...; const req = httpsGet(target); ... }",
+        "line_hint": 75,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "INFO_EXFILTRATION",
+        "description": "The code collects system fingerprinting data (hostname, username, homedir, PID) and writes it to multiple world-readable locations (`~/.koi_market_poc.txt`, `/tmp/koi_market_poc.txt`). This facilitates offline analysis by an attacker or allows other local processes to read the victim's identity.",
+        "code_reference": "function dropMarker() { ... targets.push(path.join(os.homedir(), MARKER_NAME)); targets.push(path.join(\"/tmp\", MARKER_NAME)); ... fs.appendFileSync(p, content + \"----\\n\", ...); }",
+        "line_hint": 50,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SYSTEM_FINGERPRINTING",
+        "description": "Use of `os.hostname()` and `os.userInfo()` to gather victim identity. While these APIs are benign in isolation, their combination with file writing and network beacons confirms malicious intent for tracking or targeting specific users.",
+        "code_reference": "host = os.hostname(); username = os.userInfo().username;",
+        "line_hint": 27,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`, ensuring it runs immediately upon VS Code startup. This is disproportionate for a 'test' extension and ensures the payload executes as soon as the victim opens VS Code.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is a malicious proof-of-concept (PoC) payload disguised as a security assessment tool. Despite the README claiming it is 'harmless' and performs 'no exfiltrating actions', the code explicitly contains a `sendBeacon` function that exfiltrates system identity (hostname, username) to a remote URL. It also writes fingerprinting data to world-readable locations (`/tmp` and home directory). The 'authorized security assessment' framing is a social engineering tactic to lower the victim's guard. The presence of a C2 callback and system fingerprinting makes this a clear malware implant.",
+  "escalation_reasons": [
+    "4 CRITICAL findings",
+    "Composite risk 0.57 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 18,
+    "published_date": "2026-09-09T07:10:47.343Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-15T10:13:57.254132+00:00Z"
+}
