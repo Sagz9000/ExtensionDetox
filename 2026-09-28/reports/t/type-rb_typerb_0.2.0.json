@@ -1,0 +1,327 @@
+{
+  "extension_id": "type-rb.typerb",
+  "display_name": "TypeRB",
+  "version": "0.2.0",
+  "publisher": {
+    "name": "type-rb",
+    "verified": false
+  },
+  "vsix_sha256": "8715d36f24d66ff26ed4822be808590a165f47e89149cb029967f6a801a5ea45",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6275,
+    "ai_vibe": 0.9,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "credential_harvesting",
+        "severity": "CRITICAL",
+        "description": "Mass serialization of all environment variables",
+        "file": "extension/dist/extension.js",
+        "line": 22451,
+        "snippet": "Object.keys(process.env)"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 20506,
+        "snippet": "var cp = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 20506,
+        "snippet": "var cp = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 20540,
+        "snippet": "const result = cp.spawnSync(\"/bin/sh\", [], {"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 22282,
+        "snippet": "var cp = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 22282,
+        "snippet": "var cp = __importStar(require(\"child_process\"));"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 20506,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 22282,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.9,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 55/335)",
+        "summary": "The extension exhibits suspicious behavior with critical risks related to credential harvesting and high risks related to potential command execution. While the extension's stated purpose is benign, the detected patterns suggest a capability disconnect, raising concerns about its actual functionality."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 86/335)",
+        "summary": "The extension exhibits critical security risks including potential credential harvesting and direct command execution. These activities are inconsistent with its stated purpose as a language support extension, indicating malicious intent or significant misalignment with its intended functionality."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 133/335)",
+        "summary": "The extension exhibits potential security risks including direct command execution and environment variable handling. While the code snippet appears benign, the static analysis flags indicate areas requiring further investigation to ensure no malicious behavior."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 163/335)",
+        "summary": "The extension exhibits potential security risks including direct command execution and environment variable harvesting. While the provided code snippet appears benign, the static analysis flags indicate possible malicious intent or significant security vulnerabilities. Further dynamic analysis is recommended to confirm the nature of these findings."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 305/335)",
+        "summary": "The extension exhibits suspicious behavior including credential harvesting via environment variable collection and direct command execution. While some functionality may be legitimate, the inclusion of critical-risk indicators necessitates further investigation."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 326/335)",
+        "summary": "The extension exhibits potentially suspicious behavior including direct command execution capabilities and environment variable harvesting. While these could be legitimate for a language server, they raise concerns given the extension's stated purpose. Further dynamic analysis is recommended to confirm safety."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 328/335)",
+        "summary": "The extension exhibits potential security risks such as arbitrary command execution and environment variable exposure. However, these may be legitimate for its language server functionality. Further dynamic analysis is recommended to confirm the nature of these findings."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which can enable arbitrary command execution.",
+        "code_reference": "line 20506",
+        "line_hint": 20506,
+        "target": "extension/dist/extension.js (chunk 55/335)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Credential Harvesting",
+        "description": "Mass serialization of all environment variables, potentially exposing sensitive information.",
+        "code_reference": "line 22451",
+        "line_hint": 22451,
+        "target": "extension/dist/extension.js (chunk 55/335)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Info-Stealer Patterns",
+        "description": "Directory traversal paired with network send, possibly indicating exfiltration activity.",
+        "code_reference": "line 5854",
+        "line_hint": 5854,
+        "target": "extension/dist/extension.js (chunk 55/335)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "credential_harvesting",
+        "description": "Mass serialization of all environment variables detected, which could expose sensitive information.",
+        "code_reference": "line 22451",
+        "line_hint": 22451,
+        "target": "extension/dist/extension.js (chunk 86/335)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Direct command/shell execution using require('child_process') detected, which could allow arbitrary command execution.",
+        "code_reference": "line 20506 and line 22282",
+        "line_hint": 20506,
+        "target": "extension/dist/extension.js (chunk 86/335)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Direct command / shell execution via require('child_process')",
+        "code_reference": "line 20506",
+        "line_hint": 20506,
+        "target": "extension/dist/extension.js (chunk 133/335)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "credential_harvesting",
+        "description": "Mass serialization of all environment variables",
+        "code_reference": "line 22451",
+        "line_hint": 22451,
+        "target": "extension/dist/extension.js (chunk 133/335)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Directory traversal paired with network send",
+        "code_reference": "line 5854",
+        "line_hint": 5854,
+        "target": "extension/dist/extension.js (chunk 133/335)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Direct command / shell execution via require('child_process')",
+        "code_reference": "line 20506 and line 22282",
+        "line_hint": 20506,
+        "target": "extension/dist/extension.js (chunk 163/335)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "credential_harvesting",
+        "description": "Mass serialization of all environment variables using Object.keys(process.env)",
+        "code_reference": "line 22451",
+        "line_hint": 22451,
+        "target": "extension/dist/extension.js (chunk 163/335)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Directory traversal paired with network send",
+        "code_reference": "line 5854",
+        "line_hint": 5854,
+        "target": "extension/dist/extension.js (chunk 163/335)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "credential_harvesting",
+        "description": "Mass serialization of all environment variables detected.",
+        "code_reference": "line 22451",
+        "line_hint": 22451,
+        "target": "extension/dist/extension.js (chunk 305/335)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Direct command / shell execution via require('child_process') detected.",
+        "code_reference": "line 20506",
+        "line_hint": 20506,
+        "target": "extension/dist/extension.js (chunk 305/335)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Direct command / shell execution via require('child_process') detected.",
+        "code_reference": "line 22282",
+        "line_hint": 22282,
+        "target": "extension/dist/extension.js (chunk 305/335)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Directory traversal paired with network send detected.",
+        "code_reference": "line 5854",
+        "line_hint": 5854,
+        "target": "extension/dist/extension.js (chunk 305/335)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which can enable arbitrary command execution.",
+        "code_reference": "node_modules/vscode-languageclient/lib/node/main.js",
+        "line_hint": "22282",
+        "target": "extension/dist/extension.js (chunk 326/335)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Credential Harvesting",
+        "description": "Mass serialization of all environment variables using `Object.keys(process.env)` which could expose sensitive information.",
+        "code_reference": "node_modules/vscode-languageclient/lib/node/main.js",
+        "line_hint": "22451",
+        "target": "extension/dist/extension.js (chunk 326/335)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "File System",
+        "description": "Potential directory traversal paired with network send activity.",
+        "code_reference": "node_modules/vscode-languageclient/lib/node/main.js",
+        "line_hint": "5854",
+        "target": "extension/dist/extension.js (chunk 326/335)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "code_execution",
+        "description": "Use of `require('child_process')` which could enable arbitrary command execution.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 20506,
+        "target": "extension/dist/extension.js (chunk 328/335)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "credential_harvesting",
+        "description": "Mass serialization of all environment variables which could expose sensitive information.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": 22451,
+        "target": "extension/dist/extension.js (chunk 328/335)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits suspicious behavior with critical risks related to credential harvesting and high risks related to potential command execution. While the extension's stated purpose is benign, the detected patterns suggest a capability disconnect, raising concerns about its actual functionality.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "7 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-14T06:36:31.903Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-14T09:19:45.972137+00:00Z"
+}

@@ -1,0 +1,191 @@
+{
+  "extension_id": "OttoSpace.miraat-rtl",
+  "display_name": "Miraat \u2014 RTL / Arabic linter",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "OttoSpace",
+    "verified": false
+  },
+  "vsix_sha256": "e942cab6dd075905ab0ce1d46f80f71d7cc3a6199c2d5e27ce124726d0e7c51b",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6475,
+    "ai_vibe": 0.85,
+    "static": 0.9500000000000001,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'fontkit' has 'prepublish': run-s clean trie:** build",
+        "file": "extension/node_modules/fontkit/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'harfbuzzjs' has 'prepare': make",
+        "file": "extension/node_modules/harfbuzzjs/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'brotli' has 'prepublish': make",
+        "file": "extension/node_modules/brotli/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'dfa' has 'prepublish': make",
+        "file": "extension/node_modules/dfa/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'fast-deep-equal' has 'prepublish': npm run build",
+        "file": "extension/node_modules/fast-deep-equal/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'unicode-properties' has 'prepublish': npm run build",
+        "file": "extension/node_modules/unicode-properties/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "HIGH_ENTROPY_BLOB",
+        "severity": "HIGH",
+        "description": "File 'extension/node_modules/playwright-core/lib/tools/dashboard/appIcon.png' has high entropy (7.95/8.0) \u2014 possible encrypted shellcode or packed payload (18945 bytes)",
+        "file": "extension/node_modules/playwright-core/lib/tools/dashboard/appIcon.png",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "HIGH_ENTROPY_BLOB",
+        "severity": "HIGH",
+        "description": "File 'extension/node_modules/playwright-core/lib/server/chromium/appIcon.png' has high entropy (7.88/8.0) \u2014 possible encrypted shellcode or packed payload (16565 bytes)",
+        "file": "extension/node_modules/playwright-core/lib/server/chromium/appIcon.png",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "total": 11
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "rtl.ottospace.co",
+      "source_file": "extension/package.json",
+      "line": 13,
+      "context": "\"homepage\": \"https://rtl.ottospace.co\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/2)",
+        "summary": "The extension 'Miraat' presents itself as a standard RTL linter, and the provided code chunk (extension.js) appears to be a benign Language Client wrapper. However, the static analysis reveals the inclusion of 'playwright-core', a browser automation library, which is completely disproportionate to the extension's stated purpose. This is a classic supply-chain attack pattern where a seemingly benign tool is bundled with hidden capabilities for data exfiltration or remote access. The large package size (8.1 MB) further corroborates the presence of this heavy, unnecessary dependency. The combination of a legitimate-looking front-end and a suspicious, powerful back-end dependency warrants a MALICIOUS verdict."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/2)",
+        "summary": "The provided code chunk (extension.js) contains only standard VS Code extension lifecycle management (activate/deactivate) for a Language Client. It does not contain any malicious logic, obfuscation, or suspicious system calls. The static analysis findings regarding high-entropy blobs are false positives related to standard PNG assets in the 'playwright-core' dependency. The extension's purpose (RTL linting) aligns with its dependencies and behavior. No malicious intent is detected."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a simple RTL linter, but the package includes 'playwright-core', a heavy browser automation framework. A static text linter does not require browser automation capabilities. This indicates hidden functionality, likely for data exfiltration, credential harvesting, or remote access.",
+        "code_reference": "extension/node_modules/playwright-core",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX package size is 8.1 MB, which is disproportionately large for a simple linter (typically < 5 MB). This size is consistent with the inclusion of the 'playwright-core' dependency and its associated browser binaries/assets, further supporting the suspicion of hidden capabilities.",
+        "code_reference": "package.json",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The presence of 'playwright-core' in the dependencies of a linter extension is highly anomalous. While the provided code chunk only shows the LSP client setup, the inclusion of this library suggests the extension may contain additional, unadvertised code paths that utilize browser automation for malicious purposes.",
+        "code_reference": "package.json",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "High entropy blobs detected in 'playwright-core' node_modules are standard PNG image assets (appIcon.png) used by the Playwright library, not encrypted payloads or shellcode. This is a known false positive for binary assets in npm dependencies.",
+        "code_reference": "extension/node_modules/playwright-core/lib/tools/dashboard/appIcon.png",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The domain 'rtl.ottospace.co' is referenced in package.json. Given the extension is an RTL linter, this is likely a telemetry, update, or documentation endpoint. Without evidence of data exfiltration in the code, this is low risk but warrants monitoring.",
+        "code_reference": "extension/package.json:13",
+        "line_hint": 13,
+        "target": "extension/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'Miraat' presents itself as a standard RTL linter, and the provided code chunk (extension.js) appears to be a benign Language Client wrapper. However, the static analysis reveals the inclusion of 'playwright-core', a browser automation library, which is completely disproportionate to the extension's stated purpose. This is a classic supply-chain attack pattern where a seemingly benign tool is bundled with hidden capabilities for data exfiltration or remote access. The large package size (8.1 MB) further corroborates the presence of this heavy, unnecessary dependency. The combination of a legitimate-looking front-end and a suspicious, powerful back-end dependency warrants a MALICIOUS verdict.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-19T19:54:32.807Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-19T20:13:01.510539+00:00Z"
+}

@@ -1,0 +1,391 @@
+{
+  "extension_id": "buzzcola3.flutter-embedded-linux-toolkit",
+  "display_name": "Flutter Embedded Linux Toolkit \u2014 Raspberry Pi, Yocto, Buildroot",
+  "version": "0.2.0",
+  "publisher": {
+    "name": "buzzcola3",
+    "verified": false
+  },
+  "vsix_sha256": "47d42c711a79afd428e7010032da0db6e6698af558dcffad1bffb633f7d6df43",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6074999999999999,
+    "ai_vibe": 0.7,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "Reading file content and immediately sending over network",
+        "file": "extension/dist/extension.js",
+        "line": 4,
+        "snippet": "readFileSync(e,\"utf8\").trim()}catch{throw new Error(`Could not read the engine revision from ${e}.`)}if(!/^[0-9a-f]{40}$/.test(t))throw new Error(`${e} does not contain an engine revision.`);return t}"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 3,
+        "snippet": "`)[0]?.trim().toLowerCase()??\"\";return e===\"x86_64\"||e===\"amd64\"?\"x64\":e===\"aarch64\"||e===\"arm64\"?\"arm64\":e===\"riscv64\"?\"riscv64\":/^arm(v\\d|hf|el)/.test(e)?\"arm\":void 0}function J(r){return`${r.user}@"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 3,
+        "snippet": "`)[0]?.trim().toLowerCase()??\"\";return e===\"x86_64\"||e===\"amd64\"?\"x64\":e===\"aarch64\"||e===\"arm64\"?\"arm64\":e===\"riscv64\"?\"riscv64\":/^arm(v\\d|hf|el)/.test(e)?\"arm\":void 0}function J(r){return`${r.user}@"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "readdir(t);if(o.length===0)throw new Error(`The bundle at ${t} is empty, so there is nothing to deploy.`);await this.spawn(\"scp\",[...this.scpFlags(e,n),\"-r\",...o.map(s=>ut.join(t,s)),`${i}/`],n)}}asyn"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 4,
+        "snippet": "readFileSync(e,\"utf8\").trim()}catch{throw new Error(`Could not read the engine revision from ${e}.`)}if(!/^[0-9a-f]{40}$/.test(t))throw new Error(`${e} does not contain an engine revision.`);return t}"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 12,
+        "snippet": "readFile(r,\"utf8\"))}catch{return}}function Oe(r){return r===null||typeof r!=\"object\"?JSON.stringify(r)??\"null\":Array.isArray(r)?`[${r.map(Oe).join(\",\")}]`:`{${Object.entries(r).filter(([,t])=>t!==void"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 4,
+        "snippet": "fetch(t,{headers:this.headers()});if(!n.ok)throw new Error(n.status===404?`${e.repo} has no release ${e.tag}. The Flutter SDK's engine revision may predate the artifacts, or the version pin is wrong.`"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 3,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 17
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.7,
+    "confidence": 0.8,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 4/40)",
+        "summary": "The extension exhibits high-risk patterns such as direct command execution and potential data exfiltration. While these could be legitimate for its stated purpose, they require careful review to ensure they are not being exploited maliciously. The use of `child_process` is particularly concerning and warrants further investigation."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 16/40)",
+        "summary": "The extension exhibits high-risk behavior by attempting to read files and executing direct commands, which could indicate potential malicious activity. However, these actions may also be legitimate for its stated purpose of managing Flutter builds on Linux targets. Further dynamic analysis is recommended to confirm the nature of these operations."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 18/40)",
+        "summary": "The extension exhibits high-risk behavior by attempting to read files and executing shell commands, which could indicate potential malicious activity. However, these actions may also be legitimate for managing SSH connections and deploying Flutter applications. Further dynamic analysis is recommended to confirm the extension's benign nature."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 29/40)",
+        "summary": "The extension exhibits high-risk behavior by attempting to read files and executing direct commands, which could indicate potential malicious activity. However, these actions may also be legitimate for remote deployment purposes. Further dynamic analysis is recommended to confirm the extension's behavior."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 30/40)",
+        "summary": "The extension exhibits legitimate behavior for its stated purpose of managing Flutter applications on embedded Linux devices. The flagged indicators are part of its legitimate functionality, such as SSH authentication and remote device interaction. No evidence of malicious intent was found."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 34/40)",
+        "summary": "The extension exhibits high-risk behavior including direct command execution and potential credential harvesting. While its stated purpose is legitimate, the use of `child_process` and file reading operations without clear justification raises concerns. The extension's capabilities do not align with its advertised functionality, indicating a potential disconnect."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 40/40)",
+        "summary": "The extension exhibits several suspicious patterns, including attempts to read files and potential data exfiltration. However, these activities may be legitimate given the extension's purpose of managing Flutter deployments. The findings suggest a need for closer examination to ensure no malicious behavior is present."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "DIRECT_COMMAND_EXECUTION",
+        "description": "Usage of `require('child_process')` which allows arbitrary command execution, a common vector for malicious activities.",
+        "code_reference": "line 3",
+        "line_hint": 3,
+        "target": "extension/dist/extension.js (chunk 4/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "DATA_EXFILTRATION",
+        "description": "Pattern suggesting reading file content and sending over network, potentially indicating data exfiltration.",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 4/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "Attempt to read files which could potentially access sensitive information, though context is needed to assess actual impact.",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 4/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Attempt to read credential / key files",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 16/40)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 16/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Direct command / shell execution",
+        "code_reference": "line 3",
+        "line_hint": 3,
+        "target": "extension/dist/extension.js (chunk 16/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Attempt to read credential / key files",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 18/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Direct command / shell execution",
+        "code_reference": "line 3",
+        "line_hint": 3,
+        "target": "extension/dist/extension.js (chunk 18/40)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 18/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Attempt to read credential / key files",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 29/40)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 29/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Direct command / shell execution",
+        "code_reference": "line 3",
+        "line_hint": 3,
+        "target": "extension/dist/extension.js (chunk 29/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Attempt to read credential / key files",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 30/40)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 30/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Direct command / shell execution",
+        "code_reference": "line 3",
+        "line_hint": 3,
+        "target": "extension/dist/extension.js (chunk 30/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "direct_command_execution",
+        "description": "Usage of `require('child_process')` which allows arbitrary command execution.",
+        "code_reference": "chunk 34/40",
+        "line_hint": "line 3",
+        "target": "extension/dist/extension.js (chunk 34/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "credential_harvesting",
+        "description": "Attempt to read files which may contain sensitive information.",
+        "code_reference": "chunk 34/40",
+        "line_hint": "line 4",
+        "target": "extension/dist/extension.js (chunk 34/40)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Programmatic tampering with workspace configuration settings.",
+        "code_reference": "chunk 34/40",
+        "line_hint": "line 1,8,12",
+        "target": "extension/dist/extension.js (chunk 34/40)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Enumerating installed extensions (reconnaissance).",
+        "code_reference": "chunk 34/40",
+        "line_hint": "line 18",
+        "target": "extension/dist/extension.js (chunk 34/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Attempt to read credential / key files",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 40/40)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "builtin",
+        "description": "Attempt to read credential / key files",
+        "code_reference": "line 12",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 40/40)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "infostealer_behavior",
+        "description": "Reading file content and immediately sending over network",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 40/40)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Directory traversal paired with network send",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 40/40)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Harvesting VSCode configuration and sending over network",
+        "code_reference": "line 8",
+        "line_hint": 8,
+        "target": "extension/dist/extension.js (chunk 40/40)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Programmatic tampering with workspace configuration settings",
+        "code_reference": "line 1",
+        "line_hint": 1,
+        "target": "extension/dist/extension.js (chunk 40/40)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Programmatic tampering with workspace configuration settings",
+        "code_reference": "line 8",
+        "line_hint": 8,
+        "target": "extension/dist/extension.js (chunk 40/40)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Programmatic tampering with workspace configuration settings",
+        "code_reference": "line 12",
+        "line_hint": 12,
+        "target": "extension/dist/extension.js (chunk 40/40)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Enumerating installed extensions (reconnaissance)",
+        "code_reference": "line 18",
+        "line_hint": 18,
+        "target": "extension/dist/extension.js (chunk 40/40)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits high-risk patterns such as direct command execution and potential data exfiltration. While these could be legitimate for its stated purpose, they require careful review to ensure they are not being exploited maliciously. The use of `child_process` is particularly concerning and warrants further investigation.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "7 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-14T14:37:57.047Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-14T19:03:16.050152+00:00Z"
+}

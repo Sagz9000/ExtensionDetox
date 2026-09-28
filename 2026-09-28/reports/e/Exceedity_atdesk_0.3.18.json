@@ -1,0 +1,429 @@
+{
+  "extension_id": "Exceedity.atdesk",
+  "display_name": "atdesk \u2014 Claude Code on your phone",
+  "version": "0.3.18",
+  "publisher": {
+    "name": "Exceedity",
+    "verified": false
+  },
+  "vsix_sha256": "08952dfe20e180a7b78e01f3c2b5388482127f4a0bc5f5b127d51d2dbc145af2",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6475,
+    "ai_vibe": 0.85,
+    "static": 0.9500000000000002,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension/extension.js",
+        "line": 12,
+        "snippet": "const { execFile } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension/extension.js",
+        "line": 12,
+        "snippet": "const { execFile } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension/extension.js",
+        "line": 598,
+        "snippet": "child = require('child_process').spawn(bin, argv,"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension/extension.js",
+        "line": 598,
+        "snippet": "child = require('child_process').spawn(bin, argv,"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/extension/extension.js",
+        "line": 66,
+        "snippet": "readFileSync(CONFIG, 'utf8')).installRoot); } catch { /* no config"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/extension/extension.js",
+        "line": 273,
+        "snippet": "readFileSync(CONFIG"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension/extension.js",
+        "line": 12,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension/extension.js",
+        "line": 598,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 17
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "atdesk.io",
+      "source_file": "extension/package.json",
+      "line": 112,
+      "context": "\"description\": \"**\u00a38 a month including VAT. 14 days free, cancel any time \u2014 a card is required to start.**\\n\\nYou are given an **activation code** \u2014 __keep it, setup asks for it first.__\\n[See the pri",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "server.exceedity.com",
+      "source_file": "extension/extension/extension.js",
+      "line": 457,
+      "context": "// `https://server.exceedity.com/dl-<capability>/../install.sh` passes a",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "atdesk.dev",
+      "source_file": "extension/extension/extension.js",
+      "line": 1131,
+      "context": "const url = `https://atdesk.dev/p#${cfg.relay.install}.${b64u(macKey.rawPub)}.${b64u(secret)}`;",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/extension/extension.js (chunk 1/33)",
+        "summary": "This extension exhibits strong indicators of a supply-chain attack or unauthorized remote access tool. It is not merely a UI component but a stager that installs a persistent background service ('vsr') on the user's machine. The combination of `child_process` execution, persistent service installation, network connections to unknown domains, and reconnaissance of other extensions is disproportionate to its advertised function of 'viewing Claude Code sessions'. The 'paid subscription' model may be a social engineering tactic to normalize the installation of this potentially malicious payload. The code's own comments acknowledge the complexity of the installation process, which is atypical for a simple VS Code extension."
+      },
+      {
+        "target": "extension/extension/extension.js (chunk 8/33)",
+        "summary": "This extension is a Remote Monitoring and Management (RMM) tool that installs a background service on the user's machine. It downloads and executes remote scripts from a non-standard domain (`server.exceedity.com`) to set up a persistent connection that allows remote access to the user's Claude Code session via a mobile app. The use of `child_process` to run `curl | bash`/`powershell` installers, combined with the 'background service' architecture and remote pairing, constitutes a significant security risk. Even if the vendor is legitimate, the capability to execute arbitrary remote code and maintain a persistent background listener is disproportionate for a VS Code extension and fits the profile of a potential supply-chain attack vector or unauthorized remote access tool."
+      },
+      {
+        "target": "extension/extension/extension.js (chunk 9/33)",
+        "summary": "The extension 'atdesk' exhibits strong indicators of a malicious supply-chain attack or unauthorized remote access tool. It functions as a stager, validating and executing shell commands to download and install a background service from a specific remote server (server.exceedity.com). The code contains sophisticated logic to prevent user modification of the download URL, suggesting an intent to control the payload. The capability to install login-starting services and execute arbitrary shell commands is a severe disconnect from a simple 'view Claude Code session' utility and poses a critical risk of system compromise, persistence, and potential data exfiltration."
+      },
+      {
+        "target": "extension/extension/extension.js (chunk 12/33)",
+        "summary": "This extension exhibits classic supply-chain attack patterns. It is a 'stager' that downloads and executes remote scripts from a third-party server (`server.exceedity.com`) using `child_process`. The code explicitly acknowledges this behavior in comments ('TRUST, NOT PAYLOAD'), indicating a design that prioritizes remote code execution over local integrity. The cleanup of temporary scripts and the use of system shell commands to launch installers further confirm malicious intent or at least extremely high-risk behavior that violates VS Code extension security guidelines. The 'remote access' feature is a cover for a remote code execution backdoor."
+      },
+      {
+        "target": "extension/extension/extension.js (chunk 13/33)",
+        "summary": "This extension exhibits strong indicators of a malicious or highly risky 'stager' pattern. It leverages the VS Code extension API to read the clipboard, parse a shell command, and execute it in an external terminal to install a background service. The combination of clipboard reading, arbitrary command execution, and installation of a persistent background service from an unknown domain (`server.exceedity.com`) is disproportionate to the stated purpose of 'viewing Claude Code sessions'. This behavior aligns with Remote Access Trojan (RAT) or backdoor installation techniques, where the initial payload is delivered via a trusted-looking extension to bypass user suspicion. The 'disconnect' between the benign UI (viewing sessions) and the actual code behavior (executing remote installers) is critical."
+      },
+      {
+        "target": "extension/extension/extension.js (chunk 20/33)",
+        "summary": "The code in this chunk appears to be a legitimate implementation of a pairing and UI flow for the 'atdesk' extension. The static scanner hits are consistent with the extension's stated purpose of managing a local background service and facilitating device pairing via QR codes. The use of `child_process` is required for service management, and file reads are for local configuration. There are no signs of obfuscation, data exfiltration, or malicious intent in this specific chunk. The webview is configured with `enableScripts: false`, which is a good security practice."
+      },
+      {
+        "target": "extension/extension/extension.js (chunk 26/33)",
+        "summary": "The code in this chunk is benign and consistent with the extension's stated purpose of managing a local background service for remote access to Claude Code sessions. The 'high-risk' scanner hits are false positives resulting from the extension's need to manage local system state (config files) and UI focus (child_process for window management). There is no evidence of data exfiltration, credential theft, or malicious payload execution in this specific chunk. The network domains (atdesk.io, server.exceedity.com) align with the publisher's branding."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a simple UI bridge for a 'paid subscription' service, but the code explicitly installs and manages a background service ('vsr') that runs at login. The README admits it 'walks you through installing the atdesk service on this computer'. This is a classic stager pattern: a small, seemingly benign VS Code extension that deploys a larger, persistent payload (the 'vsr' service) outside the extension's sandbox.",
+        "code_reference": "const CONFIG = path.join(os.homedir(), '.config', 'vscode-remote', 'config.json'); ... The server runs as a launchd service (see bin/vsr).",
+        "line_hint": "1-30",
+        "target": "extension/extension/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_MECHANISM",
+        "description": "The code references installing a 'launchd service' (macOS) or equivalent on Windows. This creates a persistent background process that survives reboots and operates independently of VS Code, allowing for long-term access or data exfiltration even when the editor is closed.",
+        "code_reference": "The server runs as a launchd service (see bin/vsr).",
+        "line_hint": "5",
+        "target": "extension/extension/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The extension imports `child_process.execFile` to execute system commands. While potentially used for the installer, this capability in a VS Code extension is high-risk and disproportionate for a 'status bar' or 'menu' tool. It allows the extension to run arbitrary shell commands with the user's privileges.",
+        "code_reference": "const { execFile } = require('child_process');",
+        "line_hint": "12",
+        "target": "extension/extension/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The code connects to `server.exceedity.com` and `atdesk.io`. Given the 'remote access' nature of the tool (reading live sessions, typing into them), these endpoints likely serve as Command & Control (C2) or data exfiltration channels for the 'vsr' service. The domain reputation is unknown, increasing the risk.",
+        "code_reference": "domain: server.exceedity.com (extension/extension/extension.js:457)",
+        "line_hint": "457",
+        "target": "extension/extension/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CREDENTIAL_ACCESS",
+        "description": "The code reads configuration files from `~/.config/vscode-remote/config.json`. While this is its own config, the pattern of reading files in user home directories combined with network egress is a common info-stealer trait. The static scanner flagged this as a credential file read attempt.",
+        "code_reference": "readFileSync(CONFIG, 'utf8')",
+        "line_hint": "66",
+        "target": "extension/extension/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "RECONNAISSANCE",
+        "description": "The code enumerates installed extensions (`extensions.getExtension`). This is often used to identify other security tools, language servers, or sensitive extensions that might contain API keys or secrets, facilitating targeted theft.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": "812",
+        "target": "extension/extension/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`, which is aggressive for a tool that should only run when the user explicitly interacts with it. This ensures the background service management logic runs immediately upon VS Code launch.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/extension/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a remote access tool ('atdesk') that installs a background service. The code explicitly constructs and validates shell commands to download and execute remote scripts (`install.sh`/`install.ps1`) from `server.exceedity.com`. This is a classic stager/downloader pattern. The 'disconnect' is that a VS Code extension should not be installing system-level background services that listen on loopback and pair with external phones; this is RMM (Remote Monitoring and Management) functionality disguised as a productivity tool.",
+        "code_reference": "const DL_HOST = 'server.exceedity.com'; ... FORMS = { mac: new RegExp(`^curl...`), win: new RegExp(`^curl.exe...`) }",
+        "line_hint": "10-30",
+        "target": "extension/extension/extension.js (chunk 8/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code uses `child_process` to execute shell commands. While the current chunk shows validation logic for pasted commands, the presence of `require('child_process')` and the construction of `curl | bash` style commands indicates the extension's core function is to execute arbitrary remote payloads on the user's machine.",
+        "code_reference": "require('child_process')",
+        "line_hint": "12, 598",
+        "target": "extension/extension/extension.js (chunk 8/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "C2_COMMUNICATION",
+        "description": "The code hardcodes a connection to `server.exceedity.com` for downloading installation scripts. This domain is not a standard VS Code or Microsoft domain. The comments explicitly state this is a 'capability' endpoint, suggesting a Command & Control (C2) or distribution channel for the 'atdesk' service.",
+        "code_reference": "const DL_HOST = 'server.exceedity.com';",
+        "line_hint": "15",
+        "target": "extension/extension/extension.js (chunk 8/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CREDENTIAL_ACCESS",
+        "description": "The code reads configuration files (`CONFIG`) which may contain sensitive pairing tokens or credentials for the remote service. While not directly stealing browser passwords, it manages credentials for a remote access tool, which is a high-risk vector if the service is compromised.",
+        "code_reference": "readFileSync(CONFIG, 'utf8')",
+        "line_hint": "66, 273",
+        "target": "extension/extension/extension.js (chunk 8/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CLIPBOARD_ACCESS",
+        "description": "The code accesses the system clipboard (`env.clipboard.readText`). In the context of a remote access tool, this could be used to exfiltrate sensitive data copied by the user or to inject malicious content.",
+        "code_reference": "env.clipboard.readText(",
+        "line_hint": "668",
+        "target": "extension/extension/extension.js (chunk 8/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'remote access' tool for Claude Code sessions, but the code implements a sophisticated 'install command' validator that parses and executes shell commands (curl/wget) to download and run binaries from a remote server. This is a classic stager/loader pattern. The 'disconnect' is that a simple VS Code extension should not be validating and executing arbitrary shell install scripts for background services that 'start at login'. This behavior is disproportionate to a 'view session' utility and aligns with malware distribution.",
+        "code_reference": "if (text.length > 512) return { ok: false... } ... const m = FORMS[kind].exec(text);",
+        "line_hint": "60",
+        "target": "extension/extension/extension.js (chunk 9/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The code explicitly validates URLs against a hardcoded domain 'server.exceedity.com' (referenced in comments and logic) to ensure downloads come from a specific, non-standard endpoint. The comments reveal an awareness of security bypasses (path traversal, port normalization) indicating an intent to control exactly what is downloaded and executed, likely to evade detection or ensure payload integrity for a C2 channel.",
+        "code_reference": "if (u.hostname !== DL_HOST) { return { ok: false... } }",
+        "line_hint": "85",
+        "target": "extension/extension/extension.js (chunk 9/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The file imports 'child_process' (lines 12, 598) which is used to execute the validated install commands. Combined with the URL validation logic, this confirms the extension's role is to bootstrap a native service on the host machine, a common technique for establishing persistence or installing additional payloads.",
+        "code_reference": "require('child_process')",
+        "line_hint": "12",
+        "target": "extension/extension/extension.js (chunk 9/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_MECHANISM",
+        "description": "The README and code comments state the service 'starts at login' and 'runs in the background'. The extension facilitates the installation of this persistent service. While the specific registry/startup folder manipulation isn't in this chunk, the intent to install a login-starting service is a high-risk persistence indicator.",
+        "code_reference": "README: 'That service runs in the background and starts at login'",
+        "line_hint": null,
+        "target": "extension/extension/extension.js (chunk 9/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "RECONNAISSANCE",
+        "description": "The code enumerates installed extensions (line 812) and reads clipboard (line 668). While potentially for feature integration, in the context of a remote access tool, this could be used for environment fingerprinting or credential harvesting if the 'remote access' is compromised or malicious.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": "812",
+        "target": "extension/extension/extension.js (chunk 9/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a remote access tool for 'Claude Code' sessions, but the code explicitly implements a 'trust, not payload' mechanism that fetches and executes remote scripts. The comment 'TRUST, NOT PAYLOAD... it is the ONE command that fetches a script and runs it' indicates a stager/downloader pattern that bypasses standard security checks, allowing arbitrary code execution from a remote server (server.exceedity.com).",
+        "code_reference": "async function runInstaller() { ... if (!(await needTrust())) return; ... }",
+        "line_hint": 598,
+        "target": "extension/extension/extension.js (chunk 12/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension uses `child_process.spawn` to execute system binaries (cmd.exe on Windows, Terminal.app on macOS) to launch installer scripts. Combined with the remote script fetching logic, this allows the extension to execute arbitrary commands on the host system under the user's privileges.",
+        "code_reference": "child = require('child_process').spawn(bin, argv, { stdio: 'ignore', env: scrubVsCode(process.env) });",
+        "line_hint": 12,
+        "target": "extension/extension/extension.js (chunk 12/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_AND_CLEANUP",
+        "description": "The function `sweepOldScripts` cleans up temporary files in `os.tmpdir()` matching the pattern `atdesk-`. This is a common technique to remove evidence of downloaded payloads or installer scripts after execution, hindering forensic analysis.",
+        "code_reference": "function sweepOldScripts() { ... fs.rmSync(p, { recursive: true, force: true }); ... }",
+        "line_hint": 66,
+        "target": "extension/extension/extension.js (chunk 12/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CREDENTIAL_ACCESS",
+        "description": "The code reads a configuration file (`CONFIG`) which may contain sensitive installation paths or tokens. While the specific content isn't visible in this chunk, the pattern of reading local config files combined with remote execution capabilities is a risk factor for credential theft or configuration tampering.",
+        "code_reference": "readFileSync(CONFIG, 'utf8')).installRoot",
+        "line_hint": 66,
+        "target": "extension/extension/extension.js (chunk 12/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION_RISK",
+        "description": "The extension connects to `server.exceedity.com` and `atdesk.io`. Given the remote script execution capability, these endpoints could be used to serve malicious payloads or exfiltrate data if the 'trust' model is compromised or if the service is malicious.",
+        "code_reference": "domain: server.exceedity.com",
+        "line_hint": 457,
+        "target": "extension/extension/extension.js (chunk 12/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'remote access' tool for Claude Code sessions, but the code implements a 'Remote Code Execution' (RCE) stager. It reads a command from the clipboard (or user input), validates it, and then executes it in an external terminal. This is a classic pattern for installing backdoors or malware, disguised as a legitimate installer. The 'disconnect' is that a VS Code extension should not be executing arbitrary shell commands from the clipboard to install background services without strict, verifiable, and transparent supply chain controls (which are absent here, relying on user trust in the 'atdesk' brand).",
+        "code_reference": "const launched = await runInExternalTerminal({ command: parsed.command, title: 'atdesk install' });",
+        "line_hint": 680,
+        "target": "extension/extension/extension.js (chunk 13/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code explicitly reads the system clipboard (`vscode.env.clipboard.readText()`) to retrieve an 'install command'. While the UI suggests this is for convenience, this is a high-risk vector. If the user has copied sensitive data (passwords, API keys) and the extension's parsing logic is flawed or malicious, it could exfiltrate or execute unintended payloads. More critically, it establishes a pattern of the extension consuming untrusted input from the OS-level clipboard for execution.",
+        "code_reference": "let text = await vscode.env.clipboard.readText().catch(() => '');",
+        "line_hint": 668,
+        "target": "extension/extension/extension.js (chunk 13/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The extension uses `child_process` to execute shell commands. The command being executed is derived from user input/clipboard and is not a hardcoded, safe, internal command. It executes `curl`/`powershell` scripts downloaded from `server.exceedity.com` or `atdesk.io`. This allows the remote server to push arbitrary code to the user's machine if the domain is compromised or if the extension is malicious.",
+        "code_reference": "require('child_process')",
+        "line_hint": 12,
+        "target": "extension/extension/extension.js (chunk 13/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
+        "description": "The code references domains `server.exceedity.com` and `atdesk.io` for downloading installers. These are not standard VS Code or Microsoft domains. The reputation is unknown. The use of a custom domain for binary distribution increases the risk of supply chain attacks.",
+        "code_reference": "From ${DL_HOST}",
+        "line_hint": 675,
+        "target": "extension/extension/extension.js (chunk 13/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE_MECHANISM",
+        "description": "The README and code comments indicate that the installed service 'runs in the background and starts at login'. This is a persistence mechanism. While stated in the README, it is a high-risk behavior for a VS Code extension, which should generally be ephemeral or strictly scoped to the editor process. Installing a system-level service from a VS Code extension is a major red flag for potential malware or unauthorized remote access tools.",
+        "code_reference": "It downloads the release, checks it against the digest above, and unpacks it into your home folder.",
+        "line_hint": 676,
+        "target": "extension/extension/extension.js (chunk 13/33)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `readFileSync(CONFIG)` as credential harvesting. However, the code context indicates this is reading a local configuration file for the extension's own service (likely storing the install root or service status), which is standard behavior for a service-managing extension. It is not reading sensitive system credential stores like ~/.ssh or browser profiles.",
+        "code_reference": "readFileSync(CONFIG, 'utf8')",
+        "line_hint": 66,
+        "target": "extension/extension/extension.js (chunk 20/33)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of `require('child_process')` is flagged as high risk. Given the extension's purpose is to manage a background service ('atdesk service') on the host machine, spawning processes to install, start, or check the status of this service is a necessary and expected capability. It is not executing arbitrary user input or obfuscated payloads in this chunk.",
+        "code_reference": "require('child_process')",
+        "line_hint": 12,
+        "target": "extension/extension/extension.js (chunk 20/33)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged `env.clipboard.readText`. In the context of a pairing flow (QR code generation), it is common to provide a 'Copy Link' or 'Copy Token' button for user convenience. This is a standard UX feature, not credential harvesting, especially since the webview has scripts disabled and the data is generated locally for the user to copy.",
+        "code_reference": "env.clipboard.readText(",
+        "line_hint": 668,
+        "target": "extension/extension/extension.js (chunk 20/33)"
+      }
+    ],
+    "findings_truncated": 5
+  },
+  "ai_summary": "This extension exhibits strong indicators of a supply-chain attack or unauthorized remote access tool. It is not merely a UI component but a stager that installs a persistent background service ('vsr') on the user's machine. The combination of `child_process` execution, persistent service installation, network connections to unknown domains, and reconnaissance of other extensions is disproportionate to its advertised function of 'viewing Claude Code sessions'. The 'paid subscription' model may be a social engineering tactic to normalize the installation of this potentially malicious payload. The code's own comments acknowledge the complexity of the installation process, which is atypical for a simple VS Code extension.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 3,
+    "published_date": "2026-08-20T16:18:32.437Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-20T16:47:17.725303+00:00Z"
+}
