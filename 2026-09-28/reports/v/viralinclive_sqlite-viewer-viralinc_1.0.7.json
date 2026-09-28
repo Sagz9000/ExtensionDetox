@@ -12,12 +12,12 @@
     "composite_score",
     "critical_static_finding"
   ],
-  "confidence": 0.6,
+  "confidence": 0.75,
   "scores": {
-    "composite": 0.6375,
-    "ai_vibe": 0.85,
+    "composite": 0.63,
+    "ai_vibe": 0.15,
     "static": 1.0,
-    "behavioral": 0.0,
+    "behavioral": 0.95,
     "trust_signal": 0.6,
     "campaign": 0.0
   },
@@ -363,278 +363,278 @@
   "ioc_enrichment": [],
   "shared_infrastructure": {},
   "ai_analysis": {
-    "verdict": "MALICIOUS",
-    "risk_score": 0.85,
+    "verdict": "CLEAN",
+    "risk_score": 0.15,
     "confidence": 0.95,
     "blocks_parsed": 17,
     "blocks_seen": 17,
     "summaries": [
       {
         "target": "extension/dist/extension.js (chunk 1/6)",
-        "summary": "The provided code chunk is a minified JavaScript bundle containing an Emscripten-compiled WebAssembly module for SQLite (sql.js). The logic is consistent with a SQLite viewer/editor extension, handling database connections, queries, and memory management within the WASM environment. The static analysis flags for 'infostealer' and 'exfiltration' are false positives resulting from the minified nature of the code and the presence of standard library functions (like crypto or path handling) that trigger broad pattern matches. There is no evidence of credential harvesting, reverse shells, or malicious network exfiltration in this specific file. The extension appears to be a legitimate SQLite tool, though the presence of external domains in the package metadata warrants monitoring for unexpected network activity in other parts of the codebase."
+        "summary": "The analyzed code chunk is the initialization and runtime logic for a WebAssembly-based SQLite engine (likely sql.js) embedded within a VS Code extension. The static scanner hits for 'infostealer_behavior' and 'credential harvesting' are false positives resulting from the WASM runtime's standard file I/O operations (loading the .wasm binary) and the use of standard VS Code APIs for installation tracking (machineId/installId). The code does not exhibit malicious behavior, such as exfiltrating data to external servers, accessing sensitive system files, or executing arbitrary commands. The extension's capabilities are consistent with its advertised purpose of viewing and editing SQLite databases."
       },
       {
         "target": "extension/dist/extension.js (chunk 2/6)",
-        "summary": "The analyzed code chunk is part of a WebAssembly runtime environment, specifically implementing a virtual file system and system call interface for a native SQLite library running within the VS Code extension. The static analysis hits for 'credential harvesting' and 'data exfiltration' are false positives resulting from the generic nature of file I/O operations in the WASM glue code. The extension's stated purpose (SQLite Viewer) aligns with the presence of a database engine runtime. No malicious behavior, such as network exfiltration of sensitive data, credential theft, or obfuscated payload execution, was identified in this chunk."
+        "summary": "The provided code chunk is a standard WebAssembly (WASM) runtime glue code implementing a virtual file system (VFS) and POSIX file operations. This is typical for VS Code extensions that bundle native binaries (like SQLite) to run in the browser or Node.js environment. The scanner's 'CRITICAL' and 'HIGH' findings regarding credential harvesting, exfiltration, and machine ID harvesting are false positives resulting from the generic nature of file I/O functions in the VFS and the minified code structure. The code does not exhibit malicious behavior, and its capabilities are proportional to the extension's stated purpose of viewing SQLite databases."
       },
       {
         "target": "extension/dist/extension.js (chunk 3/6)",
-        "summary": "The extension is a legitimate SQLite viewer/editor. The code includes a WASM-based SQLite engine, standard VS Code API usage, and a cross-platform 'open in browser' utility. The static analysis flags for 'infostealer' and 'persistence' are false positives triggered by standard system detection logic (Docker/WSL checks) and browser detection via PowerShell. The network activity is limited to a licensing/telemetry endpoint and Stripe for payments, which is proportional to the extension's commercial nature. No malicious behavior was detected."
+        "summary": "The code is a standard implementation of a VS Code extension that includes a SQLite viewer (using WASM) and a licensing/telemetry system. The 'suspicious' patterns flagged by static analysis (reading /proc files, using PowerShell, child_process) are legitimate cross-platform compatibility features for detecting the environment and opening external browsers. The network calls are directed to the extension's own API domain (viralinc.live) and Stripe for billing, which is consistent with a commercial product. There is no evidence of credential theft, data exfiltration, or malicious code execution."
       },
       {
         "target": "extension/dist/extension.js (chunk 4/6)",
-        "summary": "This VS Code extension is malicious in its deceptive practices. While it functions as a SQLite viewer, it violates its explicit privacy promise ('Your data never leaves your machine') by implementing a hidden telemetry and licensing system that communicates with an external server (`api-ext.viralinc.live`). It tracks user activity, sends machine identifiers, and enforces a paywall, all of which are undisclosed in the extension's documentation. This constitutes a significant capability disconnect and a breach of user trust."
+        "summary": "The code is a legitimate SQLite database viewer extension with a commercial licensing model. It communicates with a licensing server (api-ext.viralinc.live) for trial management and paywall enforcement. All static scanner hits are false positives: 'machine ID' usage is for licensing identification, 'file reading' is for SQLite database access and environment detection, and 'high entropy' files are standard font assets. There is no evidence of credential theft, data exfiltration, or malicious behavior. The code is clean."
       },
       {
         "target": "extension/dist/extension.js (chunk 5/6)",
-        "summary": "The provided source code is a legitimate implementation of a SQLite database viewer and editor for VS Code. It contains standard SQL generation logic (UPDATE, INSERT, DELETE), database connection management, and UI interaction handlers. The 'CRITICAL' and 'HIGH' findings from the static scanner are false positives caused by common library patterns (e.g., `machineId` for install tracking, `postMessage` for webview communication, and high-entropy font files). There is no evidence of credential harvesting, network exfiltration, or malicious command execution. The code aligns perfectly with the extension's stated purpose."
+        "summary": "The code is a legitimate implementation of a SQLite database viewer and editor for VS Code. It uses the VS Code API to read and write database files, executes SQL queries, and provides a webview interface for data manipulation. The static analysis hits for 'infostealer' and 'exfiltration' are false positives resulting from the use of standard identifiers like 'machineId' (for local install ID) and 'base64' (for data encoding) in a minified bundle. There is no evidence of credential harvesting, system fingerprinting, or malicious network exfiltration. The extension's capabilities are proportional to its advertised function."
       },
       {
         "target": "extension/dist/extension.js (chunk 6/6)",
-        "summary": "The extension is a functional SQLite viewer but exhibits significant 'Capability Disconnect'. While it performs its stated local database tasks, it secretly implements a remote licensing/telemetry system using `api-ext.viralinc.live` and Stripe, contradicting its README's claim that 'Your data never leaves your machine' and 'No account'. It generates unique machine/install IDs and gates features behind remote `requireAccess` checks. While not immediately malicious (no obvious data theft of DB contents), the deceptive marketing and undisclosed network activity warrant a SUSPICIOUS verdict."
+        "summary": "The code is a standard VS Code extension for viewing and editing SQLite databases. It uses webviews, file system APIs, and standard VS Code commands. The static rule engine hits are largely false positives: `machineId` is standard VS Code telemetry/identity, `/proc/self/cgroup` is for Docker detection, and the 'PowerShell' hit is likely a misinterpretation of a utility function or a false positive from a truncated view. The network calls to the publisher's domain are consistent with license/feature gating for a commercial tool. There is no evidence of credential theft, C2 communication, or malicious payload execution in the provided source code."
       },
       {
         "target": "extension/dist/webview/editor.js (chunk 1/4)",
-        "summary": "The provided source code is a standard React-based UI component for a SQLite database viewer/editor. It implements virtualized grid rendering, cell editing, filtering, and context menus. The code uses standard VS Code webview messaging patterns (`z` function likely wrapping `vscode.postMessage`). The static analysis hits for 'persistence_evasion' are false positives triggered by the variable name `hidden` used for column visibility logic. The high-entropy files are legitimate web fonts. There is no evidence of malicious behavior, credential harvesting, or data exfiltration in this specific chunk. The only minor concern is the presence of paywall/access control logic which may conflict with the 'no account' marketing claim, but this is a business model discrepancy rather than a security threat."
+        "summary": "The code is a standard React-based webview for a SQLite database viewer. It implements UI components for table browsing, row editing, filtering, and context menus. All network interactions are abstracted via a bridge object ('z') which communicates with the extension host, a standard VS Code pattern. There are no signs of credential harvesting, obfuscated payloads, arbitrary command execution, or data exfiltration. The static analysis hits for 'persistence' and 'high entropy' are false positives resulting from CSS class names and binary font assets, respectively. The extension's capabilities are proportional to its advertised function as a database tool."
       },
       {
         "target": "extension/dist/webview/editor.js (chunk 2/4)",
-        "summary": "The provided source code is a benign React-based webview component for a SQLite database editor. It implements standard UI features such as data grid rendering, SQL syntax highlighting, autocomplete, and schema modification forms (add/drop column, create index). The static analysis hits regarding '.hidden' are false positives triggered by SQLite column metadata properties, not file system operations. The high-entropy files are legitimate web fonts. There is no evidence of malicious behavior, credential theft, or unauthorized network communication in this chunk."
+        "summary": "The code is a standard React-based webview for a SQLite database viewer extension. It implements UI components for browsing tables, editing rows, managing schema (DDL), and SQL syntax highlighting. The static analysis hits for 'persistence_evasion' are false positives caused by the SQLite column property 'hidden'. The high-entropy blobs are standard compressed font files. There are no indicators of malicious behavior, credential harvesting, or unauthorized network exfiltration in this chunk."
       },
       {
         "target": "extension/dist/webview/editor.js (chunk 3/4)",
-        "summary": "The provided source code is a benign React-based webview component for a SQLite database viewer and editor. It implements standard UI features such as SQL query execution, result rendering, ER diagram visualization, and database comparison. The code uses standard VS Code webview APIs and React hooks. The static analysis hits for 'persistence_evasion' are false positives triggered by the `aria-hidden` accessibility attribute. The high-entropy files are legitimate web fonts. While the README claims no data leaves the machine, the presence of a paywall and Stripe integration suggests licensing data may be transmitted, which is a commercial feature rather than a malicious supply-chain attack. No malicious behavior, credential harvesting, or command execution was found."
+        "summary": "The analyzed code is a standard React-based webview for a SQLite database viewer extension. It implements UI components for SQL query execution, data grid display, ER diagram rendering, and database comparison. The static analysis hits for 'persistence_evasion' and 'high entropy blobs' are false positives resulting from CSS/minified code patterns and standard web font assets, respectively. The extension includes a paywall mechanism and connects to the publisher's API and Stripe for billing, which is consistent with its commercial nature. No malicious behavior, credential harvesting, or obfuscated payloads were detected."
       },
       {
         "target": "extension/dist/webview/editor.js (chunk 4/4)",
-        "summary": "The provided source code is a standard React-based webview component for a SQLite database viewer. It handles UI rendering, table navigation, SQL execution triggers, and state management using standard VS Code webview APIs. There is no evidence of malicious behavior such as credential harvesting, network exfiltration, command execution, or obfuscation. The static analysis hits regarding '.hidden' strings and high-entropy font files are false positives typical of automated scanners analyzing minified/bundled JavaScript and binary assets. The code aligns perfectly with the advertised functionality of a local SQLite editor."
+        "summary": "The provided source code is a React-based frontend component for a SQLite database viewer extension. It handles UI rendering, table listing, SQL execution triggers, and user interactions (clicks, keyboard navigation). The code contains no malicious patterns such as credential harvesting, command execution, network exfiltration, or obfuscation. The static analysis hits regarding '.hidden' are false positives triggered by standard accessibility attributes (`aria-hidden`). The extension's behavior is fully aligned with its stated purpose as a data visualization and database management tool."
       },
       {
         "target": "extension/dist/webview/chunks/bridge.js (chunk 1/7)",
-        "summary": "The provided source code is a standard, unmodified minified production build of React 18.3.1 (react, react-dom, scheduler, jsx-runtime). It contains no custom logic, no network calls, no file system access, and no obfuscation beyond standard minification. The static analysis hits are false positives triggered by common React internal patterns (postMessage for devtools, zero-sized properties for event handling). The extension's stated purpose (SQLite Viewer) is consistent with the presence of a React-based webview UI. No malicious behavior detected."
+        "summary": "The provided source file is a minified, standard distribution of the React library (version 18.3.1), specifically containing the core React runtime, JSX runtime, Scheduler, and React DOM. The code contains no custom logic, network requests to external domains, file system access, or credential harvesting mechanisms. The static analysis hits regarding 'postMessage' and 'iframe' are false positives triggered by React's internal implementation details (MessageChannel for scheduling and DOM property validation). The high-entropy font files are standard compressed web fonts. The extension's behavior aligns with its stated purpose of providing a SQLite viewer/editor UI, and no malicious indicators were found in this chunk."
       },
       {
         "target": "extension/dist/webview/chunks/bridge.js (chunk 2/7)",
-        "summary": "The provided source code is a minified chunk of the React library (specifically the DOM renderer and event system). It contains standard internal React functions for handling DOM updates, event propagation, and component lifecycle. There is no evidence of malicious behavior, credential harvesting, or network exfiltration. The static analysis hits were false positives triggered by standard library patterns (React DevTools hooks, CSS properties in event objects) and compressed font assets. The code aligns with the stated purpose of a VS Code extension using a webview UI."
+        "summary": "The provided source code is a standard, minified chunk of the React library (specifically the DOM reconciliation and event handling internals). It contains no malicious logic, no network exfiltration, no credential harvesting, and no suspicious API usage. The static rule engine hits regarding 'data exfiltration' and 'hidden iframes' are false positives triggered by standard React internal mechanisms (postMessage for bridge communication and pointer event property definitions). The high-entropy font files mentioned in the package-wide findings are standard web fonts (Sora, JetBrains Mono) and not shellcode. The code is benign."
       },
       {
         "target": "extension/dist/webview/chunks/bridge.js (chunk 3/7)",
-        "summary": "The provided source code is a minified chunk of the React library (specifically the DOM event handling and reconciler internals). It contains no malicious logic, no network exfiltration, no credential harvesting, and no suspicious command execution. The 'suspicious' patterns identified by the static scanner are standard React implementation details (e.g., `postMessage` for internal bridge communication, CSS properties for event normalization). The extension's stated purpose (SQLite Viewer) aligns with the presence of a React-based webview UI. The high-entropy files are legitimate font assets. The code is benign."
+        "summary": "The provided source code is a standard, unmodified chunk of the React library (specifically the React DOM event system and reconciliation logic). It contains typical React internal functions for handling events (animationend, transitionend, etc.), managing fiber nodes, and updating component state. There are no malicious patterns, credential harvesting, network exfiltration, or suspicious obfuscation present in this specific file. The static rule engine hits regarding 'data exfiltration' and 'hidden iframe' appear to be false positives triggered by standard React event listener registration code and CSS property definitions within the library, which are benign in this context. The file is safe."
       },
       {
         "target": "extension/dist/webview/chunks/bridge.js (chunk 4/7)",
-        "summary": "The provided source code is a chunk of the React library (specifically the reconciler and scheduler internals) bundled within the webview of a VS Code extension. The code exhibits standard React behavior for managing component state, effects, and rendering. All static rule engine hits are false positives resulting from pattern matching on standard library code (e.g., React DevTools hooks, synthetic event properties). There is no evidence of malicious intent, credential harvesting, or data exfiltration in this file. The extension's stated purpose (SQLite Viewer) aligns with the use of a React-based webview for UI rendering."
+        "summary": "The provided source code is a minified chunk of the React library (specifically the React DOM reconciler internals). It contains standard functions for managing component state, updates, and fiber trees (e.g., `updateQueue`, `useState`, `useEffect`, `reconcileChildFibers`). There is no evidence of malicious behavior, credential harvesting, network exfiltration, or arbitrary command execution in this specific chunk. The static analysis hits are false positives caused by generic pattern matching on minified library code and standard binary asset characteristics. The extension's stated purpose (SQLite Viewer) aligns with the presence of a React-based webview UI, and no capability disconnect is observed in this file."
       },
       {
         "target": "extension/dist/webview/chunks/bridge.js (chunk 5/7)",
-        "summary": "The provided source code is a chunk of the React DOM library (specifically the reconciler and commit phase logic) bundled within the VS Code extension's webview. It contains standard React internal functions for managing the virtual DOM, handling hydration, updating DOM nodes, and managing effects. There are no signs of malicious activity, credential harvesting, obfuscated payloads, or unauthorized network communication. The static rule engine hits are false positives resulting from pattern matching on minified React internals and standard font file entropy."
+        "summary": "The provided source file `extension/dist/webview/chunks/bridge.js` contains minified React runtime code responsible for DOM reconciliation, component lifecycle management, and event handling. The code exhibits standard React internal structures (Fiber nodes, flags, lanes) and DOM manipulation logic. There are no indicators of malicious behavior such as credential harvesting, command execution, network exfiltration to suspicious domains, or obfuscated payloads. The static analysis hits regarding 'data exfiltration' and 'hidden iframes' are false positives triggered by standard web development patterns (e.g., `postMessage`, pointer event properties) within the minified library. The extension's capabilities appear proportional to its stated purpose as a SQLite viewer with a webview-based UI."
       },
       {
         "target": "extension/dist/webview/chunks/bridge.js (chunk 6/7)",
-        "summary": "The provided source code is a minified chunk of the React library (specifically the DOM reconciler/scheduler) used within the extension's webview. It contains standard React internal logic for component lifecycle, state management, and DOM updates. There are no signs of malicious intent, credential harvesting, network exfiltration, or obfuscated payloads. The static rule engine hits are false positives resulting from pattern matching on standard React internals and compressed font assets. The code is consistent with a legitimate VS Code extension using a React-based UI."
+        "summary": "The provided source code is a minified chunk of the React library (specifically the React DOM reconciler). It contains standard internal functions for managing the virtual DOM, component lifecycle, and event handling. There are no malicious indicators, network exfiltration, credential harvesting, or suspicious command executions in this specific file. The static analysis hits are false positives caused by the minified nature of the React library and the presence of standard web fonts in the package."
       },
       {
         "target": "extension/dist/webview/chunks/bridge.js (chunk 7/7)",
-        "summary": "The provided source code is a standard React 18.3.1 runtime bundle (react-dom) combined with a thin VS Code Webview bridge layer. The bridge layer implements standard IPC mechanisms using `acquireVsCodeApi` to communicate with the extension host, which is the expected behavior for a VS Code extension UI. The 'activity' tracking function (`Ad`) monitors user interaction events (keydown, pointerdown) to keep the webview alive, which is a common and benign pattern for VS Code webviews to prevent them from being unloaded. All static scanner hits are false positives resulting from pattern matching on standard React internals and VS Code API usage. There is no evidence of malicious intent, data exfiltration, or capability disconnect."
+        "summary": "The provided source code is a minified bundle of the React 18.3.1 library (`react-dom`) and a small custom bridge module for VS Code Webview communication. The static analysis flags are false positives: the 'iframe' pattern matches React's internal pointer event properties, the 'exfiltration' pattern matches standard `postMessage` IPC, and the high-entropy files are legitimate WOFF2 web fonts. The code exhibits no malicious behavior, credential harvesting, or unauthorized network activity. It is a clean, standard frontend component for a VS Code extension."
       }
     ],
     "findings": [
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static analysis flagged 'Machine ID harvesting' and 'Base64 encoding data then sending over network'. Upon inspection, the code is a standard Emscripten-compiled WebAssembly module for SQLite (sql.js). The 'machineId' references are likely part of the extension's telemetry or state management (e.g., generating a unique ID for the extension instance), not system fingerprinting for exfiltration. The 'base64' and 'PowerShell' strings are likely artifacts of the minification or unrelated utility functions within the large bundle, not active malicious payloads in this specific chunk. The core logic shown is purely for SQLite database operations (open, close, exec, prepare, bind).",
-        "code_reference": "var P = w(\"sqlite3_open\", \"number\", [\"string\", \"number\"]);",
-        "line_hint": 150,
+        "description": "The code contains a WebAssembly (WASM) runtime for SQLite (likely sql.js or similar). This explains the high entropy in .woff2 files (which are likely just font files, but the scanner flagged them) and the complex memory management code. The 'machineId' and 'installId' references are standard for VS Code extensions to track unique installations for telemetry or feature flags, not for infostealing. The 'readFileSync' calls are part of the WASM initialization to load the SQLite binary, not credential harvesting.",
+        "code_reference": "var q = require(\"fs\"), W = require(\"path\"); ... S = e => (e = kt(e) ? new URL(e) : W.normalize(e), q.readFileSync(e))",
+        "line_hint": 1,
         "target": "extension/dist/extension.js (chunk 1/6)"
       },
       {
         "severity": "LOW",
         "category": "BEHAVIORAL_ALIGNMENT",
-        "description": "The extension is a SQLite Viewer. The code contains a WebAssembly module for SQLite, which is expected. The activation event 'onStartupFinished' is slightly aggressive for a file-based viewer (usually 'onView' or 'onFileOpen' is preferred), but not malicious. The presence of 'viralinc.live' domains in the extracted indicators suggests a backend service, which contradicts the 'Your data never leaves your machine' claim in the README if those endpoints are used for data transmission. However, in this specific code chunk, no network calls to those domains are visible; they are likely in other chunks or used for update checks/telemetry. Given the 'No ads, no account' claim, any network call to a third-party domain is a potential privacy concern, but without seeing the network call code, it remains a low-confidence suspicion rather than a confirmed malicious act.",
-        "code_reference": "const __viralincImportMetaUrl = require('url').pathToFileURL(__filename).href;",
+        "description": "The extension is a SQLite viewer/editor. The use of WASM to run SQLite in the browser/node environment is a standard and efficient approach for this type of tool. The activation events and dependencies are proportional to the task of parsing and displaying database files. No malicious network exfiltration or credential access was found in this chunk.",
+        "code_reference": "s.cwrap(\"sqlite3_open\", ...)",
         "line_hint": 1,
         "target": "extension/dist/extension.js (chunk 1/6)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The code contains a complete implementation of a virtual file system (VFS) and POSIX-like system call wrappers (open, read, write, stat, etc.). This is characteristic of WebAssembly (WASM) runtime glue code (e.g., Emscripten) used to run native code (likely a SQLite engine) in the browser/VS Code webview. The static scanner flagged file reading operations and 'machineId' references, but in this context, they are part of the WASM environment setup or standard VS Code telemetry/identity handling, not malicious credential harvesting or data exfiltration. The 'machineId' reference is likely for unique installation identification, which is common in VS Code extensions for telemetry or license checks, and does not constitute an infostealer pattern without network exfiltration of sensitive data.",
-        "code_reference": "function Je(e, t, n) { ... } // WASM file open wrapper",
+        "description": "The code contains a complete implementation of a virtual file system (VFS) and POSIX-like file operations (open, read, write, stat, etc.). This is characteristic of WebAssembly (WASM) runtime glue code (likely Emscripten) used to run native binaries (such as a SQLite engine) in the browser or Node.js environment. The scanner flagged 'credential reading' and 'exfiltration' based on generic file I/O functions, but these are standard library functions for the VFS, not malicious data theft.",
+        "code_reference": "function Je(e, t, n) { ... }",
+        "line_hint": 450,
+        "target": "extension/dist/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'Machine ID harvesting' and 'Base64 encoding data then sending over network'. In the context of this chunk, these are likely false positives caused by the minified/obfuscated nature of the WASM glue code or standard telemetry/telemetry-like identifiers within the bundled library. The code shown is purely file system abstraction logic. The 'machineId' reference is likely part of a standard VS Code extension telemetry or unique identifier generation for the extension's state, which is benign.",
+        "code_reference": "machineId",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is a SQLite viewer. The presence of a VFS and WASM glue code is proportional to its function (running a SQLite engine). The size (0.58 MB) is appropriate for a viewer with bundled assets. The activation events are appropriate for a sidebar view.",
+        "code_reference": null,
         "line_hint": null,
         "target": "extension/dist/extension.js (chunk 2/6)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "High entropy blobs detected in .woff2 font files are expected for compressed font data and do not indicate shellcode or packed payloads.",
-        "code_reference": "extension/dist/webview/assets/sora-latin-wght.woff2",
-        "line_hint": null,
-        "target": "extension/dist/extension.js (chunk 2/6)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "The code contains a WASM module for SQLite (sql-wasm.wasm) with standard Emscripten glue code. The 'HIGH_ENTROPY_BLOB' findings for .woff2 files are false positives; these are standard compressed font files required for the UI.",
-        "code_reference": "extension/dist/extension.js",
-        "line_hint": null,
+        "description": "The code contains logic to detect Docker, WSL, and default browsers using child_process and file system reads (e.g., /proc/self/cgroup, /etc/wsl.conf, registry queries). This is standard behavior for a cross-platform extension that needs to open external URLs or detect the environment to function correctly (e.g., opening a browser for OAuth or documentation). It does not exfiltrate data or execute arbitrary commands.",
+        "code_reference": "function so() { ... readFileSync(\"/proc/self/cgroup\" ... }",
+        "line_hint": 3,
         "target": "extension/dist/extension.js (chunk 3/6)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The code uses PowerShell with -EncodedCommand to query the default browser on Windows. This is a standard technique for retrieving system configuration (browser association) and does not execute arbitrary payloads. The command is hardcoded to query HKCU:\\Software\\Microsoft\\Windows\\Shell\\Associations.",
-        "code_reference": "async function yo()",
-        "line_hint": null,
+        "description": "The code uses PowerShell with -EncodedCommand to query the default browser on Windows. This is a common pattern for cross-platform extensions to determine the system default browser without relying on VS Code's openExternal which might not handle specific browser arguments well. The command is hardcoded to query registry keys for browser associations, not to execute arbitrary payloads.",
+        "code_reference": "async function yo() { ... powershell.exe ... -EncodedCommand ... }",
+        "line_hint": 2100,
         "target": "extension/dist/extension.js (chunk 3/6)"
       },
       {
         "severity": "LOW",
         "category": "TELEMETRY",
-        "description": "The extension implements a licensing/telemetry system that sends an install ID and a hash of the machine ID to 'api-ext.viralinc.live'. While this involves network communication and identifier collection, it is consistent with a commercial extension's licensing model and does not exfiltrate sensitive user data (like SSH keys or passwords).",
-        "code_reference": "class zt",
-        "line_hint": null,
+        "description": "The extension collects a machineId hash and installId and sends telemetry to api-ext.viralinc.live. This is typical for commercial extensions to track usage and license status. The data collected is limited to a hash of the machine ID and usage events, not sensitive credentials or file contents.",
+        "code_reference": "this.machineIdHash = (0, Jt.createHash)(\"sha256\").update(String(oe.env.machineId || \"\")).digest(\"hex\").slice(0, 32)",
+        "line_hint": 2450,
         "target": "extension/dist/extension.js (chunk 3/6)"
       },
       {
-        "severity": "CRITICAL",
-        "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension's README explicitly states 'No ads, no account, no AI. Your data never leaves your machine.' However, the code contains a complete licensing and telemetry system that sends data to external servers (`api-ext.viralinc.live`), including user activity tracking, machine identifiers, and payment status checks. This is a direct contradiction of the advertised privacy promise.",
-        "code_reference": "this.request(\"POST\", \"/api/event\", { app: this.app, event: i ... })",
-        "line_hint": 5,
-        "target": "extension/dist/extension.js (chunk 4/6)"
-      },
-      {
-        "severity": "CRITICAL",
-        "category": "INFO_EXFILTRATION",
-        "description": "The code sends a 'Machine-Id' header in every API request. This identifier is likely derived from system-specific data (as suggested by the static rule hits for `machineId` and `Machine-Id` in other chunks), allowing the remote server to uniquely identify and track the user's machine across sessions.",
-        "code_reference": "\"X-Machine-Id\": this.machineIdHash",
-        "line_hint": 182,
-        "target": "extension/dist/extension.js (chunk 4/6)"
-      },
-      {
-        "severity": "HIGH",
-        "category": "TELEMETRY",
-        "description": "The extension implements a 'heartbeat' mechanism that tracks the amount of time the user is actively using the extension (`activeSeconds`) and sends this data to the remote server. This is a form of usage telemetry that contradicts the 'data never leaves your machine' claim.",
-        "code_reference": "this.request(\"POST\", \"/api/trial/heartbeat\", { app: this.app, activeSeconds: i })",
-        "line_hint": 112,
-        "target": "extension/dist/extension.js (chunk 4/6)"
-      },
-      {
-        "severity": "HIGH",
-        "category": "NETWORK_COMMUNICATION",
-        "description": "The extension makes network requests to `api-ext.viralinc.live` for licensing, payment, and telemetry purposes. This domain is not a standard VS Code or SQLite API endpoint and is associated with the extension's publisher, indicating a proprietary backend for tracking and monetization.",
-        "code_reference": "this.apiBase + o",
-        "line_hint": 185,
-        "target": "extension/dist/extension.js (chunk 4/6)"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "DECEPTIVE_PRACTICE",
-        "description": "The extension uses a paywall mechanism that can lock features based on the remote server's response. This creates a dependency on an external service for basic functionality, which is not disclosed in the README's promise of a local-only tool.",
-        "code_reference": "this.applyAccess(o?.access)",
-        "line_hint": 115,
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Machine ID harvesting' and 'Base64 encoding data then sending over network'. Analysis confirms this is a standard licensing/telemetry implementation. The code generates a random install ID and hashes the machine ID (likely using crypto) to create a unique identifier for the licensing server (api-ext.viralinc.live). It does not exfiltrate sensitive user data, credentials, or system files. The 'base64' usage is for generating the install ID, not encoding stolen data.",
+        "code_reference": "this.machineIdHash, X-Machine-Id header in request()",
+        "line_hint": 4,
         "target": "extension/dist/extension.js (chunk 4/6)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged 'machineId' and 'globalState.get(ki)' as potential infostealer behavior. However, the code uses `globalState` to store a `randomUUID` for an `installId`. This is a standard VS Code extension pattern for anonymous usage analytics or licensing checks, not for harvesting hardware-specific machine IDs for exfiltration. The variable name `machineId` is misleading but the implementation is benign.",
-        "code_reference": "globalState.get(ki);l||(l=(0,Jt.randomUUID)(),i.globalState.update(ki,l)),this.installId=l,this.mach",
-        "line_hint": null,
-        "target": "extension/dist/extension.js (chunk 5/6)"
+        "description": "Static scanner flagged 'Attempt to read credential / key files' due to readFileSync. The code reads /proc/self/cgroup to detect if running in Docker (environment detection) and reads local SQLite database files (the extension's primary function). It does not read ~/.ssh, ~/.aws, or browser credential stores.",
+        "code_reference": "readFileSync(\"/proc/self/cgroup\"), readFile(i) for SQLite",
+        "line_hint": 3,
+        "target": "extension/dist/extension.js (chunk 4/6)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The scanner flagged 'readFileSync' and 'postMessage' as data exfiltration. The `readFileSync` usage is part of the bundled `better-sqlite3` or similar native binding loader logic (common in minified bundles) or internal file checks, not reading sensitive user files like `~/.ssh`. The `postMessage` calls are standard VS Code Webview API communications between the extension host and the webview UI, not network exfiltration.",
-        "code_reference": "readFileSync(\"/proc/self/cgroup\",\"utf8\").includes(\"docker\")}",
-        "line_hint": null,
-        "target": "extension/dist/extension.js (chunk 5/6)"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "The scanner flagged high-entropy `.woff2` files. These are standard web fonts (Sora, JetBrains Mono) used for the UI. High entropy is expected for compressed binary font files and does not indicate shellcode.",
+        "description": "Static scanner flagged 'High entropy blob' for .woff2 font files. These are standard compressed font files used for UI rendering in the webview. High entropy is expected for compressed binary assets like fonts and is not indicative of shellcode.",
         "code_reference": "extension/dist/webview/assets/sora-latin-wght.woff2",
         "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is a SQLite viewer with a licensing/paywall system. The code capabilities (SQLite querying, webview UI, licensing API calls) are proportional to the advertised function. The activation event 'onStartupFinished' is slightly broad for a database viewer but acceptable for a sidebar view that needs to be ready. No capability disconnect found.",
+        "code_reference": "Activation events, SQLite query functions",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'infostealer_behavior' and 'data exfiltration' due to the presence of 'machineId' and 'base64' strings. Analysis confirms 'machineId' is used to generate a stable, local installation ID stored in VS Code's globalState for telemetry or licensing, not for system fingerprinting exfiltration. The 'base64' reference is part of a standard utility function for encoding binary data (likely for SQLite blob handling or webview communication), not for obfuscating stolen credentials.",
+        "code_reference": "machineId, toString(\"base64\")",
+        "line_hint": 4,
         "target": "extension/dist/extension.js (chunk 5/6)"
       },
       {
-        "severity": "CRITICAL",
-        "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension claims to be a local-only SQLite viewer ('Your data never leaves your machine') but contains logic for remote API communication, license gating, and telemetry. The code references `apiBase`, `requireAccess` (license checks), and domains like `api-ext.viralinc.live` and `checkout.stripe.com`. This contradicts the 'no account, no AI, data never leaves' claim.",
-        "code_reference": "apiBase: i && process.env.VIRALINC_API_BASE || void 0, ... l.requireAccess(\"open\")",
-        "line_hint": null,
-        "target": "extension/dist/extension.js (chunk 6/6)"
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Attempt to read credential / key files' due to 'readFileSync' and 'readFile'. The code uses 'L.workspace.fs.readFile' (VS Code API) to read SQLite database files (.db, .sqlite) within the user's workspace. This is the core function of the extension (SQLite Viewer & Editor) and does not target sensitive system paths like ~/.ssh or ~/.aws.",
+        "code_reference": "L.workspace.fs.readFile(i)",
+        "line_hint": 29,
+        "target": "extension/dist/extension.js (chunk 5/6)"
       },
       {
-        "severity": "HIGH",
-        "category": "TELEMETRY_AND_TRACKING",
-        "description": "The code generates and stores a unique `installId` (UUID) and `machineId` in global state. While common for licensing, combined with the hidden network capabilities and the 'local only' claim, this constitutes undisclosed tracking/telemetry.",
-        "code_reference": "l||(l=(0,Jt.randomUUID)(),i.globalState.update(ki,l)),this.installId=l,this.mach...",
-        "line_hint": null,
-        "target": "extension/dist/extension.js (chunk 6/6)"
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'persistence_evasion' due to '.hidden'. The code contains logic to check file permissions and read-only status. The '.hidden' reference is likely part of a file property check or a false positive from a minified variable name, but in the context of a database viewer, it does not indicate an attempt to hide malicious payloads or establish persistence.",
+        "code_reference": ".hidden",
+        "line_hint": 18,
+        "target": "extension/dist/extension.js (chunk 5/6)"
       },
       {
-        "severity": "HIGH",
-        "category": "NETWORK_EXFILTRATION",
-        "description": "The extension initializes a 'kit' (`Ti`) with an `apiBase` URL. The `requireAccess` function is called before every major command (open, query, export, etc.), implying that the extension communicates with a remote server (`api-ext.viralinc.live`) to validate permissions or log usage before allowing local operations.",
-        "code_reference": "let l = Ti(r, { ... apiBase: ... }), ... if (!l.requireAccess(\"open\")) return;",
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is a 'SQLite Viewer & Editor'. The code implements standard SQL operations (SELECT, INSERT, UPDATE, DELETE), schema inspection, and data export (CSV, JSON, SQL). The network calls to 'api-ext.viralinc.live' are likely for license verification or telemetry, which is common for commercial extensions. The activation event 'onStartupFinished' is slightly aggressive for a database tool (usually 'onView' or 'onCommand') but not malicious. The size (0.58 MB) is proportional to a webview-based editor.",
+        "code_reference": "ar class (DatabaseManager), cr class (EditorProvider)",
         "line_hint": null,
-        "target": "extension/dist/extension.js (chunk 6/6)"
+        "target": "extension/dist/extension.js (chunk 5/6)"
       },
       {
-        "severity": "MEDIUM",
-        "category": "HIDDEN_CAPABILITIES",
-        "description": "The code contains references to Stripe checkout and billing domains (`checkout.stripe.com`, `billing.stripe.com`) and a custom domain `viralinc.live`. These are not mentioned in the README's feature list, which claims 'No ads, no account'. This suggests a hidden freemium/licensing model.",
-        "code_reference": "domain: checkout.stripe.com ... domain: api-ext.viralinc.live",
-        "line_hint": null,
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'machineId' and 'Machine-Id' as critical infostealer indicators. However, in the context of a VS Code extension, `machineId` is a standard property of `vscode.env` used for unique installation identification, telemetry, or license validation. It is not a system fingerprinting technique for malware. The code does not show this ID being sent to an external C2 server in a malicious context, but rather used within the extension's internal state management (`installId`).",
+        "code_reference": "this.installId=l,this.mach...",
+        "line_hint": 4,
         "target": "extension/dist/extension.js (chunk 6/6)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static scanner flagged `readFileSync(\"/proc/self/cgroup\")` as credential harvesting. This is a standard technique used by libraries (like `node-machine-id` or similar) to detect if the code is running inside a Docker container to generate a stable machine ID. It is not malicious in this context.",
+        "description": "Static rule engine flagged 'Base64 encoding data then sending over network' and 'PowerShell' execution. The match `toString(\"base64\"),{stdout:l}=await go(r,[\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\"` appears to be a false positive or a misinterpretation of a legitimate utility function (possibly for checking system capabilities or running a specific tool in a controlled environment) that was truncated in the static scan view. In the provided source chunk (chunk 6/6), there is no visible `child_process` execution of PowerShell commands for malicious purposes. The visible code focuses on UI interactions, file dialogs, and SQLite database operations. If this code exists in earlier chunks, it requires context, but based on the provided snippet, it does not exhibit malicious C2 or stager behavior.",
+        "code_reference": "toString(\"base64\"),{stdout:l}=await go(r,[\"-NoProfile\",\"-NonInteractive\",\"-ExecutionPolicy\",\"Bypass\"",
+        "line_hint": 4,
+        "target": "extension/dist/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Attempt to read credential / key files' due to `readFileSync(\"/proc/self/cgroup\",\"utf8\")`. Reading `/proc/self/cgroup` is a standard technique to detect if the process is running inside a Docker container. This is a common benign pattern for development tools to adjust behavior (e.g., disabling certain features or changing paths) in containerized environments. It is not a credential harvesting attempt.",
         "code_reference": "readFileSync(\"/proc/self/cgroup\",\"utf8\").includes(\"docker\")",
+        "line_hint": 3,
+        "target": "extension/dist/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is a SQLite Viewer. The code shows standard VS Code API usage for file dialogs, custom editors, and webview communication. The network calls to `api-ext.viralinc.live` are likely for license validation or feature gating (indicated by `requireAccess` calls), which is a common pattern for commercial extensions. The size (0.58 MB) is proportional to a webview-based extension with bundled assets (fonts, JS). The activation events are appropriate for a sidebar view and startup.",
+        "code_reference": "apiBase: i && process.env.VIRALINC_API_BASE || void 0",
         "line_hint": null,
         "target": "extension/dist/extension.js (chunk 6/6)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static rule engine flagged 'persistence_evasion' due to the string '.hidden'. Analysis of the source code reveals this is a property access on a column metadata object (`a.hidden !== 1`) used to determine if a database column is hidden or generated. It is not related to file system attributes or persistence mechanisms.",
-        "code_reference": "const o = l.useMemo(() => t.columns.filter(a => a.hidden !== 1), [t]),",
+        "description": "Static analysis flagged 'persistence_evasion' due to the string '.hidden'. Upon inspection, this string is used in CSS class names (e.g., 'g-finput on') and logical checks for SQLite column visibility (e.g., 'a.hidden !== 1'). It is not related to file system attributes or OS persistence mechanisms.",
+        "code_reference": "className: \"g-finput\" + (f ? \" on\" : \"\")",
         "line_hint": 4,
         "target": "extension/dist/webview/editor.js (chunk 1/4)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static rule engine flagged 'HIGH_ENTROPY_BLOB' for font files (`.woff2`). These are standard web fonts (Sora, JetBrains Mono) required for the UI rendering of the extension. High entropy is expected for compressed binary font files and does not indicate shellcode or packed payloads in this context.",
-        "code_reference": null,
+        "description": "Static analysis flagged 'HIGH_ENTROPY_BLOB' for .woff2 font files. These are standard compressed font assets (Sora and JetBrains Mono) required for the UI rendering. High entropy is expected for binary font files and does not indicate shellcode or packed payloads in this context.",
+        "code_reference": "extension/dist/webview/assets/sora-latin-wght.woff2",
         "line_hint": null,
         "target": "extension/dist/webview/editor.js (chunk 1/4)"
       },
       {
         "severity": "LOW",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension claims 'Your data never leaves your machine' and 'No ads, no account, no AI'. However, the code contains references to `kit/access`, `kit/openPaywall`, and domains like `api-ext.viralinc.live` and `checkout.stripe.com` (found in other chunks/indicators). While this specific chunk only shows the UI logic for the paywall state (`nt` function), the presence of a paywall/access control mechanism contradicts the 'no account' claim if it requires authentication or telemetry. However, strictly within this chunk, it is just UI state management.",
-        "code_reference": "function nt() {\n  const [t, s] = l.useState(\"trial\");\n  return l.useEffect(() => {\n    z(\"kit/access\").then(s, () => {})\n  }, []), Ue(\"kit/access\", s), t\n}",
-        "line_hint": 10,
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension activates on 'onStartupFinished'. While this is more aggressive than necessary for a file-based viewer (which could use 'onCustomEditor'), it is a common pattern for extensions that wish to register commands or views early. It does not indicate malicious intent, but is slightly inefficient.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
         "target": "extension/dist/webview/editor.js (chunk 1/4)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static rule engine flagged '.hidden' as persistence evasion. Analysis shows this is a standard SQLite column attribute check (`n.hidden === 2 || n.hidden === 3`) used to display 'generated' column badges in the UI. It is not related to file system hidden attributes.",
-        "code_reference": "n.hidden === 2 || n.hidden === 3 ? e.jsx(\"span\", { className: \"pill\", children: \"generated\" }) : null",
-        "line_hint": "approx line 400 (within bt function)",
+        "description": "Static analysis flagged 'persistence_evasion' due to the string '.hidden'. Upon inspection, this refers to the `hidden` property of SQLite columns (specifically checking `n.hidden === 2 || n.hidden === 3` to identify generated columns). This is a standard database schema attribute, not a file system operation to hide files.",
+        "code_reference": "n.hidden === 2 || n.hidden === 3",
+        "line_hint": 4,
         "target": "extension/dist/webview/editor.js (chunk 2/4)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static rule engine flagged high-entropy WOFF2 files. These are standard web fonts (Sora, JetBrains Mono) required for the extension's UI rendering. High entropy is expected for compressed binary font files.",
+        "description": "Static analysis flagged 'HIGH_ENTROPY_BLOB' for .woff2 font files. These are standard compressed web font assets (Sora and JetBrains Mono) used for UI rendering. High entropy is expected for compressed binary assets like fonts and is not indicative of shellcode or packed payloads.",
         "code_reference": "extension/dist/webview/assets/sora-latin-wght.woff2",
         "line_hint": null,
         "target": "extension/dist/webview/editor.js (chunk 2/4)"
@@ -642,52 +642,50 @@
       {
         "severity": "LOW",
         "category": "BEHAVIORAL_ALIGNMENT",
-        "description": "The code implements a SQL editor with syntax highlighting, autocomplete, and schema management. This aligns perfectly with the 'SQLite Viewer & Editor' description. No network exfiltration, credential harvesting, or arbitrary command execution is present in this chunk.",
-        "code_reference": "function Je(t) { ... } // SQL Tokenizer",
-        "line_hint": "approx line 150",
+        "description": "The extension is a SQLite viewer/editor. The code contains React components for table data display, SQL syntax highlighting, and schema management (DDL operations). The capabilities are proportional to the advertised function. The use of `dangerouslySetInnerHTML` is limited to rendering sanitized SQL syntax highlighting output generated by a local tokenizer, which is a common pattern in code editors.",
+        "code_reference": "dangerouslySetInnerHTML: { __html: Le(t) }",
+        "line_hint": null,
         "target": "extension/dist/webview/editor.js (chunk 2/4)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static rule engine flagged 'persistence_evasion' due to the string `.hidden`. Analysis of the source code reveals this is a standard React/HTML accessibility attribute (`aria-hidden=\"true\"`) used on decorative elements (syntax highlighting mirrors, icons) to hide them from screen readers. It is not related to file system attributes or persistence mechanisms.",
-        "code_reference": "\"aria-hidden\": \"true\"",
+        "description": "Static rule engine flagged 'persistence_evasion' due to matches of '.hidden'. Upon inspection, the source code is a React webview bundle for a SQLite viewer. The string '.hidden' likely appears in CSS class names (e.g., 'aria-hidden' or CSS selectors) or is a false positive from minified code. There is no file system manipulation or attribute setting logic in this chunk.",
+        "code_reference": "Static rule hit on line 4/14 (not present in this chunk's visible logic, likely in CSS or minified headers)",
         "line_hint": null,
         "target": "extension/dist/webview/editor.js (chunk 3/4)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static rule engine flagged 'HIGH_ENTROPY_BLOB' for `.woff2` files. These are standard web font files (Sora, JetBrains Mono) used for UI rendering. High entropy is expected for compressed binary font data and does not indicate shellcode or packed payloads in this context.",
-        "code_reference": "extension/dist/webview/assets/sora-latin-wght.woff2",
+        "description": "Static rule engine flagged 'HIGH_ENTROPY_BLOB' for .woff2 font files. These are standard web font assets (Sora, JetBrains Mono) used for UI rendering. High entropy is expected for compressed binary font data and does not indicate shellcode or packed payloads.",
+        "code_reference": "extension/dist/webview/assets/sora-latin-wght.woff2, extension/dist/webview/assets/jetbrains-mono-latin-wght.woff2",
         "line_hint": null,
         "target": "extension/dist/webview/editor.js (chunk 3/4)"
       },
       {
         "severity": "LOW",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The README claims 'No ads, no account, no AI. Your data never leaves your machine.' However, the code contains a paywall implementation (`$t`, `Dt` functions) that checks for a 'paywall' state and offers a 'Go Unlimited' button. While this is a commercial licensing model rather than malicious data exfiltration, it contradicts the 'no account' claim if the licensing requires online verification or account creation. The extracted indicators show connections to `viralinc.live` and `stripe.com`, which aligns with the paywall logic but contradicts the 'data never leaves your machine' claim regarding licensing metadata.",
-        "code_reference": "function $t() { return nt() === \"paywall\" ? e.jsx(Dt, {}) : e.jsx(At, {}) }",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension is a SQLite database viewer/editor. The code contains React components for SQL editing, result grids, ER diagram visualization, and database comparison. The presence of a 'paywall' component (function Dt) and references to 'viralinc.live' (publisher domain) and 'stripe.com' (billing) are consistent with a commercial SaaS-backed extension model. The activation event 'onStartupFinished' is aggressive but common for extensions that need to initialize background services or check license status immediately. No malicious capabilities (credential theft, C2, obfuscation) were found.",
+        "code_reference": "function Dt() { ... 'Your free trial has ended' ... }",
         "line_hint": null,
         "target": "extension/dist/webview/editor.js (chunk 3/4)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static rule engine flagged 'persistence_evasion' due to the string '.hidden'. In the provided source code, this string appears in the context of CSS class names (e.g., `className: \"side-icon\"`, `aria-hidden: \"true\"`) and UI state management within a React component. It is not related to file system attributes or persistence mechanisms.",
-        "code_reference": "aria-hidden: \"true\"",
+        "description": "The static rule engine flagged 'persistence_evasion' due to the string '.hidden'. In the provided source code, this corresponds to the JSX attribute `\"aria-hidden\": \"true\"` used for accessibility purposes on decorative elements (icons, separators). This is standard React/HTML practice and not an attempt to hide files or processes.",
+        "code_reference": "children: \"\ud83d\uddc4\" }), e.jsx(\"span\", { className: \"db-icon\", \"aria-hidden\": \"true\", ...",
         "line_hint": null,
         "target": "extension/dist/webview/editor.js (chunk 4/4)"
       }
     ],
-    "findings_truncated": 19
+    "findings_truncated": 12
   },
-  "ai_summary": "The provided code chunk is a minified JavaScript bundle containing an Emscripten-compiled WebAssembly module for SQLite (sql.js). The logic is consistent with a SQLite viewer/editor extension, handling database connections, queries, and memory management within the WASM environment. The static analysis flags for 'infostealer' and 'exfiltration' are false positives resulting from the minified nature of the code and the presence of standard library functions (like crypto or path handling) that trigger broad pattern matches. There is no evidence of credential harvesting, reverse shells, or malicious network exfiltration in this specific file. The extension appears to be a legitimate SQLite tool, though the presence of external domains in the package metadata warrants monitoring for unexpected network activity in other parts of the codebase.",
+  "ai_summary": "The analyzed code chunk is the initialization and runtime logic for a WebAssembly-based SQLite engine (likely sql.js) embedded within a VS Code extension. The static scanner hits for 'infostealer_behavior' and 'credential harvesting' are false positives resulting from the WASM runtime's standard file I/O operations (loading the .wasm binary) and the use of standard VS Code APIs for installation tracking (machineId/installId). The code does not exhibit malicious behavior, such as exfiltrating data to external servers, accessing sensitive system files, or executing arbitrary commands. The extension's capabilities are consistent with its advertised purpose of viewing and editing SQLite databases.",
   "escalation_reasons": [
     "7 CRITICAL findings",
-    "20 HIGH findings",
-    "Composite risk 0.61 >= 0.45",
-    "AI verdict: MALICIOUS"
+    "20 HIGH findings"
   ],
   "virustotal": {
     "malicious": 0,
@@ -705,5 +703,5 @@
     "excluded_phases": [],
     "ai_phase_ran": true
   },
-  "scanned_at": "2026-09-27T14:34:03.638564+00:00Z"
+  "scanned_at": "2026-09-28T14:38:41.039959+00:00"
 }
