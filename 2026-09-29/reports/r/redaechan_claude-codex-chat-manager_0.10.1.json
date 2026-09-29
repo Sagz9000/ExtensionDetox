@@ -1,0 +1,429 @@
+{
+  "extension_id": "redaechan.claude-codex-chat-manager",
+  "display_name": "Chat Manager for Claude Code & Codex",
+  "version": "0.10.1",
+  "publisher": {
+    "name": "redaechan",
+    "verified": false
+  },
+  "vsix_sha256": "ede11b62d858bd2043a9f00f5bf46c66e0b637cc757dbaaedd0aa739034daa26",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6276675815828778,
+    "ai_vibe": 0.85,
+    "static": 0.870670326331511,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/setup.js",
+        "line": 11,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/setup.js",
+        "line": 11,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/setup.js",
+        "line": 202,
+        "snippet": "const r = cp.spawnSync(process.platform === 'win32' ? 'where.exe' : 'which', [name],"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 6,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 6,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/safe-restart.js",
+        "line": 29,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/safe-restart.js",
+        "line": 29,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/setup.js",
+        "line": 11,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/safe-restart.js",
+        "line": 29,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/extension.js",
+        "line": 635,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/extension.js",
+        "line": 1142,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/extension.js",
+        "line": 1430,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 30
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 9,
+    "blocks_seen": 9,
+    "summaries": [
+      {
+        "target": "extension/setup.js",
+        "summary": "The extension `setup.js` is a installer/manager component for a VS Code extension that provides CLI tools for managing AI chats. It legitimately uses `child_process` to interact with PowerShell, install scripts, and configure the user's environment (Execution Policy, Profile). The use of `-EncodedCommand` and `Set-ExecutionPolicy` triggers high-risk static analysis rules but appears consistent with the extension's stated purpose of providing a robust CLI interface. The primary risk is the reliance on external `.ps1` files (not shown here) which are copied to the user's disk; if those files were malicious, this installer would facilitate their execution. The code itself is not obfuscated and follows standard patterns for such utilities, but the capability to modify shell profiles and security policies warrants a 'Suspicious' verdict due to the potential for abuse if the bundled payloads are compromised."
+      },
+      {
+        "target": "extension/safe-restart.js",
+        "summary": "The code is a benign utility module for a VS Code extension designed to manage Claude Code/AI chat sessions. Its primary function is to safely handle extension updates by checking if any AI chats are currently 'working' (busy, waiting for input, or running background tasks) before triggering a window reload. It uses `child_process` to execute a local PowerShell script that queries the state of these chats. There is no evidence of credential harvesting, network exfiltration, remote code execution, or obfuscation. The use of `child_process` and `extensions.getExtension` is directly proportional to the stated purpose of preventing data loss during updates and is not indicative of malicious supply-chain behavior."
+      },
+      {
+        "target": "extension/extension.js (chunk 1/6)",
+        "summary": "The provided source code chunk is consistent with the extension's stated purpose of managing Claude Code chats. It interacts with the VS Code API to open tabs, manage webviews, and check for the presence of the 'anthropic.claude-code' extension. The use of `child_process` and file system operations (hidden attributes) is flagged by static rules but appears benign in context, likely supporting the documented PowerShell integration and overlay startup mechanisms. There are no signs of credential theft, C2 communication, or obfuscated payloads. The code is well-commented and logically structured for its intended utility function."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/6)",
+        "summary": "The provided source code is a benign utility extension designed to improve the user experience of the 'Claude Code' VS Code extension. It manages editor tabs, handles session transcripts (JSONL files), and offers terminal fallbacks for unlistable chats. The static analysis hits (child_process, hidden attributes, extension enumeration) are false positives or misinterpretations of legitimate VS Code API usage and file system operations required for the extension's core functionality. There is no evidence of credential harvesting, C2 communication, obfuscation, or malicious persistence mechanisms."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/6)",
+        "summary": "The provided source code is part of a VS Code extension designed to manage 'Claude Code' chat sessions. It utilizes `child_process` to execute a bundled PowerShell script for process management (checking status, ending idle processes) and interacts with the VS Code API to manage tabs and webviews. The use of `child_process` and PowerShell is justified by the need to manage external processes associated with the Claude Code CLI. The code employs secure practices such as strict argument quoting and base64 encoding for PowerShell commands to prevent injection. The enumeration of extensions is used for dependency checking. No malicious behavior, credential harvesting, or unauthorized network exfiltration was observed. The static rule hits are false positives in the context of this specific, well-structured utility extension."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/6)",
+        "summary": "The provided source code chunk is part of a VS Code extension that manages chat sessions, likely for an AI coding assistant (references to 'Claude', 'Codex', 'chatq'). The code implements complex UI state management, including handling 'handovers' of chat tabs between windows, creating webview panels for live logs, and updating the status bar. It uses `fs` to read/write local state files (logs, job definitions, ack files) and `vscode` APIs for UI interaction. The static analysis hits for `child_process` and `.hidden` attributes refer to lines not present in this specific chunk or are false positives given the context of a local CLI integration tool. There is no evidence of credential harvesting, network exfiltration, or malicious persistence mechanisms in this code block. The behavior is consistent with a legitimate productivity extension that integrates with a local command-line tool."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/6)",
+        "summary": "The provided source code chunk is part of a VS Code extension designed to manage Claude Code chat sessions. It implements features like watching running jobs, opening chat panels, and listing recent chats by reading local JSONL transcript files from the user's Claude configuration directory. The code is well-commented and logically structured. The static analysis hits (child_process, hidden files, extension enumeration) are either false positives (not present in this chunk) or benign uses of APIs for legitimate extension functionality (compatibility checks, local CLI interaction). There is no evidence of credential harvesting, data exfiltration, or malicious persistence mechanisms in this chunk."
+      },
+      {
+        "target": "extension/extension.js (chunk 6/6)",
+        "summary": "The extension exhibits critical malicious behavior by executing external PowerShell scripts and binaries (`chatoverlay`, `chatnotify`, `chatq`) via a custom loader. It establishes persistence by allowing these scripts to auto-start with VS Code. The capability to drop and execute external code is completely disproportionate to a 'Chat Manager' or 'Other' category extension, indicating a likely supply-chain attack or malware dropper. The use of `child_process` (via `setup._runPs`) to run PowerShell commands, combined with file system monitoring outside the workspace, confirms high-risk activity."
+      },
+      {
+        "target": "extension/watch.js",
+        "summary": "The provided source code (`extension/watch.js`) is a benign utility module responsible for parsing and rendering log streams from AI coding assistants (Claude Code, Codex) into HTML for a VS Code Webview panel. It contains no network calls, no file system access outside of standard buffer operations, no child process execution, and no obfuscation. The code strictly adheres to VS Code Webview security best practices, including the use of Content Security Policy (CSP) with nonces and proper HTML escaping via the `esc` function. The functionality aligns perfectly with the extension's description of providing a 'mission control' board for AI chats. No malicious indicators or capability disconnects were identified."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "Command Execution & Persistence",
+        "description": "The extension uses `child_process` to execute PowerShell commands. Specifically, it modifies the user's PowerShell profile to add custom commands (`chatrm`, `chatq`, etc.) and changes the Execution Policy to `RemoteSigned` via `Set-ExecutionPolicy`. While this aligns with the stated purpose of providing CLI tools for AI chat management, modifying system-wide or user-wide shell profiles and security policies is a high-risk behavior that can be abused for persistence if the extension is compromised or if the bundled scripts are malicious.",
+        "code_reference": "const cp = require('child_process'); ... await run(exe, ['-NoProfile', '-NonInteractive', '-Command', 'Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force'], ...)",
+        "line_hint": 11,
+        "target": "extension/setup.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Encoded Command Execution",
+        "description": "The function `psArgs` constructs PowerShell commands and encodes them in Base64 (`utf16le` to `base64`) before passing them to `powershell.exe` via the `-EncodedCommand` flag. This is a common technique used by malware to evade static analysis and logging, although here it appears to be used for robustness in passing complex scripts with quotes. The specific commands executed (`chatinstall`, `Restart-ChatBackground`) are defined in external `.ps1` files not provided in this snippet, which prevents full verification of their safety.",
+        "code_reference": "return ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-EncodedCommand', Buffer.from(cmd, 'utf16le').toString('base64')];",
+        "line_hint": 142,
+        "target": "extension/setup.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Capability Disconnect",
+        "description": "The extension is categorized as 'Other' and described as a 'Mission control for AI chats'. However, it installs persistent PowerShell scripts into a user-defined folder and modifies the PowerShell profile. This goes beyond a simple UI extension and acts as a system utility installer. The activation event `onStartupFinished` ensures this setup logic runs every time VS Code starts, which is appropriate for maintaining the installed tools but increases the attack surface.",
+        "code_reference": "Activation events: onStartupFinished ... async function setUp(o) { ... copyPayload(payload, folder); ... }",
+        "line_hint": null,
+        "target": "extension/setup.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` and `cp.execFile` as HIGH risk. However, analysis shows this is used exclusively to invoke `powershell.exe` with a specific, hardcoded script (`Get-ChatHostWork`) to check the status of local Claude Code processes. The arguments are constructed from local paths and PIDs, not user input or remote data. This is a legitimate mechanism for the extension's stated purpose of managing AI chat sessions and preventing data loss during updates.",
+        "code_reference": "const cp = require('child_process'); ... cp.execFile(exe, args, ...)",
+        "line_hint": 29,
+        "target": "extension/safe-restart.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `extensions.getExtension` as reconnaissance. This call is used to retrieve the version and installation timestamp of the extension itself (`redaechan.claude-codex-chat-manager`) to determine if a new version has been installed and if a window reload is safe. It does not enumerate other extensions for malicious profiling.",
+        "code_reference": "vs().extensions.getExtension(running ? running.id : ID)",
+        "line_hint": 152,
+        "target": "extension/safe-restart.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `child_process` (via `require('child_process')` at line 6) and sets file hidden attributes (lines 635, 1142, 1430 in the full file, though not visible in this chunk). While these are high-risk primitives, the context provided in the README and code comments indicates they are used for legitimate functionality: managing external PowerShell scripts (`chatfind`, `chatrm`, `chatq`) and handling overlay startup scripts. The `child_process` module is imported but not actively used for arbitrary command execution in this specific chunk; it is likely used in other chunks or helper modules (`setup.js`, `safe-restart.js`) to invoke these documented CLI tools. The hidden attribute setting is likely for the overlay's background process or configuration files to prevent user clutter, which is a common pattern for 'always-on-top' utilities. No malicious intent or credential harvesting is evident in this chunk.",
+        "code_reference": "const cp = require('child_process');",
+        "line_hint": 6,
+        "target": "extension/extension.js (chunk 1/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "RECONNAISSANCE",
+        "description": "The extension enumerates installed extensions using `vscode.extensions.getExtension('anthropic.claude-code')` (lines 177, 432, 1090, 2801 in full file; visible usage in `hasClaude()` and `claudeVersion()`). This is necessary for the extension to function as a manager for Claude Code chats, as it needs to verify the presence and version of the target extension to invoke its specific commands (`claude-vscode.editor.open`). This is proportional to the stated purpose.",
+        "code_reference": "function hasClaude() { return !!(vscode.extensions && vscode.extensions.getExtension && vscode.extensions.getExtension('anthropic.claude-code')); }",
+        "line_hint": 177,
+        "target": "extension/extension.js (chunk 1/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `require('child_process')` at line 6 as HIGH risk. However, the provided source code does not contain this import. The code uses `vscode.window.createTerminal` and `vscode.window.showInformationMessage` for user interaction and process management, which are standard VS Code APIs. The flag appears to be a false positive or refers to code outside this specific chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `.hidden` attribute setting as HIGH risk (persistence/evasion). The provided code does not contain any calls to `fs.chmod`, `fs.utimes` (for hiding), or Windows-specific hidden attribute APIs. The code uses `fs.utimes` only to restore original file timestamps after appending a JSON line to a transcript, which is a benign data integrity operation, not evasion.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `extensions.getExtension` as MEDIUM risk (reconnaissance). The code uses `vscode.extensions.getExtension('anthropic.claude-code')` to locate the native binary path for the Claude Code extension. This is a legitimate dependency check required to launch the correct executable in a terminal, not malicious reconnaissance.",
+        "code_reference": "const ext = vscode.extensions && vscode.extensions.getExtension && vscode.extensions.getExtension('anthropic.claude-code');",
+        "line_hint": 177,
+        "target": "extension/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension's code is highly specialized for managing 'Claude Code' chat sessions within VS Code. It handles tab management, transcript parsing, and session state restoration. The capabilities (reading/writing JSONL transcripts, managing editor groups, launching terminals) are proportional to its stated purpose of enhancing the Claude Code extension experience. No capability disconnect was found.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 2/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses `child_process.execFile` to execute a PowerShell script (`claude-codex-chat-manager.ps1`) bundled within the extension. While this is a high-risk capability, the context indicates it is used for legitimate process management (checking if a specific Claude Code session is running, ending idle processes, and managing VS Code tabs) rather than arbitrary command execution or payload staging. The command construction uses strict quoting (`psQuote`) and passes arguments via `-EncodedCommand` with a base64-encoded UTF-16LE string, which is a standard and secure way to pass complex PowerShell commands without injection vulnerabilities.",
+        "code_reference": "function verdictCommand(script, req, o) { ... const enc = Buffer.from(cmd, 'utf16le').toString('base64'); ... return [exe, ['-NoProfile', '-NonInteractive', '-EncodedCommand', enc]]; }",
+        "line_hint": 145,
+        "target": "extension/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension enumerates installed VS Code extensions using `vscode.extensions.getExtension`. This is flagged by static rules as potential reconnaissance. However, in this context, it is used to check for the presence of the 'Claude' extension (`hasClaude()`) to determine if the chat manager can interact with it. This is a functional dependency check, not malicious reconnaissance.",
+        "code_reference": "if (!hasClaude()) { vscode.window.showInformationMessage(texts.noClaude(req)); return; }",
+        "line_hint": 380,
+        "target": "extension/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The code references setting file hidden attributes (`.hidden`). This is flagged as persistence evasion. However, the provided code snippet does not show the actual implementation of setting these attributes, only references to `texts.hiddenBusy` and logic related to 'hidden' states of chats/processes. Given the context of managing background processes and UI states, this is likely related to UI state management or internal file locking mechanisms rather than OS-level persistence evasion.",
+        "code_reference": "vscode.window.showInformationMessage((listed === 'held' ? texts.hiddenBusy : texts.unmended)(req));",
+        "line_hint": 10,
+        "target": "extension/extension.js (chunk 3/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The static rule engine flagged `require('child_process')` at line 6. However, the provided source code for this chunk does not contain this import. The code uses `setup._runPs` and `module.exports._overlayIo` for PowerShell execution, which are likely defined in other chunks. While `child_process` is a high-risk API, its presence in a 'chat manager' extension that explicitly mentions 'PowerShell' and 'loader' scripts suggests legitimate integration with a local CLI tool (likely Claude Code or similar) rather than malicious execution. The code logic focuses on UI state management (tabs, webviews, status bar) and file watching, not arbitrary command execution from user input.",
+        "code_reference": "null",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The static rule engine flagged `.hidden` attribute setting at lines 635, 1142, and 1430. These lines are not present in the provided chunk (which ends around line 400-500 of the visible text). In the context of VS Code extensions, setting hidden attributes is often used for temporary files or internal state files to keep the workspace clean. Without seeing the specific code, this is a common benign pattern for extensions managing their own storage or logs, especially given the heavy use of `fs.writeFileSync` for state files like `ackFile()` and `jobFileOf()`. It does not indicate persistence evasion in this context.",
+        "code_reference": "null",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The static rule engine flagged `extensions.getExtension` as reconnaissance. The code uses `vscode.extensions.getExtension` (implied by `extensions.getExtension` in the hit description, though the snippet uses `module.exports` and helper functions). In the provided code, there is no direct call to `vscode.extensions.getExtension`. The code interacts with `vscode.window.tabGroups`, `vscode.window.createWebviewPanel`, and `vscode.workspace`. The 'reconnaissance' flag is likely a false positive from a different chunk or a misinterpretation of standard VS Code API usage for checking if a specific provider (like 'claude' or 'codex') is active. The code checks `rs.provider` and `hasClaude()`, which are internal state checks, not malicious enumeration of all installed extensions.",
+        "code_reference": "null",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 4/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'require('child_process')' at line 6. However, the provided source code chunk does not contain this require statement. The code uses `psRun` (likely defined in another chunk) to execute PowerShell commands for managing chat jobs. While `child_process` is a high-risk API, its usage here appears to be for legitimate extension functionality (interacting with a local CLI tool 'chatq' or 'claude') rather than arbitrary remote code execution or malware staging. The code logic is transparent and readable.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 5/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Setting file hidden attribute' at lines 635, 1142, 1430. The provided code chunk does not contain these lines or any `.hidden` property assignments. The code reads/writes JSON files and manages webview panels. This is likely a false positive from the scanner or refers to code in other chunks not provided here. No persistence mechanisms via hidden files are visible in this chunk.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 5/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'Enumerating installed extensions' at lines 177, 432, 1090, 2801. The provided code chunk does not contain these lines. The code does use `vscode.extensions.getExtension` in the `oldExtension()` function (around line 1050 in the provided text, though line numbers may vary) to check for a conflicting extension ID (`setup.OLD_ID`) to prevent duplicate functionality. This is a standard compatibility check, not malicious reconnaissance.",
+        "code_reference": "function oldExtension() { return !!(vscode.extensions && vscode.extensions.getExtension && vscode.extensions.getExtension(setup.OLD_ID)); }",
+        "line_hint": 1050,
+        "target": "extension/extension.js (chunk 5/6)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension reads from `~/.claude` (or `CLAUDE_CONFIG_DIR`) to list chat sessions and read transcripts. This is consistent with the extension's purpose as a 'Chat Manager' for Claude Code. It does not appear to exfiltrate this data; it processes it locally to display titles and states in the VS Code UI.",
+        "code_reference": "function claudeHome() { const d = String(process.env.CLAUDE_CONFIG_DIR || '').trim(); return d ? expandHome(d) : path.join(os.homedir(), '.claude'); }",
+        "line_hint": 350,
+        "target": "extension/extension.js (chunk 5/6)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2 & Tunneling / LOLBINs",
+        "description": "The extension executes arbitrary PowerShell scripts via `setup._runPs` (which likely wraps `child_process.exec` or `spawn`). The commands passed include `Start-ChatOverlayAuto`, `chatoverlay -AutoStart`, `chatnotify -Setup`, and `chatq -AutoContinue`. These are not standard VS Code APIs but custom binaries/scripts located in a 'tool folder'. This pattern is characteristic of malware that drops a stager/loader and uses PowerShell to execute malicious payloads or maintain persistence.",
+        "code_reference": "const r = await setup._runPs(exe, loader, 'Start-ChatOverlayAuto', 60000, log);",
+        "line_hint": "approx 15",
+        "target": "extension/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Persistence Mechanisms",
+        "description": "The function `overlayAutoStart` allows the user to set an 'autoStart' configuration which triggers the execution of the external loader script (`Start-ChatOverlayAuto`) on every shell and VS Code window start. This establishes persistence for the external tool. The code explicitly checks for `cfg.overlay.autoStart` and executes the PowerShell loader if enabled.",
+        "code_reference": "const auto = cfg && typeof cfg === 'object' && cfg.overlay ? cfg.overlay.autoStart : undefined; ... const r = await setup._runPs(exe, loader, 'Start-ChatOverlayAuto', 60000, log);",
+        "line_hint": "approx 10-20",
+        "target": "extension/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Capability Disconnect",
+        "description": "The extension is categorized as 'Other' and appears to be a 'Chat Manager' or productivity tool. However, it aggressively installs and executes external binaries/scripts (`loader`, `chatoverlay`, `chatnotify`, `chatq`) from a 'tool folder' using PowerShell. A legitimate chat manager should not require installing external executables or running PowerShell scripts to function. This is a major disconnect between advertised function and actual capability.",
+        "code_reference": "const loader = path.join(folder, setup.LOADER); ... const exe = io.powershell(platform); ... await setup._runPs(exe, loader, ...)",
+        "line_hint": "approx 15",
+        "target": "extension/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Suspicious Network/Process Interaction",
+        "description": "The extension monitors file system changes (`fs.watchFile`) on specific 'signal files' and 'open files' outside the workspace. It also polls a 'run-state' file. This behavior suggests it is monitoring external processes or communication channels (possibly for C2 or inter-process communication with the dropped malware). The use of `fs.watchFile` on paths 'deliberately outside every one of them [workspace folders]' is highly suspicious for a standard extension.",
+        "code_reference": "fs.watchFile(file, { interval: 2000 }, () => check(context, file, false));",
+        "line_hint": "approx 280",
+        "target": "extension/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Reconnaissance",
+        "description": "The code enumerates installed extensions using `vscode.extensions.getExtension` (flagged by static rules). While sometimes used for compatibility, in the context of a tool that drops external binaries, this could be used to detect security tools or other monitoring extensions to avoid detection or conflict.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": "177, 432, 1090, 2801",
+        "target": "extension/extension.js (chunk 6/6)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Suspicious Behavior",
+        "description": "The extension uses `setTimeout` to delay the execution of `runSetup` and `startOverlay` during activation. This is a common technique to evade static analysis or to wait for the environment to be ready before executing malicious payloads.",
+        "code_reference": "setTimeout(() => { runSetup(context, false, () => { startOverlay(context); }); }, 0);",
+        "line_hint": "approx 260",
+        "target": "extension/extension.js (chunk 6/6)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension `setup.js` is a installer/manager component for a VS Code extension that provides CLI tools for managing AI chats. It legitimately uses `child_process` to interact with PowerShell, install scripts, and configure the user's environment (Execution Policy, Profile). The use of `-EncodedCommand` and `Set-ExecutionPolicy` triggers high-risk static analysis rules but appears consistent with the extension's stated purpose of providing a robust CLI interface. The primary risk is the reliance on external `.ps1` files (not shown here) which are copied to the user's disk; if those files were malicious, this installer would facilitate their execution. The code itself is not obfuscated and follows standard patterns for such utilities, but the capability to modify shell profiles and security policies warrants a 'Suspicious' verdict due to the potential for abuse if the bundled payloads are compromised.",
+  "escalation_reasons": [
+    "13 HIGH findings",
+    "Composite risk 0.61 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-29T06:39:25.357Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-29T10:39:19.228286+00:00"
+}
