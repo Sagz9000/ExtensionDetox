@@ -1,0 +1,279 @@
+{
+  "extension_id": "RK22.mysql-routine-debugger",
+  "display_name": "MySQL Routine Debugger",
+  "version": "0.1.2",
+  "publisher": {
+    "name": "RK22",
+    "verified": false
+  },
+  "vsix_sha256": "864986ba7a3686454c12d3758a4c7a551019cbb5c9390b1cd261a825181b878c",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6074999999999999,
+    "ai_vibe": 0.7,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/extension.js",
+        "line": 361,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/extension.js",
+        "line": 11,
+        "snippet": "const result = cp.spawnSync(executable, ['-version'], { encoding: 'utf8', windowsHide: true, timeout: 5000 });"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/extension.js",
+        "line": 65,
+        "snippet": "const where = cp.spawnSync('where.exe', ['java'], { encoding: 'utf8', windowsHide: true, timeout: 5000 });"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'spawnSync' pattern",
+        "file": "extension/extension.js",
+        "line": 70,
+        "snippet": "const home = cp.spawnSync('/usr/libexec/java_home', ['-v', '17+'], { encoding: 'utf8', timeout: 5000 });"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 4,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.6,
+    "confidence": 0.8,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/12)",
+        "summary": "The extension exhibits suspicious behavior by including functionality to discover Java installations and using 'child_process' for command execution, which are not aligned with its advertised purpose of debugging MySQL routines. This suggests potential malicious intent or a significant capability mismatch."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/12)",
+        "summary": "The extension exhibits high-risk behavior by using `child_process` for command execution and accessing VSCode's SecretStorage API. While these actions may align with its debugging purpose, they pose significant security risks. The inclusion of Java discovery and execution adds to the potential attack surface. Overall, the extension's behavior is proportionate to its stated functionality but with notable security concerns."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/12)",
+        "summary": "The extension exhibits suspicious behavior by accessing VSCode's SecretStorage API and using child_process for command execution. While the former could indicate credential theft, the latter might be justified for debugging MySQL routines. The capability disconnect regarding secret handling is a major concern."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/12)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VSCode's SecretStorage API, potentially exposing sensitive credentials. Additionally, it uses `child_process` which could enable arbitrary command execution. These findings suggest a disconnect between the debugger's stated purpose and its actual capabilities, raising concerns about potential malicious intent or poor security practices."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/12)",
+        "summary": "The extension exhibits concerning behavior by accessing VS Code's secret storage and utilizing child_process, which could indicate potential malicious intent or significant security risks. While the extension's stated purpose is debugging MySQL routines, these actions are disproportionate to its advertised functionality, raising suspicions of capability disconnect or potential abuse."
+      },
+      {
+        "target": "extension/extension.js (chunk 6/12)",
+        "summary": "The extension exhibits high-risk behavior by accessing VS Code's secret storage and using `child_process`, which could enable arbitrary command execution. While these actions may align with legitimate debugging needs, they pose significant security risks and require careful validation."
+      },
+      {
+        "target": "extension/extension.js (chunk 10/12)",
+        "summary": "The extension exhibits critical and high-risk behaviors, including potential credential exposure and arbitrary command execution. While the extension's purpose as a MySQL debugger is legitimate, the use of `child_process` and secret storage without proper justification raises concerns about potential misuse. The code's early alpha status and handling of sensitive credentials further contribute to the risk assessment."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension's code includes functionality to discover Java installations, which is not mentioned in the README or package description. This indicates a potential capability disconnect.",
+        "code_reference": "extension/extension.js (chunk 1/12)",
+        "line_hint": "Lines 1-100",
+        "target": "extension/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension uses 'child_process' which allows arbitrary command execution, a capability not directly related to debugging MySQL routines.",
+        "code_reference": "extension/extension.js (chunk 1/12)",
+        "line_hint": "Line 2",
+        "target": "extension/extension.js (chunk 1/12)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Use of `require('child_process')` which allows arbitrary command execution.",
+        "code_reference": "extension/extension.js (chunk 2/12)",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 2/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Access to VSCode SecretStorage API with `context.secrets.get()` which could potentially expose sensitive information.",
+        "code_reference": "extension/extension.js (chunk 2/12)",
+        "line_hint": 361,
+        "target": "extension/extension.js (chunk 2/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_CREDENTIAL_LEAKAGE",
+        "description": "Access to VSCode's SecretStorage API which could expose sensitive information.",
+        "code_reference": "line 361",
+        "line_hint": 361,
+        "target": "extension/extension.js (chunk 3/12)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "Use of `require('child_process')` which allows arbitrary command execution.",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 3/12)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "Extension accesses VSCode secrets which is not mentioned in its advertised functionality.",
+        "code_reference": "line 361",
+        "line_hint": 361,
+        "target": "extension/extension.js (chunk 3/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_CREDENTIAL_LEAKAGE",
+        "description": "Access to VSCode SecretStorage API which could expose sensitive credentials.",
+        "code_reference": "line 361",
+        "line_hint": 361,
+        "target": "extension/extension.js (chunk 4/12)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "Use of `require('child_process')` which enables arbitrary command execution.",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 4/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_CREDENTIAL_LEAKAGE",
+        "description": "Access to VS Code SecretStorage API which could expose sensitive credentials.",
+        "code_reference": "line 361",
+        "line_hint": 361,
+        "target": "extension/extension.js (chunk 5/12)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "Use of `require('child_process')` which could enable arbitrary command execution.",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 5/12)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "Usage of `require('child_process')` which can execute arbitrary shell commands.",
+        "code_reference": "extension/extension.js (chunk 6/12), line 4",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 6/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Accessing VS Code's secret storage API with a hardcoded secret key pattern.",
+        "code_reference": "extension/extension.js (chunk 6/12), line 361",
+        "line_hint": 361,
+        "target": "extension/extension.js (chunk 6/12)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_CREDENTIAL_LEAKAGE",
+        "description": "Usage of `context.secrets.get()` which could expose sensitive user credentials.",
+        "code_reference": "line 361",
+        "line_hint": 361,
+        "target": "extension/extension.js (chunk 10/12)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "Use of `require('child_process')` which enables arbitrary command execution, posing a high risk for potential misuse.",
+        "code_reference": "line 4",
+        "line_hint": 4,
+        "target": "extension/extension.js (chunk 10/12)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits suspicious behavior by including functionality to discover Java installations and using 'child_process' for command execution, which are not aligned with its advertised purpose of debugging MySQL routines. This suggests potential malicious intent or a significant capability mismatch.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "6 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-08-12T14:01:46.397Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-13T10:55:06.452415+00:00Z"
+}

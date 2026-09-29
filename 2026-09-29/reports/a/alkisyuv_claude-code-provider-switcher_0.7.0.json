@@ -1,0 +1,259 @@
+{
+  "extension_id": "alkisyuv.claude-code-provider-switcher",
+  "display_name": "Claude Code Provider Switcher",
+  "version": "0.7.0",
+  "publisher": {
+    "name": "alkisyuv",
+    "verified": false
+  },
+  "vsix_sha256": "52f202b2f05c258eb306d66a92ab8e4b2dfcf4ad47256fd109d41beb9583cc30",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6225,
+    "ai_vibe": 0.85,
+    "static": 0.85,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 38,
+        "snippet": "var import_node_child_process2 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 571,
+        "snippet": "var import_node_child_process = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 583,
+        "snippet": "var execFileP = (0, import_node_util.promisify)(import_node_child_process.execFile);"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 1467,
+        "snippet": "(0, import_node_child_process2.execFile)(\"pgrep\", [\"-P\", String(process.pid), \"-fl\"], (err, stdout) => {"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.anthropic.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 580,
+      "context": "var CLAUDE_USAGE_URL = \"https://api.anthropic.com/api/oauth/usage\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/20)",
+        "summary": "The code appears to be a legitimate utility for managing Claude Code provider configurations and sessions. It reads local session files from ~/.claude/ to determine active sessions, which is consistent with its stated purpose. The use of child_process is noted but appears to be for process liveness checks (pidAlive) rather than arbitrary command execution in this chunk. The network call to api.anthropic.com is expected for an Anthropic provider switcher. No signs of data exfiltration, credential harvesting, or obfuscation were found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/20)",
+        "summary": "The code in this chunk is benign and consistent with the extension's advertised functionality as a 'Claude Code Provider Switcher'. It performs local file system operations to read session metadata and transcript files from the user's home directory (`~/.claude`), which is necessary for tracking active Claude Code sessions. There are no signs of data exfiltration, credential harvesting, obfuscation, or malicious network activity in this segment. The flagged configuration update is a standard VS Code pattern for saving extension settings."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 7/20)",
+        "summary": "This extension exhibits critical malicious behavior by actively harvesting credentials from the macOS Keychain using `child_process` to execute the `security` command. This behavior is completely disproportionate to its advertised function as a 'Provider Switcher'. The presence of network calls to Anthropic's API further suggests a potential exfiltration channel or a mechanism to validate stolen credentials. The code is not obfuscated, making the malicious intent clear. This is a high-confidence malware detection."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 10/20)",
+        "summary": "The analyzed code chunk is consistent with a legitimate VS Code extension designed to manage AI provider configurations and check usage limits. It implements a local HTTP proxy for vision models and fetches usage data from known AI provider APIs (Anthropic, Z.ai, Kimi). The flagged configuration update is a false positive related to the extension's core functionality. No malicious patterns such as credential harvesting, obfuscated payloads, or unauthorized network exfiltration were detected."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 13/20)",
+        "summary": "The analyzed code chunk is part of a local HTTP proxy server that forwards API requests to Anthropic's API. The logic is transparent, handles errors gracefully (failing open to the original provider), and manages configuration settings appropriately for its function. There are no signs of credential harvesting, obfuscation, reverse shells, or data exfiltration to unauthorized endpoints. The static rule hit regarding configuration updates is a false positive in the context of an extension managing its own feature flags."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 14/20)",
+        "summary": "This code chunk implements a local HTTP proxy server bound to 127.0.0.1, likely used to route requests for the 'Claude Code Provider Switcher' extension. It includes logic for handling port conflicts between multiple VS Code windows (host/guest mode) and health checks. The network activity is strictly local (localhost), and the configuration access is limited to the extension's own namespace. The reference to `api.anthropic.com` in the full package is consistent with the extension's stated purpose of switching Claude providers. No malicious indicators such as data exfiltration, credential harvesting, or remote code execution were found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 17/20)",
+        "summary": "The analyzed code chunk is part of a VS Code extension designed to switch providers for Claude Code. The code handles process management for Claude CLI instances, specifically restarting them when the provider configuration changes. The use of `child_process` is limited to managing known child processes spawned by the extension itself, which is a legitimate and necessary function for this type of tool. There are no signs of credential harvesting, data exfiltration, obfuscation, or other malicious behaviors. The network call to `api.anthropic.com` is expected for an extension interacting with the Anthropic API. The overall behavior aligns with the extension's stated purpose."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a provider switcher that likely only needs to activate when the user invokes a command or when the Claude Code extension is active. While not malicious, this increases the attack surface slightly by running code at startup.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 1/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension imports 'node:child_process' in the main extension file. While the visible code in this chunk does not show execution of arbitrary commands, the presence of this module in a 'provider switcher' is a potential risk if used for shell-outs not described in the README. However, given the context of managing local Claude sessions, it may be used for legitimate process management (e.g., checking PIDs).",
+        "code_reference": "var import_node_child_process2 = require(\"node:child_process\");",
+        "line_hint": 48,
+        "target": "extension/dist/extension.js (chunk 1/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `workspace.getConfiguration(\"gephyra\").update(` as potential tampering. However, this is standard VS Code API usage for persisting extension-specific user preferences (likely provider settings or API keys) to the user's configuration. It is not malicious tampering.",
+        "code_reference": "workspace.getConfiguration(\"gephyra\").update(",
+        "line_hint": 1081,
+        "target": "extension/dist/extension.js (chunk 2/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code reads from `~/.claude/sessions` and parses `.jsonl` transcript files. This is consistent with the extension's stated purpose of managing 'Claude Code' provider sessions and switching between them. It accesses local state files specific to the Claude Code CLI tool, which is expected behavior for an integration/switcher extension.",
+        "code_reference": "path.join(os.homedir(), \".claude\", \"sessions\")",
+        "line_hint": 10,
+        "target": "extension/dist/extension.js (chunk 2/20)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The code explicitly accesses the macOS Keychain to retrieve credentials for 'Claude Code'. It uses `child_process.execFile` to run `security find-generic-password` targeting the service 'Claude Code-credentials'. This is a classic credential theft pattern, extracting API keys or OAuth tokens stored in the system keychain.",
+        "code_reference": "const args = [\"find-generic-password\", \"-s\", KEYCHAIN_SERVICE]; ... await execFileP(\"security\", args, ...)",
+        "line_hint": "approx 1050-1060",
+        "target": "extension/dist/extension.js (chunk 7/20)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Provider Switcher' (UI/Config tool). However, the code contains logic to read local credential stores (Keychain) and make network calls to `api.anthropic.com`. A simple switcher does not need to harvest OS-level credentials or poll external APIs for usage metrics in this manner. This indicates hidden functionality beyond its stated purpose.",
+        "code_reference": "var CLAUDE_USAGE_URL = \"https://api.anthropic.com/api/oauth/usage\";",
+        "line_hint": "approx 1020",
+        "target": "extension/dist/extension.js (chunk 7/20)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The code imports `node:child_process` and uses `execFile` to execute system binaries (`security`). While `execFile` is safer than `exec`, using it to query the OS keychain is a high-risk behavior for a VS Code extension, especially when combined with the credential harvesting intent.",
+        "code_reference": "var import_node_child_process = require(\"node:child_process\"); ... await execFileP(\"security\", args, ...)",
+        "line_hint": "approx 1010, 1055",
+        "target": "extension/dist/extension.js (chunk 7/20)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION_RISK",
+        "description": "The code defines a URL to `api.anthropic.com` for usage checks. While this domain is legitimate for Anthropic, the combination of reading local credentials (Keychain) and having network egress capabilities creates a potential vector for exfiltrating the stolen credentials if the code is modified or if the 'usage' check is a cover for data transmission.",
+        "code_reference": "var CLAUDE_USAGE_URL = \"https://api.anthropic.com/api/oauth/usage\";",
+        "line_hint": "approx 1020",
+        "target": "extension/dist/extension.js (chunk 7/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration(\"gephyra\").update(` as potential tampering. However, in the context of a 'Provider Switcher' extension, updating its own configuration namespace to persist user-selected provider settings is standard and expected behavior, not malicious tampering.",
+        "code_reference": "workspace.getConfiguration(\"gephyra\").update(",
+        "line_hint": 1081,
+        "target": "extension/dist/extension.js (chunk 10/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ACTIVITY",
+        "description": "The code connects to `api.anthropic.com` and other provider endpoints (z.ai, kimi.com). This is consistent with the extension's stated purpose of managing and checking usage for various AI coding providers. No exfiltration of local secrets to third-party servers was observed in this chunk.",
+        "code_reference": "https://api.anthropic.com/v1/messages",
+        "line_hint": 580,
+        "target": "extension/dist/extension.js (chunk 10/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration(\"gephyra\").update` as potential tampering. However, the code explicitly sets `visionProxy` to `false` within a cleanup/disposal context (implied by the `void` and typical extension lifecycle patterns). This is standard behavior for an extension managing its own configuration state, not malicious tampering.",
+        "code_reference": "void vscode3.workspace.getConfiguration(\"gephyra\").update(\"visionProxy\", false, vscode3.ConfigurationTarget.Global);",
+        "line_hint": 1081,
+        "target": "extension/dist/extension.js (chunk 13/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_EGRESS",
+        "description": "The code makes HTTPS requests to `api.anthropic.com`. This is consistent with the extension's stated purpose of acting as a provider switcher/proxy for Claude Code. The code correctly handles authentication headers (`x-api-key`) and does not exfiltrate data to third-party or suspicious domains.",
+        "code_reference": "const url = new URL(ANTHROPIC_MESSAGES_URL); ... https.request(...)",
+        "line_hint": 580,
+        "target": "extension/dist/extension.js (chunk 13/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `workspace.getConfiguration(\"gephyra\").update(` as potential tampering. However, the code context shows this is part of a local proxy management system (likely for routing vision requests to a local Anthropic-compatible endpoint). Reading and updating the extension's own configuration namespace (`gephyra`) to manage its internal state (host/guest mode, port binding) is standard behavior for a VS Code extension managing local services. There is no evidence of modifying user-critical settings or exfiltrating data.",
+        "code_reference": "vscode3.workspace.getConfiguration(\"gephyra\").get(\"visionProxy\", false)",
+        "line_hint": 1081,
+        "target": "extension/dist/extension.js (chunk 14/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "PROCESS_MANAGEMENT",
+        "description": "The code uses `child_process.execFile` to run `pgrep` and `process.kill` to manage child processes. However, the logic is strictly scoped to terminating processes that match specific patterns related to the extension's own functionality (`anthropic.claude-code` or `gephyra-wrapper`). This is consistent with the extension's purpose of managing Claude Code CLI sessions and restarting them. It does not appear to be malicious process injection or arbitrary command execution.",
+        "code_reference": "restartClaudeCli(ws) function",
+        "line_hint": "1085",
+        "target": "extension/dist/extension.js (chunk 17/20)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CONFIG_UPDATE",
+        "description": "The static scanner flagged `workspace.getConfiguration(\"gephyra\").update(`. This is standard behavior for an extension that needs to persist its state or settings (e.g., the currently selected provider). It is not tampering with user settings in a malicious way, but rather updating its own configuration namespace.",
+        "code_reference": "workspace.getConfiguration(\"gephyra\").update(",
+        "line_hint": "1081",
+        "target": "extension/dist/extension.js (chunk 17/20)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code appears to be a legitimate utility for managing Claude Code provider configurations and sessions. It reads local session files from ~/.claude/ to determine active sessions, which is consistent with its stated purpose. The use of child_process is noted but appears to be for process liveness checks (pidAlive) rather than arbitrary command execution in this chunk. The network call to api.anthropic.com is expected for an Anthropic provider switcher. No signs of data exfiltration, credential harvesting, or obfuscation were found in this chunk.",
+  "escalation_reasons": [],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-17T20:01:51.06Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-17T21:00:03.372712+00:00Z"
+}

@@ -1,0 +1,279 @@
+{
+  "extension_id": "skathuria.ai-architecture-review",
+  "display_name": "AI Architecture Review Board",
+  "version": "0.2.0",
+  "publisher": {
+    "name": "skathuria",
+    "verified": false
+  },
+  "vsix_sha256": "29882316806e5cc79466a6be7308501254fa88ea5600ef3b7e5dec0a4cc46dd9",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6425000000000001,
+    "ai_vibe": 0.8,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 59,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/extension.js",
+        "line": 164,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/providers/ReviewWebviewViewProvider.js",
+        "line": 278,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/services/ClaudeModelResolver.js",
+        "line": 41,
+        "snippet": "SECRET = 'aiArchReview.claudeApiKey'"
+      }
+    ],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'standardwebhooks' has 'prepare': yarn run build",
+        "file": "extension/node_modules/standardwebhooks/package.json",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.4,
+    "confidence": 0.7,
+    "blocks_parsed": 11,
+    "blocks_seen": 11,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/4)",
+        "summary": "The extension exhibits critical risk due to accessing VS Code secrets storage without proper justification in its documentation. This indicates a potential capability disconnect and poses a risk of exposing sensitive information."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/4)",
+        "summary": "The extension exhibits critical-risk indicators related to potential credential leakage through the use of `context.secrets.get()`. While the extension's stated purpose is legitimate, the presence of these functions raises concerns about how secrets are being handled. Further investigation is required to assess if this usage is appropriate for the extension's functionality."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 3/4)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VS Code's secret storage API, which could expose user credentials. While the extension's purpose might justify some secret handling, the implementation raises concerns about potential misuse of stored credentials. The code also prompts for an API key and stores it, which, if not handled securely, could lead to credential leakage."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 4/4)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VS Code's secret storage API, which could expose sensitive API keys. While the functionality aligns with its purpose, the handling of secrets poses a significant security risk."
+      },
+      {
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 1/11)",
+        "summary": "The extension exhibits a potential security risk by accessing VS Code's secret storage without clear justification in its advertised functionality. While the overall code appears legitimate, the handling of secrets requires careful review to ensure no sensitive data is mishandled."
+      },
+      {
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 2/11)",
+        "summary": "The extension exhibits suspicious behavior by accessing VS Code's secret storage API without justification in its stated purpose, indicating a potential capability disconnect or unauthorized functionality."
+      },
+      {
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 3/11)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VS Code's secret storage API, which is inconsistent with its stated purpose of facilitating AI architecture reviews. This indicates potential malicious intent or a significant capability disconnect."
+      },
+      {
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 4/11)",
+        "summary": "The extension appears to be a legitimate VS Code extension for AI architecture reviews. The code analyzed does not exhibit any suspicious or malicious behavior. The static analysis flagged a potential credential access pattern, but upon closer inspection, the code does not appear to misuse VS Code's secret storage. The extension's functionality aligns with its stated purpose, and no critical-risk indicators were found."
+      },
+      {
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 5/11)",
+        "summary": "The extension accesses VS Code's secret storage API to retrieve an API key, which could indicate potential credential harvesting. While this might be justified for legitimate functionality, it raises concerns given the extension's stated purpose as an AI architecture review tool. This finding suggests a capability disconnect or potential malicious behavior."
+      },
+      {
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 6/11)",
+        "summary": "The extension handles API keys through the VS Code secrets API, which is necessary for its AI functionality but poses a critical risk if not securely managed. The code aligns with the extension's stated purpose, but the handling of sensitive data requires careful review to ensure security."
+      },
+      {
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 7/11)",
+        "summary": "The extension exhibits a critical capability disconnect by accessing VS Code's secret storage API, which is not aligned with its stated purpose of AI architecture review. This suggests potential unauthorized access to sensitive user data."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_LEAKAGE",
+        "description": "The extension accesses VS Code secrets storage using `context.secrets.get()`, which could expose sensitive information like API keys.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 59,
+        "target": "extension/out/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension's README and marketplace description do not mention handling API keys or secrets, but the code accesses secret storage, indicating a capability disconnect.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 59,
+        "target": "extension/out/extension.js (chunk 1/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Usage of `context.secrets.get()` which could indicate potential credential harvesting or storage of sensitive information.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 59,
+        "target": "extension/out/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Another instance of `context.secrets.get()` found on line 164, which may indicate multiple points of potential credential exposure.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 164,
+        "target": "extension/out/extension.js (chunk 2/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "The extension accesses VS Code's secret storage API, which could expose sensitive user credentials if misused.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 59,
+        "target": "extension/out/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Another instance where the extension reads from VS Code's secret storage API, potentially accessing sensitive information.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 164,
+        "target": "extension/out/extension.js (chunk 3/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "The extension accesses VS Code's secret storage API using `context.secrets.get()`, which could expose sensitive API keys if misused.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 59,
+        "target": "extension/out/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Another instance of accessing VS Code's secret storage API using `context.secrets.get()`, potentially exposing sensitive credentials.",
+        "code_reference": "extension/out/extension.js",
+        "line_hint": 164,
+        "target": "extension/out/extension.js (chunk 4/4)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_LEAKAGE",
+        "description": "The code uses `context.secrets.get()` which could access VS Code's secret storage, potentially exposing sensitive information.",
+        "code_reference": "extension/out/providers/ReviewWebviewViewProvider.js",
+        "line_hint": 278,
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 1/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension's use of `context.secrets.get()` is not explicitly described in the marketplace listing, raising concerns about hidden capabilities.",
+        "code_reference": "extension/out/providers/ReviewWebviewViewProvider.js",
+        "line_hint": 278,
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 1/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension accesses VS Code's secret storage API (context.secrets.get()) which is not mentioned in the extension's README or stated purpose, creating a capability disconnect.",
+        "code_reference": "extension/out/providers/ReviewWebviewViewProvider.js",
+        "line_hint": 278,
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 2/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_CREDENTIAL_LEAKAGE",
+        "description": "The extension accesses VS Code's secret storage API, which could expose sensitive information.",
+        "code_reference": "extension/out/providers/ReviewWebviewViewProvider.js",
+        "line_hint": 278,
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 3/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_CREDENTIAL_LEAKAGE",
+        "description": "Access to VS Code secret storage API for retrieving Claude API key, which could expose sensitive information.",
+        "code_reference": "extension/out/providers/ReviewWebviewViewProvider.js",
+        "line_hint": 278,
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 5/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "The extension stores an API key using the VS Code secrets API, which could potentially expose sensitive information if misused.",
+        "code_reference": "this._context.secrets.store(ClaudeModelResolver_1.CLAUDE_API_KEY_SECRET, key)",
+        "line_hint": "Line 278",
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 6/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension accesses VS Code's secret storage API, which is inconsistent with its stated purpose of AI architecture review. This indicates potential unauthorized access to user credentials or secrets.",
+        "code_reference": "extension/out/providers/ReviewWebviewViewProvider.js",
+        "line_hint": 278,
+        "target": "extension/out/providers/ReviewWebviewViewProvider.js (chunk 7/11)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits critical risk due to accessing VS Code secrets storage without proper justification in its documentation. This indicates a potential capability disconnect and poses a risk of exposing sensitive information.",
+  "escalation_reasons": [
+    "4 CRITICAL findings",
+    "8 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-13T06:19:25.673Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-13T06:45:14.231205+00:00Z"
+}
