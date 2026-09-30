@@ -1,0 +1,216 @@
+{
+  "extension_id": "DevNote.devnote-vscode",
+  "display_name": "DevNote - Code Snippets & Notes Manager",
+  "version": "1.0.2",
+  "publisher": {
+    "name": "DevNote",
+    "verified": false
+  },
+  "vsix_sha256": "b1cd22106dd93518e4ff302634964cb86021d9a50b20f2bc1cffcc3cfb5803e7",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/services/authService.js",
+        "line": 54,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [],
+    "total": 5
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "dev-notes-phi-weld.vercel.app",
+      "source_file": "extension/package.json",
+      "line": 30,
+      "context": "\"default\": \"https://dev-notes-phi-weld.vercel.app\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "your-devnote.vercel.app",
+      "source_file": "extension/out/extension.js",
+      "line": 151,
+      "context": "placeHolder: 'http://127.0.0.1:3000 \u0e2b\u0e23\u0e37\u0e2d https://your-devnote.vercel.app'",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/out/services/authService.js (chunk 1/2)",
+        "summary": "The code is a standard authentication service for a note-taking extension. It correctly uses VS Code's SecretStorage API to manage JWT tokens, which is the recommended secure practice. The static scanner hits for 'credential theft' and 'config tampering' are false positives resulting from the legitimate use of VS Code APIs for the extension's own functionality. The network endpoints are Vercel-hosted, which is plausible for a small-scale or indie extension. No malicious behavior, obfuscation, or capability disconnects were found in this file."
+      },
+      {
+        "target": "extension/out/services/authService.js (chunk 2/2)",
+        "summary": "The extension exhibits high-risk behavior typical of supply-chain attacks. It reads from VS Code's SecretStorage, which is a prime target for credential theft. It communicates with unknown, low-reputation Vercel domains (`dev-notes-phi-weld.vercel.app`), which are likely used for exfiltrating data or receiving commands. The ability to programmatically update global settings to change the server URL adds a layer of persistence and evasion. While the code snippet provided is small, the combination of secret access, unknown network endpoints, and config tampering strongly suggests malicious intent, likely aimed at stealing user credentials or API keys stored in VS Code."
+      },
+      {
+        "target": "extension/out/services/apiService.js (chunk 1/3)",
+        "summary": "The code is a standard API service class for a note-taking extension. It implements a fallback mechanism for connecting to a backend server (Vercel or local development instances). The network calls are proportional to the extension's advertised functionality (syncing notes). The hardcoded IP `127.0.0.1` is a standard localhost fallback for development, not a C2 beacon. There are no signs of obfuscation, credential theft, or malicious intent."
+      },
+      {
+        "target": "extension/out/services/apiService.js (chunk 2/3)",
+        "summary": "The analyzed code chunk is a standard API service class for a note-taking extension. It implements CRUD operations (Get, Create, Update, Delete) for folders and notes, interacting with a remote backend. The logic is straightforward, using standard HTTP requests and data mapping. There are no signs of obfuscation, credential harvesting, system fingerprinting, or malicious payload execution. The hardcoded localhost IP is likely a development default, and the external domains align with the extension's documented functionality. The code is benign."
+      },
+      {
+        "target": "extension/out/services/apiService.js (chunk 3/3)",
+        "summary": "The provided code chunk is a standard API service implementation for a note-taking extension. It contains methods for deleting folders and notes via HTTP DELETE requests. The only static rule hit was a hardcoded localhost IP, which is benign in this context. The code aligns perfectly with the extension's stated purpose of managing notes and snippets. No malicious behavior, obfuscation, or credential harvesting patterns were found."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `context.secrets.get` as credential theft. However, the code explicitly uses `vscode.SecretStorage` to manage the extension's own JWT token for the 'DevNote' service. This is the standard, secure, and intended pattern for VS Code extensions to store user credentials securely. It is not exfiltrating credentials to a third party; it is retrieving them to authenticate with the extension's own backend.",
+        "code_reference": "async getToken() { return await this.context.secrets.get(AuthService.TOKEN_KEY); }",
+        "line_hint": 54,
+        "target": "extension/out/services/authService.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `workspace.getConfiguration('devnote').update` as tampering. The code reads configuration to determine the server URL. While `update` is mentioned in the scanner hit, the visible code in this chunk only shows `get`. Even if `update` were used elsewhere, updating the extension's own configuration namespace (`devnote`) is standard behavior for user settings, not malicious tampering with system or other extension settings.",
+        "code_reference": "const configUrl = vscode.workspace.getConfiguration('devnote').get('serverUrl');",
+        "line_hint": 84,
+        "target": "extension/out/services/authService.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension connects to `dev-notes-phi-weld.vercel.app` and `your-devnote.vercel.app`. These are Vercel-hosted domains. While Vercel is a legitimate hosting provider, the domain names appear to be user-generated subdomains rather than a corporate domain. This is common for indie extensions but warrants monitoring to ensure the backend does not change behavior. The connection is consistent with the 'DevNote' service described in the README.",
+        "code_reference": "static DEFAULT_SERVER_URL = 'https://dev-notes-phi-weld.vercel.app';",
+        "line_hint": 48,
+        "target": "extension/out/services/authService.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code accesses `context.secrets.get()`, which is the standard API for retrieving sensitive data stored in VS Code's SecretStorage. While this is a legitimate API, in the context of a 'Note Manager' extension, it is highly suspicious if the extension is not explicitly designed to manage credentials. More critically, the combination of reading secrets and the presence of unknown external domains suggests potential exfiltration of user tokens or API keys stored in VS Code.",
+        "code_reference": "context.secrets.get(",
+        "line_hint": 54,
+        "target": "extension/out/services/authService.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION_RISK",
+        "description": "The extension communicates with `dev-notes-phi-weld.vercel.app` and `your-devnote.vercel.app`. These are generic Vercel subdomains with 'unknown' reputation. For a note-taking extension, sending data to an unverified, non-official backend is a major red flag for data exfiltration. The name 'phi-weld' does not correspond to a known legitimate service provider for DevNote.",
+        "code_reference": "dev-notes-phi-weld.vercel.app",
+        "line_hint": null,
+        "target": "extension/out/services/authService.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CONFIG_TAMPERING",
+        "description": "The code programmatically updates the global VS Code configuration (`workspace.getConfiguration('devnote').update(...)`) to set the `serverUrl`. This allows the extension to redirect traffic or change behavior globally without explicit user interaction for each change, which can be used to pivot to a malicious C2 server if the initial domain is taken down or if the extension is updated.",
+        "code_reference": "workspace.getConfiguration('devnote').update('serverUrl', cleanUrl, vscode.ConfigurationTarget.Global)",
+        "line_hint": 84,
+        "target": "extension/out/services/authService.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a 'Note and Code Snippet Manager'. While it uses JWT auth (legitimate for syncing notes), the use of `SecretStorage` combined with unknown external Vercel endpoints raises the question of whether it is harvesting other secrets or if the 'notes' themselves are being used as a vector for data exfiltration. The disconnect lies in the high-risk network endpoints for a simple CRUD note app.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/services/authService.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension connects to a hardcoded Vercel domain (`dev-notes-phi-weld.vercel.app`) and localhost ports. This is consistent with the extension's stated purpose of syncing notes to a backend server. The use of a Vercel subdomain is common for small-scale or hobbyist backend deployments. No evidence of C2 or exfiltration to third-party trackers.",
+        "code_reference": "const candidateUrls = Array.from(new Set([ currentUrl, 'https://dev-notes-phi-weld.vercel.app', 'http://127.0.0.1:3000', 'http://localhost:3000' ].filter(Boolean)));",
+        "line_hint": 22,
+        "target": "extension/out/services/apiService.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "CREDENTIAL_HANDLING",
+        "description": "The code sends user credentials (email/password) to the API endpoint for login. This is expected behavior for an authentication flow. The token is retrieved from `authService` (likely VS Code SecretStorage as per README) and attached to requests. No local credential harvesting or exfiltration to unauthorized parties is observed.",
+        "code_reference": "const res = await this.request('/api/auth/login', { method: 'POST', body: { email, password }, requiresAuth: false });",
+        "line_hint": 85,
+        "target": "extension/out/services/apiService.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "HARDCODED_ENDPOINT",
+        "description": "The code references a hardcoded local IP address 'http://127.0.0.1:3000'. In the context of a development tool, this is likely a default localhost URL for a local development server or mock API, rather than a Command and Control (C2) endpoint. However, hardcoded IPs should generally be configurable via settings.",
+        "code_reference": "http://127.0.0.1:3000",
+        "line_hint": 22,
+        "target": "extension/out/services/apiService.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension communicates with external Vercel domains ('dev-notes-phi-weld.vercel.app', 'your-devnote.vercel.app'). These appear to be the backend services for the 'DevNote' service described in the README. While the domains have unknown reputation, the behavior is consistent with the extension's stated purpose of syncing notes to a server.",
+        "code_reference": "dev-notes-phi-weld.vercel.app, your-devnote.vercel.app",
+        "line_hint": null,
+        "target": "extension/out/services/apiService.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Hardcoded IP 127.0.0.1:3000 detected. This is a standard localhost address typically used for local development or testing against a local backend instance. It does not indicate C2 or external exfiltration.",
+        "code_reference": "'http://127.0.0.1:3000'",
+        "line_hint": 22,
+        "target": "extension/out/services/apiService.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a standard authentication service for a note-taking extension. It correctly uses VS Code's SecretStorage API to manage JWT tokens, which is the recommended secure practice. The static scanner hits for 'credential theft' and 'config tampering' are false positives resulting from the legitimate use of VS Code APIs for the extension's own functionality. The network endpoints are Vercel-hosted, which is plausible for a small-scale or indie extension. No malicious behavior, obfuscation, or capability disconnects were found in this file.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 11,
+    "published_date": "2026-08-17T13:23:35.32Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-17T17:52:02.497256+00:00Z"
+}

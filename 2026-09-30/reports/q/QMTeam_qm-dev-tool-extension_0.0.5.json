@@ -1,0 +1,289 @@
+{
+  "extension_id": "QMTeam.qm-dev-tool-extension",
+  "display_name": "QM Dev Tool by QMTeam",
+  "version": "0.0.5",
+  "publisher": {
+    "name": "QMTeam",
+    "verified": false
+  },
+  "vsix_sha256": "58b0b8021c5046353e77b5255c35aeb083c9e1cac46235a24bb48d0a4db53b05",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6775,
+    "ai_vibe": 0.9,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.cjs",
+        "line": 234,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.cjs",
+        "line": 293,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.cjs",
+        "line": 480,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.cjs",
+        "line": 36,
+        "snippet": "var cp = __toESM(require(\"node:child_process\"), 1);"
+      }
+    ],
+    "total": 7
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "your-domain.atlassian.net",
+      "source_file": "extension/dist/extension.cjs",
+      "line": 252,
+      "context": "prompt: \"Enter Jira site URL (example: https://your-domain.atlassian.net)\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "id.atlassian.com",
+      "source_file": "extension/dist/extension.cjs",
+      "line": 269,
+      "context": "await vscode.env.openExternal(vscode.Uri.parse(\"https://id.atlassian.com/manage-profile/security/api-tokens\"));",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.9,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.cjs (chunk 1/10)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VSCode's secret storage API without disclosure in its advertised features, indicating potential malicious activity or significant security mismanagement."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 2/10)",
+        "summary": "The extension exhibits critical capability disconnects by accessing VS Code's secret storage API multiple times without justification in its stated purpose, raising concerns about potential credential theft or unauthorized access."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 3/10)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VS Code's secret storage API without justification in its documentation. This suggests potential malicious intent or a significant capability disconnect from its advertised features."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 4/10)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VSCode's SecretStorage API, which can potentially expose sensitive user credentials. While this activity may be legitimate for Jira integration, it raises concerns about credential handling and storage practices. The extension's use of this API could pose a significant risk if misused."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 5/10)",
+        "summary": "The extension exhibits suspicious behavior by accessing VS Code's SecretStorage API for Jira credentials and using potentially risky command execution. While the functionality aligns with its stated purpose, the handling of sensitive credentials and use of `child_process.exec()` raise security concerns. The risk is elevated due to the potential for credential exposure and command injection, though no direct evidence of malicious intent is found in the provided code."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 6/10)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VS Code's SecretStorage API, which could potentially expose sensitive user credentials. While this might be legitimate for handling Jira credentials, it requires careful handling to prevent unintended exposure. The extension's functionality, including Jira integration and build management, does not inherently justify this level of access, raising concerns about capability alignment with its stated purpose."
+      },
+      {
+        "target": "extension/dist/extension.cjs (chunk 7/10)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VS Code's SecretStorage API, potentially exposing user credentials. While the feature may align with its Jira integration, the access pattern is a significant capability disconnect from its stated purpose, raising concerns about malicious intent or poor security practices."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_CREDENTIAL_LEAKAGE",
+        "description": "The extension accesses VSCode's secret storage API multiple times, which could expose sensitive user credentials.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 234,
+        "target": "extension/dist/extension.cjs (chunk 1/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension's README and marketplace description do not mention handling of secrets or credential storage, but the code accesses VSCode's secret storage API.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 234,
+        "target": "extension/dist/extension.cjs (chunk 1/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension accesses VS Code's secret storage API (context.secrets.get()) which is not justified by its stated purpose of build running, Jira integration, and AI code reviews. This indicates potential credential harvesting or exfiltration.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 234,
+        "target": "extension/dist/extension.cjs (chunk 2/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension accesses VS Code's secret storage API (context.secrets.get()) again, further indicating unauthorized credential access.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 293,
+        "target": "extension/dist/extension.cjs (chunk 2/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension accesses VS Code's secret storage API (context.secrets.get()) a third time, reinforcing concerns about unauthorized credential handling.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 480,
+        "target": "extension/dist/extension.cjs (chunk 2/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRET_CREDENTIAL_LEAKAGE",
+        "description": "The extension accesses VS Code's secret storage API using `context.secrets.get()`, which could expose sensitive credentials. This is flagged as potential credential harvesting.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 234,
+        "target": "extension/dist/extension.cjs (chunk 3/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension's README and marketplace listing do not mention handling of secrets or credential storage, but the code accesses VS Code's secret storage API. This is a significant capability disconnect.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 234,
+        "target": "extension/dist/extension.cjs (chunk 3/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which can access sensitive user credentials.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 234,
+        "target": "extension/dist/extension.cjs (chunk 4/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which can access sensitive user credentials.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 293,
+        "target": "extension/dist/extension.cjs (chunk 4/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Reading from VSCode SecretStorage API which can access sensitive user credentials.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 480,
+        "target": "extension/dist/extension.cjs (chunk 4/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "The extension accesses VS Code's SecretStorage API using `context.secrets.get()` which could expose sensitive Jira API tokens if misused.",
+        "code_reference": "extension/dist/extension.cjs:234,293,480",
+        "line_hint": "234,293,480",
+        "target": "extension/dist/extension.cjs (chunk 5/10)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "LOLBINs & Stagers",
+        "description": "The extension uses `child_process.exec()` for command execution, which could potentially be exploited for arbitrary command execution if not properly sanitized.",
+        "code_reference": "extension/dist/extension.cjs: (chunk contains cp.exec usage)",
+        "line_hint": "approximate line",
+        "target": "extension/dist/extension.cjs (chunk 5/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "The extension accesses VS Code SecretStorage API using `context.secrets.get()` which could expose sensitive credentials.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 234,
+        "target": "extension/dist/extension.cjs (chunk 6/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "The extension accesses VS Code SecretStorage API using `context.secrets.get()` which could expose sensitive credentials.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 293,
+        "target": "extension/dist/extension.cjs (chunk 6/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "The extension accesses VS Code SecretStorage API using `context.secrets.get()` which could expose sensitive credentials.",
+        "code_reference": "extension/dist/extension.cjs",
+        "line_hint": 480,
+        "target": "extension/dist/extension.cjs (chunk 6/10)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "The extension accesses VS Code's SecretStorage API using `context.secrets.get()`, which could expose sensitive credentials if compromised.",
+        "code_reference": "extension/dist/extension.cjs:234,293,480",
+        "line_hint": 234,
+        "target": "extension/dist/extension.cjs (chunk 7/10)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension's stated purpose does not align with its capability to access sensitive user secrets via the SecretStorage API, raising concerns about potential credential misuse.",
+        "code_reference": "extension/dist/extension.cjs:234,293,480",
+        "line_hint": 234,
+        "target": "extension/dist/extension.cjs (chunk 7/10)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits critical-risk behavior by accessing VSCode's secret storage API without disclosure in its advertised features, indicating potential malicious activity or significant security mismanagement.",
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-08-12T13:15:36.403Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-13T08:43:11.631056+00:00Z"
+}

@@ -1,0 +1,230 @@
+{
+  "extension_id": "isArray.cursor-quota-tokens",
+  "display_name": "Cursor Quota & Token Monitor (Cursor \u914d\u989d\u4e0e Token \u76d1\u63a7)",
+  "version": "1.0.13",
+  "publisher": {
+    "name": "isArray",
+    "verified": false
+  },
+  "vsix_sha256": "fb4ecee3fb1bebb076745b778bc1b9bdd8e13813bfeb9ab366ede58c1c9f911c",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.621905126482615,
+    "ai_vibe": 0.95,
+    "static": 0.7076205059304601,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "infostealer_behavior",
+        "severity": "CRITICAL",
+        "description": "System fingerprinting API call",
+        "file": "extension/src/cursor_auth.js",
+        "line": 16,
+        "snippet": "os.platform()"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/cursor_auth.js",
+        "line": 4,
+        "snippet": "const { execSync } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/cursor_auth.js",
+        "line": 4,
+        "snippet": "const { execSync } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/src/cursor_auth.js",
+        "line": 4,
+        "snippet": "const { execSync } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/src/cursor_auth.js",
+        "line": 82,
+        "snippet": "const out = execSync(`python -c \"${script}\"`, { timeout: 4000, encoding: 'utf-8' }).trim();"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'execSync' pattern",
+        "file": "extension/src/cursor_auth.js",
+        "line": 92,
+        "snippet": "const out = execSync(`sqlite3 \"${dbPath}\" \"SELECT value FROM ItemTable WHERE key = 'cursorAuth/accessToken';\"`, {"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/cursor_auth.js",
+        "line": 4,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/views/panel.js",
+        "line": 130,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/views/panel.js",
+        "line": 131,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/views/panel.js",
+        "line": 252,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/views/panel.js",
+        "line": 253,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 17
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "cursor.com",
+      "source_file": "extension/src/cursor_api.js",
+      "line": 9,
+      "context": "this.baseUrl = 'https://cursor.com/api';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/src/cursor_auth.js",
+        "summary": "This extension is malicious. Despite being marketed as a simple quota monitor, it contains code specifically designed to steal the user's Cursor authentication token (`cursorAuth/accessToken`) from the local `state.vscdb` file. It employs multiple fallback methods (Node SQLite, Python, CLI) to ensure successful extraction and constructs a valid session header, indicating intent to use the stolen credentials for unauthorized access or data exfiltration. The use of `child_process` and the disconnect between the advertised 'monitor' functionality and the actual 'credential theft' capability confirm malicious intent."
+      },
+      {
+        "target": "extension/src/views/panel.js",
+        "summary": "The code is a standard Webview panel script for a VS Code extension that monitors Cursor AI usage quotas. It handles DOM updates, renders data passed from the extension host via `vscode.postMessage`, and includes standard utility functions for formatting numbers and escaping HTML. There are no network calls, file system access, credential harvesting, or obfuscated code in this file. The static rule hits regarding 'persistence_evasion' are false positives caused by the use of the HTML `hidden` attribute for UI toggling. The code is benign and consistent with the extension's advertised functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "The extension directly accesses and extracts the `cursorAuth/accessToken` from Cursor's local `state.vscdb` database. This token grants full access to the user's Cursor account, allowing the extension to impersonate the user, consume their quota, or access sensitive data. This is a classic credential theft pattern.",
+        "code_reference": "SELECT value FROM ItemTable WHERE key = 'cursorAuth/accessToken'",
+        "line_hint": 88,
+        "target": "extension/src/cursor_auth.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Quota & Token Monitor' (read-only metrics), but the code implements a full authentication session extraction mechanism (`getSession`) that constructs valid `WorkosCursorSessionToken` headers. This capability far exceeds the scope of a simple monitor and indicates intent to act as the user (e.g., for API abuse, data exfiltration, or account takeover).",
+        "code_reference": "const cookieHeader = `WorkosCursorSessionToken=${cookieValue}`;",
+        "line_hint": 156,
+        "target": "extension/src/cursor_auth.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The code uses `child_process.execSync` to execute external commands (`python` and `sqlite3`) to read the database. While the commands appear targeted, using shell execution to read local application data is a high-risk pattern that can be easily modified to execute arbitrary payloads or is indicative of a stager.",
+        "code_reference": "execSync(`python -c \"${script}\"`, ...)",
+        "line_hint": 102,
+        "target": "extension/src/cursor_auth.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`, which is overly aggressive for a utility that should only run when the user explicitly requests quota information. This allows the credential harvesting logic to run immediately upon VS Code startup without user interaction.",
+        "code_reference": "activationEvents: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/cursor_auth.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'persistence_evasion' due to the use of the `.hidden` property. This is a standard HTML DOM property used to toggle the visibility of UI elements (e.g., hiding a 'unavailable' badge when a feature is active). It is not related to file system persistence or hiding files from the OS.",
+        "code_reference": "poolEl.hidden = !visible;",
+        "line_hint": 130,
+        "target": "extension/src/views/panel.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While this is common for status bar or dashboard extensions to ensure immediate visibility, it is slightly broader than necessary for a tool that primarily requires user interaction to refresh data. However, given the extension's purpose of monitoring real-time quotas, this is a minor and acceptable design choice rather than a malicious indicator.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/src/views/panel.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is malicious. Despite being marketed as a simple quota monitor, it contains code specifically designed to steal the user's Cursor authentication token (`cursorAuth/accessToken`) from the local `state.vscdb` file. It employs multiple fallback methods (Node SQLite, Python, CLI) to ensure successful extraction and constructs a valid session header, indicating intent to use the stolen credentials for unauthorized access or data exfiltration. The use of `child_process` and the disconnect between the advertised 'monitor' functionality and the actual 'credential theft' capability confirm malicious intent.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "10 HIGH findings",
+    "Composite risk 0.62 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 32,
+    "published_date": "2026-09-13T10:08:19.647Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-16T04:29:20.382380+00:00Z"
+}

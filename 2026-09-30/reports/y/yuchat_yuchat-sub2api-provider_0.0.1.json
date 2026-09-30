@@ -1,0 +1,312 @@
+{
+  "extension_id": "yuchat.yuchat-sub2api-provider",
+  "display_name": "YuChat Sub2API Provider",
+  "version": "0.0.1",
+  "publisher": {
+    "name": "yuchat",
+    "verified": false
+  },
+  "vsix_sha256": "390a5a026adaeeeac69e337b8dbffc9768ce2f02ec10dd45b7a0829526d66af6",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6074999999999999,
+    "ai_vibe": 0.7,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": "context.secrets.get("
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 5,
+        "snippet": "method:\"POST\",headers:se(o,e,!1),body:JSON.stringify(r)}),p=await u.text();if(!u.ok)throw this.output.appendLine(\"[test] HTTP \"+u.status+\": \"+K(p,4e3)),this.output.show(!0),new Error(\"HTTP \"+u.status+"
+      }
+    ],
+    "total": 10
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "gateway.example.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 5,
+      "context": "`);if(!o)return;if(o===\"[DONE]\"){e.done?.();return}let i;try{i=JSON.parse(o)}catch{n.appendLine(`[warning] Could not parse SSE data: ${K(o,1e3)}`);return}e.handle(i)}async function $n(t,e,n,o,i,s,a){l",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.15,
+    "confidence": 0.85,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/33)",
+        "summary": "The extension exhibits potential security risks, including credential handling and suspicious network activity. While it aligns with its stated purpose, critical indicators necessitate closer scrutiny."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 3/33)",
+        "summary": "The extension exhibits critical risks related to credential handling and high-risk network activities. While its primary function appears legitimate, the use of VS Code's SecretStorage and connections to an untrusted domain raise concerns about potential misuse."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 11/33)",
+        "summary": "The extension exhibits critical-risk behavior by accessing VS Code's SecretStorage API, which could potentially expose sensitive credentials. Additionally, medium-risk indicators suggest possible directory traversal and VSCode configuration harvesting. While the extension's functionality aligns with its stated purpose, the handling of credentials requires careful review to ensure security."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 12/33)",
+        "summary": "The extension exhibits critical access to VS Code's SecretStorage API and high-risk network activities. While its purpose is legitimate, the implementation poses significant security risks, particularly regarding credential handling and potential data exfiltration. Immediate review of secret handling and network communication is recommended."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 18/33)",
+        "summary": "The extension exhibits critical handling of VS Code's SecretStorage API and potential data exfiltration patterns. While not definitively malicious, these indicators merit further investigation to ensure proper credential management and data handling practices."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 26/33)",
+        "summary": "The extension exhibits critical behavior by accessing VS Code's SecretStorage API for API keys, which poses a significant risk. Additionally, network activities and configuration harvesting raise concerns about potential unauthorized data transmission. While the extension's functionality aligns with its purpose, the handling of sensitive information requires careful review to mitigate risks."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 27/33)",
+        "summary": "The extension exhibits some concerning patterns, particularly around credential handling and network communication. While not definitively malicious, the code requires closer scrutiny to ensure it does not engage in unauthorized data exfiltration or credential misuse."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "The extension reads from VSCode SecretStorage API, which could expose sensitive API keys if misused.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Pattern suggesting data exfiltration detected in network calls.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Directory traversal paired with network send detected.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 1",
+        "target": "extension/dist/extension.js (chunk 1/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "The extension reads from VSCode SecretStorage API, which could expose sensitive API keys if misused.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 3/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Network calls to an untrusted domain (gateway.example.com) may indicate potential exfiltration or C2 activity.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 3/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Directory traversal paired with network send detected, which could be used for unintended file access and data transmission.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 1",
+        "target": "extension/dist/extension.js (chunk 3/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "The code accesses VS Code's SecretStorage API, which could expose sensitive credentials if misused.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 11/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Potential directory traversal paired with network send functionality detected.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 1",
+        "target": "extension/dist/extension.js (chunk 11/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Code harvests VSCode configuration and sends it over the network, which could expose sensitive settings.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 2",
+        "target": "extension/dist/extension.js (chunk 11/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "The extension accesses VS Code SecretStorage API which could expose sensitive API keys if misused.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 12/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Potential data exfiltration and VSCode configuration harvesting over network, which could send sensitive data if improperly handled.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 12/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Directory traversal paired with network send, which may indicate unauthorized file access or data transmission.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 1",
+        "target": "extension/dist/extension.js (chunk 12/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "The extension reads from VS Code's SecretStorage API, which could expose sensitive API keys if misused.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 18/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "data_exfiltration",
+        "description": "Pattern suggesting data exfiltration via POST method with JSON stringified data.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 18/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Directory traversal paired with network send detected in configuration handling.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 2",
+        "target": "extension/dist/extension.js (chunk 18/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "The extension accesses VS Code's SecretStorage API to retrieve and store API keys, which is flagged as a critical risk for potential credential theft.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 26/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "The extension makes network calls to a potentially unknown domain (gateway.example.com) which could indicate data exfiltration or unauthorized communication.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 26/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "The extension harvests VS Code configuration and sends it over the network, which could be misused for unauthorized data transmission.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 2",
+        "target": "extension/dist/extension.js (chunk 26/33)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "vscode_credential_theft",
+        "description": "Static analysis detected multiple calls to `context.secrets.get()`, which could indicate potential unauthorized access to VS Code's secret storage.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 27/33)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "network_activity",
+        "description": "Detected network calls to `https://gateway.example.com` which is not an official VS Code or extension API. This could indicate potential exfiltration or unauthorized communication.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 5",
+        "target": "extension/dist/extension.js (chunk 27/33)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "vscode_api_abuse",
+        "description": "Potential directory traversal paired with network send detected in the code, which could indicate unsafe file handling and data transmission.",
+        "code_reference": "extension/dist/extension.js",
+        "line_hint": "line 2",
+        "target": "extension/dist/extension.js (chunk 27/33)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits potential security risks, including credential handling and suspicious network activity. While it aligns with its stated purpose, critical indicators necessitate closer scrutiny.",
+  "escalation_reasons": [
+    "3 CRITICAL findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-14T06:49:59.003Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-14T07:26:11.209654+00:00Z"
+}
