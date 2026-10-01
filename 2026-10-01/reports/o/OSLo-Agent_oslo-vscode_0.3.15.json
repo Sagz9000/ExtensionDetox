@@ -1,0 +1,374 @@
+{
+  "extension_id": "OSLo-Agent.oslo-vscode",
+  "display_name": "OSLo Agent",
+  "version": "0.3.15",
+  "publisher": {
+    "name": "OSLo-Agent",
+    "verified": false
+  },
+  "vsix_sha256": "fd446885d3cb21b156f26b3fbcb1928d7c27e622a90054a8c6fa97b31daa7c66",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6149600586106521,
+    "ai_vibe": 0.95,
+    "static": 0.6798402344426084,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "HIDDEN_EXECUTABLE",
+        "severity": "CRITICAL",
+        "description": "File 'extension/bin/linux-arm64/oslo' has extension '' but contains ELF binary",
+        "file": "extension/bin/linux-arm64/oslo",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "HIDDEN_EXECUTABLE",
+        "severity": "CRITICAL",
+        "description": "File 'extension/bin/linux-x64/oslo' has extension '' but contains ELF binary",
+        "file": "extension/bin/linux-x64/oslo",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 42,
+        "snippet": "var import_node_child_process = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 60,
+        "snippet": "this.child = (0, import_node_child_process.spawn)(this.binary, [\"serve\"], { cwd: this.cwd, env: env2 });"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/webview.js",
+        "line": 1,
+        "snippet": ".postMessage(null)}):Dn=function(){La($l,0)};var Ol,Ra;function jl(e){Qr=e,Yr||(Yr=!0,Dn())}function Al(e,t){jn=La(function(){e(A.unstable_now())},t)}A.unstable_IdlePriority=5;A.unstable_ImmediatePrio"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/webview.js",
+        "line": 62,
+        "snippet": ".postprocess(p):p).catch(s);try{i.hooks&&(r=i.hooks.preprocess(r));let p=a(r,i);i.hooks&&(p=i.hooks.processAllTokens(p)),i.walkTokens&&this.walkTokens(p,i.walkToken"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/media/webview.js",
+        "line": 68,
+        "snippet": ".postMessage({type:\"setup_status\"}));return}if(y.type===\"sessions\"){u(Array.isArray(y.sessions)?y.sessions:[]);return}if(y.type===\"reset\"){aa(\"New conversation\");return}if(y.type===\"backend-error\"){Dr"
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "reactjs.org",
+      "source_file": "extension/media/webview.js",
+      "line": 625,
+      "context": "for (var t = \"https://reactjs.org/docs/error-decoder.html?invariant=\" + e, n = 1; n < arguments.length; n++) t += \"&args[]=\" + encodeURIComponent(arguments[n]);",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 8,
+    "blocks_seen": 8,
+    "summaries": [
+      {
+        "target": "extension/media/webview.js (chunk 1/11)",
+        "summary": "The extension 'OSLo Agent' presents a high risk primarily due to the inclusion of unbranded native ELF binaries (`oslo`) for Linux. While the JavaScript code appears to be a standard React-based webview UI for a coding agent, the native binaries are opaque and could execute arbitrary malicious code on the host system. The 'local execution' claim does not ensure safety if the bundled binaries are compromised. The static analysis hits for data exfiltration are false positives related to standard React internals. The critical risk lies in the unverified native executables."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 2/11)",
+        "summary": "The source code provided in this chunk is a standard, minified React DOM library and is benign. However, the static analysis of the entire VSIX package reveals CRITICAL indicators of malicious intent: the presence of hidden ELF binary executables for Linux (arm64 and x64) named 'oslo'. These binaries are not described in the extension's documentation and represent a significant security risk, as they can execute arbitrary code on the user's machine. The combination of a 'local AI agent' description with unexplained native binaries strongly suggests a supply-chain attack or a trojanized extension designed to exfiltrate data or install persistent malware. The extension should be considered MALICIOUS."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 3/11)",
+        "summary": "The extension 'OSLo Agent' is assessed as MALICIOUS due to the presence of hidden native ELF binaries in the package, which are not disclosed in the documentation and contradict the extension's claim of being a purely local, cloud-free tool. While the analyzed JavaScript chunk (webview.js) appears to be standard React library code with no direct malicious behavior, the inclusion of unexplained native executables is a critical red flag indicative of potential supply-chain attack, backdoor, or credential theft. The static rule engine hits in the JavaScript file are false positives related to standard React internals. The overall risk is driven by the hidden binaries and the capability disconnect."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 5/11)",
+        "summary": "While the provided JavaScript chunk (webview.js) appears to be a standard, benign React library implementation with no malicious logic, the overall extension package is flagged as MALICIOUS due to the presence of hidden native ELF binaries ('oslo') for Linux. These binaries are not documented in the extension's README or description, which claims to be a 'local coding agent' that works entirely on the machine. The inclusion of unexplained, executable native binaries in a VS Code extension is a critical red flag for supply-chain attacks, as they can execute arbitrary code, steal credentials, or install persistent malware. The 'OSLo Agent' branding and 'local execution' claims are likely deceptive to mask the malicious intent of the bundled binaries."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 8/11)",
+        "summary": "The extension is malicious due to the presence of hidden native ELF binaries ('oslo') for Linux architectures. While the JavaScript code in this chunk appears to be standard React and Markdown rendering libraries, the inclusion of unexplained native executables in a 'local-only' coding agent is a critical red flag. These binaries likely serve as a payload for system compromise, data exfiltration, or remote access, contradicting the extension's advertised privacy features."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 9/11)",
+        "summary": "The analyzed code chunk is a standard webview bundle containing the 'marked' Markdown library and React UI components for the OSLo coding agent. The static rule engine hits are false positives caused by matching standard API method names (postMessage, postprocess) and browser event properties. The code behavior is consistent with the extension's advertised functionality of providing a local AI coding assistant interface."
+      },
+      {
+        "target": "extension/media/webview.js (chunk 10/11)",
+        "summary": "The extension 'OSLo Agent' presents a high-risk supply-chain attack vector. While the webview JavaScript code appears to be a standard React-based UI for interacting with a local AI agent, the package includes hidden native ELF binaries ('oslo') for Linux. The extension's marketing claims of being 'local only' and 'private' are contradicted by the execution of opaque, unverified native code that has full system access. The webview communicates with this backend, which could potentially exfiltrate data or execute arbitrary commands despite the 'local' branding. The presence of these binaries without clear provenance or security documentation is a critical indicator of malicious intent or severe negligence."
+      },
+      {
+        "target": "extension/dist/extension.js",
+        "summary": "This extension exhibits critical supply-chain attack indicators. While the JavaScript source code appears to implement a standard VS Code webview and process manager, it bundles and executes opaque native binaries (ELF/EXE) for Linux and Windows. The 'local execution' claim is undermined by the presence of these hidden executables, which are the likely vectors for malicious behavior (e.g., data exfiltration, cryptomining, or backdoors) that cannot be audited via static analysis of the JS file. The combination of hidden binaries, high package size, and the execution of arbitrary code via child_process warrants an immediate MALICIOUS verdict."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "HIDDEN_EXECUTABLE",
+        "description": "The extension package contains native ELF binaries (`extension/bin/linux-arm64/oslo` and `extension/bin/linux-x64/oslo`) with no file extension. While the extension claims to be a 'local coding agent' that bundles backends, the presence of unbranded, unverified native executables in a VS Code extension is a critical supply-chain risk. These binaries could contain arbitrary malicious logic (e.g., keyloggers, backdoors) that is not visible in the JavaScript source code. The 'local' claim does not mitigate the risk of a compromised or malicious native binary.",
+        "code_reference": "extension/bin/linux-arm64/oslo, extension/bin/linux-x64/oslo",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 1/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' patterns due to `postMessage` and `postprocess` strings. Upon review, these are standard React/Redux internal methods (e.g., `MessageChannel` for scheduling, `postMessage` for webview communication) and are not indicative of malicious data exfiltration in this context.",
+        "code_reference": "webview.js",
+        "line_hint": 1,
+        "target": "extension/media/webview.js (chunk 1/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The VSIX size (17.0 MB) is consistent with an extension that bundles native binaries for multiple platforms (macOS, Linux, Windows) as claimed in the README. The use of React for the webview UI is standard for modern VS Code extensions.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 1/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "HIDDEN_EXECUTABLE",
+        "description": "The extension package contains hidden ELF binary executables ('extension/bin/linux-arm64/oslo' and 'extension/bin/linux-x64/oslo') that are not standard for a VS Code extension. These binaries are likely the actual payload for the 'OSLo Agent', capable of executing arbitrary code on the host system, bypassing the sandboxed nature of VS Code extensions.",
+        "code_reference": "extension/bin/linux-arm64/oslo, extension/bin/linux-x64/oslo",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 2/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension claims to be a 'local' coding agent that does not send code to the cloud, yet it bundles native binaries for multiple architectures. While local execution is stated, the presence of unexplained native binaries in a webview-based extension is a major red flag for potential data exfiltration or remote access capabilities not disclosed in the README.",
+        "code_reference": "README claims 'Local by design' vs. presence of native binaries",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 2/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The provided source code chunk is standard React DOM library code (event handling, DOM manipulation, scheduler). The 'data exfiltration' and 'hidden iframe' hits from the static scanner are false positives caused by minified React code patterns (e.g., 'postMessage' in React internals, 'width:0' in pointer event defaults). This specific file is benign.",
+        "code_reference": "React DOM internals (qu, mi, Va, etc.)",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 2/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "HIDDEN_EXECUTABLE",
+        "description": "The extension package contains hidden ELF binary executables for Linux (arm64 and x64) located in 'extension/bin/'. These binaries are not described in the README or package.json and are not standard VS Code extension assets. Executing arbitrary native binaries from a VS Code extension is a severe security risk, potentially allowing for arbitrary code execution, credential theft, or system compromise.",
+        "code_reference": "extension/bin/linux-arm64/oslo, extension/bin/linux-x64/oslo",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 3/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'local coding agent' that works 'entirely on your machine' and 'without sending your code to the cloud'. However, the presence of hidden native binaries contradicts the 'local by design' and 'no remote execution' claims. Native binaries often facilitate network communication, process injection, or other malicious activities that are not visible in the JavaScript layer. This is a major disconnect between the advertised functionality and the actual package contents.",
+        "code_reference": "README: 'Local by design', 'No remote execution' vs. presence of 'extension/bin/linux-*/oslo'",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 3/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' patterns in the webview.js file. Upon inspection, these matches are false positives caused by standard React DOM library code (e.g., 'postMessage' in React's event system, 'postprocess' in image processing hooks). The code in this chunk is standard React internal logic for handling DOM events, selection, and composition, and does not contain malicious exfiltration logic.",
+        "code_reference": "webview.js lines 1, 62, 68",
+        "line_hint": 1,
+        "target": "extension/media/webview.js (chunk 3/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BENIGN_CODE",
+        "description": "The provided source code chunk (webview.js) consists of standard React DOM library code, including event handling, selection management, and DOM manipulation utilities. There are no obvious malicious patterns, obfuscation, or suspicious network calls in this specific chunk. The risk is derived from the package structure and hidden binaries, not this specific file.",
+        "code_reference": "webview.js chunk 3/11",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 3/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "HIDDEN_EXECUTABLE",
+        "description": "The extension package contains hidden ELF binary executables ('extension/bin/linux-arm64/oslo' and 'extension/bin/linux-x64/oslo') with no file extension. These are native binaries that are not described in the extension's documentation or README. The presence of unexplained native binaries in a VS Code extension is a critical supply-chain attack indicator, as they can execute arbitrary code on the host system, bypassing JavaScript sandboxing.",
+        "code_reference": "extension/bin/linux-arm64/oslo, extension/bin/linux-x64/oslo",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 5/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' patterns in this file. However, the code in this chunk is standard React library implementation (reconciliation, hooks, component lifecycle). The matches for '.postMessage' and '.postprocess' are part of the React framework's internal communication and state management, not malicious data exfiltration. This is a false positive for this specific file.",
+        "code_reference": "React reconciliation logic",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 5/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'Hidden zero-pixel iframe' and 'Directory traversal'. These are false positives. The 'width:0,height:0' match is part of React's synthetic event system (pointer event defaults), not a tracking iframe. The 'directory traversal' match is a substring match in React's internal code, not actual file system traversal.",
+        "code_reference": "React event system",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 5/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "HIDDEN_EXECUTABLE",
+        "description": "The extension package contains hidden ELF binary executables ('extension/bin/linux-arm64/oslo' and 'extension/bin/linux-x64/oslo'). These are native binaries that are not described in the extension's documentation and are likely used to execute arbitrary code on the host system, bypassing the Node.js sandbox.",
+        "code_reference": "extension/bin/linux-arm64/oslo, extension/bin/linux-x64/oslo",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 8/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'local' coding agent that does not send code to the cloud, yet it bundles native binaries for multiple architectures. This is a major disconnect from the stated 'local by design' and 'no remote execution' promise, suggesting the binaries may be used for persistence, exfiltration, or remote access.",
+        "code_reference": "README.md vs package contents",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 8/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' patterns, but the code in this chunk is standard React DOM and Markdown parsing library code (react-dom, marked.js). These are benign UI rendering components.",
+        "code_reference": "webview.js",
+        "line_hint": 1,
+        "target": "extension/media/webview.js (chunk 8/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'postMessage' and 'postprocess' as data exfiltration patterns. These are standard Web API and library method names (React/VS Code Webview communication and Marked.js hooks) and do not indicate malicious data transmission.",
+        "code_reference": "postMessage, postprocess",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 9/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'width:0,height:0' as a hidden iframe. This is part of a PointerEvent initialization object (pressure, tiltX, etc.) and is standard browser API usage, not a tracking beacon.",
+        "code_reference": "width:0,height:0,pressure:0",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 9/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code contains the 'marked' library (Markdown parser) and React components for a chat interface. This aligns with the extension's purpose of being a coding agent that displays model responses and tool execution results in a webview.",
+        "code_reference": "marked, React",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 9/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "HIDDEN_EXECUTABLE",
+        "description": "The extension package contains hidden ELF binary executables ('extension/bin/linux-arm64/oslo' and 'extension/bin/linux-x64/oslo') that are not standard VS Code extension assets. These binaries are likely the actual 'agent' backend, but their presence without clear documentation or signature verification is a critical supply-chain risk. The webview code interacts with this backend via postMessage, implying the binary executes local commands and potentially exfiltrates data or performs unauthorized actions.",
+        "code_reference": "extension/bin/linux-arm64/oslo, extension/bin/linux-x64/oslo",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 10/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises itself as a 'private, local coding agent' that 'stays on your machine' and 'does not send code to the cloud'. However, it bundles and executes native binaries (ELF files) which have full system access. The webview code shows logic for 'installing' and 'starting' Ollama, but the presence of custom binaries named 'oslo' suggests a custom backend that may not be the standard Ollama. The disconnect between the 'local only' promise and the execution of opaque native binaries is a major red flag for potential data exfiltration or remote code execution.",
+        "code_reference": "README: 'No cloud account. No remote execution. No source-code upload.' vs. presence of 'extension/bin/linux-x64/oslo'",
+        "line_hint": null,
+        "target": "extension/media/webview.js (chunk 10/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "Static analysis flagged 'data exfiltration' patterns due to 'postMessage' and 'postprocess'. Upon review, 'postMessage' is standard VS Code Webview API communication between the UI and the extension host, and 'postprocess' is a legitimate function name in the code (likely related to text processing). These are false positives for malicious exfiltration in this specific context, though the underlying binary execution remains the primary risk.",
+        "code_reference": "ne.postMessage({ type: \"send\", ... })",
+        "line_hint": 1,
+        "target": "extension/media/webview.js (chunk 10/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "HIDDEN_EXECUTABLE",
+        "description": "The extension bundles and executes native ELF binaries (extension/bin/linux-arm64/oslo, extension/bin/linux-x64/oslo) and a Windows executable. The JavaScript code explicitly copies these binaries to global storage and spawns them via child_process. This is a classic supply-chain attack vector where the malicious logic resides in the opaque native binary, bypassing static analysis of the JavaScript source.",
+        "code_reference": "resolveBundledBinary() and AgentProcess.start()",
+        "line_hint": 260,
+        "target": "extension/dist/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'local' agent that connects to Ollama, but it bundles its own backend binaries ('oslo') which are executed with full user privileges. The 'local' claim is deceptive if these binaries contain exfiltration logic, backdoors, or cryptominers, which cannot be verified from the JS source alone. The presence of hidden executables in a VS Code extension is a severe red flag.",
+        "code_reference": "AgentProcess class",
+        "line_hint": 40,
+        "target": "extension/dist/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The VSIX package size is 17.0 MB, which is disproportionately large for a simple chat interface extension. This size is consistent with the inclusion of multiple platform-specific native binaries, confirming the hidden executable finding.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'OSLo Agent' presents a high risk primarily due to the inclusion of unbranded native ELF binaries (`oslo`) for Linux. While the JavaScript code appears to be a standard React-based webview UI for a coding agent, the native binaries are opaque and could execute arbitrary malicious code on the host system. The 'local execution' claim does not ensure safety if the bundled binaries are compromised. The static analysis hits for data exfiltration are false positives related to standard React internals. The critical risk lies in the unverified native executables.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "5 HIGH findings",
+    "Composite risk 0.63 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 2,
+    "published_date": "2026-09-18T09:18:41.167Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-18T11:17:12.840833+00:00Z"
+}

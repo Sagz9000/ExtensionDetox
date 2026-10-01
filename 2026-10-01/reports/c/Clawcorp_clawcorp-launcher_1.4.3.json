@@ -1,0 +1,383 @@
+{
+  "extension_id": "Clawcorp.clawcorp-launcher",
+  "display_name": "ClawCorp Agent Launcher",
+  "version": "1.4.3",
+  "publisher": {
+    "name": "Clawcorp",
+    "verified": false
+  },
+  "vsix_sha256": "b352c7ebb1a061dc2846010b41aa5a8e27e4bd1a5f188849a4358c733f0dda79",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.7556,
+    "static": 0.8490601562950723,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/extension.js",
+        "line": 509,
+        "snippet": "TOKEN = 'clawcorp.relayToken'"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 7,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 7,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 7,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 741,
+        "snippet": "spawn('node"
+      },
+      {
+        "check": "terminal_injection",
+        "severity": "HIGH",
+        "description": "Stealthy terminal command injection via VS Code API",
+        "file": "extension/extension.js",
+        "line": 1135,
+        "snippet": "workbench.action.terminal.sendSequence"
+      },
+      {
+        "check": "terminal_injection",
+        "severity": "HIGH",
+        "description": "Stealthy terminal command injection via VS Code API",
+        "file": "extension/extension.js",
+        "line": 1136,
+        "snippet": "workbench.action.terminal.sendSequence"
+      },
+      {
+        "check": "terminal_injection",
+        "severity": "HIGH",
+        "description": "Stealthy terminal command injection via VS Code API",
+        "file": "extension/extension.js",
+        "line": 1138,
+        "snippet": "workbench.action.terminal.sendSequence"
+      },
+      {
+        "check": "terminal_injection",
+        "severity": "HIGH",
+        "description": "Stealthy terminal command injection via VS Code API",
+        "file": "extension/extension.js",
+        "line": 1135,
+        "snippet": "vscode.commands.executeCommand('workbench.action.terminal.sendSequence"
+      },
+      {
+        "check": "terminal_injection",
+        "severity": "HIGH",
+        "description": "Stealthy terminal command injection via VS Code API",
+        "file": "extension/extension.js",
+        "line": 1136,
+        "snippet": "vscode.commands.executeCommand('workbench.action.terminal.sendSequence"
+      },
+      {
+        "check": "terminal_injection",
+        "severity": "HIGH",
+        "description": "Stealthy terminal command injection via VS Code API",
+        "file": "extension/extension.js",
+        "line": 1138,
+        "snippet": "vscode.commands.executeCommand('workbench.action.terminal.sendSequence"
+      }
+    ],
+    "total": 24
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "clawcorp.io",
+      "source_file": "extension/relay-client.js",
+      "line": 37,
+      "context": "* @param {string} opts.cloudUrl - Cloud dashboard URL (e.g. https://clawcorp.io)",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 4,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 8,
+    "blocks_seen": 8,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/5)",
+        "summary": "The code is a legitimate VS Code extension for managing a local AI agent fleet. It uses standard Node.js APIs (fs, http, child_process) and VS Code APIs to launch terminals, monitor status, and pair with a cloud relay. The network activity is limited to localhost (for the local server) and the documented cloud endpoint (clawcorp.io). There are no indicators of credential theft, data exfiltration, or malicious payload execution. The static scanner hits are either false positives or consistent with the extension's stated functionality."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/5)",
+        "summary": "The code is consistent with the extension's advertised functionality as an 'Agent Launcher' for managing AI agents in VS Code. It spawns local processes, manages terminal sessions, and uses file watchers for coordination, all of which are expected for this type of tool. The flagged 'secret' is a storage key, not a credential. No malicious behavior, data exfiltration, or unauthorized access patterns were detected."
+      },
+      {
+        "target": "extension/extension.js (chunk 3/5)",
+        "summary": "The extension 'ClawCorp Agent Launcher' exhibits high-risk behaviors primarily due to its mechanism of launching AI agents via shell commands. It reads JSON signal files and constructs PowerShell command strings to execute in VS Code terminals. While input validation (regex) is present, the pattern of constructing shell commands from external data (signal files/API) and executing them via `terminal.sendText` is inherently dangerous and prone to command injection vulnerabilities. Additionally, a hardcoded string resembling a token was detected, and the extension uses `child_process.execFileSync` to run PowerShell commands for process management. These behaviors, while potentially functional for the stated purpose, create a large attack surface and are flagged as suspicious/malicious due to the lack of robust sandboxing or safer execution methods (e.g., using `spawn` with argument arrays instead of string concatenation)."
+      },
+      {
+        "target": "extension/extension.js (chunk 4/5)",
+        "summary": "The analyzed code chunk is part of a VS Code extension designed to manage AI agents. The code primarily handles UI generation (HTML/CSS), configuration reading, and model preset management. The static analysis hits for command execution and terminal injection are consistent with the extension's documented functionality of launching agents in terminals. No malicious behavior, data exfiltration, or credential theft was identified in this source file."
+      },
+      {
+        "target": "extension/extension.js (chunk 5/5)",
+        "summary": "The 'ClawCorp Agent Launcher' extension exhibits critical malicious behavior. While it presents itself as a tool for managing AI agents, it implements a 'POKE' system that allows injecting commands directly into running VS Code terminals via `workbench.action.terminal.sendSequence`. This capability, combined with `child_process` execution and network communication to an external relay (`clawcorp.io`), creates a high-risk vector for remote code execution and data exfiltration. The disconnect between the advertised 'launcher' functionality and the actual 'command injection' capability is a major red flag indicating malicious intent."
+      },
+      {
+        "target": "extension/package.json",
+        "summary": "The provided package.json file is a standard manifest for a VS Code extension named 'ClawCorp Agent Launcher'. It declares dependencies on 'ws' (WebSocket library), which is appropriate for the described 'cloud relay' and 'live fleet status' features. The configuration, commands, and keybindings align with the advertised functionality of managing AI agents in terminals. No malicious indicators, obfuscation, or suspicious network endpoints are present in this file. The domain 'clawcorp.io' is the primary service endpoint, which is consistent with the extension's purpose. The activation event 'onStartupFinished' is slightly aggressive but not indicative of malware."
+      },
+      {
+        "target": "extension/relay-client.js",
+        "summary": "The extension 'ClawCorp Agent Launcher' is malicious. While it advertises itself as an AI agent management tool, the core `relay-client.js` file implements a Command and Control (C2) mechanism. It establishes a persistent WebSocket connection to an external server (clawcorp.io) and listens for remote commands. These commands are then executed against a local HTTP server (127.0.0.1:3330), allowing a remote attacker to control the local environment, execute arbitrary HTTP requests, and exfiltrate data. The 'POKE' feature described in the README is a deceptive cover for this remote execution capability. The combination of persistent connectivity, remote command execution, and data exfiltration constitutes a severe security threat."
+      },
+      {
+        "target": "extension/fs-adapter.js",
+        "summary": "The provided source code (`fs-adapter.js`) is a benign filesystem utility designed to provide a fallback status view for the 'ClawCorp Agent Launcher' extension when its local server is unavailable. It performs read-only operations on JSON configuration files and lock files within the workspace to determine the status of AI agents. There are no indicators of malicious behavior such as credential harvesting, network exfiltration, obfuscated payloads, or arbitrary command execution. The use of `process.kill(pid, 0)` is a standard, safe method for checking process existence without sending a signal. The code aligns with the extension's advertised purpose of managing AI agent terminals and status."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'clawcorp.relayToken' as a hardcoded secret. This is a false positive; it is a string key used to access VS Code's SecretStorage API, not an actual credential value.",
+        "code_reference": "const SECRET_RELAY_TOKEN = 'clawcorp.relayToken';",
+        "line_hint": 509,
+        "target": "extension/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of child_process and terminal.sendSequence is consistent with the extension's advertised purpose of launching and managing AI agents in split terminals. It does not exhibit malicious command injection patterns.",
+        "code_reference": "require('child_process')",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 1/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'TOKEN = 'clawcorp.relayToken'' as a hardcoded secret. This is a false positive; the string is a key identifier for the VS Code SecretStorage API, not a credential value.",
+        "code_reference": "SECRET_RELAY_TOKEN = 'clawcorp.relayToken'",
+        "line_hint": 509,
+        "target": "extension/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses child_process to spawn a local Node.js server and execute unzip/powershell for provisioning. This is consistent with the extension's stated purpose of launching and managing a local AI agent fleet and worktree.",
+        "code_reference": "cp.spawn('node', [serverEntry], ...)",
+        "line_hint": 741,
+        "target": "extension/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension uses 'workbench.action.terminal.sendSequence' to inject text into terminals. This aligns with the 'POKE' feature described in the README, which allows sending commands to running agent terminals.",
+        "code_reference": "vscode.commands.executeCommand('workbench.action.terminal.sendSequence', ...)",
+        "line_hint": 1135,
+        "target": "extension/extension.js (chunk 2/5)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Hardcoded secret/token assignment detected. The variable `TOKEN` is assigned the string 'clawcorp.relayToken'. While this might be a configuration key name, the static scanner flagged it as a potential hardcoded secret. If this is an actual API key or token, it is exposed in source code.",
+        "code_reference": "TOKEN = 'clawcorp.relayToken'",
+        "line_hint": "509",
+        "target": "extension/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_INJECTION",
+        "description": "The function `handleSignalFile` constructs a shell command string (`cmd`) by concatenating user-controlled data from a JSON signal file (`data.launchScript`, `data.project`, `data.cli`, etc.) with PowerShell command-line arguments. Although regex validation is applied to some fields (e.g., `launchScript`, `agent`, `project`), the construction of the command string and subsequent execution via `terminal.sendText(cmd, true)` presents a high risk of command injection if validation is bypassed or if the PowerShell parser interprets the concatenated string unexpectedly. Specifically, `launchScript` is validated but then used directly in the command string without further escaping.",
+        "code_reference": "var cmd = \"& '\" + launchScript + \"' -Agent '\" + agent + \"'\" + ... ; terminal.sendText(cmd, true);",
+        "line_hint": "1135-1140",
+        "target": "extension/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension uses `child_process.execFileSync` to execute `powershell.exe` with a dynamically constructed command string to check process parentage. The `childPid` and `parentPid` are derived from internal state, but the use of `execFileSync` with string interpolation is risky if those values can be influenced by external inputs (e.g., via the signal file or API responses).",
+        "code_reference": "cp.execFileSync('powershell.exe', ['-NoProfile', '-Command', '(Get-CimInstance Win32_Process -Filter \"ProcessId=' + childPid + '\").ParentProcessId'], ...)",
+        "line_hint": "1080",
+        "target": "extension/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "TERMINAL_INJECTION",
+        "description": "The extension programmatically sends text to VS Code integrated terminals using `terminal.sendText`. This is used to launch agents with specific CLI arguments. If an attacker can control the content of the 'signal' files or the API responses that populate `data`, they can inject arbitrary commands into the terminal session.",
+        "code_reference": "terminal.sendText(cmd, true);",
+        "line_hint": "1138",
+        "target": "extension/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CONFIGURATION_TAMPERING",
+        "description": "The extension modifies VS Code workspace configuration settings programmatically via `vscode.workspace.getConfiguration('clawcorp').update(...)`. This allows the extension to change user settings, potentially altering behavior or security policies.",
+        "code_reference": "await vscode.workspace.getConfiguration('clawcorp').update('rootPath', clean, vscode.ConfigurationTarget.Global);",
+        "line_hint": "1492",
+        "target": "extension/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The extension reads and deletes files in the workspace and system directories (e.g., `.dev-lock`, `.agent-lock`, signal files). It also reads configuration files like `agent-config.json`. While this is consistent with the 'Agent Launcher' purpose, it represents significant file system interaction that could be abused if the input paths are not strictly validated.",
+        "code_reference": "fs.unlinkSync(filePath); fs.readFileSync(configPath, 'utf8');",
+        "line_hint": "1000-1100",
+        "target": "extension/extension.js (chunk 3/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'clawcorp.relayToken' as a hardcoded secret. This is a false positive; it is a string identifier used as a key to access the extension's SecretStorage, not a credential value.",
+        "code_reference": "TOKEN = 'clawcorp.relayToken'",
+        "line_hint": 509,
+        "target": "extension/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The use of 'child_process' and 'terminal.sendSequence' is consistent with the extension's stated purpose of launching and managing AI agents in VS Code terminals. No malicious command execution or exfiltration patterns were observed in this chunk.",
+        "code_reference": "require('child_process')",
+        "line_hint": 7,
+        "target": "extension/extension.js (chunk 4/5)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as an 'AI Agent Launcher' but the code reveals a 'POKE' mechanism that injects commands directly into running terminals via `workbench.action.terminal.sendSequence`. This allows the extension to execute arbitrary shell commands in the user's environment without explicit user interaction for each command, effectively acting as a Remote Access Trojan (RAT) or command-and-control (C2) agent.",
+        "code_reference": "vscode.commands.executeCommand('workbench.action.terminal.sendSequence', ...)",
+        "line_hint": 1135,
+        "target": "extension/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_INJECTION",
+        "description": "The extension uses `child_process.spawn` to execute `node` scripts and `terminal.sendText` to inject shell commands. Combined with the 'POKE' feature, this allows remote or local attackers to execute arbitrary code on the host system.",
+        "code_reference": "spawn('node', ...), terminal.sendText(cmd)",
+        "line_hint": 741,
+        "target": "extension/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged a hardcoded secret at line 509 (`TOKEN = 'clawcorp.relayToken'`). Upon review, this is a configuration key name, not a hardcoded credential value. The actual token is likely retrieved from SecretStorage or user input. This is a false positive for 'leaked_secrets'.",
+        "code_reference": "TOKEN = 'clawcorp.relayToken'",
+        "line_hint": 509,
+        "target": "extension/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The extension communicates with an external domain `clawcorp.io` via a relay client. Given the ability to execute arbitrary commands and the 'POKE' mechanism, this network channel likely serves as the C2 endpoint for receiving instructions and exfiltrating data.",
+        "code_reference": "domain: clawcorp.io",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 5/5)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a tool that primarily responds to user commands. While not malicious, this ensures the extension is loaded immediately upon VS Code startup, which is a common pattern for productivity tools but worth noting.",
+        "code_reference": "\"activationEvents\": [\"onStartupFinished\", \"onUri\"]",
+        "line_hint": 20,
+        "target": "extension/package.json"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "C2_TUNNELING",
+        "description": "The extension establishes a persistent WebSocket connection to an external cloud relay (clawcorp.io) and acts as a remote-controlled agent. It receives arbitrary HTTP commands (method, path, body) from the cloud and executes them against a local service (127.0.0.1:3330). This architecture allows a remote attacker to control the local environment, effectively turning the VS Code extension into a Command and Control (C2) client.",
+        "code_reference": "function connect() { ... ws = new WebSocket(relayUrl ...); ... if (msg.id && msg.payload && msg.payload.method && msg.payload.path) { ... executeLocally(msg) ... }",
+        "line_hint": 60,
+        "target": "extension/relay-client.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension's advertised purpose is to 'launch AI agents' and manage terminals. However, the code implements a 'relay-client' that forwards remote commands to a local HTTP server. This is a significant behavioral mismatch: a productivity/AI tool should not be acting as a remote execution proxy for arbitrary HTTP requests from a cloud service. The 'POKE' mechanism described in the README is implemented as a remote command execution channel.",
+        "code_reference": "RELAY_ALLOWED_PATHS = ['/pokes', '/agents/', '/cc/processes', ...]",
+        "line_hint": 180,
+        "target": "extension/relay-client.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The extension sends data back to the cloud relay via the `sendResult` function. When a remote command is executed locally, the response (status and body) is sent back to the cloud. This creates a bidirectional data channel that can be used to exfiltrate information from the local machine (e.g., process lists, file contents, or agent outputs) to the attacker's server.",
+        "code_reference": "function sendResult(msgId, result) { ... ws.send(JSON.stringify({ ... payload: result ... })); }",
+        "line_hint": 260,
+        "target": "extension/relay-client.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "PERSISTENCE",
+        "description": "The extension activates on 'onStartupFinished' and maintains a persistent WebSocket connection with automatic reconnection (exponential backoff). This ensures the C2 channel is always active whenever VS Code is running, providing persistent remote access.",
+        "code_reference": "function scheduleReconnect() { ... reconnectTimer = setTimeout(connect, total); }",
+        "line_hint": 150,
+        "target": "extension/relay-client.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code is a legitimate VS Code extension for managing a local AI agent fleet. It uses standard Node.js APIs (fs, http, child_process) and VS Code APIs to launch terminals, monitor status, and pair with a cloud relay. The network activity is limited to localhost (for the local server) and the documented cloud endpoint (clawcorp.io). There are no indicators of credential theft, data exfiltration, or malicious payload execution. The static scanner hits are either false positives or consistent with the extension's stated functionality.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: extension.js -> fs-adapter.js, node_modules/ws/index.js, node_modules/ws/lib/buffer-util.js [process_execution, download_exec] -- intent: download-and-execute in extension/extension.js | IOCs: https://html.spec.whatwg.org/multipage/comms.html#the-websocket-interface, https://tools.ietf.org/html/rfc6455#section-9.1, https://clawcorp.io/app/tools.html#view=setup",
+    "1 CRITICAL findings",
+    "10 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 41,
+    "published_date": "2026-03-28T21:08:24.843+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-20T07:18:34.876314+00:00Z"
+}

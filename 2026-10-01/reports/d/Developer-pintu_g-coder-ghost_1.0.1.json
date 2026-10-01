@@ -1,0 +1,129 @@
+{
+  "extension_id": "Developer-pintu.g-coder-ghost",
+  "display_name": "G-Coder Ghost",
+  "version": "1.0.1",
+  "publisher": {
+    "name": "Developer-pintu",
+    "verified": false
+  },
+  "vsix_sha256": "b47d8b3106cc5b2d58c34bdc23154e44145f6c2a321814aec4db138f331bc4f6",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6099999999999999,
+    "ai_vibe": 0.85,
+    "static": 0.7999999999999999,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/extension.js",
+        "line": 44,
+        "snippet": "token: 'vscode_local_bridge'"
+      }
+    ],
+    "high": [],
+    "total": 4
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/out/extension.js (chunk 1/2)",
+        "summary": "The extension exhibits critical security flaws that contradict its 'secure' marketing claims. It opens a WebSocket connection to a local port (8080) without authentication, allowing any local process to inject arbitrary text into the user's active editor. This creates a significant risk of code injection and data tampering. The 'G-Coder' branding and 'AI' features are likely a facade for a backdoor or a poorly secured IPC mechanism that could be exploited by malware on the host system. The combination of auto-startup, unauthenticated local network access, and direct editor modification capability makes this extension highly suspicious and potentially malicious."
+      },
+      {
+        "target": "extension/out/extension.js (chunk 2/2)",
+        "summary": "The provided code snippet is the tail end of a VS Code extension that establishes a WebSocket connection to a local server (localhost:8080) for IPC with a CLI tool. The code shown handles UI status updates and cleanup on deactivation. The static scanner's 'leaked secret' hit is a false positive for a local identifier string. There are no indicators of malicious behavior, data exfiltration, or credential harvesting in this specific chunk. The behavior aligns with the extension's stated purpose of bridging VS Code and a local CLI tool."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension advertises itself as a 'Secure Local Server' that ensures 'IDE data never leaves your machine'. However, the code implements a WebSocket client that connects to `ws://localhost:8080` and, upon receiving an `authReq` message, sends a hardcoded token. More critically, the `typeIntoEditor` function allows the remote server to inject arbitrary text into the active editor. This is a classic Remote Code Execution (RCE) vector if the local port is hijacked or if the 'G-Coder CLI' is compromised. The 'secure' claim is deceptive given the lack of authentication on the WebSocket connection itself (it trusts any client on localhost:8080).",
+        "code_reference": "ws = new WebSocket('ws://localhost:8080'); ... typeIntoEditor(payload.content);",
+        "line_hint": "38",
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'companion' for a CLI tool, but it actively listens for commands to modify the user's codebase (`typeIntoEditor`). A legitimate IDE bridge would typically require explicit user confirmation for code modifications or use a more secure IPC mechanism (like named pipes or authenticated sockets). The ability for any process on the machine to bind to port 8080 and inject code into the user's editor is a severe security flaw, effectively turning the extension into a backdoor for local privilege escalation or data tampering.",
+        "code_reference": "function typeIntoEditor(text) { ... editBuilder.insert(editor.selection.active, text); }",
+        "line_hint": "68",
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The activation event is `onStartupFinished`, which is aggressive for a tool that requires a separate CLI to be running. It forces the WebSocket connection attempt on every VS Code startup, increasing the attack surface and resource usage unnecessarily. Combined with the lack of user consent for the connection, this is a suspicious behavior pattern.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `token: 'vscode_local_bridge'` as a leaked secret. This is a hardcoded string used for a local handshake, not a real credential. However, its presence indicates a lack of proper security design (hardcoded tokens are bad practice, even for local IPC).",
+        "code_reference": "token: 'vscode_local_bridge'",
+        "line_hint": "44",
+        "target": "extension/out/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `token: 'vscode_local_bridge'` as a leaked secret. This is a false positive. The string is a short, non-entropic identifier used for local IPC authentication or identification, not a high-entropy API key, private key, or credential. It does not match patterns for AWS keys, GitHub tokens, or other sensitive credentials.",
+        "code_reference": "token: 'vscode_local_bridge'",
+        "line_hint": 44,
+        "target": "extension/out/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits critical security flaws that contradict its 'secure' marketing claims. It opens a WebSocket connection to a local port (8080) without authentication, allowing any local process to inject arbitrary text into the user's active editor. This creates a significant risk of code injection and data tampering. The 'G-Coder' branding and 'AI' features are likely a facade for a backdoor or a poorly secured IPC mechanism that could be exploited by malware on the host system. The combination of auto-startup, unauthenticated local network access, and direct editor modification capability makes this extension highly suspicious and potentially malicious.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 8,
+    "published_date": "2026-08-18T15:37:32.22Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-18T16:25:24.060319+00:00Z"
+}

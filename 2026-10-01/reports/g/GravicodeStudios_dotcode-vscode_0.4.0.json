@@ -1,0 +1,251 @@
+{
+  "extension_id": "GravicodeStudios.dotcode-vscode",
+  "display_name": "DotCode",
+  "version": "0.4.0",
+  "publisher": {
+    "name": "GravicodeStudios",
+    "verified": false
+  },
+  "vsix_sha256": "c834e969d2699cc6b30977c13da28ef4f72b6a2fd7cec12f34e345ec66441394",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6090625,
+    "ai_vibe": 0.95,
+    "static": 0.65625,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "lolbins_stagers",
+        "severity": "CRITICAL",
+        "description": "Curl piped to shell (download-and-execute)",
+        "file": "extension/dist/extension.js",
+        "line": 35,
+        "snippet": "curl -fsSL https://raw.githubusercontent.com/DotNetVibeCoderz/Vibe_Dev/main/DotCode/install/install.sh | sh"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 33,
+        "snippet": "</html>`}dispose(){this.subscription?.dispose()}};var M=m(require(\"fs\")),w=m(require(\"path\")),r=m(require(\"vscode\"));var j=require(\"node:child_process\");var R=require(\"node:events\"),f=class extends Er"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/chat.js",
+        "line": 123,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/chat.js",
+        "line": 124,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 35,
+        "snippet": "Request(c,d)};let a=await n.request(\"initialize\",{protocolVersion:H,clientInfo:{name:\"dotcode-sdk-typescript\",version:J},capabilities:{permissions:!0,questions:!0}});this.serverVersion=a?.serverInfo?."
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/dist/extension.js",
+        "line": 35,
+        "snippet": ".post({type:\"state\",busy:this.busy,model:this.session?.model,mode:this.mode,cwd:this.cwd}),this.updateStatus()}updateStatus(){let e=this.session?.model??r.workspace.getConfiguration(\"dotcode\").get(\"mo"
+      },
+      {
+        "check": "terminal_injection",
+        "severity": "HIGH",
+        "description": "Stealthy terminal command injection via VS Code API",
+        "file": "extension/dist/extension.js",
+        "line": 35,
+        "snippet": "sendText(process.platform===\"win32\"?\"irm https://raw.githubusercontent.com/DotNetVibeCoderz/Vibe_Dev/main/DotCode/install/install.ps1 | iex\":\"curl -fsSL https://raw.githubusercontent.com/DotNetVibeCod"
+      },
+      {
+        "check": "rmm_tool_abuse",
+        "severity": "HIGH",
+        "description": "Downloading MSI/EXE installer (potential RMM deployment)",
+        "file": "extension/dist/extension.js",
+        "line": 35,
+        "snippet": "Request(c,d)};let a=await n.request(\"initialize\",{protocolVersion:H,clientInfo:{name:\"dotcode-sdk-typescript\",version:J},capabilities:{permissions:!0,questions:!0}});this.serverVersion=a?.serverInfo?."
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "plan.review",
+      "source_file": "extension/dist/extension.js",
+      "line": 483,
+      "context": "case \"plan.review\": {",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "filename",
+      "value": "install.ps1",
+      "source_file": "extension/dist/extension.js",
+      "line": 654,
+      "context": "e.show(), e.sendText(process.platform === \"win32\" ? \"irm https://raw.githubusercontent.com/DotNetVibeCoderz/Vibe_Dev/main/DotCode/install/install.ps1 | iex\" : \"curl -fsSL https://raw.githubusercontent",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.98,
+    "blocks_parsed": 3,
+    "blocks_seen": 3,
+    "summaries": [
+      {
+        "target": "extension/media/chat.js",
+        "summary": "The provided source code is a benign webview script for a VS Code chat interface. It implements standard UI rendering logic, including Markdown parsing, HTML escaping, and message handling via the VS Code API (`acquireVsCodeApi`). The code does not contain any network calls, file system access, child process execution, or obfuscated payloads. The static analysis hits regarding 'hidden' attributes are false positives resulting from standard DOM visibility toggling. The behavior is fully consistent with the advertised 'Agentic coding' extension functionality."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 1/2)",
+        "summary": "The extension is a legitimate VS Code client for the 'DotCode' agentic coding tool. It functions as a thin client that spawns a local CLI process (`dotcode`) via `child_process.spawn` and communicates with it using JSON-RPC over stdio. The code includes a user-initiated installation helper that downloads the CLI from the official GitHub repository using standard shell commands (`curl | sh` or `irm | iex`), which triggered false positives in static scanners but is benign in this context. There is no evidence of credential harvesting, C2 communication, obfuscation, or malicious behavior. The capabilities align with the advertised purpose of an AI coding assistant."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/2)",
+        "summary": "The extension exhibits critical malicious behavior. It contains hardcoded commands to download and execute remote scripts from GitHub using `curl` and PowerShell (`irm`), which is a definitive indicator of a malware stager or dropper. Additionally, it harvests VS Code configuration and environment variables, sending them to an unknown domain (`plan.review`) along with user context (cwd, model state). The presence of these remote execution and exfiltration patterns in an 'AI Chat' extension represents a severe capability disconnect and confirms malicious intent."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'persistence_evasion' due to the use of `.hidden` property on DOM elements (lines 123, 124). This is standard HTML/JavaScript DOM manipulation to toggle visibility of UI elements (send/stop buttons) and is not related to file system hidden attributes or persistence mechanisms.",
+        "code_reference": "sendButton.hidden = value;\nstopButton.hidden = !value;",
+        "line_hint": "123-124",
+        "target": "extension/media/chat.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'curl piped to shell' and 'Stealthy terminal command injection'. The code constructs a terminal command to install the DotCode CLI if it is missing. It uses `curl ... | sh` (Linux/macOS) or `irm ... | iex` (Windows) targeting the official GitHub repository `DotNetVibeCoderz/Vibe_Dev`. This is a standard, user-initiated installation pattern for CLI tools, not a stealthy or malicious download-and-execute payload.",
+        "code_reference": "e.sendText(process.platform === \"win32\" ? \"irm https://raw.githubusercontent.com/DotNetVibeCoderz/Vibe_Dev/main/DotCode/install/install.ps1 | iex\" : \"curl -fsSL https://raw.githubusercontent.com/DotNetVibeCoderz/Vibe_Dev/main/DotCode/install/install.sh | sh\")",
+        "line_hint": "approx 654",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Harvesting VSCode configuration and sending over network'. The code reads `dotcode.cliPath` and `DOTCODE_CLI_PATH` to locate the local CLI binary. It does not exfiltrate this data; it is used locally to spawn the process.",
+        "code_reference": "let i = h.workspace.getConfiguration(\"dotcode\").get(\"cliPath\")?.trim(); if (i) return X(i); if (process.env.DOTCODE_CLI_PATH) return process.env.DOTCODE_CLI_PATH;",
+        "line_hint": "approx 600",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'Data exfiltration' and 'RMM Tool Abuse' on JSON-RPC initialization and state updates. These are standard protocol messages for the LLM agent communication (e.g., `clientInfo`, `state`, `busy`, `model`). No sensitive user data is sent to external servers in these calls.",
+        "code_reference": "let a = await n.request(\"initialize\", { protocolVersion: H, clientInfo: { name: \"dotcode-sdk-typescript\", version: J } ... }); this.post({ type: \"state\", busy: this.busy, model: this.session?.model, mode: this.mode, cwd: this.cwd })",
+        "line_hint": "approx 35",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LOLBINs & Stagers",
+        "description": "The code contains a hardcoded command to download and execute a remote script via `curl` piped to a shell (`curl -fsSL ... | sh` or similar pattern implied by the match). This is a classic download-and-execute stager pattern used to fetch malicious payloads from a remote server.",
+        "code_reference": "curl -fsSL https://raw.githubusercontent.com/DotNetVibeCoderz/Vibe_Dev/main/DotCode/install/install.",
+        "line_hint": 35,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LOLBINs & Stagers",
+        "description": "The code contains a PowerShell command to download and execute a remote script (`irm ... | iex` or similar). This allows arbitrary code execution from a remote GitHub repository, bypassing local security controls.",
+        "code_reference": "sendText(process.platform===\"win32\"?\"irm https://raw.githubusercontent.com/DotNetVibeCoderz/Vibe_Dev/main/DotCode/install/install.",
+        "line_hint": 35,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "RMM Tool Abuse",
+        "description": "The static analysis flagged the download of an MSI/EXE installer, which is often associated with Remote Monitoring and Management (RMM) tools or persistent backdoors. Combined with the remote script execution, this suggests the installation of unauthorized remote access tools.",
+        "code_reference": "Request(c,d)};let a=await n.request(\"initialize\",{protocolVersion:H,clientInfo:{name:\"dotcode-sdk-ty",
+        "line_hint": 35,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Info-Stealer Patterns",
+        "description": "The code accesses VS Code configuration settings (`workspace.getConfiguration(\"dotcode\")`) and potentially environment variables (`process.env.DOTCODE`), then sends this data over the network. This indicates potential credential or configuration harvesting.",
+        "code_reference": "workspace.getConfiguration(\"dotcode\").get(\"cliPath\")?.trim();if(i)return X(i);if(process.env.DOTCODE",
+        "line_hint": 35,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "C2 & Tunneling",
+        "description": "The code establishes a network request to an unknown domain `plan.review` and sends state information (`busy`, `model`, `mode`, `cwd`). This behavior is consistent with Command and Control (C2) communication, exfiltrating user context and system state.",
+        "code_reference": ".post({type:\"state\",busy:this.busy,model:this.session?.model,mode:this.mode,cwd:this.cwd}),this.upda",
+        "line_hint": 35,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is categorized as 'AI, Chat, Programming Languages' but contains code to execute arbitrary shell commands (`curl`, `irm`) and install remote binaries. This is a severe disconnect between the advertised functionality (AI chat) and the actual capabilities (remote code execution/installer).",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The provided source code is a benign webview script for a VS Code chat interface. It implements standard UI rendering logic, including Markdown parsing, HTML escaping, and message handling via the VS Code API (`acquireVsCodeApi`). The code does not contain any network calls, file system access, child process execution, or obfuscated payloads. The static analysis hits regarding 'hidden' attributes are false positives resulting from standard DOM visibility toggling. The behavior is fully consistent with the advertised 'Agentic coding' extension functionality.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "7 HIGH findings",
+    "Composite risk 0.57 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1,
+    "published_date": "2026-09-29T01:29:53.883Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-29T08:06:27.490963+00:00Z"
+}

