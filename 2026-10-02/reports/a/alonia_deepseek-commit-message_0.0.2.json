@@ -1,0 +1,226 @@
+{
+  "extension_id": "alonia.deepseek-commit-message",
+  "display_name": "Deepseek Commit Message",
+  "version": "0.0.2",
+  "publisher": {
+    "name": "alonia",
+    "verified": false
+  },
+  "vsix_sha256": "eee8e44d040f4a602c4810a2a6577d035946ca648b9fd1808315800b1b502406",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6074999999999999,
+    "ai_vibe": 0.7,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "file": "extension/out/configuration.js",
+        "line": 52,
+        "snippet": "SECRET = \"deepseekCommitMessage.apiKey\""
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Reading from VSCode SecretStorage API",
+        "file": "extension/out/configuration.js",
+        "line": 117,
+        "snippet": "secretStorage.get("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/git.js",
+        "line": 42,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/out/git.js",
+        "line": 42,
+        "snippet": "const child_process_1 = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/out/git.js",
+        "line": 44,
+        "snippet": "const execAsync = (0, util_1.promisify)(child_process_1.exec);"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/out/git.js",
+        "line": 42,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "api.deepseek.com",
+      "source_file": "extension/out/deepseek.js",
+      "line": 40,
+      "context": "const BASE_URL = \"https://api.deepseek.com\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "platform.deepseek.com",
+      "source_file": "extension/out/commands.js",
+      "line": 77,
+      "context": "prompt: \"\u8bf7\u8f93\u5165 DeepSeek \u63a5\u53e3\u5bc6\u94a5\uff08\u53ef\u5728 https://platform.deepseek.com \u7533\u8bf7\uff09\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "SUSPICIOUS",
+    "risk_score": 0.2,
+    "confidence": 0.8,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/out/git.js (chunk 1/2)",
+        "summary": "The extension appears to be a legitimate VS Code extension for generating commit messages using DeepSeek AI. The code analyzed handles Git operations and API calls to DeepSeek's services. No critical, high-risk, or medium-risk indicators were found. The extension's functionality aligns with its advertised purpose, and there are no signs of malicious behavior."
+      },
+      {
+        "target": "extension/out/git.js (chunk 2/2)",
+        "summary": "The extension appears to be legitimate with no evidence of malicious behavior. The static analysis hits are likely false positives or legitimate functionality for a git commit message generator. No critical or high-risk indicators were found in the provided code."
+      },
+      {
+        "target": "extension/out/configuration.js (chunk 1/3)",
+        "summary": "The extension exhibits critical risks related to secret handling and credential storage. While its functionality aligns with its purpose, the exposed secret identifiers and use of SecretStorage API pose significant security concerns. The unusually small package size adds some suspicion but no direct evidence of malicious intent was found."
+      },
+      {
+        "target": "extension/out/configuration.js (chunk 2/3)",
+        "summary": "The extension handles API keys by storing them in the VSCode SecretStorage, which is a secure practice. However, the presence of a hardcoded secret identifier and direct access to the SecretStorage API raises concerns about potential unauthorized access or misconfiguration. The extension's functionality is largely aligned with its stated purpose, but the handling of sensitive credentials requires careful review to ensure no exposure vectors exist."
+      },
+      {
+        "target": "extension/out/configuration.js (chunk 3/3)",
+        "summary": "The extension exhibits critical-risk indicators related to potential secret leakage and credential storage. The presence of hardcoded secret references and direct access to VSCode's SecretStorage API raises concerns about potential unauthorized access to sensitive information. While the extension's purpose appears legitimate, these findings suggest a need for further review to ensure proper handling of sensitive data."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "MEDIUM",
+        "category": " vscode_api_abuse",
+        "description": "Code uses vscode.extensions.getExtension to check for git extension, which is legitimate for git-related extensions.",
+        "code_reference": "extension/out/git.js",
+        "line_hint": 98,
+        "target": "extension/out/git.js (chunk 2/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRETS_CREDENTIAL_LEAKAGE",
+        "description": "Hardcoded secret key identifier found in the source code.",
+        "code_reference": "line 52",
+        "line_hint": 52,
+        "target": "extension/out/configuration.js (chunk 1/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_HARVESTING",
+        "description": "Reading from VSCode SecretStorage API which could expose sensitive API keys.",
+        "code_reference": "line 117",
+        "line_hint": 117,
+        "target": "extension/out/configuration.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "VSIX package size is 0.0 MB, which is unusually small for a functional extension.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/configuration.js (chunk 1/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Hardcoded API key identifier found in the source code.",
+        "code_reference": "line 52",
+        "line_hint": 52,
+        "target": "extension/out/configuration.js (chunk 2/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Credential Harvesting",
+        "description": "Access to VSCode SecretStorage API for storing and retrieving API keys, which could potentially expose sensitive information if misused.",
+        "code_reference": "line 117",
+        "line_hint": 117,
+        "target": "extension/out/configuration.js (chunk 2/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Hardcoded secret/password/token assignment (16+ chars, non-placeholder)",
+        "code_reference": "line 52",
+        "line_hint": 52,
+        "target": "extension/out/configuration.js (chunk 3/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Secrets & Credential Leakage",
+        "description": "Reading from VSCode SecretStorage API",
+        "code_reference": "line 117",
+        "line_hint": 117,
+        "target": "extension/out/configuration.js (chunk 3/3)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension appears to be a legitimate VS Code extension for generating commit messages using DeepSeek AI. The code analyzed handles Git operations and API calls to DeepSeek's services. No critical, high-risk, or medium-risk indicators were found. The extension's functionality aligns with its advertised purpose, and there are no signs of malicious behavior.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "4 HIGH findings",
+    "AI verdict: SUSPICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 9,
+    "published_date": "2026-08-13T08:37:14.473Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-13T09:10:19.589863+00:00Z"
+}

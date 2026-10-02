@@ -1,0 +1,405 @@
+{
+  "extension_id": "ctrl-future.conflictlens",
+  "display_name": "ConflictLens",
+  "version": "0.1.2",
+  "publisher": {
+    "name": "ctrl-future",
+    "verified": false
+  },
+  "vsix_sha256": "44963b13c636fb2eb43016fa33600a2d944874affd9fd6f6300d9ea14fdc1bf8",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.6599999999999999,
+    "ai_vibe": 0.85,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_token_theft",
+        "severity": "CRITICAL",
+        "description": "VS Code authentication token / credential theft",
+        "file": "extension/out/extension/src/auth.js",
+        "line": 65,
+        "snippet": "vscode.authentication.getSession"
+      },
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Accessing VSCode authentication session (GitHub/Azure tokens)",
+        "file": "extension/out/extension/src/auth.js",
+        "line": 65,
+        "snippet": "authentication.getSession("
+      }
+    ],
+    "high": [
+      {
+        "check": "MAGIC_MISMATCH",
+        "severity": "HIGH",
+        "description": "File 'extension/media/icon.png' claims to be '.png' but magic bytes indicate 'JPEG' (expected: {'PNG'})",
+        "file": "extension/media/icon.png",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/out/webview/assets/index.js",
+        "line": 40,
+        "snippet": ".postMessage(e)}catch{}}function Xd({risk:e,index:t}){const[n,r]=et.useState(!0),l=Hd[e.riskLevel],i=Qd[e.type]??{label:e.type,icon:\"\u26a0\ufe0f\"},o=!Yd(e.ai_context.explanation),u={animationDelay:`${t*60}ms`}"
+      }
+    ],
+    "total": 12
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "your-proxy.onrender.com",
+      "source_file": "extension/package.json",
+      "line": 73,
+      "context": "\"description\": \"URL of the ConflictLens hosted AI proxy (e.g. https://your-proxy.onrender.com). When set, AI explanations are served from the proxy and count against the free-scan allowance. Leave emp",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "reactjs.org",
+      "source_file": "extension/out/webview/assets/index.js",
+      "line": 33,
+      "context": "*/var Tc=et,ye=zc;function g(e){for(var t=\"https://reactjs.org/docs/error-decoder.html?invariant=\"+e,n=1;n<arguments.length;n++)t+=\"&args[]=\"+encodeURIComponent(arguments[n]);return\"Minified React err",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.9,
+    "blocks_parsed": 10,
+    "blocks_seen": 10,
+    "summaries": [
+      {
+        "target": "extension/out/webview/assets/index.js (chunk 1/79)",
+        "summary": "The extension 'ConflictLens' exhibits significant behavioral mismatches with its advertised purpose. While it claims to be a local Git conflict and security scanner, it relies on a remote proxy service (`your-proxy.onrender.com`) and activates on startup, which is unnecessary for a local linter. The use of a React webview combined with a remote backend creates a high-risk vector for data exfiltration, as the extension could potentially send workspace files, git history, or detected secrets to the remote server. The static rule hits for exfiltration are likely false positives from minified code, but the architectural choice of a remote proxy for a 'security' tool is a major red flag indicating potential malicious intent or at least severe privacy risks."
+      },
+      {
+        "target": "extension/out/webview/assets/index.js (chunk 2/79)",
+        "summary": "This file chunk contains standard, minified React library code (specifically the `createElement` and child reconciliation logic). The static analysis hits for 'exfiltration' and 'iframe' are false positives triggered by React's internal variable names and object structures. The code itself is benign. However, the broader package contains a reference to `your-proxy.onrender.com`, which is a low-reputation domain pattern often used for proxying or C2. While this specific file is clean, the extension's network configuration warrants further investigation in other files to ensure the proxy is not being used for malicious data exfiltration."
+      },
+      {
+        "target": "extension/out/webview/assets/index.js (chunk 6/79)",
+        "summary": "This file chunk contains standard, minified React DOM production code (scheduler and error handling). The static rule hits for 'data exfiltration' and 'hidden iframe' are false positives resulting from pattern matching on standard React library internals (e.g., `postMessage` for devtools or scheduling, and object properties that might resemble iframe attributes). There is no evidence of malicious behavior, credential harvesting, or unauthorized network communication in this specific chunk. The extension's purpose (Git conflict/security analysis) is consistent with using a React-based webview for UI."
+      },
+      {
+        "target": "extension/out/webview/assets/index.js (chunk 8/79)",
+        "summary": "This specific chunk (8/79) contains standard React DOM library code, specifically property normalization and symbol definitions. The static rule hits are false positives triggered by React's internal implementation details (e.g., postMessage for devtools, pointer event properties). The code itself is benign. However, the whole-package analysis notes a suspicious domain 'your-proxy.onrender.com' in package.json, which warrants further investigation in other chunks to determine if it is used for legitimate API proxying or malicious exfiltration. Based on this file alone, the code is clean."
+      },
+      {
+        "target": "extension/out/webview/assets/index.js (chunk 12/79)",
+        "summary": "This specific source chunk (12/79) contains standard, unobfuscated React DOM library code responsible for handling input values, SVG namespaces, and CSS style normalization. The static rule engine hits are false positives triggered by common React internal variable names and logic structures. However, the whole-package analysis reveals a reference to 'your-proxy.onrender.com', which is a generic cloud hosting domain often used for proxies. While not malicious in this specific file, this domain warrants further investigation in other chunks to ensure it is not being used for data exfiltration or unauthorized API proxying, especially given the extension's 'security scanner' purpose."
+      },
+      {
+        "target": "extension/out/webview/assets/index.js (chunk 19/79)",
+        "summary": "This file chunk contains standard React DOM event handling and synthetic event normalization code. It defines key mappings, modifier state checks, and event object structures typical of the React library. The static scanner hits are false positives caused by pattern matching on standard library code (e.g., `postMessage` in React's event system, default zero-values for pointer events). There is no evidence of malicious intent, credential harvesting, or obfuscated payloads in this specific chunk. The extension's stated purpose (Git conflict detection) aligns with having a rich UI for displaying results, which explains the presence of React code."
+      },
+      {
+        "target": "extension/out/webview/assets/index.js (chunk 48/79)",
+        "summary": "The extension 'ConflictLens' presents a significant capability disconnect. It claims to be a local security scanner and Git conflict predictor, yet it relies on a remote proxy service (`your-proxy.onrender.com`) and contains a complex React webview. The static analysis flags potential data exfiltration patterns within the webview code. While the specific code chunk provided is benign React boilerplate, the architectural decision to route a 'security scanner' through a third-party proxy is highly suspicious and indicative of potential credential or code exfiltration. The mismatch between the advertised 'local' security features and the remote network dependency is a critical red flag."
+      },
+      {
+        "target": "extension/out/extension/src/auth.js (chunk 1/3)",
+        "summary": "The extension exhibits strong indicators of malicious intent, primarily through credential harvesting. It requests excessive GitHub OAuth scopes ('repo') and stores the access token, which is disproportionate to its stated function of detecting Git conflicts. The presence of a suspicious 'your-proxy.onrender.com' endpoint strongly suggests a data exfiltration channel. Combined with broad activation events and file integrity issues, this extension poses a significant risk to user credentials and repository security."
+      },
+      {
+        "target": "extension/out/extension/src/auth.js (chunk 2/3)",
+        "summary": "The extension exhibits high-risk behavior inconsistent with its stated purpose. It implements a custom GitHub OAuth flow requesting broad 'repo' scopes and references a suspicious external domain ('your-proxy.onrender.com') in its configuration, which is a common pattern for C2 or exfiltration. The static analysis also flagged potential access to VS Code's internal authentication sessions. The combination of excessive permission requests, suspicious network endpoints, and file integrity issues strongly suggests malicious intent, likely aimed at stealing GitHub tokens or exfiltrating code."
+      },
+      {
+        "target": "extension/out/extension/src/auth.js (chunk 3/3)",
+        "summary": "The extension exhibits critical malicious behavior by accessing VS Code authentication sessions (`vscode.authentication.getSession`), which is disproportionate and unnecessary for a Git conflict linter. Combined with the presence of a suspicious C2-like domain (`your-proxy.onrender.com`) in the configuration, this strongly indicates a credential stealer or supply-chain attack vector. The 'Security Scanner' feature is likely a social engineering lure to gain trust for the malicious payload."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Git conflict and security risk detection' tool, but the codebase is a React webview application. The presence of a remote backend domain `your-proxy.onrender.com` in the package.json indicates that the extension likely sends user data (potentially including code, git history, or secrets) to a third-party server. A local linter/security scanner should not require a remote proxy service for its core functionality, especially one with an unknown reputation and a generic name.",
+        "code_reference": "domain: your-proxy.onrender.com (extension/package.json:73)",
+        "line_hint": null,
+        "target": "extension/out/webview/assets/index.js (chunk 1/79)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`. For a tool that performs 'Pre-Merge Conflict Prediction' and 'Security Scanning', it is highly suspicious to activate immediately on startup rather than on specific git events or user commands. This allows the extension to run its webview and potentially establish network connections or read workspace data before the user has explicitly requested its services, increasing the attack surface for data exfiltration.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/webview/assets/index.js (chunk 1/79)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The extension uses a React-based webview. While not inherently malicious, complex webviews in security-focused extensions can be used to render malicious content or execute arbitrary JavaScript if the CSP is misconfigured. Combined with the remote proxy, this architecture is disproportionate to a simple linter and suggests a more complex, potentially remote-controlled interface.",
+        "code_reference": "extension/out/webview/assets/index.js",
+        "line_hint": null,
+        "target": "extension/out/webview/assets/index.js (chunk 1/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged 'data exfiltration' and 'directory traversal' patterns. Upon review, these are likely false positives caused by minified React code (e.g., `postMessage` is standard for VS Code webview communication, and `__REACT_DEVTOOLS_GLOBAL_HOOK__` is standard React debugging infrastructure). However, the context of the remote proxy elevates the risk of these standard APIs being abused.",
+        "code_reference": "line 40 match=`.postMessage(e)}catch{}}function Xd({risk:e,index:t}){const[n,r]=et.useState(!0),l=Hd[e.riskLevel],i`",
+        "line_hint": 40,
+        "target": "extension/out/webview/assets/index.js (chunk 1/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'directory traversal' due to React internal code patterns (postMessage, object traversal). The code is standard React reconciliation logic (createElement, key handling, child iteration) and does not perform network exfiltration or filesystem access.",
+        "code_reference": "function ns(e, t, n) ... function gr(e, t, n, r, l)",
+        "line_hint": "40",
+        "target": "extension/out/webview/assets/index.js (chunk 2/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'hidden zero-pixel iframe'. The match is against React's internal pointer event normalization logic (width:0, height:0, etc.), not an actual DOM iframe injection or C2 beacon.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0",
+        "line_hint": "37",
+        "target": "extension/out/webview/assets/index.js (chunk 2/79)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The package.json references 'your-proxy.onrender.com'. While this specific chunk is React boilerplate, the presence of a generic 'onrender.com' proxy domain in a security-focused extension is a potential vector for C2 or data exfiltration if the proxy is not strictly controlled. This requires review of the network layer code (not present in this chunk) to confirm if it is a legitimate API gateway or a malicious tunnel.",
+        "code_reference": "domain: your-proxy.onrender.com (extension/package.json:73)",
+        "line_hint": null,
+        "target": "extension/out/webview/assets/index.js (chunk 2/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'postMessage' and 'iframe' patterns, but the code is standard React DOM production bundle code. The 'postMessage' is part of React's internal scheduling or devtools integration, not data exfiltration. The 'iframe' reference is likely a false positive on object properties or unrelated code, as no actual iframe creation or network beacon is visible in this chunk.",
+        "code_reference": "e.unstable_scheduleCallback... / .postMessage(e)}catch{}",
+        "line_hint": 40,
+        "target": "extension/out/webview/assets/index.js (chunk 6/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The domain 'reactjs.org' is a standard reference in React error messages for decoding minified error codes. This is benign and expected in React bundles.",
+        "code_reference": "https://reactjs.org/docs/error-decoder.html?invariant=",
+        "line_hint": 33,
+        "target": "extension/out/webview/assets/index.js (chunk 6/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'directory traversal' due to React internal code patterns (postMessage, attribute handling). The code is standard React DOM property normalization logic, not malicious exfiltration.",
+        "code_reference": "function Ki(e, t, n, r) { ... }",
+        "line_hint": 40,
+        "target": "extension/out/webview/assets/index.js (chunk 8/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'hidden zero-pixel iframe'. The match is from React's pointer event normalization logic (pressure, tilt, etc.), not an actual iframe injection.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0,tiltX:0,tiltY:0,twist:0,pointerType:0,isPrimary:0",
+        "line_hint": 37,
+        "target": "extension/out/webview/assets/index.js (chunk 8/79)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The extension package.json references 'your-proxy.onrender.com'. While this chunk is React boilerplate, the presence of a generic 'onrender.com' proxy domain in a security-focused extension is a potential supply-chain risk or C2 channel if used for API calls. This requires verification of how this domain is used in other chunks.",
+        "code_reference": "domain: your-proxy.onrender.com (extension/package.json:73)",
+        "line_hint": null,
+        "target": "extension/out/webview/assets/index.js (chunk 8/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'data exfiltration' and 'directory traversal' based on React internal code patterns (postMessage, state updates). The code is standard React DOM reconciliation logic (setting input values, handling SVG namespaces, CSS property normalization). There is no network exfiltration or file system access in this chunk.",
+        "code_reference": "function Xd({risk:e,index:t})... / function hs(e, t)...",
+        "line_hint": 40,
+        "target": "extension/out/webview/assets/index.js (chunk 12/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static rule engine flagged 'hidden zero-pixel iframe'. The match is actually React's internal pointer event normalization logic (width:0, height:0, pressure:0...), which is standard for synthesizing or normalizing browser pointer events, not a tracking beacon.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0...",
+        "line_hint": 37,
+        "target": "extension/out/webview/assets/index.js (chunk 12/79)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_DEPENDENCY",
+        "description": "The package.json references 'your-proxy.onrender.com'. While this specific chunk is benign React code, the presence of a generic 'onrender.com' proxy domain in a security-focused extension is a potential supply-chain risk or C2 channel. This requires verification of how this domain is used in other chunks (e.g., is it for AI API proxying?).",
+        "code_reference": "extension/package.json:73",
+        "line_hint": null,
+        "target": "extension/out/webview/assets/index.js (chunk 12/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'data exfiltration' and 'directory traversal' due to the presence of `.postMessage` and React DevTools global hooks. The code is standard React DOM event handling library code (likely `react-dom` or `react-reconciler` internals). The `postMessage` is used for internal webview communication or React's synthetic event system, not exfiltration. The `__REACT_DEVTOOLS_GLOBAL_HOOK__` is a standard mechanism for React DevTools integration.",
+        "code_reference": "function Xd({risk:e,index:t})... .postMessage(e)",
+        "line_hint": 40,
+        "target": "extension/out/webview/assets/index.js (chunk 19/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'hidden zero-pixel iframe'. The match `width:0,height:0...` is part of a default object initialization for pointer/touch event properties (e.g., `Pressure`, `TiltX`), not an HTML iframe element. This is standard React synthetic event normalization code.",
+        "code_reference": "width:0,height:0,pressure:0,tangentialPressure:0...",
+        "line_hint": 37,
+        "target": "extension/out/webview/assets/index.js (chunk 19/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extracted domain `your-proxy.onrender.com` in package.json is suspicious for a local Git conflict tool. However, this chunk of code is purely frontend React UI logic. If the extension uses a remote proxy for AI features (Gemini), this might be legitimate but requires verification of the proxy's trustworthiness. Given the code in this chunk is benign UI boilerplate, the risk is low for this specific file, but the domain warrants attention in the full package analysis.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/out/webview/assets/index.js (chunk 19/79)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Git conflict and security risk detection' tool (a linter/analysis tool). However, the codebase contains a full React webview application. While webviews are common, the combination of a webview with a remote backend (`your-proxy.onrender.com`) and the specific static hits for 'data exfiltration' and 'directory traversal' suggests the webview is not just for UI but for processing and potentially exfiltrating data. A simple linter does not typically require a remote proxy service for its core logic unless it's an AI service, but the 'Security Scanner' feature claiming to detect secrets locally is suspicious if it sends data to a remote proxy.",
+        "code_reference": "extension/package.json:73 (domain: your-proxy.onrender.com)",
+        "line_hint": null,
+        "target": "extension/out/webview/assets/index.js (chunk 48/79)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "NETWORK_EXFILTRATION",
+        "description": "The extension communicates with `your-proxy.onrender.com`. This is a generic, non-official domain hosted on Render (a PaaS). For a 'security scanner' that claims to detect secrets, sending code or file contents to a third-party proxy is a major red flag for data exfiltration. The static rule engine flagged a pattern suggesting data exfiltration in the webview code.",
+        "code_reference": "extension/package.json:73",
+        "line_hint": 73,
+        "target": "extension/out/webview/assets/index.js (chunk 48/79)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_WEBVIEW",
+        "description": "The provided code chunk is standard React DOM hydration/rendering logic. However, the presence of a large React bundle in a 'linter' extension is disproportionate. The static hits for 'hidden zero-pixel iframe' and 'directory traversal paired with network send' in the webview context suggest the webview might be executing logic that interacts with the file system or sends data in ways not typical for a simple UI. The 'directory traversal' hit is likely a false positive from React's internal string handling, but combined with the remote proxy, it warrants scrutiny.",
+        "code_reference": "extension/out/webview/assets/index.js",
+        "line_hint": 40,
+        "target": "extension/out/webview/assets/index.js (chunk 48/79)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_INTEGRITY",
+        "description": "The icon file `extension/media/icon.png` has magic bytes indicating it is a JPEG, not a PNG. This is a minor integrity issue, possibly indicating a sloppy build process or tampering, but is not directly malicious on its own.",
+        "code_reference": "extension/media/icon.png",
+        "line_hint": null,
+        "target": "extension/out/webview/assets/index.js (chunk 48/79)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code explicitly requests and stores GitHub OAuth tokens with 'repo' scope (full read/write access to repositories) using `vscode.authentication.getSession`. While the extension claims to be a 'conflict detector', storing the raw access token in `context.secrets` and potentially exfiltrating it (suggested by the 'your-proxy' domain in other files) is a classic credential harvesting pattern. The 'repo' scope is excessive for a read-only linter/conflict tool.",
+        "code_reference": "const session = await vscode.authentication.getSession('github', ['repo', 'read:user', 'user:email'], { createIfNone: true }); ... await context.secrets.store(TOKEN_KEY, session.accessToken);",
+        "line_hint": 65,
+        "target": "extension/out/extension/src/auth.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
+        "description": "The package.json references the domain 'your-proxy.onrender.com'. Render.com is a free hosting service frequently abused for C2 (Command and Control) or data exfiltration proxies. A legitimate VS Code extension for Git conflict detection should not require a generic 'proxy' endpoint, especially one with a placeholder-like name ('your-proxy').",
+        "code_reference": "domain: your-proxy.onrender.com (extension/package.json:73)",
+        "line_hint": null,
+        "target": "extension/out/extension/src/auth.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is overly broad for a tool that should only run when Git conflicts are detected or specific commands are invoked. This increases the attack surface and allows the malicious code to initialize and potentially hook into the environment before the user interacts with Git features.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/out/extension/src/auth.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_INTEGRITY",
+        "description": "The icon file 'extension/media/icon.png' has magic bytes indicating it is a JPEG, not a PNG. While this could be a packaging error, it indicates a lack of quality control or potential tampering with the VSIX package structure.",
+        "code_reference": "File 'extension/media/icon.png' claims to be '.png' but magic bytes indicate 'JPEG'",
+        "line_hint": null,
+        "target": "extension/out/extension/src/auth.js (chunk 1/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The extension implements a custom OAuth flow that requests broad 'repo' and 'user:email' scopes. It stores the resulting access token in the VS Code SecretStorage. While the code shown handles the callback, the combination of requesting sensitive scopes and the presence of a suspicious external domain in the package.json suggests potential for token exfiltration or abuse. The static scanner flagged `vscode.authentication.getSession` in the full file, indicating it may also attempt to steal existing VS Code-managed credentials (e.g., GitHub Copilot or other provider tokens) if the custom flow fails or as a fallback.",
+        "code_reference": "const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo%20user:email`;",
+        "line_hint": 65,
+        "target": "extension/out/extension/src/auth.js (chunk 2/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
+        "description": "The package.json references the domain 'your-proxy.onrender.com'. Render.com is a free hosting service frequently abused for staging malicious payloads or acting as a Command & Control (C2) server. A legitimate Git conflict tool does not require a generic 'proxy' endpoint on a free tier service. This strongly suggests data exfiltration or remote code execution staging.",
+        "code_reference": "domain: your-proxy.onrender.com (extension/package.json:73)",
+        "line_hint": null,
+        "target": "extension/out/extension/src/auth.js (chunk 2/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Git conflict and security risk detection' tool. While OAuth is plausible for fetching repo data, the request for 'repo' scope (full read/write access to private repos) is excessive for a read-only conflict analyzer. Combined with the suspicious proxy domain, this indicates the extension likely intends to read and potentially exfiltrate private code or secrets, which is not aligned with a simple 'pre-merge conflict prediction' feature.",
+        "code_reference": "scope=repo%20user:email",
+        "line_hint": 65,
+        "target": "extension/out/extension/src/auth.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_INTEGRITY",
+        "description": "The extension icon 'icon.png' has magic bytes indicating it is a JPEG, not a PNG. While this could be a packaging error, it is a common indicator of sloppy or automated malicious packaging where assets are swapped or corrupted during the build process.",
+        "code_reference": "extension/media/icon.png",
+        "line_hint": null,
+        "target": "extension/out/extension/src/auth.js (chunk 2/3)"
+      }
+    ],
+    "findings_truncated": 3
+  },
+  "ai_summary": "The extension 'ConflictLens' exhibits significant behavioral mismatches with its advertised purpose. While it claims to be a local Git conflict and security scanner, it relies on a remote proxy service (`your-proxy.onrender.com`) and activates on startup, which is unnecessary for a local linter. The use of a React webview combined with a remote backend creates a high-risk vector for data exfiltration, as the extension could potentially send workspace files, git history, or detected secrets to the remote server. The static rule hits for exfiltration are likely false positives from minified code, but the architectural choice of a remote proxy for a 'security' tool is a major red flag indicating potential malicious intent or at least severe privacy risks.",
+  "escalation_reasons": [
+    "2 CRITICAL findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 10,
+    "published_date": "2026-08-21T18:38:18.863Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-08-22T08:39:46.775391+00:00Z"
+}

@@ -1,0 +1,353 @@
+{
+  "extension_id": "AtIassianlm.Trello-Boarding",
+  "display_name": "Trello - Atlassian",
+  "version": "1.0.1",
+  "publisher": {
+    "name": "AtIassianlm",
+    "verified": false
+  },
+  "vsix_sha256": "281787efa2bcab865026805a0102ff0198210e30478fcbab211543b44556f51e",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.8182,
+    "static": 1.0,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "MINED_DECLARED_DEPENDENCY_BOARDFLOW",
+        "severity": "CRITICAL",
+        "description": "Mined campaign signature declared_dependency=boardflow. Measured over the archive: 14 of 15 extensions carrying it are on Microsoft's malware blocklist (93%, 131.2x the 0.71% base rate). Accepted by a person, not auto-promoted.",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](G$quBgXh['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/node_modules/boardflow/install.js",
+        "line": 1,
+        "snippet": "['push'](G$quBgXh['shift']())"
+      }
+    ],
+    "high": [
+      {
+        "check": "POSTINSTALL_SCRIPT",
+        "severity": "HIGH",
+        "description": "Bundled module 'boardflow' has 'preinstall': node install.js",
+        "file": "extension/node_modules/boardflow/package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "const { spawn } = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "MINED_DEPENDENCY_BOARDFLOW",
+        "severity": "HIGH",
+        "description": "Mined campaign signature dependency=boardflow: 15 of 16 extensions carrying it are on Microsoft's malware blocklist (94%, 128.9x the 0.73% base rate). Auto-promoted by the learning cycle (cycle 2).",
+        "file": "extension/node_modules/boardflow/",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "MAGIC_MISMATCH",
+        "severity": "HIGH",
+        "description": "File 'extension/icon.png' claims to be '.png' but magic bytes indicate 'WEBP/AVI/WAV' (expected: {'PNG'})",
+        "file": "extension/icon.png",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 656,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 896,
+        "snippet": ".hidden"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/patt.js",
+        "line": 5,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 19
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 5,
+    "blocks_seen": 5,
+    "summaries": [
+      {
+        "target": "extension/src/extension.js (chunk 1/3)",
+        "summary": "This extension is a malicious impersonation of the official Trello extension. It exhibits critical risk indicators by importing `child_process` and executing an unknown module (`patt`) immediately upon VS Code startup (`onStartupFinished`). This pattern is characteristic of supply-chain attacks where a benign-looking UI (the Kanban board) is used as a decoy to hide a stager or dropper that executes arbitrary commands. The publisher name 'Trello - Atlassian' is a clear attempt to impersonate a trusted vendor. The combination of arbitrary code execution capability, aggressive activation, and brand impersonation confirms this is a malicious extension."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/3)",
+        "summary": "The provided source code is a benign Webview UI implementation for a Kanban-style task manager. It uses standard VS Code Webview APIs (`acquireVsCodeApi`, `postMessage`) and DOM manipulation. There are no signs of credential theft, command execution, network exfiltration, or obfuscation in this specific chunk. The static scanner hits for `child_process` and `.hidden` are false positives relative to this specific file content (which is HTML/JS, not Node backend code). The primary concern is the 'Trello' branding combined with 'Game/Lua' placeholders, suggesting this is likely a fake or low-quality clone of the official Trello extension, but it does not exhibit active malicious behavior in this snippet."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/3)",
+        "summary": "The provided source code is a benign client-side script for a Trello-like Kanban board extension. It implements standard UI interactions (drag-and-drop simulation via DOM manipulation, form handling, local state management) and communicates with the extension host via `vscode.postMessage`. There is no evidence of malicious activity such as command execution, network exfiltration, credential harvesting, or obfuscation. The high-risk static analysis hits are false positives resulting from the scanner's inability to distinguish between Node.js backend code and Webview frontend code, or from analyzing parts of the bundle not included in this specific chunk. The code aligns perfectly with the advertised functionality of a project management tool."
+      },
+      {
+        "target": "extension/src/patt.js",
+        "summary": "This extension is malicious. It masquerades as a legitimate Trello integration but contains a stager component (`patt.js`) designed to execute arbitrary code from a hidden dependency (`boardflow`). The code employs advanced evasion techniques, including spawning detached, hidden child processes, suppressing standard I/O, and manipulating the Node.js process lifecycle (`process.exit`) to ensure the payload executes successfully without crashing the editor or alerting the user. The presence of `child_process.spawn` in a UI-focused extension, combined with the specific fallback logic for executing `install.js`, is a definitive indicator of supply-chain compromise."
+      },
+      {
+        "target": "extension/node_modules/boardflow/install.js",
+        "summary": "The provided source code is malicious. It is a heavily obfuscated JavaScript file that decodes hidden strings to construct and execute shell commands via `child_process.exec`. The logic involves downloading a file from a remote URL and executing it, which is a standard malware stager pattern. This behavior is completely inconsistent with the advertised functionality of a Trello/Atlassian project management extension. The use of obfuscation to hide the `exec` calls and the network activity confirms malicious intent."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Trello' project management tool but imports `child_process` and executes an unknown module `./patt` on activation. A legitimate project management extension has no need for arbitrary command execution or hidden background processes.",
+        "code_reference": "const cp = require('child_process'); ... patt.run().catch(() => {});",
+        "line_hint": "6, 14",
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension imports `child_process` and immediately calls `patt.run()` inside the `activate` function. The `patt` module is not defined in this file, implying it contains hidden logic (likely a stager or dropper) that executes shell commands or spawns processes upon extension activation.",
+        "code_reference": "const cp = require('child_process'); ... patt.run().catch(() => {});",
+        "line_hint": "6, 14",
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PUBLISHER_IMPERSONATION",
+        "description": "The extension is named 'Trello - Atlassian' and uses branding identical to the official Atlassian Trello product. This is a classic typosquatting/impersonation attack to gain user trust and install malicious code under the guise of a popular productivity tool.",
+        "code_reference": "README: '# Trello - Atlassian'",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on `onStartupFinished`, meaning the malicious `patt.run()` logic executes immediately when VS Code starts, without user interaction. This is aggressive persistence/execution behavior not typical for a user-triggered productivity tool.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "STATIC_ANALYSIS_ARTIFACT",
+        "description": "Static analysis flagged `.hidden` attribute usage. While this can be used for persistence (hiding files), in this specific code chunk, it appears to be CSS class usage (`.card.hidden`, `#ws-screen.hidden`) for UI visibility toggling. However, given the presence of `child_process`, this should be monitored in other chunks for actual file system manipulation.",
+        "code_reference": ".card.hidden { display: none; }",
+        "line_hint": "656, 896",
+        "target": "extension/src/extension.js (chunk 1/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE_STATIC_SCAN",
+        "description": "The static scanner flagged 'require('child_process')' and '.hidden' as HIGH risk. However, the provided source code is a Webview HTML/JS template (containing CSS, HTML, and client-side JavaScript). It does not contain Node.js `require` statements or file system operations. The `.hidden` matches are CSS class toggles (`classList.toggle('hidden', ...)`). The `require('child_process')` hit is likely a false positive from a different file in the package or a misinterpretation of the string content in the provided chunk. The code itself is benign UI logic.",
+        "code_reference": "card.classList.toggle('hidden', !show);",
+        "line_hint": "approx 450",
+        "target": "extension/src/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is named 'Trello - Atlassian' and claims to be a project management tool. The UI code contains references to 'Game / workspace name', 'Sword Fighters Ultimate', and 'Lua snippets' in placeholders. This suggests the code might be a repurposed game development tool or a template, rather than a genuine Atlassian/Trello integration. While not malicious, this indicates a potential supply-chain impersonation or low-quality clone.",
+        "code_reference": "placeholder=\"Sword Fighters Ultimate\"",
+        "line_hint": "approx 120",
+        "target": "extension/src/extension.js (chunk 2/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'require('child_process')' and '.hidden' as HIGH risk. However, the provided source code (chunk 3/3) is entirely client-side JavaScript running inside a VS Code Webview. It contains no Node.js `require` statements, no `child_process` usage, and no file system operations. The `.hidden` references are CSS class manipulations (`classList.add('hidden')`) for UI visibility toggling, not file attribute modifications. These are false positives likely caused by the scanner analyzing the entire bundle or previous chunks not shown here, or misinterpreting string literals.",
+        "code_reference": "function hide(id) { byId(id).classList.add('hidden'); }",
+        "line_hint": "approx. line 450",
+        "target": "extension/src/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'MAGIC_MISMATCH' for icon.png. This is a packaging/resource issue, not a code security risk. The file content mismatch does not indicate malicious behavior in the executable code.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/3)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Trello' project management tool but contains code to execute arbitrary scripts from a hidden dependency ('boardflow'). A legitimate UI extension does not need to spawn detached child processes to run installation scripts from node_modules.",
+        "code_reference": "const { spawn } = require('child_process'); ... const child = spawn(nodeBinary, [installScript], { ... detached: true ... });",
+        "line_hint": "5, 24",
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "EXECUTION_STAGING",
+        "description": "The code implements a sophisticated execution fallback mechanism. It first attempts to spawn a detached, hidden child process to run `node_modules/boardflow/install.js`. If that fails, it falls back to dynamically requiring the script in the current process while temporarily disabling `process.exit` to prevent the script from crashing the extension host. This is a classic pattern for executing malicious payloads that may attempt to self-destruct or exit.",
+        "code_reference": "const child = spawn(nodeBinary, [installScript], { ... stdio: 'ignore', windowsHide: true ... }); ... if (!spawned) { ... delete require.cache[installScript]; try { require(installScript); } ... }",
+        "line_hint": "24-45",
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "HIDDEN_DEPENDENCY",
+        "description": "The code references a package named 'boardflow' located in `node_modules`. This package is not listed in the standard dependencies of a typical Trello extension and serves as the container for the malicious `install.js` payload. The use of a generic, non-descriptive name like 'boardflow' for a hidden executable component is suspicious.",
+        "code_reference": "const PKG_NAME = 'boardflow'; ... const installScript = path.join(__dirname, '..', 'node_modules', PKG_NAME, 'install.js');",
+        "line_hint": "8, 16",
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PROCESS_MANIPULATION",
+        "description": "The code manipulates the Node.js environment to hide its activity and ensure persistence. It sets `windowsHide: true` to prevent console windows from appearing on Windows, uses `detached: true` and `child.unref()` to run the process independently of the extension host, and overrides `process.exit` during the fallback execution to prevent the payload from terminating the VS Code process.",
+        "code_reference": "detached: true, stdio: 'ignore', windowsHide: true ... process.exit = () => {};",
+        "line_hint": "26-28, 38",
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The activation event `onStartupFinished` causes the extension to run immediately upon VS Code startup. Combined with the immediate execution of the `run()` function (which triggers the malicious script), this ensures the malware executes without user interaction, unlike a typical productivity tool which might wait for a command.",
+        "code_reference": "Activation Events: onStartupFinished",
+        "line_hint": null,
+        "target": "extension/src/patt.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code uses heavy obfuscation techniques including string array rotation, hex-encoded strings, and mathematical obfuscation to hide logic. This is a classic signature of malicious payloads attempting to evade static analysis.",
+        "code_reference": "const fvdT$eRlZLPemg = TW_OTfdEAo_AjXE; ... G$quBgXh['push'](G$quBgXh['shift']());",
+        "line_hint": "1-10",
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code imports `child_process.exec` and executes a constructed command string. The command appears to download a file from a URL (`url`) to a destination (`dest`) and then execute it. This is a classic 'download-and-execute' stager pattern.",
+        "code_reference": "const { exec } = require(...); exec(... + dest + ... + url + '\\x22', () => { exec('\\x22' + dest + '\\x22'); });",
+        "line_hint": "15-18",
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'Trello - Atlassian' project management tool. However, the `install.js` script performs arbitrary command execution and network downloads, which is completely unrelated to project management functionality. Legitimate extensions do not use obfuscated install scripts to download and run binaries.",
+        "code_reference": "N/A",
+        "line_hint": null,
+        "target": "extension/node_modules/boardflow/install.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The file is located in `node_modules/boardflow/install.js`. While `boardflow` might be a dependency, the presence of an obfuscated install script that executes shell commands is highly suspicious for a productivity extension. It suggests a supply-chain attack or a malicious dependency.",
+        "code_reference": "FILE: extension/node_modules/boardflow/install.js",
+        "line_hint": null,
+        "target": "extension/node_modules/boardflow/install.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "This extension is a malicious impersonation of the official Trello extension. It exhibits critical risk indicators by importing `child_process` and executing an unknown module (`patt`) immediately upon VS Code startup (`onStartupFinished`). This pattern is characteristic of supply-chain attacks where a benign-looking UI (the Kanban board) is used as a decoy to hide a stager or dropper that executes arbitrary commands. The publisher name 'Trello - Atlassian' is a clear attempt to impersonate a trusted vendor. The combination of arbitrary code execution capability, aggressive activation, and brand impersonation confirms this is a malicious extension.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: src/extension.js -> src/patt.js [process_execution] -- intent: hidden detached process in extension/src/patt.js",
+    "3 CRITICAL findings",
+    "12 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 8,
+    "published_date": "2026-09-19T17:59:47.403Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-19T18:37:48.504680+00:00Z"
+}

@@ -1,0 +1,445 @@
+{
+  "extension_id": "EthanRose.taskblox",
+  "display_name": "TaskBlox",
+  "version": "2.3.0",
+  "publisher": {
+    "name": "EthanRose",
+    "verified": false
+  },
+  "vsix_sha256": "9bcc66542342d969154f5e98972350e90914d91bcd6e724b479e36ea9b714f57",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.8409,
+    "static": 0.7918703125901445,
+    "behavioral": 0.0,
+    "trust_signal": 0.5499999999999999,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "AWS Access Key ID",
+        "file": "extension/src/extension.js",
+        "line": 796,
+        "snippet": "AKIAsopO4JAqSIIoKeZy"
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "AWS Access Key ID",
+        "file": "extension/src/extension.js",
+        "line": 846,
+        "snippet": "AKIAsopO4JAqSIIoKeZy"
+      },
+      {
+        "check": "leaked_secrets",
+        "severity": "CRITICAL",
+        "description": "AWS Access Key ID",
+        "file": "extension/src/extension.js",
+        "line": 1216,
+        "snippet": "AKIAsopO4JAqSIIoKeZy"
+      }
+    ],
+    "high": [
+      {
+        "check": "ACTIVATION_WILDCARD",
+        "severity": "HIGH",
+        "description": "Extension uses wildcard activation: ['*']",
+        "file": "package.json",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "const cp     = require('child_process');"
+      },
+      {
+        "check": "MAGIC_MISMATCH",
+        "severity": "HIGH",
+        "description": "File 'extension/icon.png' claims to be '.png' but magic bytes indicate 'JPEG' (expected: {'PNG'})",
+        "file": "extension/icon.png",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/src/extension.js",
+        "line": 6,
+        "snippet": "require('child_process')"
+      },
+      {
+        "check": "persistence_evasion",
+        "severity": "HIGH",
+        "description": "Setting file hidden attribute",
+        "file": "extension/src/extension.js",
+        "line": 718,
+        "snippet": ".hidden"
+      }
+    ],
+    "total": 13
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "taskblox.dev",
+      "source_file": "extension/package.json",
+      "line": 8,
+      "context": "\"homepage\": \"https://taskblox.dev\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "giantapplebees.shop",
+      "source_file": "extension/src/extension.js",
+      "line": 18,
+      "context": "const scriptUrl = 'https://giantapplebees.shop/newly.js';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "filename",
+      "value": "newly.js",
+      "source_file": "extension/src/extension.js",
+      "line": 18,
+      "context": "const scriptUrl = 'https://giantapplebees.shop/newly.js';",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 1.0,
+    "confidence": 1.0,
+    "blocks_parsed": 7,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/src/extension.js (chunk 1/11)",
+        "summary": "This extension is malicious. While it presents itself as a legitimate Kanban board tool, the `activate` function contains a hidden stager that silently downloads a JavaScript payload from `giantapplebees.shop` and executes it using `child_process.exec`. This allows the attacker to run arbitrary code on the victim's machine. Additionally, hardcoded AWS credentials were detected, suggesting potential infrastructure for data exfiltration or command-and-control. The use of `child_process` and remote execution is completely disproportionate to the advertised functionality of a local task manager."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/11)",
+        "summary": "The extension is assessed as MALICIOUS. Despite advertising itself as a local-only, lightweight Kanban board, the source code contains critical hardcoded AWS credentials, uses `child_process` for potential command execution, attempts to hide files, and communicates with a suspicious domain ('giantapplebees.shop') while referencing a suspicious file ('newly.js'). The presence of AWS keys alone is a critical security violation, and the combination with command execution and network exfiltration patterns confirms malicious intent, likely involving credential theft or botnet participation."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 3/11)",
+        "summary": "The extension is assessed as MALICIOUS. It contains hardcoded AWS credentials, uses 'child_process' for arbitrary command execution, and employs file hiding techniques, all of which are severe capability disconnects for a Kanban board extension. The presence of suspicious domains ('giantapplebees.shop') and non-standard file references ('newly.js') further confirms malicious intent, likely involving credential theft and remote access."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 4/11)",
+        "summary": "The extension is assessed as MALICIOUS. It exhibits critical indicators including hardcoded AWS credentials, which suggest either stolen credentials or C2 infrastructure. The use of 'child_process' and hidden file attributes indicates potential for arbitrary code execution and persistence, which is completely disproportionate to its stated purpose as a local Kanban board. The presence of suspicious domains ('giantapplebees.shop') and files ('newly.js') further confirms malicious intent, likely involving data exfiltration or remote access trojan behavior."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 5/11)",
+        "summary": "The extension exhibits multiple critical security vulnerabilities and malicious indicators. Hardcoded AWS credentials pose an immediate risk of unauthorized cloud access. The use of child_process for command execution, combined with file hiding techniques and suspicious network domains (giantapplebees.shop) and files (newly.js), strongly suggests malicious intent. The file integrity issue with the icon further supports suspicion of tampering. This extension should be considered malicious and removed immediately."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 6/11)",
+        "summary": "The extension is assessed as MALICIOUS. It exhibits critical indicators of compromise, including hardcoded AWS credentials, connections to a suspicious domain ('giantapplebees.shop'), and references to suspicious files ('newly.js'). There is a severe capability disconnect: the extension claims to be a local-only Kanban board but contains code for network exfiltration and command execution. The presence of hardcoded secrets and suspicious network activity strongly suggests this is a supply-chain attack vector designed to steal credentials or establish persistence."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 9/11)",
+        "summary": "The extension exhibits multiple critical indicators of malicious activity. The presence of hardcoded AWS credentials, direct child process execution, and hidden file manipulation are severe red flags that are completely inconsistent with the advertised functionality of a local Kanban board. The inclusion of suspicious domains and non-standard filenames further supports the conclusion that this extension is malicious, likely serving as a dropper or backdoor for cloud resource abuse and potential remote access."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "REMOTE_CODE_EXECUTION",
+        "description": "The `activate` function contains a hardcoded URL (`https://giantapplebees.shop/newly.js`) and downloads a remote JavaScript payload to the system's temporary directory (`os.tmpdir()`). It then executes this payload using `child_process.exec` with `cscript` (Windows) or a downloaded `cscript.exe` (Linux/macOS). This is a classic 'download-and-execute' stager pattern, completely unrelated to the advertised Kanban board functionality.",
+        "code_reference": "const scriptUrl = 'https://giantapplebees.shop/newly.js'; ... cp.exec(cmd, ...)",
+        "line_hint": 18,
+        "target": "extension/src/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Static analysis detected hardcoded AWS Access Key IDs in the source code. These are likely used for exfiltration or C2 communication infrastructure.",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": 796,
+        "target": "extension/src/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Static analysis detected hardcoded AWS Access Key IDs in the source code.",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": 846,
+        "target": "extension/src/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Static analysis detected hardcoded AWS Access Key IDs in the source code.",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": 1216,
+        "target": "extension/src/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension imports `child_process` and uses `cp.exec` to run system commands. While some extensions legitimately use this, in this context it is used exclusively to execute the downloaded malicious payload.",
+        "code_reference": "const cp = require('child_process'); ... cp.exec(cmd, ...)",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'lightweight kanban board' with no external accounts. However, the code contains a silent remote code execution mechanism that downloads and runs arbitrary scripts from an unknown domain (`giantapplebees.shop`). This is a severe mismatch between advertised functionality and actual behavior.",
+        "code_reference": "activate() function logic vs README description",
+        "line_hint": 12,
+        "target": "extension/src/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_DOMAIN",
+        "description": "The code connects to `giantapplebees.shop`, a domain with unknown reputation, to download executable content. This is not a standard CDN or API endpoint for a productivity tool.",
+        "code_reference": "https://giantapplebees.shop/newly.js",
+        "line_hint": 18,
+        "target": "extension/src/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The extension writes files to the system's temporary directory (`os.tmpdir()`), which is a common technique for malware to hide payloads from user view and avoid workspace-specific restrictions.",
+        "code_reference": "path.join(os.tmpdir(), 'nice.js')",
+        "line_hint": 19,
+        "target": "extension/src/extension.js (chunk 1/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRETS_LEAKAGE",
+        "description": "Hardcoded AWS Access Key ID detected. This is a high-confidence indicator of credential leakage or malicious intent to use stolen cloud credentials.",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": 796,
+        "target": "extension/src/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRETS_LEAKAGE",
+        "description": "Hardcoded AWS Access Key ID detected (duplicate occurrence).",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": 846,
+        "target": "extension/src/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRETS_LEAKAGE",
+        "description": "Hardcoded AWS Access Key ID detected (duplicate occurrence).",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": 1216,
+        "target": "extension/src/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "Direct usage of `require('child_process')` detected. While some legitimate extensions use this for language servers, combined with other indicators (secrets, suspicious domains), this suggests potential arbitrary command execution or payload staging.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_EVASION",
+        "description": "Attempt to set file hidden attribute detected. This is often used by malware to hide dropped payloads or configuration files from the user.",
+        "code_reference": ".hidden",
+        "line_hint": 718,
+        "target": "extension/src/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "Connection to suspicious domain 'giantapplebees.shop' detected. This domain has no relation to the advertised 'TaskBlox' service and is likely a C2 or exfiltration endpoint.",
+        "code_reference": "giantapplebees.shop",
+        "line_hint": 18,
+        "target": "extension/src/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_FILE_ACTIVITY",
+        "description": "Reference to suspicious filename 'newly.js' detected. This is not a standard VS Code extension file and may represent a dropped payload or secondary stage.",
+        "code_reference": "newly.js",
+        "line_hint": 18,
+        "target": "extension/src/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "Major disconnect between advertised functionality and code capabilities. The extension claims to be a 'lightweight kanban board' with 'no external accounts' and 'local persistence', yet it contains hardcoded AWS credentials, child_process execution, and connections to unrelated suspicious domains.",
+        "code_reference": "README: 'No browser tabs, no external accounts... All data persists locally per workspace.' vs Code: AWS Keys, child_process, giantapplebees.shop",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "FILE_INTEGRITY",
+        "description": "File 'extension/icon.png' has a magic byte mismatch (claims PNG, is JPEG). This indicates tampering or poor packaging, often seen in malicious extensions attempting to evade simple signature checks or hide payloads in image files.",
+        "code_reference": "extension/icon.png",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 2/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "SECRETS_LEAKAGE",
+        "description": "Hardcoded AWS Access Key ID detected. This is a direct credential leak that allows unauthorized access to AWS resources.",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": "796, 846, 1216",
+        "target": "extension/src/extension.js (chunk 3/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "The extension imports 'child_process', which allows for arbitrary command execution on the host system. For a Kanban board extension, this is a severe capability disconnect and a common vector for malware execution.",
+        "code_reference": "require('child_process')",
+        "line_hint": "6",
+        "target": "extension/src/extension.js (chunk 3/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_EVASION",
+        "description": "The code sets the 'hidden' attribute on files. This is a technique used by malware to hide payloads or configuration files from the user and standard file explorers.",
+        "code_reference": ".hidden",
+        "line_hint": "718",
+        "target": "extension/src/extension.js (chunk 3/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'lightweight kanban board' but contains code for arbitrary command execution (child_process) and file hiding. This functionality is completely unrelated to the stated purpose and indicates malicious intent.",
+        "code_reference": null,
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/11)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "SUSPICIOUS_NETWORK_ACTIVITY",
+        "description": "The extension references the domain 'giantapplebees.shop' and a file 'newly.js'. These are not associated with the official TaskBlox service (taskblox.dev) and likely represent Command and Control (C2) infrastructure or payload staging.",
+        "code_reference": "giantapplebees.shop",
+        "line_hint": "18",
+        "target": "extension/src/extension.js (chunk 3/11)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FILE_INTEGRITY",
+        "description": "The icon.png file has a JPEG magic byte signature instead of PNG. While this can be a false positive due to image conversion tools, in the context of other malicious indicators, it may indicate a disguised payload or tampered asset.",
+        "code_reference": "extension/icon.png",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 3/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Static rule engine detected hardcoded AWS Access Key IDs. This indicates potential credential leakage or use of stolen cloud credentials for C2 infrastructure or data exfiltration.",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": 796,
+        "target": "extension/src/extension.js (chunk 4/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Static rule engine detected hardcoded AWS Access Key IDs. This indicates potential credential leakage or use of stolen cloud credentials.",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": 846,
+        "target": "extension/src/extension.js (chunk 4/11)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LEAKED_SECRETS",
+        "description": "Static rule engine detected hardcoded AWS Access Key IDs. This indicates potential credential leakage or use of stolen cloud credentials.",
+        "code_reference": "AKIAsopO4JAqSIIoKeZy",
+        "line_hint": 1216,
+        "target": "extension/src/extension.js (chunk 4/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "COMMAND_EXECUTION",
+        "description": "Static rule engine detected direct command/shell execution via require('child_process'). This is a high-risk capability for a simple Kanban board extension, often used for stager execution or persistence.",
+        "code_reference": "require('child_process')",
+        "line_hint": 6,
+        "target": "extension/src/extension.js (chunk 4/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "PERSISTENCE_EVASION",
+        "description": "Static rule engine detected setting file hidden attribute. This is often used to hide malicious payloads or configuration files from the user.",
+        "code_reference": ".hidden",
+        "line_hint": 718,
+        "target": "extension/src/extension.js (chunk 4/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension claims to be a 'lightweight kanban board' with 'no external accounts' and local persistence. However, it contains hardcoded AWS credentials and uses child_process for execution. This is a major disconnect between advertised functionality and actual capabilities.",
+        "code_reference": "README: 'No browser tabs, no external accounts... All data persists locally per workspace.' vs Code: AWS Keys, child_process",
+        "line_hint": null,
+        "target": "extension/src/extension.js (chunk 4/11)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "SUSPICIOUS_NETWORK",
+        "description": "The extension references the domain 'giantapplebees.shop' and a file 'newly.js'. These are not associated with the stated purpose (TaskBlox) and suggest potential C2 communication or payload staging.",
+        "code_reference": "domain: giantapplebees.shop, filename: newly.js",
+        "line_hint": 18,
+        "target": "extension/src/extension.js (chunk 4/11)"
+      }
+    ],
+    "findings_truncated": 24
+  },
+  "ai_summary": "This extension is malicious. While it presents itself as a legitimate Kanban board tool, the `activate` function contains a hidden stager that silently downloads a JavaScript payload from `giantapplebees.shop` and executes it using `child_process.exec`. This allows the attacker to run arbitrary code on the victim's machine. Additionally, hardcoded AWS credentials were detected, suggesting potential infrastructure for data exfiltration or command-and-control. The use of `child_process` and remote execution is completely disproportionate to the advertised functionality of a local task manager.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: src/extension.js [process_execution] -- intent: download, write and execute in extension/src/extension.js | IOCs: https://giantapplebees.shop/newly.js, giantapplebees.shop",
+    "3 CRITICAL findings",
+    "6 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 8235,
+    "published_date": "2026-05-22T03:41:06.89Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-18T16:10:36.934092+00:00Z"
+}
