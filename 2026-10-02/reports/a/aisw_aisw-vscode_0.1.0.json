@@ -1,0 +1,223 @@
+{
+  "extension_id": "aisw.aisw-vscode",
+  "display_name": "AI Switcher for Coding Agents",
+  "version": "0.1.0",
+  "publisher": {
+    "name": "aisw",
+    "verified": false
+  },
+  "vsix_sha256": "fbb4abe99170b39e0dc32098ab0de46f9ce86827560f815517576f42f0435bf6",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.85,
+    "static": 0.7359608370432262,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "lolbins_stagers",
+        "severity": "CRITICAL",
+        "description": "Curl piped to shell (download-and-execute)",
+        "file": "extension/dist/extension.js",
+        "line": 678,
+        "snippet": "curl -fsSL https://raw.githubusercontent.com/burakdede/aisw/main/install.sh | sh' : 'curl -fsSL https://raw.githubusercontent.com/burakdede/aisw/main/install.sh | sh"
+      },
+      {
+        "check": "lolbins_stagers",
+        "severity": "CRITICAL",
+        "description": "Curl piped to shell (download-and-execute)",
+        "file": "extension/dist/extension.js",
+        "line": 681,
+        "snippet": "curl -fsSL https://raw.githubusercontent.com/burakdede/aisw/main/install.sh | sh"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/binaryResolver.js",
+        "line": 9,
+        "snippet": "const node_child_process_1 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/binaryResolver.js",
+        "line": 44,
+        "snippet": "return (0, node_child_process_1.execFileSync)(lookup, [command], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().split(/\\r?\\n/)[0] || undefined;"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 712,
+        "snippet": "require('node:child_process').execFileSync(process.platform === 'win32' ? 'where' : 'which', [command], { stdio: 'ignore' });"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/cliAdapter.js",
+        "line": 4,
+        "snippet": "const node_child_process_1 = require(\"node:child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/cliAdapter.js",
+        "line": 7,
+        "snippet": "const execFileAsync = (0, node_util_1.promisify)(node_child_process_1.execFile);"
+      }
+    ],
+    "total": 19
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "aiswitcher.dev",
+      "source_file": "extension/package.json",
+      "line": 13,
+      "context": "\"homepage\": \"https://aiswitcher.dev\",",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 1/2)",
+        "summary": "The extension functions as a GUI wrapper for the `aisw` CLI tool. The primary security concern is the implementation of a 'download-and-execute' mechanism (Curl piped to Shell) to install the underlying CLI tool from a GitHub repository. This bypasses standard package manager verification and creates a supply-chain risk if the remote script is compromised. Additionally, the extension's reliance on executing external binaries and modifying configuration settings represents a capability disconnect for a productivity/AI tool, warranting a 'Suspicious' verdict due to the high-risk installation method."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 2/2)",
+        "summary": "The extension exhibits critical security risks primarily due to the inclusion of a remote code execution (RCE) vector. It explicitly constructs and executes a `curl | sh` command to download and run an installation script from a personal GitHub repository (`burakdede/aisw`). This pattern is highly indicative of supply-chain attacks or malware staging, as it allows the publisher to inject arbitrary code into the victim's environment without further review. Additionally, the extension abuses VS Code APIs to modify settings and execute shell commands in the integrated terminal, further expanding its attack surface. The combination of remote script execution and terminal command injection warrants an immediate MALICIOUS verdict."
+      },
+      {
+        "target": "extension/dist/cliAdapter.js",
+        "summary": "The code implements a legitimate adapter for the `aisw` CLI tool, which aligns perfectly with the extension's stated purpose of switching AI coding agent accounts. It uses `child_process.execFile` to invoke the local `aisw` binary with specific, hardcoded arguments (e.g., 'version', 'list', 'use'). There is no evidence of arbitrary command execution, credential harvesting, or data exfiltration. The `sanitize` function actively redacts potential secrets (API keys, tokens) from error messages, indicating a security-conscious design rather than malicious intent. The use of `child_process` is justified by the extension's function as a wrapper for an external CLI tool."
+      },
+      {
+        "target": "extension/dist/binaryResolver.js",
+        "summary": "The code implements a standard binary resolution utility for locating the `aisw` CLI tool on the host system. It uses `child_process.execFileSync` to execute `which` or `where` commands, which is a common and legitimate pattern for locating external executables in VS Code extensions that act as wrappers for CLI tools. The file paths checked (e.g., `~/.cargo/bin`, `/usr/local/bin`) are standard installation locations for Rust-based or Homebrew-installed tools. There is no evidence of credential harvesting, data exfiltration, obfuscation, or malicious intent. The use of `child_process` is proportional to the extension's stated purpose of switching accounts via a local CLI."
+      },
+      {
+        "target": "extension/dist/nativeFlow.js",
+        "summary": "The source code in `nativeFlow.js` consists entirely of pure helper functions that construct command-line argument arrays for an external CLI tool (`aisw`). It does not execute any commands itself, nor does it perform any file I/O, network requests, or credential harvesting. The functions simply return objects containing an executable path and arguments (e.g., `['context', 'create']`). This behavior is fully consistent with the extension's stated purpose of acting as a 'thin editor client' for the `aisw` CLI. There are no obfuscated strings, no hardcoded secrets, and no suspicious API calls. The code is benign."
+      },
+      {
+        "target": "extension/dist/state.js",
+        "summary": "The provided source code (`state.js`) is a pure utility module responsible for formatting UI state strings, tooltips, and validation logic for the VS Code status bar. It contains no network calls, no file system access, no child process execution, and no obfuscation. The logic strictly handles string manipulation and state derivation based on input objects. There are no security risks or behavioral disconnects in this specific file."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "LOLBIN / Supply Chain",
+        "description": "The extension contains logic to install the `aisw` CLI tool by executing `curl -fsSL https://raw.githubusercontent.com/burakdede/aisw/main/install.sh | sh`. This is a 'download-and-execute' pattern (Curl piped to Shell). While the source is a public GitHub repository, this pattern bypasses package manager integrity checks and allows the remote script to execute arbitrary code with the user's privileges. If the GitHub repository is compromised or the script is modified, this constitutes a direct supply-chain attack vector.",
+        "code_reference": "const INSTALL_URL = 'https://github.com/burakdede/aisw#installation'; ... const methods = availableInstallMethods(update, this.configuredBinary()).filter((method) => method.label !== excludeLabel); ... this.openTerminal(selection.executable, selection.args, selection.label, ...)",
+        "line_hint": "678-681 (inferred from context of installCli and static evidence)",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Capability Disconnect",
+        "description": "The extension's primary function is to act as a GUI wrapper for an external CLI tool (`aisw`). It relies on `child_process` (via `cliAdapter`) and `terminal.sendText` to execute arbitrary shell commands and install external binaries. For an extension categorized as 'AI' or 'Productivity' that claims to be a 'thin editor client', the ability to silently or semi-silently install and execute external binaries from GitHub is a significant capability disconnect that increases the attack surface.",
+        "code_reference": "terminal.sendText([command.executable, ...command.args].map(shellQuote).join(' '), false);",
+        "line_hint": "339, 489",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "Configuration Tampering",
+        "description": "The extension programmatically modifies VS Code workspace and global configuration settings (`aisw.binaryPath`, `aisw.workspaceMismatch.notify`). While likely intended for user convenience (e.g., auto-disabling notifications), programmatic modification of security-relevant settings (like binary paths) can be abused if the logic is manipulated or if the extension is compromised.",
+        "code_reference": "await vscode.workspace.getConfiguration('aisw').update('binaryPath', file, vscode.ConfigurationTarget.Global);",
+        "line_hint": "400, 409, 569",
+        "target": "extension/dist/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "LOLBINs & Stagers",
+        "description": "The extension contains a hardcoded command to download and execute a remote shell script (`curl -fsSL https://raw.githubusercontent.com/burakdede/aisw/main/install.sh | sh`). This is a classic 'download-and-execute' pattern that bypasses static analysis of the payload and allows the attacker to push arbitrary malicious code to the victim's machine at runtime. The script is fetched from a personal GitHub repository, not an official package registry.",
+        "code_reference": "args: ['-c', 'curl -fsSL https://raw.githubusercontent.com/burakdede/aisw/main/install.sh | sh']",
+        "line_hint": "678-681",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Arbitrary Command Execution",
+        "description": "The extension uses `child_process.execFileSync` to check for the presence of `brew` and `cargo`, and constructs commands to install or update the `aisw` binary via these package managers or the remote script. While package managers are legitimate tools, combining them with a remote script execution and automatic execution via VS Code's integrated terminal (`terminal.sendText`) creates a high-risk attack surface for supply-chain compromise.",
+        "code_reference": "require('node:child_process').execFileSync(process.platform === 'win32' ? 'where' : 'which', [command], { stdio: 'ignore' });",
+        "line_hint": "705",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "VS Code API Abuse",
+        "description": "The extension programmatically modifies VS Code workspace configuration settings (`workspace.getConfiguration('aisw').update`). While this may be intended for auto-configuration, it allows the extension to silently alter user preferences or disable security features without explicit user consent for each change.",
+        "code_reference": "workspace.getConfiguration('aisw').update(",
+        "line_hint": "400",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "VS Code API Abuse",
+        "description": "The extension sends shell commands directly to the VS Code integrated terminal (`terminal.sendText`). This bypasses the standard `child_process` sandboxing and executes commands with the full privileges of the user's shell environment, potentially allowing persistence or lateral movement if the executed commands are malicious.",
+        "code_reference": "terminal.sendText([command.executable, ...command.args].map(sh",
+        "line_hint": "339",
+        "target": "extension/dist/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension functions as a GUI wrapper for the `aisw` CLI tool. The primary security concern is the implementation of a 'download-and-execute' mechanism (Curl piped to Shell) to install the underlying CLI tool from a GitHub repository. This bypasses standard package manager verification and creates a supply-chain risk if the remote script is compromised. Additionally, the extension's reliance on executing external binaries and modifying configuration settings represents a capability disconnect for a productivity/AI tool, warranting a 'Suspicious' verdict due to the high-risk installation method.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: dist/extension.js -> dist/binaryResolver.js, dist/cliAdapter.js, dist/contract.js [process_execution, download_exec] -- intent: download-and-execute in extension/dist/extension.js",
+    "2 CRITICAL findings",
+    "5 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-10-02T19:29:15.067Z",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-10-02T19:51:50.458450+00:00"
+}
