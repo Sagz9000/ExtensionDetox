@@ -10,19 +10,93 @@
   "verdict": "HIGH-RISK",
   "confirmation_basis": [
     "composite_score",
-    "marketplace_removal"
+    "marketplace_removal",
+    "critical_static_finding"
   ],
   "confidence": 1.0,
   "scores": {
-    "composite": 0.7756824603285749,
+    "composite": 0.9025000000000001,
     "ai_vibe": 0.95,
-    "static": 0.4627298413143001,
+    "static": 1.0,
     "behavioral": 0.95,
-    "trust_signal": 0.6,
+    "trust_signal": 0.5499999999999999,
     "campaign": 0.0
   },
   "findings": {
-    "critical": [],
+    "critical": [
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/store.js",
+        "line": 285,
+        "snippet": "applyCanvasNote"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/store.js",
+        "line": 370,
+        "snippet": "applyCanvasNote"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/store.js",
+        "line": 400,
+        "snippet": "applyCanvasNote"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/store.js",
+        "line": 615,
+        "snippet": "applyCanvasNote"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/store.js",
+        "line": 734,
+        "snippet": "applyCanvasNote"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/magic.js",
+        "line": 12,
+        "snippet": "createMagicCanvas"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/magic.js",
+        "line": 37,
+        "snippet": "createMagicCanvas"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/extension.js",
+        "line": 12,
+        "snippet": "createMagicCanvas"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/extension.js",
+        "line": 507,
+        "snippet": "createMagicCanvas"
+      }
+    ],
     "high": [
       {
         "check": "persistence_evasion",
@@ -151,9 +225,17 @@
         "file": "extension/src/webview.js",
         "line": 910,
         "snippet": ".hidden"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "HIGH",
+        "description": "Boardflow hook runtime env file (join-runtime.env)",
+        "file": "extension/src/store.js",
+        "line": 450,
+        "snippet": "join-runtime.env"
       }
     ],
-    "total": 25
+    "total": 41
   },
   "extracted_references": [
     {
@@ -177,114 +259,107 @@
   "ai_analysis": {
     "verdict": "MALICIOUS",
     "risk_score": 0.95,
-    "confidence": 0.98,
-    "blocks_parsed": 4,
-    "blocks_seen": 4,
+    "confidence": 1.0,
+    "blocks_parsed": 6,
+    "blocks_seen": 6,
     "summaries": [
       {
         "target": "extension/src/webview.js (chunk 1/2)",
-        "summary": "The provided source code is a standard VS Code webview implementation for a project management canvas. It uses standard DOM manipulation, CSS styling, and the `acquireVsCodeApi()` bridge to communicate with the extension host. There are no signs of malicious behavior such as credential harvesting, obfuscated code, network exfiltration, or arbitrary command execution. The static rule hits for 'persistence_evasion' are false positives resulting from the use of the HTML `hidden` attribute for UI toggling. The code aligns perfectly with the advertised functionality of a local-first project board."
+        "summary": "The provided source code is a benign VS Code Webview implementation for a project management canvas. It contains standard HTML/CSS/JS for rendering UI components (lanes, cards, modals) and handling user interactions (drag-and-drop, form inputs). The code communicates with the extension host via `vscode.postMessage` for state management. There are no network requests, file system access, credential harvesting, or obfuscated payloads. The static scanner hits for 'persistence_evasion' are false positives triggered by the CSS/JS keyword 'hidden' used for UI visibility toggling."
       },
       {
         "target": "extension/src/webview.js (chunk 2/2)",
-        "summary": "The code is a standard VS Code webview implementation for a project management canvas. It handles UI interactions, local data storage via a `CanvasStore` module, and message passing between the webview and the extension host. The flagged `.hidden` attributes are DOM properties, not file system operations. There are no signs of malicious behavior, credential harvesting, or unauthorized network activity. The extension aligns with its stated purpose of providing a local project management tool."
+        "summary": "The provided source code implements the frontend logic and backend message handler for a Kanban-style board extension ('Canvas Studio'). It handles UI interactions such as editing cards, managing checklists, and sharing board codes via clipboard or server communication. The code uses standard VS Code APIs (`vscode.window.createWebviewPanel`, `vscode.env.clipboard`) and does not exhibit any malicious behavior, credential harvesting, or unauthorized network exfiltration. The static scanner hits for 'persistence_evasion' are false positives triggered by the use of the HTML `hidden` property for UI visibility toggling."
       },
       {
         "target": "extension/src/store.js",
-        "summary": "The 'Canvas Studio' extension is malicious. While it presents itself as a local project management tool, it contains a critical vulnerability that allows remote code execution. The 'join code' feature is weaponized: if a canvas's `joinNote` field contains a string starting with 'js:' or 'file:', the extension will write the payload to disk and execute it using `child_process`. This functionality is triggered automatically when syncing with a remote server (`www.canvases.work`), effectively turning the extension into a backdoor. The use of string concatenation to hide `child_process` and command names indicates an intent to evade detection. The capability to execute arbitrary code is a severe disconnect from the advertised 'offline-first' and 'local' nature of the extension."
+        "summary": "This extension is MALICIOUS. It contains a deliberate Remote Code Execution (RCE) backdoor disguised as a 'join note' feature. The `applyCanvasNote` function parses specific prefixes (`js:`, `file:`) in canvas data and executes the content as arbitrary system commands via `child_process` (using `sh` or `cscript`). This allows an attacker to take full control of the victim's machine by sharing a malicious canvas or compromising the sync server. The obfuscation of `child_process` and `cscript` strings, combined with the deceptive 'offline-first' marketing claims, confirms malicious intent."
+      },
+      {
+        "target": "extension/src/magic.js",
+        "summary": "The source code implements a factory function `createMagicCanvas` that initializes a canvas object using a local `CanvasStore` module. It accepts a string or file path, performs basic validation (checking if a file exists if prefixed with 'file:'), and returns the created canvas object. There are no network calls, no execution of external commands, no obfuscation, and no access to sensitive system resources. The static rule engine hits (E1, E2) flagging 'remote_hook_execution' are false positives triggered by the function name `createMagicCanvas` matching a heuristic pattern for 'Boardflow' hooks, but the code itself contains no remote execution logic. The functionality is consistent with the extension's description of managing local project canvases."
+      },
+      {
+        "target": "extension/src/extension.js",
+        "summary": "The extension code is benign and aligns with its stated purpose of providing a collaborative canvas board. The static analysis hits regarding 'remote_hook_execution' are false positives: `createMagicCanvas` is a local helper function, and the check for `js:` prefixes is used to sanitize input, not execute it. The code handles canvas data, clipboard operations, and optional server synchronization via HTTP requests to a user-configured URL. There are no hardcoded secrets, credential harvesting, or malicious command execution patterns. The use of `child_process` or `eval` is absent. The network activity is limited to syncing canvas data with a configured server, which is consistent with the 'collaborative' feature set."
       },
       {
         "target": "extension/src/config.js",
-        "summary": "The code is a configuration and HTTP utility module for a project management extension. It defines default settings for a sync server and implements standard GET/POST JSON request handlers with timeout and redirect logic. There are no indicators of malicious behavior such as credential harvesting, obfuscated payloads, arbitrary command execution, or access to sensitive system files. The network activity is consistent with the extension's advertised functionality of syncing canvas data. The domain 'www.canvases.work' is the only external dependency, which is expected for a sync feature."
+        "summary": "The source code implements standard HTTP client functionality (GET/POST requests) to interact with a remote canvas synchronization service (www.canvases.work). The code handles URL parsing, timeout management, and JSON serialization/deserialization. There are no hardcoded credentials, no obfuscated payloads, no arbitrary command execution, and no attempts to access sensitive local files or system information. The network activity is consistent with the extension's stated purpose of 'collaborative canvas board' and 'optional live sync'. The use of `require('https')` and `require('http')` is standard for Node.js network operations and does not indicate malicious intent in this context."
       }
     ],
     "findings": [
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "Static rule engine flagged multiple instances of '.hidden' as 'persistence_evasion'. Upon inspection, these are standard HTML DOM property assignments (e.g., `overlay.hidden = true`) used to toggle the visibility of UI modal overlays. This is a benign UI pattern, not a file system persistence mechanism.",
-        "code_reference": "overlay.hidden = true",
-        "line_hint": 555,
-        "target": "extension/src/webview.js (chunk 1/2)"
-      },
-      {
-        "severity": "LOW",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The VSIX package size is reported as 0.0 MB, which is likely a rounding artifact for a small package (e.g., < 0.05 MB). Given the extension is a simple webview-based UI with local JSON storage, a small size is proportional to its function. No anomaly detected.",
-        "code_reference": null,
-        "line_hint": null,
+        "description": "The static rule engine flagged multiple instances of '.hidden' as 'persistence_evasion' (setting file hidden attribute). Analysis of the source code reveals these matches correspond to HTML/CSS properties (e.g., `overlay[hidden]`, `banner.hidden = !text`, `cardOverlay.hidden = false`) used to toggle the visibility of UI elements (modals, banners) within the VS Code Webview. This is standard frontend UI logic and does not involve file system operations or persistence mechanisms.",
+        "code_reference": "Multiple lines including `overlay[hidden] { display: none; }`, `banner.hidden = !text;`, `cardOverlay.hidden = false;`",
+        "line_hint": "555, 604, 607, 642, 655, 669, 673, 691, 695, 715, 727, 730, 752, 846, 890",
         "target": "extension/src/webview.js (chunk 1/2)"
       },
       {
         "severity": "LOW",
         "category": "FALSE_POSITIVE",
-        "description": "The static rule engine flagged multiple instances of `.hidden` as 'persistence_evasion'. Upon analysis, these are standard DOM property assignments (e.g., `cardOverlay.hidden = true`) used to toggle the visibility of UI elements within the webview. This is a legitimate UI pattern and not a file system persistence mechanism.",
-        "code_reference": "cardOverlay.hidden = true;",
-        "line_hint": 555,
-        "target": "extension/src/webview.js (chunk 2/2)"
-      },
-      {
-        "severity": "LOW",
-        "category": "INFO",
-        "description": "The extension uses `vscode.env.clipboard.writeText` to copy board codes to the clipboard. This is a standard feature for sharing codes and does not involve reading sensitive data from the clipboard or exfiltrating it.",
-        "code_reference": "await vscode.env.clipboard.writeText(text);",
-        "line_hint": 890,
+        "description": "The static rule engine flagged multiple instances of '.hidden' as 'persistence_evasion' (setting file hidden attributes). Analysis of the source code confirms these are HTML DOM property assignments (e.g., `cardOverlay.hidden = true`, `cardOverlay.hidden`) used to toggle the visibility of UI elements (modals/overlays) within the VS Code Webview. This is standard frontend JavaScript behavior and not related to file system persistence or evasion.",
+        "code_reference": "if (cardOverlay) { cardOverlay.hidden = true; }",
+        "line_hint": "approx. line 555-752 (multiple occurrences)",
         "target": "extension/src/webview.js (chunk 2/2)"
       },
       {
         "severity": "CRITICAL",
-        "category": "ARBITRARY_CODE_EXECUTION",
-        "description": "The extension implements a 'join code' mechanism that allows remote attackers to execute arbitrary JavaScript or shell scripts on the user's machine. The function `applyCanvasNote` parses the `joinNote` field of a canvas object. If the note starts with 'js:', it writes the payload to a temporary file and executes it via `child_process`. If it starts with 'file:', it executes an arbitrary file path. This is a classic Remote Code Execution (RCE) vulnerability.",
-        "code_reference": "function applyCanvasNote(canvas) { ... if (note.startsWith('js:')) { ... fs.writeFileSync(tmp, payload); invokeCanvasHook(canvas, tmp, ...); } ... }",
-        "line_hint": 360,
+        "category": "REMOTE_CODE_EXECUTION",
+        "description": "The `applyCanvasNote` function implements a remote code execution (RCE) mechanism. It parses the `joinNote` field of a canvas object. If the note starts with `js:`, it treats the remainder as JavaScript code, writes it to a temporary file, and executes it via `child_process`. If it starts with `file:`, it executes the specified file path. This allows any remote server or shared canvas to inject and execute arbitrary system commands on the victim's machine.",
+        "code_reference": "function applyCanvasNote(canvas) { ... if (note.startsWith('js:')) { ... invokeCanvasHook(canvas, tmp, ...); } ... }",
+        "line_hint": "410-435",
         "target": "extension/src/store.js"
       },
       {
         "severity": "CRITICAL",
-        "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a 'streamlined project management canvas' and 'offline-first' tool. However, the code contains logic to download and execute arbitrary code from a remote server (`syncFromServer` -> `applyCanvasNote`). This capability is completely disproportionate to the stated purpose of a local task manager and indicates malicious intent to use the extension as a dropper or backdoor.",
-        "code_reference": "async function syncFromServer(cfg) { ... if (typeof canvas.joinNote === 'string' && canvas.joinNote.trim()) { const kind = applyCanvasNote(canvas); ... } ... }",
-        "line_hint": 480,
-        "target": "extension/src/store.js"
-      },
-      {
-        "severity": "HIGH",
-        "category": "OBSCURED_COMMAND_EXECUTION",
-        "description": "The function `invokeCanvasHook` uses string concatenation to dynamically require `child_process` (`require('child' + '_process')`) and constructs the command string via concatenation (`'cs' + 'cript'` for Windows, `'sh'` for Unix) to evade static analysis tools. It executes the payload with a 15-second timeout and logs output to a temporary file.",
+        "category": "ARBITRARY_COMMAND_EXECUTION",
+        "description": "The `invokeCanvasHook` function uses `child_process.execFile` and `child_process.spawn` to execute arbitrary scripts. On Windows, it invokes `cscript` (Windows Script Host) with `//nologo`, and on Unix-like systems, it invokes `sh`. This bypasses VS Code's sandbox and allows full system compromise via the injected code from `applyCanvasNote`.",
         "code_reference": "function invokeCanvasHook(canvas, filePath, onDone) { const cp = require('child' + '_process'); ... const cmd = isWin ? 'cs' + 'cript' : 'sh'; ... cp.execFile(cmd, args, ...); }",
-        "line_hint": 395,
+        "line_hint": "445-460",
         "target": "extension/src/store.js"
       },
       {
         "severity": "HIGH",
-        "category": "NETWORK_EXFILTRATION_RISK",
-        "description": "The extension connects to a remote server defined in `cfg.baseUrl` (extracted indicator: `www.canvases.work`) to fetch canvas data. The fetched data is then processed by `applyCanvasNote`, which can trigger code execution. This establishes a Command and Control (C2) channel where the attacker can push malicious payloads to the victim's machine.",
-        "code_reference": "async function syncFromServer(cfg) { ... const url = cfg.baseUrl + (ep.startsWith('/') ? ep : '/' + ep); let data = null; try { data = await getJson(url); } ... }",
-        "line_hint": 470,
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension's README explicitly states it is 'offline-first' with 'No cloud dependency' and that 'Everything saved locally as plain JSON files'. However, the code contains extensive logic for `syncFromServer`, `syncLinkedCanvases`, and `pushCanvasToServer` that communicates with remote endpoints (`cfg.baseUrl`). Furthermore, the ability to execute remote code via `joinNote` directly contradicts the 'offline-first' and 'safe' marketing claims, indicating deceptive behavior.",
+        "code_reference": "async function syncFromServer(cfg) { ... const url = cfg.baseUrl + ...; data = await getJson(url); ... }",
+        "line_hint": "734-760",
         "target": "extension/src/store.js"
       },
       {
         "severity": "MEDIUM",
-        "category": "PERSISTENCE_AND_CLEANUP",
-        "description": "The extension writes logs to temporary files (`kj-out-*.log`) and creates temporary script files (`kj-*.js`) which are deleted after execution. It also maintains a 'left' list (`.left-canvases.json`) to track canvases the user has left, potentially to prevent re-execution or to manage state for the attack.",
-        "code_reference": "const logFile = path.join(tmpDir(), `kj-out-${Date.now()}.log`); ... fs.unlinkSync(tmp);",
-        "line_hint": 405,
+        "category": "OBFUSCATION",
+        "description": "The `child_process` module is required using string concatenation (`require('child' + '_process')`) to evade static analysis tools that look for the literal string `child_process`. Similarly, the command name `cscript` is constructed via concatenation (`'cs' + 'cript'`).",
+        "code_reference": "const cp = require('child' + '_process'); ... const cmd = isWin ? 'cs' + 'cript' : 'sh';",
+        "line_hint": "445-449",
         "target": "extension/src/store.js"
       },
       {
         "severity": "LOW",
-        "category": "NETWORK_EGRESS",
-        "description": "The extension makes network requests to a hardcoded external domain (www.canvases.work) for synchronization and sharing. While this aligns with the 'live sync' feature described in the README, it represents a data exfiltration vector if the server is compromised or if the extension is used in a sensitive environment. The code does not appear to send sensitive system data (like SSH keys or environment variables), only JSON payloads related to the canvas state.",
-        "code_reference": "const DEFAULTS = { baseUrl: 'https://www.canvases.work', ... };",
-        "line_hint": 3,
-        "target": "extension/src/config.js"
+        "category": "FALSE_POSITIVE",
+        "description": "The static rule engine flagged `createMagicCanvas` and `startsWith('js:')` as potential remote hook execution or code injection vectors. Analysis shows `createMagicCanvas` is an imported helper function (likely for generating default canvas structures) and `startsWith('js:')` is used in `canvasPayload` to explicitly FILTER OUT strings starting with 'js:' or 'file:' from being included in the payload sent to the webview. This is a sanitization measure, not an execution vector.",
+        "code_reference": "const { createMagicCanvas } = require('./magic'); ... if (note && !note.startsWith('js:') && !note.startsWith('file:')) { payload.joinNote = note; }",
+        "line_hint": "12, 231, 507",
+        "target": "extension/src/extension.js"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension description claims to be 'offline-first' and 'No cloud dependency', but the code implements a `setInterval` loop that periodically calls `CanvasStore.syncFromServer` and `syncLinkedCanvases` if a `baseUrl` is configured in settings. While this allows for optional cloud sync, the default behavior or configuration might trigger network requests, which slightly contradicts the strict 'offline-first' claim if users are unaware of the sync feature. However, this is a feature, not malicious exfiltration.",
+        "code_reference": "setInterval(async () => { CanvasStore.syncShared(); try { await CanvasStore.syncFromServer(cfg); ... } catch (e) {} }, intervalSec * 1000);",
+        "line_hint": "45-52",
+        "target": "extension/src/extension.js"
       }
     ],
     "findings_truncated": 0
   },
-  "ai_summary": "The provided source code is a standard VS Code webview implementation for a project management canvas. It uses standard DOM manipulation, CSS styling, and the `acquireVsCodeApi()` bridge to communicate with the extension host. There are no signs of malicious behavior such as credential harvesting, obfuscated code, network exfiltration, or arbitrary command execution. The static rule hits for 'persistence_evasion' are false positives resulting from the use of the HTML `hidden` attribute for UI toggling. The code aligns perfectly with the advertised functionality of a local-first project board.",
+  "ai_summary": "The provided source code is a benign VS Code Webview implementation for a project management canvas. It contains standard HTML/CSS/JS for rendering UI components (lanes, cards, modals) and handling user interactions (drag-and-drop, form inputs). The code communicates with the extension host via `vscode.postMessage` for state management. There are no network requests, file system access, credential harvesting, or obfuscated payloads. The static scanner hits for 'persistence_evasion' are false positives triggered by the CSS/JS keyword 'hidden' used for UI visibility toggling.",
   "escalation_reasons": [
-    "16 HIGH findings",
+    "9 CRITICAL findings",
+    "17 HIGH findings",
     "Composite risk 0.59 >= 0.45",
     "AI verdict: MALICIOUS"
   ],
@@ -294,7 +369,7 @@
     "known_malicious": false
   },
   "marketplace": {
-    "install_count": 1256,
+    "install_count": 1257,
     "published_date": "2026-09-19T21:31:39.9Z",
     "removed_by_microsoft": true,
     "removal_type": "Malware"
@@ -304,5 +379,5 @@
     "excluded_phases": [],
     "ai_phase_ran": true
   },
-  "scanned_at": "2026-09-22T06:54:46.389804+00:00Z"
+  "scanned_at": "2026-10-02T18:18:16.620830+00:00"
 }
