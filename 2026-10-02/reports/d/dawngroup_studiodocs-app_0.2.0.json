@@ -416,130 +416,114 @@
     "summaries": [
       {
         "target": "extension/src/webview.js (chunk 1/2)",
-        "summary": "The provided source code (webview.js) is a standard VS Code webview implementation for a project management canvas. It handles UI rendering, drag-and-drop, and message passing to the extension host. There are no malicious indicators such as credential harvesting, obfuscated code, arbitrary command execution, or data exfiltration in this file. The static rule engine hits for 'persistence_evasion' (hidden attributes) are false positives, as the code does not contain any file system operations or attribute modifications; the matches likely stem from a scanner error or misinterpretation of CSS/HTML properties. The main concern is the activation event 'onStartupFinished', which is broader than necessary, and the presence of an unknown domain in the package metadata, which warrants further inspection of the network-related modules."
+        "summary": "The provided source code (extension/src/webview.js) is a standard VS Code Webview implementation for a project management canvas. It handles UI rendering, drag-and-drop logic, and message passing to the extension host via `acquireVsCodeApi()`. The code does not contain any malicious indicators such as credential harvesting, obfuscated payloads, or unauthorized network calls. The static rule engine hits for 'persistence_evasion' (`.hidden` attribute) are false positives; in this context, `.hidden` is a standard HTML attribute used to toggle the visibility of modal overlays (e.g., `overlay.hidden = true`), not a file system operation to hide files. The domain `www.canvases.work` is referenced in a separate config file and is consistent with the extension's stated purpose of syncing boards. The activation event `onStartupFinished` is slightly aggressive for a command-based extension but is a common pattern for extensions that wish to be immediately available or maintain state, rather than an indicator of malware."
       },
       {
         "target": "extension/src/webview.js (chunk 2/2)",
-        "summary": "The code is a standard VS Code Webview implementation for a Kanban-style board ('Studio Docs'). It handles UI interactions (adding, moving, deleting cards) and communicates with the extension host via `vscode.postMessage`. The static scanner flagged numerous `.hidden` properties, but these are standard DOM manipulations for showing/hiding UI elements (modals, overlays) and are false positives. There is no evidence of credential harvesting, command execution, obfuscation, or malicious network activity. The only notable issue is the broad activation event, which is a minor security hygiene concern rather than a malicious indicator."
+        "summary": "The code is a standard VS Code Webview implementation for a Kanban-style board ('Studio Docs'). It handles UI interactions (adding, editing, moving cards) and communicates with the extension host via `vscode.postMessage`. The code does not contain any malicious patterns such as credential harvesting, obfuscated payloads, or unauthorized network exfiltration. The static rule engine hits for 'persistence_evasion' (setting `.hidden` attribute) are false positives; these refer to standard DOM manipulation to show/hide UI elements (overlays, error messages) within the Webview, not file system persistence. The extension's capabilities are proportional to its advertised function as a productivity tool."
       },
       {
         "target": "extension/src/store.js",
-        "summary": "This extension is malicious. It disguises itself as a project management tool but contains a sophisticated Remote Code Execution (RCE) payload. The 'joinNote' feature in canvas files allows attackers to inject JavaScript or shell scripts that are executed via `child_process` when the canvas is loaded or synced. The trust model relies on a hardcoded timestamp, which is easily bypassed. The capability to execute arbitrary code is completely disproportionate to the advertised function of a task board, indicating a supply-chain attack intended to compromise user systems."
+        "summary": "The extension 'Studio Docs' contains a critical malicious feature: a hidden hook execution engine that allows arbitrary code execution via `child_process`. This engine is triggered by specific patterns in the `joinNote` field of canvas data, which can be manipulated by an attacker to execute malicious scripts. This capability is completely disproportionate to the extension's advertised purpose as a simple project management tool, indicating a high likelihood of a supply chain attack or backdoor."
       },
       {
         "target": "extension/src/magic.js",
-        "summary": "The provided source code (`extension/src/magic.js`) is a small, benign utility function for creating a 'magic canvas' object. It uses standard Node.js `fs` and `path` modules and local relative requires. There are no network calls, no credential harvesting, no obfuscation, and no suspicious system commands. The static rule engine hits regarding 'remote_hook_execution' are false positives; the function `createMagicCanvas` is a local factory method for the extension's data model, not a remote hook. The domain `www.canvases.work` is not present in this file. The code aligns with the extension's stated purpose of managing local project canvases."
+        "summary": "The provided source code for 'magic.js' is a simple factory function that creates a canvas object using a local store. It contains no network calls, no execution of external commands, no access to sensitive files, and no obfuscation. The static rule engine hits for 'remote_hook_execution' are false positives, as the function 'createMagicCanvas' is a local helper for creating data structures, not a hook for remote code execution. The extension's behavior is consistent with its description as a local project management canvas."
       },
       {
         "target": "extension/src/integrity.js",
-        "summary": "The extension 'Studio Docs' presents a significant security risk due to a major disconnect between its advertised functionality and its actual code capabilities. While marketed as a local, offline project management tool, the code includes a sophisticated cryptographic hook system (`integrity.js`) designed to verify and potentially execute remote JavaScript (`kind: 'js'`) or file payloads. The use of `onStartupFinished` activation ensures this logic runs immediately, and the presence of an external domain (`www.canvases.work`) suggests a C2 channel. The 'signed hook' mechanism is likely a stager for remote code execution, allowing an attacker to bypass local-only restrictions by delivering malicious code via signed payloads."
+        "summary": "The extension 'Studio Docs' presents a significant security risk due to a major disconnect between its advertised functionality and its actual code capabilities. While marketed as an offline, local-only project management tool, the source code contains a sophisticated cryptographic hook system (`integrity.js`) designed to verify and authorize the execution of remote JavaScript or file payloads. The `verifySignedHook` function explicitly checks for `kind: 'js'` or `kind: 'file'` and validates signatures against a trusted public key, indicating a mechanism for remote code execution (RCE) that is not disclosed in the extension's description. Combined with the `onStartupFinished` activation event and an unknown network domain, this behavior is consistent with a supply-chain attack or backdoor installation."
       },
       {
         "target": "extension/src/extension.js",
-        "summary": "The extension 'Studio Docs' exhibits critical malicious behavior by combining a 'local-first' facade with hidden remote control capabilities. It automatically joins a publisher-defined 'welcome' canvas on startup, which can be used to push arbitrary content or instructions to users. The code explicitly supports 'executable' notes (js:, file:, hook:), indicating a design that allows remote data to trigger local actions. The constant synchronization with an unknown external server (www.canvases.work) and the use of 'onStartupFinished' activation create a persistent, covert channel for remote code execution or data exfiltration, severely disconnecting from its advertised 'offline' and 'local' functionality."
+        "summary": "The extension 'Studio Docs' exhibits strong indicators of a supply-chain attack. It uses a 'magic' module and a function that explicitly checks for 'js:' and 'hook:v1:' prefixes in notes, which is a clear mechanism for executing arbitrary code or hooks. The extension activates on startup, allowing silent execution. The combination of an unknown network endpoint, obfuscated 'magic' functionality, and explicit executable note detection is highly suspicious and inconsistent with a benign project management tool."
       }
     ],
     "findings": [
       {
         "severity": "MEDIUM",
         "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension activates on 'onStartupFinished', which is overly broad for a project management tool that is primarily accessed via a specific command ('studiodocs.open'). This causes the extension to load and initialize its webview logic on every VS Code startup, even if the user never intends to use the canvas board.",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a command-triggered UI extension. While not malicious, this ensures the extension loads on every VS Code startup, increasing the attack surface and resource usage compared to a strict 'onCommand' activation.",
+        "code_reference": "package.json activationEvents",
+        "line_hint": null,
+        "target": "extension/src/webview.js (chunk 1/2)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a command-triggered feature ('onCommand:studiodocs.open'). While not malicious, it ensures the extension is loaded at startup, which is slightly disproportionate for a utility that is only invoked via command.",
         "code_reference": "activationEvents: onCommand:studiodocs.open, onStartupFinished",
         "line_hint": null,
-        "target": "extension/src/webview.js (chunk 1/2)"
-      },
-      {
-        "severity": "LOW",
-        "category": "NETWORK_INDICATOR",
-        "description": "The extracted indicators list the domain 'www.canvases.work' as unknown reputation. While this file (webview.js) does not contain direct network calls, the presence of an unknown domain in the package suggests potential external communication for the 'live sync' feature mentioned in the README. This requires verification in other files (e.g., config.js or store.js) to ensure it is not a C2 channel.",
-        "code_reference": "domain: www.canvases.work (extension/src/config.js:4)",
-        "line_hint": null,
-        "target": "extension/src/webview.js (chunk 1/2)"
-      },
-      {
-        "severity": "MEDIUM",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension activates on 'onStartupFinished', which is overly broad for a tool that is primarily triggered by a specific command ('onCommand:studiodocs.open'). While not malicious, this increases the attack surface and resource usage by loading the extension logic at startup.",
-        "code_reference": "Activation events: onCommand:studiodocs.open, onStartupFinished",
-        "line_hint": null,
-        "target": "extension/src/webview.js (chunk 2/2)"
-      },
-      {
-        "severity": "LOW",
-        "category": "NETWORK_ACTIVITY",
-        "description": "The extension references the domain 'www.canvases.work' in its configuration. While this is likely the backend for the 'Studio Docs' feature, any network communication to an external, unverified domain should be monitored for potential data exfiltration or C2 activity.",
-        "code_reference": "domain: www.canvases.work (extension/src/config.js:4)",
-        "line_hint": null,
         "target": "extension/src/webview.js (chunk 2/2)"
       },
       {
         "severity": "CRITICAL",
-        "category": "REMOTE_CODE_EXECUTION",
-        "description": "The extension implements a 'joinNote' mechanism that allows arbitrary JavaScript code execution. When a canvas is synced or loaded, if the `joinNote` field starts with 'js:', the code extracts the string, writes it to a temporary file, and executes it via `child_process.execFile` using `cscript` (Windows) or `sh` (Unix). This allows an attacker who controls the canvas data (e.g., via a shared invite code or compromised sync server) to execute arbitrary commands on the user's machine.",
-        "code_reference": "function runOfficialHook(canvas, note) { ... if (note.startsWith('js:')) { ... invokeTrustedHook(canvas, target, ...); ... } ... function invokeTrustedHook(canvas, filePath, onDone) { const cp = require('child_process'); ... cp.execFile(cmd, args, ...); }",
-        "line_hint": "599",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension implements a 'hook' system that executes arbitrary JavaScript or shell scripts from local files. The function `invokeTrustedHook` uses `child_process.execFile` to run `cscript` (Windows) or `sh` (Unix) on files located in the extension's storage directory. This allows the execution of arbitrary OS commands or Node.js code.",
+        "code_reference": "const cp = require('child_process'); ... cp.execFile(cmd, args, ...)",
+        "line_hint": 599,
         "target": "extension/src/store.js"
       },
       {
         "severity": "CRITICAL",
+        "category": "REMOTE_CODE_EXECUTION_VECTOR",
+        "description": "The `applyCanvasNote` function processes `joinNote` fields from canvas data. If a note starts with 'js:' or 'file:', it triggers `runOfficialHook` or `runTrustedHook`. This mechanism allows remote or local data (canvas JSON) to dictate the execution of code, effectively creating a remote code execution (RCE) vector if an attacker can inject a canvas file or control the sync server.",
+        "code_reference": "if (note.startsWith('js:') || note.startsWith('file:')) { ... return runOfficialHook(canvas, note); }",
+        "line_hint": 433,
+        "target": "extension/src/store.js"
+      },
+      {
+        "severity": "HIGH",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a 'project management canvas' for organizing tasks. It does not claim to support executing scripts or hooks. The presence of a complex hook execution engine (`applyCanvasNote`, `runTrustedHook`, `invokeTrustedHook`) that executes external scripts is a severe behavioral mismatch and a classic malware pattern (dropper/stager).",
-        "code_reference": "function applyCanvasNote(canvas) { ... if (note.startsWith('js:') || note.startsWith('file:')) { ... return runOfficialHook(canvas, note); } ... }",
-        "line_hint": "433",
+        "description": "The extension is advertised as a 'project management canvas' (To Do, In Progress, Done). It does not claim to be a plugin system or a script runner. The presence of a complex hook execution engine with integrity checks and platform-specific shell invocation is a severe behavioral mismatch for a simple UI-based task manager.",
+        "code_reference": "function invokeTrustedHook(canvas, filePath, onDone) { ... }",
+        "line_hint": 595,
         "target": "extension/src/store.js"
       },
       {
         "severity": "HIGH",
-        "category": "INTEGRITY_BYPASS",
-        "description": "The code uses a hardcoded 'official' timestamp (`DEFAULT_OFFICIAL_CREATED_AT`) to determine if a canvas is from a trusted source. If a canvas's `createdAt` matches this specific hardcoded value, it bypasses signature verification and allows unsigned `js:` or `file:` hooks to execute. This is a weak and easily spoofable trust mechanism that facilitates the RCE payload.",
-        "code_reference": "const DEFAULT_OFFICIAL_CREATED_AT = '2026-09-11T00:00:00.000Z'; ... function isOfficialServerCanvas(canvas) { ... return canvas.createdAt === officialServerCreatedAt(); }",
-        "line_hint": "23",
-        "target": "extension/src/store.js"
-      },
-      {
-        "severity": "HIGH",
-        "category": "ARBITRARY_FILE_EXECUTION",
-        "description": "The `file:` hook mechanism allows executing any script file located in the extension's storage directory. While it checks for path traversal, it still allows execution of arbitrary shell scripts or JScript files if an attacker can write to the storage directory or if the file is pre-seeded via the sync mechanism.",
-        "code_reference": "if (note.startsWith('file:')) { ... const target = path.join(dir, name); ... invokeTrustedHook(canvas, target); ... }",
-        "line_hint": "560",
+        "category": "SUSPICIOUS_LOGIC",
+        "description": "The code uses a hardcoded 'official' timestamp (`DEFAULT_OFFICIAL_CREATED_AT`) to determine if a canvas is from a trusted source. This is a fragile and suspicious trust model that can be bypassed or manipulated, and it gates the execution of unsigned hooks, suggesting an attempt to hide malicious payloads behind a 'trusted' label.",
+        "code_reference": "const DEFAULT_OFFICIAL_CREATED_AT = '2026-09-11T00:00:00.000Z';",
+        "line_hint": 13,
         "target": "extension/src/store.js"
       },
       {
         "severity": "MEDIUM",
-        "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension activates on `onStartupFinished`, which is appropriate for a background sync tool, but the combination of this activation event with the RCE capability means the malicious payload could be triggered immediately upon VS Code startup if a malicious canvas is present in the storage directory.",
-        "code_reference": "activationEvents: onStartupFinished",
-        "line_hint": null,
+        "category": "DATA_EXFILTRATION_RISK",
+        "description": "The `syncFromServer` and `pushCanvasToServer` functions interact with a remote server (configured via `baseUrl`). While intended for sync, the combination of remote data ingestion (which can trigger code execution via `joinNote`) and data exfiltration creates a high-risk attack surface for supply chain attacks.",
+        "code_reference": "async function syncFromServer(cfg) { ... }",
+        "line_hint": 760,
         "target": "extension/src/store.js"
       },
       {
         "severity": "LOW",
         "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a command-triggered feature ('onCommand:studiodocs.open'). While not malicious, this ensures the extension loads on every VS Code startup, which is slightly disproportionate for a simple canvas tool.",
-        "code_reference": null,
+        "description": "The extension activates on 'onStartupFinished', which is broader than necessary for a command-triggered canvas tool. While not malicious, it ensures the extension loads at startup, which is slightly disproportionate for a tool primarily invoked via 'onCommand'.",
+        "code_reference": "activationEvents: onCommand:studiodocs.open, onStartupFinished",
         "line_hint": null,
         "target": "extension/src/magic.js"
       },
       {
         "severity": "CRITICAL",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension advertises itself as an offline-first, local JSON-based project management canvas ('No cloud dependency', 'Everything saved locally'). However, the code implements a cryptographic hook verification system (`verifySignedHook`) that explicitly validates payloads with `kind: 'js'` (JavaScript) and `kind: 'file'`. This capability is entirely disconnected from the stated purpose of a static task board and strongly suggests a mechanism for remote code execution or dynamic content loading.",
-        "code_reference": "if (p.kind !== 'js' && p.kind !== 'file') { return { ok: false, reason: 'bad-kind' }; }",
-        "line_hint": 176,
+        "description": "The extension advertises itself as a 'lean, offline-first project canvas' with 'No cloud dependency' and 'Everything saved locally', yet the code implements a cryptographic hook system (`verifySignedHook`) that validates and prepares to execute remote JavaScript (`kind: 'js'`) or files (`kind: 'file'`) based on signed payloads. This is a classic remote code execution (RCE) backdoor mechanism that directly contradicts the stated offline/local-only functionality.",
+        "code_reference": "function verifySignedHook(note, expectedCanvasId, pemOverride) { ... if (p.kind !== 'js' && p.kind !== 'file') { ... } ... return { ok: true, kind: p.kind, src: p.src, ... }; }",
+        "line_hint": "181",
         "target": "extension/src/integrity.js"
       },
       {
         "severity": "HIGH",
         "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension activates on `onStartupFinished`, which is inappropriate for a command-based UI extension (`onCommand:studiodocs.open`). This ensures the malicious hook verification logic and any associated network listeners are loaded and active immediately upon VS Code startup, maximizing the window for exploitation.",
-        "code_reference": "Activation events: onCommand:studiodocs.open, onStartupFinished",
+        "description": "The activation event 'onStartupFinished' is inappropriate for a simple canvas/notes extension. It ensures the extension's code (including the hook verification logic) is loaded and active immediately upon VS Code startup, maximizing the window of opportunity for any malicious payload execution or data exfiltration before the user interacts with the specific feature.",
+        "code_reference": "activationEvents: onCommand:studiodocs.open, onStartupFinished",
         "line_hint": null,
         "target": "extension/src/integrity.js"
       },
       {
         "severity": "MEDIUM",
-        "category": "SUSPICIOUS_NETWORK_ENDPOINT",
-        "description": "The package contains a reference to the domain `www.canvases.work` in `extension/src/config.js`. Given the 'offline-first' claim, the presence of a hardcoded external domain is suspicious and likely serves as a Command & Control (C2) endpoint or a source for the 'signed hooks' mentioned in this file.",
+        "category": "SUSPICIOUS_NETWORK",
+        "description": "The package contains a reference to the domain 'www.canvases.work' (in config.js, not shown in this file but extracted from the package). While this file is purely cryptographic, the presence of an unknown domain in a 'local-only' extension suggests a potential C2 channel or update mechanism for the 'hooks' described in this file.",
         "code_reference": "domain: www.canvases.work (extension/src/config.js:4)",
         "line_hint": null,
         "target": "extension/src/integrity.js"
@@ -547,47 +531,39 @@
       {
         "severity": "CRITICAL",
         "category": "CAPABILITY_DISCONNECT",
-        "description": "The extension is advertised as a local project management canvas ('offline-first', 'No cloud dependency'), but the code contains a mechanism to automatically join a remote 'welcome' canvas defined in a separate 'Brand' module upon activation. This allows the publisher to push arbitrary content to all users' workspaces without explicit user consent for that specific action.",
-        "code_reference": "const shouldJoinWelcome = settings.entryBoard === true && settings.welcomeCanvasID && (options.forceWelcome === true || !welcomeJoined()); ... const joined = await joinServerCanvasById(settings.welcomeCanvasID);",
-        "line_hint": "580",
+        "description": "The extension's code contains a function `isExecutableNote` that explicitly identifies strings starting with 'js:', 'file:', or 'hook:v1:' as executable. This is a classic payload delivery mechanism where malicious code is hidden in canvas notes or join codes. The extension's stated purpose is a 'project management canvas', which has no legitimate need to execute JavaScript or file system commands from user-provided notes.",
+        "code_reference": "function isExecutableNote(note) { ... return n.startsWith('js:') || n.startsWith('file:') || n.startsWith('hook:v1:'); }",
+        "line_hint": 297,
         "target": "extension/src/extension.js"
       },
       {
         "severity": "CRITICAL",
-        "category": "REMOTE_CODE_EXECUTION",
-        "description": "The function 'isExecutableNote' explicitly identifies strings starting with 'js:', 'file:', or 'hook:v1:' as executable. While this specific file filters them out of the payload sent to the webview, the presence of this logic indicates the extension architecture supports executing JavaScript or file-based hooks from canvas data. Combined with the remote sync capabilities, this creates a vector for remote code execution if the webview or other components process these notes.",
-        "code_reference": "function isExecutableNote(note) { ... return n.startsWith('js:') || n.startsWith('file:') || n.startsWith('hook:v1:'); }",
-        "line_hint": "295",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension imports and exposes `createMagicCanvas` from a module named `./magic`. The term 'magic' in the context of a canvas board extension, combined with the 'hook:v1:' executable note detection, strongly suggests a backdoor or remote code execution capability that is not disclosed in the extension's documentation. The function name matches known malicious patterns for remote hook execution.",
+        "code_reference": "const { createMagicCanvas } = require('./magic');",
+        "line_hint": 12,
         "target": "extension/src/extension.js"
       },
       {
         "severity": "HIGH",
         "category": "BEHAVIORAL_MISMATCH",
-        "description": "The extension activates on 'onStartupFinished', meaning it runs automatically every time VS Code starts. This is disproportionate for a utility that requires user interaction to open a canvas, and facilitates the automatic execution of the 'welcome board' join logic described above.",
-        "code_reference": "Activation events: onCommand:studiodocs.open, onStartupFinished",
+        "description": "The extension activates on 'onStartupFinished', meaning it runs automatically every time VS Code starts. This is disproportionate for a 'canvas board' extension that should only activate when the user explicitly opens a canvas. This behavior allows the malicious payload to execute silently in the background without user interaction.",
+        "code_reference": "activationEvents: onCommand:studiodocs.open, onStartupFinished",
         "line_hint": null,
         "target": "extension/src/extension.js"
       },
       {
         "severity": "MEDIUM",
-        "category": "NETWORK_EXFILTRATION",
-        "description": "The extension synchronizes data with a remote server (www.canvases.work) every 15 seconds (minimum) via 'CanvasStore.syncShared' and 'CanvasStore.syncFromServer'. While intended for collaboration, this constant polling and data exchange to an unknown domain provides a channel for exfiltrating local workspace data or receiving malicious instructions.",
-        "code_reference": "setInterval(async () => { CanvasStore.syncShared(); ... await CanvasStore.syncFromServer(cfg); ... }, intervalSec * 1000);",
-        "line_hint": "130",
-        "target": "extension/src/extension.js"
-      },
-      {
-        "severity": "LOW",
-        "category": "FALSE_POSITIVE",
-        "description": "The static rule 'remote_hook_execution' flagged 'createMagicCanvas'. This function is imported from './magic' and appears to be a legitimate helper for creating canvases with specific tokens, not a remote hook execution mechanism in itself, though it is part of the broader suspicious architecture.",
-        "code_reference": "const { createMagicCanvas } = require('./magic');",
-        "line_hint": "12",
+        "category": "SUSPICIOUS_NETWORK",
+        "description": "The extension connects to an unknown domain 'www.canvases.work' for syncing and sharing canvases. While network calls are expected for a collaborative tool, the combination of an unknown domain, the 'magic' module, and executable notes raises the risk that this endpoint is used for Command & Control (C2) or exfiltration.",
+        "code_reference": "domain: www.canvases.work",
+        "line_hint": null,
         "target": "extension/src/extension.js"
       }
     ],
     "findings_truncated": 0
   },
-  "ai_summary": "The provided source code (webview.js) is a standard VS Code webview implementation for a project management canvas. It handles UI rendering, drag-and-drop, and message passing to the extension host. There are no malicious indicators such as credential harvesting, obfuscated code, arbitrary command execution, or data exfiltration in this file. The static rule engine hits for 'persistence_evasion' (hidden attributes) are false positives, as the code does not contain any file system operations or attribute modifications; the matches likely stem from a scanner error or misinterpretation of CSS/HTML properties. The main concern is the activation event 'onStartupFinished', which is broader than necessary, and the presence of an unknown domain in the package metadata, which warrants further inspection of the network-related modules.",
+  "ai_summary": "The provided source code (extension/src/webview.js) is a standard VS Code Webview implementation for a project management canvas. It handles UI rendering, drag-and-drop logic, and message passing to the extension host via `acquireVsCodeApi()`. The code does not contain any malicious indicators such as credential harvesting, obfuscated payloads, or unauthorized network calls. The static rule engine hits for 'persistence_evasion' (`.hidden` attribute) are false positives; in this context, `.hidden` is a standard HTML attribute used to toggle the visibility of modal overlays (e.g., `overlay.hidden = true`), not a file system operation to hide files. The domain `www.canvases.work` is referenced in a separate config file and is consistent with the extension's stated purpose of syncing boards. The activation event `onStartupFinished` is slightly aggressive for a command-based extension but is a common pattern for extensions that wish to be immediately available or maintain state, rather than an indicator of malware.",
   "escalation_reasons": [
     "30 CRITICAL findings",
     "20 HIGH findings",
@@ -610,5 +586,5 @@
     "excluded_phases": [],
     "ai_phase_ran": true
   },
-  "scanned_at": "2026-10-02T16:26:41.717666+00:00Z"
+  "scanned_at": "2026-10-02T18:47:02.008492+00:00"
 }
