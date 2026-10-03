@@ -1,0 +1,196 @@
+{
+  "extension_id": "CanvasSoftworks.Canvas-Board",
+  "display_name": "Canvas Hub",
+  "version": "1.0.2",
+  "publisher": {
+    "name": "CanvasSoftworks",
+    "verified": false
+  },
+  "vsix_sha256": "6903c66bb5c0b19a88a40a0a5f5b7470789abc30bb293be1047abc343e53d435",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 0.7921925,
+    "ai_vibe": 0.8143,
+    "static": 0.71875,
+    "behavioral": 0.95,
+    "trust_signal": 0.6,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/extension.js",
+        "line": 1,
+        "snippet": "['push'](CEapvPpflKPrPoaHqStNbR['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/extension.js",
+        "line": 1,
+        "snippet": "['push'](CEapvPpflKPrPoaHqStNbR['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/extension.js",
+        "line": 26,
+        "snippet": "['push'](heNJxT$qSUEqsggdgPBgLVt['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/extension.js",
+        "line": 26,
+        "snippet": "['push'](heNJxT$qSUEqsggdgPBgLVt['shift']())"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/extension.js",
+        "line": 1,
+        "snippet": "apiJoinBase"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/extension.js",
+        "line": 1,
+        "snippet": "apiJoinBase"
+      }
+    ],
+    "high": [
+      {
+        "check": "MAGIC_MISMATCH",
+        "severity": "HIGH",
+        "description": "File 'extension/media/icon.png' claims to be '.png' but magic bytes indicate 'JPEG' (expected: {'PNG'})",
+        "file": "extension/media/icon.png",
+        "line": null,
+        "snippet": null
+      }
+    ],
+    "total": 9
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/extension.js (chunk 1/2)",
+        "summary": "The extension is malicious. It employs heavy code obfuscation to hide its true behavior. The core malicious functionality lies in the `joinRemote` and `runAdminScript` functions. When a user attempts to 'Join' a board via a code, the extension fetches data from a remote server. If the server response includes a `js` field, the extension writes this content to a temporary file and executes it via `execFile`. This constitutes a Remote Code Execution (RCE) backdoor, allowing the attacker to run arbitrary commands on the victim's machine under the guise of joining a collaborative board."
+      },
+      {
+        "target": "extension/extension.js (chunk 2/2)",
+        "summary": "The source code is heavily obfuscated using techniques characteristic of malicious payload staging (specifically obfuscator.io signatures). It contains references to remote hook execution (`apiJoinBase`) and complex control flow designed to evade static analysis. The extreme level of obfuscation and the presence of remote execution hooks in a simple 'CanvasBoard' extension represent a critical security risk, likely indicating supply-chain compromise or malware distribution."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "Remote Code Execution / Command Injection",
+        "description": "The function `runAdminScript` retrieves a string property `js` from a remote JSON response, writes it to a temporary file, and executes it using `execFile`. This allows the remote server to send arbitrary JavaScript/Node.js code that is executed with the privileges of the VS Code extension host. This is a classic Remote Code Execution (RCE) backdoor pattern.",
+        "code_reference": "async function runAdminScript(pF$ksb$I) { ... const VdwmihAx$ereU = String(pF$ksb$I['js'] || ''); ... fs[...](y$zVzEi_LnK, VdwmihAx$ereU + '\\x0a', ...), await new Promise(... execFile(..., [y$zVzEi_LnK], ...)) }",
+        "line_hint": "approx. line 140-155",
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "Code Obfuscation",
+        "description": "The entire source code is heavily obfuscated using a custom string-array rotation decoder and hex-encoded string literals. This technique is used to hide the true intent of the code, specifically to conceal the `execFile` usage and the remote endpoint logic from static analysis tools and human reviewers.",
+        "code_reference": "function QqW$pyBsYYaslss(...) { ... const ILfMja$xVyeHC$dg = gIehLsdVOXHrMthnUFEsNVH(); ... }",
+        "line_hint": "line 1-26",
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Suspicious Network Activity",
+        "description": "The `joinRemote` function fetches data from a remote API (`apiJoinBase`). If the response contains a `js` property, it triggers the `runAdminScript` function. This indicates the extension is designed to receive and execute remote commands, not just fetch board data.",
+        "code_reference": "if (typeof OIWPOumnilfNdVuFb['js'] === ... && OIWPOumnilfNdVuFb['js'][...]() && await runAdminScript(OIWPOumnilfNdVuFb);",
+        "line_hint": "approx. line 135",
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "Capability Disconnect",
+        "description": "The extension claims to be a 'Canvas Board' (Kanban tool) but contains functionality to execute arbitrary remote scripts (`runAdminScript`). A legitimate productivity tool has no need to download and execute remote code from a server.",
+        "code_reference": "N/A",
+        "line_hint": null,
+        "target": "extension/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code exhibits classic signatures of the 'obfuscator.io' tool, specifically the string-array rotation decoder loop. This technique hides the true intent of the code by encoding strings and control flow into complex mathematical expressions and array manipulations, preventing static analysis and hiding malicious payloads.",
+        "code_reference": "while (!![]) { try { var ZwqswjVpwndCTJgH = parseFloat(KEZAjzZXqRMxceBIXfu(0x128)) / ... } catch (BOcEYqOfJNImcNtJ_RcSm) { heNJxT$qSUEqsggdgPBgLVt['push'](heNJxT$qSUEqsggdgPBgLVt['shift']()); } }",
+        "line_hint": "1-26",
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "REMOTE_HOOK_EXECUTION",
+        "description": "The presence of the function name `apiJoinBase` and the obfuscated structure strongly suggest the execution of remote hooks or payloads. Combined with the obfuscation, this indicates the extension likely fetches and executes remote code or communicates with a Command and Control (C2) server, bypassing local security controls.",
+        "code_reference": "apiJoinBase",
+        "line_hint": "1",
+        "target": "extension/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is categorized as 'Other' with a simple activation event (`onCommand:CanvasBoard.open`) and zero declared dependencies, yet the code contains heavily obfuscated logic involving remote hooks (`apiJoinBase`). A legitimate canvas/board tool would not require such extreme obfuscation or remote hook execution mechanisms, indicating a severe mismatch between advertised functionality and actual code behavior.",
+        "code_reference": "module[q_Ggb$IjP(0x12c)] = { 'activate': activate };",
+        "line_hint": "26",
+        "target": "extension/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension is malicious. It employs heavy code obfuscation to hide its true behavior. The core malicious functionality lies in the `joinRemote` and `runAdminScript` functions. When a user attempts to 'Join' a board via a code, the extension fetches data from a remote server. If the server response includes a `js` field, the extension writes this content to a temporary file and executes it via `execFile`. This constitutes a Remote Code Execution (RCE) backdoor, allowing the attacker to run arbitrary commands on the victim's machine under the guise of joining a collaborative board.",
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "Composite risk 0.53 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1019,
+    "published_date": "2026-09-23T15:11:11.333Z",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-10-02T18:16:27.071417+00:00Z"
+}

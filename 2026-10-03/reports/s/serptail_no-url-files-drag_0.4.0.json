@@ -1,0 +1,145 @@
+{
+  "extension_id": "serptail.no-url-files-drag",
+  "display_name": "No URL Files Drag",
+  "version": "0.4.0",
+  "publisher": {
+    "name": "serptail",
+    "verified": false
+  },
+  "vsix_sha256": "b04e41b858d78e10f2f69bfac9f34b0a8ab667bf73b0345cb03277aa5231ca5a",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.6,
+  "scores": {
+    "composite": 0.85,
+    "ai_vibe": 0.85,
+    "static": 0.4375,
+    "behavioral": 0.0,
+    "trust_signal": 0.75,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "Spawning a detached, output-suppressed background process",
+        "file": "extension/extension.js",
+        "line": 26,
+        "snippet": "spawn(exe, files, { detached: true, stdio: 'ignore'"
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/extension.js",
+        "line": 2,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require('child_process')' pattern",
+        "file": "extension/extension.js",
+        "line": 2,
+        "snippet": "const cp = require('child_process');"
+      },
+      {
+        "check": "UNEXPECTED_BINARY",
+        "severity": "HIGH",
+        "description": "Executable binary (PE/EXE/DLL) found outside native module paths: extension/NativeFileDrag.exe",
+        "file": "extension/NativeFileDrag.exe",
+        "line": null,
+        "snippet": null
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/extension.js",
+        "line": 2,
+        "snippet": "require('child_process')"
+      }
+    ],
+    "total": 8
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 1,
+    "blocks_seen": 1,
+    "summaries": [
+      {
+        "target": "extension/extension.js",
+        "summary": "The extension 'No URL File Drag' claims to fix file dragging on Windows but achieves this by spawning a bundled, opaque native executable (`NativeFileDrag.exe`) in a detached, silent mode. While the JavaScript code itself is simple, the reliance on an unverified binary with hidden execution characteristics (detached, no stdio) is a significant red flag. This pattern is frequently used in supply-chain attacks to deliver payloads that are not visible in the static source code analysis. The combination of an unexpected binary and obscured execution behavior warrants a MALICIOUS verdict until the binary can be thoroughly audited."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "UNEXPECTED_BINARY",
+        "description": "The extension bundles and executes a native executable (NativeFileDrag.exe) that is not a standard Node.js native module. Executing arbitrary binaries from an extension is a high-risk vector for malware delivery, especially when the binary's contents are not transparently auditable in the source code.",
+        "code_reference": "const exe = path.join(context.extensionPath, 'NativeFileDrag.exe'); ... cp.spawn(exe, files, ...)",
+        "line_hint": 26,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension's stated purpose is to fix file dragging behavior in VS Code. However, the implementation involves spawning a detached, output-suppressed background process (`detached: true, stdio: 'ignore'`). This behavior is disproportionate to a simple UI fix and is consistent with stager or payload execution patterns where the parent process is detached to hide activity or persist.",
+        "code_reference": "cp.spawn(exe, files, { detached: true, stdio: 'ignore' });",
+        "line_hint": 26,
+        "target": "extension/extension.js"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "OBSCURED_EXECUTION",
+        "description": "The use of `stdio: 'ignore'` and `detached: true` prevents the user from seeing any output or interaction with the spawned process. This makes it difficult for a user to verify that the process is performing only the advertised 'drag' functionality and not performing other actions (e.g., exfiltration, persistence).",
+        "code_reference": "stdio: 'ignore'",
+        "line_hint": 27,
+        "target": "extension/extension.js"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension 'No URL File Drag' claims to fix file dragging on Windows but achieves this by spawning a bundled, opaque native executable (`NativeFileDrag.exe`) in a detached, silent mode. While the JavaScript code itself is simple, the reliance on an unverified binary with hidden execution characteristics (detached, no stdio) is a significant red flag. This pattern is frequently used in supply-chain attacks to deliver payloads that are not visible in the static source code analysis. The combination of an unexpected binary and obscured execution behavior warrants a MALICIOUS verdict until the binary can be thoroughly audited.",
+  "escalation_reasons": [
+    "PROVEN CHAIN: extension.js [process_execution] -- intent: hidden detached process in extension/extension.js",
+    "1 CRITICAL findings",
+    "4 HIGH findings",
+    "Composite risk 0.85 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 0,
+    "published_date": "2026-10-02T14:47:19.553+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-10-02T15:16:08.294551+00:00Z"
+}

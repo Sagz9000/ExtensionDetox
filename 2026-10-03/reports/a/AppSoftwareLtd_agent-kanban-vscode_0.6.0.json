@@ -1,0 +1,360 @@
+{
+  "extension_id": "AppSoftwareLtd.agent-kanban-vscode",
+  "display_name": "Agent Kanban (VS Code)",
+  "version": "0.6.0",
+  "publisher": {
+    "name": "AppSoftwareLtd",
+    "verified": false
+  },
+  "vsix_sha256": "6558ef3546a6c382004f9c0cbbf4404d6f4896ba27e5654f42eb7150f4f483ee",
+  "verdict": "SUSPICIOUS",
+  "confirmation_basis": [
+    "composite_score",
+    "critical_static_finding"
+  ],
+  "confidence": 0.75,
+  "scores": {
+    "composite": 0.6907176023150756,
+    "ai_vibe": 0.85,
+    "static": 0.7028704092603023,
+    "behavioral": 0.45,
+    "trust_signal": 0.7,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "vscode_credential_theft",
+        "severity": "CRITICAL",
+        "description": "Accessing VSCode authentication session (GitHub/Azure tokens)",
+        "file": "extension/dist/extension.js",
+        "line": 17424,
+        "snippet": "authentication.getSession("
+      }
+    ],
+    "high": [
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 17035,
+        "snippet": "var import_child_process = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'require(\"child_process\")' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 17035,
+        "snippet": "var import_child_process = require(\"child_process\");"
+      },
+      {
+        "check": "RISKY_API_CALL",
+        "severity": "HIGH",
+        "description": "Found 'child_process' pattern",
+        "file": "extension/dist/extension.js",
+        "line": 17037,
+        "snippet": "var execFileAsync = (0, import_util.promisify)(import_child_process.execFile);"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 4315,
+        "snippet": "readFile(config"
+      },
+      {
+        "check": "credential_access",
+        "severity": "HIGH",
+        "description": "Attempt to read credential / key files",
+        "file": "extension/dist/extension.js",
+        "line": 4331,
+        "snippet": "readFile(config"
+      },
+      {
+        "check": "command_execution",
+        "severity": "HIGH",
+        "description": "Direct command / shell execution",
+        "file": "extension/dist/extension.js",
+        "line": 17035,
+        "snippet": "require(\"child_process\")"
+      }
+    ],
+    "total": 17
+  },
+  "extracted_references": [
+    {
+      "type": "domain",
+      "value": "www.agentkanban.io",
+      "source_file": "extension/dist/extension.js",
+      "line": 4281,
+      "context": "var DEFAULT_SERVER_URL = \"https://www.agentkanban.io\";",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "quilljs.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 9298,
+      "context": "* A {@link https://quilljs.com/docs/delta/|Quill Delta}) that represents the changes on the document.",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "docs.agentkanban.io",
+      "source_file": "extension/dist/extension.js",
+      "line": 13715,
+      "context": "vscode7.env.openExternal(vscode7.Uri.parse(\"https://docs.agentkanban.io/git-worktrees.html\"));",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    },
+    {
+      "type": "domain",
+      "value": "agentkanban.com",
+      "source_file": "extension/dist/extension.js",
+      "line": 14325,
+      "context": "When on, conversation turns from your AI agent (Copilot, Claude) are captured against the currently selected task. Capture starts from the moment you enable it (nothing earlier is read). If you work w",
+      "vt_detections": 0,
+      "reputation": "unknown"
+    }
+  ],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.85,
+    "confidence": 0.95,
+    "blocks_parsed": 6,
+    "blocks_seen": 7,
+    "summaries": [
+      {
+        "target": "extension/dist/extension.js (chunk 51/229)",
+        "summary": "The code appears to be a legitimate implementation of the 'Agent Kanban' extension. The static scanner hits are largely false positives or context-dependent. The 'readFile' calls are for managing local MCP configuration, not stealing credentials. The 'authentication.getSession' call is consistent with the extension's stated goal of integrating with AI coding agents (Copilot/Claude) which require auth context. The network calls go to the vendor's own domain (agentkanban.io). The extension size and dependencies are proportional to its function. No evidence of obfuscation, C2, or data exfiltration to unauthorized parties was found in this chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 52/229)",
+        "summary": "The code in this chunk appears to be part of a legitimate setup wizard for the 'Agent Kanban' extension. It handles configuring MCP servers, prompting for API keys, and connecting to the remote service. The static analysis hits are largely false positives or expected behaviors for an extension that integrates with AI coding agents and cloud services. The use of child_process and authentication APIs is consistent with the extension's stated purpose of managing agentic workflows. No malicious intent is evident in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 101/229)",
+        "summary": "The extension exhibits multiple critical and high-risk behaviors that are inconsistent with its advertised function as a Kanban board manager. The use of `child_process` for shell execution and `authentication.getSession` for credential access are severe red flags. Combined with file system access and extension enumeration, the code displays classic patterns of a supply-chain attack or info-stealer. The low obfuscation score suggests the code is readable, but the capabilities are clearly malicious or at least highly suspicious and disproportionate to the extension's purpose."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 132/229)",
+        "summary": "The analyzed code chunk appears benign and consistent with the extension's stated purpose of managing agentic workflows and integrating with AI coding assistants. The static scanner hits for credential access and child_process are likely false positives or standard integrations required for the extension's functionality (e.g., authenticating with GitHub for the remote board, or using git/shell for workspace context). The code explicitly references known, legitimate extensions (Copilot, Claude Code) and uses standard VS Code APIs for clipboard and command execution. No obfuscation, data exfiltration, or malicious patterns were detected in this specific chunk."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 147/229)",
+        "summary": "The analyzed code chunk is part of a 'RemoteConfigPanel' class responsible for UI updates and message handling in a VS Code webview. The logic shown is standard for a webview-based extension: handling postMessage events, opening external documentation links, and managing auto-refresh timers. The static scanner hits for 'child_process', 'readFile', and 'authentication.getSession' are consistent with the extension's stated purpose of managing Git worktrees and connecting to a remote Kanban service. There are no signs of obfuscation, data exfiltration to unknown endpoints, or malicious intent in this specific chunk. The extension appears to be a legitimate productivity tool."
+      },
+      {
+        "target": "extension/dist/extension.js (chunk 154/229)",
+        "summary": "The analyzed code chunk consists primarily of HTML template strings for a Webview UI, containing buttons for 'Resume in Copilot/Claude Extension' and task management controls. The static rule hits (child_process, auth session, file reads) are consistent with the extension's stated purpose of integrating with AI coding agents and managing local workspace context. There are no indicators of obfuscation, data exfiltration to unknown endpoints, or malicious payload staging in this specific chunk. The domains referenced (agentkanban.io) match the extension's branding. The behavior is proportional to the advertised functionality."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'readFile(config' as credential theft. The code actually reads and writes a local MCP (Model Context Protocol) configuration file to register the extension's own API server. This is standard behavior for an extension that integrates with AI agents via MCP.",
+        "code_reference": "async function writeMcpConfig(configUri, entry, rootKey = \"servers\") { ... vscode.workspace.fs.readFile(configUri) ... }",
+        "line_hint": 4315,
+        "target": "extension/dist/extension.js (chunk 51/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'authentication.getSession(' as credential theft. While this API is sensitive, in the context of an extension that explicitly states it 'captures conversation turns from GitHub Copilot and Claude Code', accessing the active authentication session to identify the user or verify connectivity is a plausible, albeit sensitive, feature. Without evidence of exfiltration to a third-party C2 (the domain agentkanban.io is the vendor's own domain), this is likely benign functionality for the stated purpose.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 17424,
+        "target": "extension/dist/extension.js (chunk 51/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'require(\"child_process\")'. While child_process is high-risk, it is often used in VS Code extensions for spawning language servers, linters, or in this case, potentially interacting with local CLI tools for 'agentic software development'. Without seeing the specific command being executed in this chunk, it is flagged as a potential risk but likely benign given the extension's purpose of managing dev workflows.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 17035,
+        "target": "extension/dist/extension.js (chunk 51/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'readFile(config' as credential theft. In this context, the code is writing MCP (Model Context Protocol) configuration files to the workspace's .vscode/mcp.json and .mcp.json. This is a standard feature for configuring AI agent integrations, not credential harvesting.",
+        "code_reference": "writeAllMcpConfigs",
+        "line_hint": 4315,
+        "target": "extension/dist/extension.js (chunk 52/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'require(\"child_process\")'. While child_process is high-risk, in the context of an 'Agent Kanban' tool that manages AI coding agents, it is likely used to spawn or manage agent processes (e.g., Claude Code, Copilot CLI) or check for their existence. Without seeing the specific command execution in this chunk, it is likely functional but warrants monitoring. However, given the extension's purpose of 'capturing conversation turns from GitHub Copilot and Claude Code', interacting with these tools via process management is expected behavior.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 17035,
+        "target": "extension/dist/extension.js (chunk 52/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "The scanner flagged 'authentication.getSession(' as credential theft. The extension is an 'Agent Kanban' tool that connects to a remote board. It likely uses VS Code's authentication API to retrieve a GitHub or Azure token to authenticate with its backend or to act on behalf of the user in a CI/CD or repo context. This is a standard pattern for extensions that integrate with cloud services, provided the token is not exfiltrated to an unauthorized third party. The domain 'agentkanban.io' is the documented service.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 17424,
+        "target": "extension/dist/extension.js (chunk 52/229)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CREDENTIAL_THEFT",
+        "description": "The code explicitly accesses VS Code authentication sessions using `authentication.getSession(`. For an extension described as a 'Kanban board' or 'workflow tool', there is no legitimate reason to access user credentials (such as GitHub or Azure tokens) unless it is acting as a proxy for API calls, but combined with other signals, this is a strong indicator of credential harvesting for exfiltration.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 17424,
+        "target": "extension/dist/extension.js (chunk 101/229)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The code imports `child_process`, which allows the extension to execute arbitrary shell commands on the host system. A Kanban/workflow extension has no standard need to spawn shell processes. This is a critical capability disconnect and a common vector for installing persistent malware or miners.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 17035,
+        "target": "extension/dist/extension.js (chunk 101/229)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "FILE_SYSTEM_ACCESS",
+        "description": "The code attempts to read files using `readFile(config...`. While the specific path is truncated in the static hit, reading configuration files outside the workspace or extension storage (especially if targeting user home directories like ~/.ssh or ~/.aws) is a high-risk behavior for a UI-centric extension.",
+        "code_reference": "readFile(config",
+        "line_hint": 4315,
+        "target": "extension/dist/extension.js (chunk 101/229)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "RECONNAISSANCE",
+        "description": "The code enumerates installed extensions using `extensions.getExtension`. While this can be used for compatibility checks, in the context of other malicious indicators, it may be used to identify other security tools or specific targets on the machine.",
+        "code_reference": "extensions.getExtension",
+        "line_hint": 12625,
+        "target": "extension/dist/extension.js (chunk 101/229)"
+      },
+      {
+        "severity": "MEDIUM",
+        "category": "BEHAVIORAL_MISMATCH",
+        "description": "The extension is marketed as a 'Kanban' and 'workflow' tool. The presence of `child_process`, `authentication.getSession`, and file reading capabilities is disproportionate to its stated purpose. This 'Capability Disconnect' strongly suggests hidden malicious functionality not disclosed in the marketplace listing.",
+        "code_reference": "N/A",
+        "line_hint": null,
+        "target": "extension/dist/extension.js (chunk 101/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'readFile(config' as credential theft. In the context of a workflow management tool, this is likely reading local configuration files (e.g., .agentkanban config) rather than system credentials. No evidence of sensitive path targeting in this chunk.",
+        "code_reference": "readFile(config",
+        "line_hint": 4315,
+        "target": "extension/dist/extension.js (chunk 132/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'require(\"child_process\")'. While child_process is high-risk, it is often used in dev tools for git operations or running linters. Without seeing the specific command execution in this chunk, it is flagged as a potential false positive pending review of the specific usage context (likely git or shell integration for the 'agentic' workflow).",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 17035,
+        "target": "extension/dist/extension.js (chunk 132/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'authentication.getSession(' as credential theft. The extension is designed to integrate with GitHub Copilot and Claude Code. Accessing the VS Code authentication session is a standard and necessary pattern for extensions that need to act on behalf of the user in connected services (like pushing to a remote board or authenticating with GitHub). This is proportional to the stated purpose.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 17424,
+        "target": "extension/dist/extension.js (chunk 132/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "BEHAVIORAL_ALIGNMENT",
+        "description": "The code checks for the presence of 'github.copilot-chat' and 'anthropic.claude-code' extensions. This is consistent with the README's claim of capturing conversation turns from these specific agents. This is not reconnaissance but feature detection.",
+        "code_reference": "vscode4.extensions.getExtension(COPILOT_CHAT_EXTENSION_ID)",
+        "line_hint": 12625,
+        "target": "extension/dist/extension.js (chunk 132/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'readFile(config' as credential theft. In the context of a remote configuration panel, this likely refers to reading the extension's own configuration or state files (e.g., from globalStoragePath) to update the UI, not system credential stores like ~/.ssh or ~/.aws. The code snippet shows standard webview message handling and refresh logic, consistent with a UI component.",
+        "code_reference": "readFile(config",
+        "line_hint": 4315,
+        "target": "extension/dist/extension.js (chunk 147/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'require(\"child_process\")'. While child_process is high-risk, it is a common dependency for tools that interact with Git (e.g., git worktrees, which this extension explicitly mentions in 'openAllWorktree' and 'deleteAllWorktree' handlers). Given the extension's purpose of managing Git worktrees, this is a proportional capability.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 17035,
+        "target": "extension/dist/extension.js (chunk 147/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'authentication.getSession(' as credential theft. The extension is a 'Kanban' tool that connects to a remote service (agentkanban.io). It likely uses VS Code's authentication API to obtain a GitHub or Azure token to authenticate with its backend service, which is a standard and expected behavior for a cloud-connected extension. This is not exfiltration to an unknown third party, but rather using the platform's auth mechanism for its documented service.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 17424,
+        "target": "extension/dist/extension.js (chunk 147/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'readFile(config' as credential theft. In the context of a Kanban/workflow extension, this is almost certainly reading local configuration files (e.g., .agentkanban.json or workspace settings) rather than system credentials like ~/.ssh or ~/.aws. The code snippet provided does not show the target path, but the extension's purpose (managing task context) aligns with local config management.",
+        "code_reference": "readFile(config",
+        "line_hint": 4315,
+        "target": "extension/dist/extension.js (chunk 154/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'require(\"child_process\")'. While child_process is high-risk, this extension integrates with 'Claude Code' and 'GitHub Copilot' which are CLI-based or require shell interaction for 'Resume' workflows. Spawning a process to launch or interact with these agents is a functional requirement, not necessarily malicious, provided it doesn't execute arbitrary user input without sanitization. Given the 'Resume in Claude Extension' feature, this is likely benign integration logic.",
+        "code_reference": "require(\"child_process\")",
+        "line_hint": 17035,
+        "target": "extension/dist/extension.js (chunk 154/229)"
+      },
+      {
+        "severity": "LOW",
+        "category": "FALSE_POSITIVE",
+        "description": "Static scanner flagged 'authentication.getSession(' as credential theft. The extension connects to a remote board (agentkanban.io) and integrates with AI agents. Using VS Code's authentication API to obtain a token for the extension's own backend or to pass context to Copilot/Claude is standard practice for authenticated SaaS integrations. It is not exfiltrating tokens to a third-party C2, but using them for the intended service.",
+        "code_reference": "authentication.getSession(",
+        "line_hint": 17424,
+        "target": "extension/dist/extension.js (chunk 154/229)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The code appears to be a legitimate implementation of the 'Agent Kanban' extension. The static scanner hits are largely false positives or context-dependent. The 'readFile' calls are for managing local MCP configuration, not stealing credentials. The 'authentication.getSession' call is consistent with the extension's stated goal of integrating with AI coding agents (Copilot/Claude) which require auth context. The network calls go to the vendor's own domain (agentkanban.io). The extension size and dependencies are proportional to its function. No evidence of obfuscation, C2, or data exfiltration to unauthorized parties was found in this chunk.",
+  "escalation_reasons": [
+    "1 CRITICAL findings",
+    "6 HIGH findings",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 60,
+    "published_date": "2026-04-29T20:15:39.823+00:00",
+    "removed_by_microsoft": false,
+    "removal_type": null
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-09-08T00:41:36.253985+00:00Z"
+}

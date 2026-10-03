@@ -1,0 +1,196 @@
+{
+  "extension_id": "JohnFMerondic.drift-board",
+  "display_name": "Drift Board",
+  "version": "1.1.2",
+  "publisher": {
+    "name": "JohnFMerondic",
+    "verified": false
+  },
+  "vsix_sha256": "8ff57ea4573089f6439aff88a91214f725c46c05f53b4c9922df1dbeb9da5e42",
+  "verdict": "HIGH-RISK",
+  "confirmation_basis": [
+    "composite_score",
+    "marketplace_removal",
+    "critical_static_finding"
+  ],
+  "confidence": 1.0,
+  "scores": {
+    "composite": 0.7565624999999999,
+    "ai_vibe": 0.7125,
+    "static": 0.71875,
+    "behavioral": 0.95,
+    "trust_signal": 0.6,
+    "campaign": 0.0
+  },
+  "findings": {
+    "critical": [
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/src/extension.js",
+        "line": 1,
+        "snippet": "['push'](EGvOQhjyTClBpUIIcklzDK['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/src/extension.js",
+        "line": 1,
+        "snippet": "['push'](EGvOQhjyTClBpUIIcklzDK['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/src/extension.js",
+        "line": 25,
+        "snippet": "['push'](okjOEYbf$jpHHfh['shift']())"
+      },
+      {
+        "check": "code_obfuscation",
+        "severity": "CRITICAL",
+        "description": "String-array rotation decoder loop (obfuscator.io signature)",
+        "file": "extension/src/extension.js",
+        "line": 25,
+        "snippet": "['push'](okjOEYbf$jpHHfh['shift']())"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/extension.js",
+        "line": 1,
+        "snippet": "apiJoinBase"
+      },
+      {
+        "check": "remote_hook_execution",
+        "severity": "CRITICAL",
+        "description": "Function names of the Boardflow canvas-board hook family",
+        "file": "extension/src/extension.js",
+        "line": 1,
+        "snippet": "apiJoinBase"
+      }
+    ],
+    "high": [
+      {
+        "check": "data_exfiltration",
+        "severity": "HIGH",
+        "description": "Pattern suggesting data exfiltration",
+        "file": "extension/src/extension.js",
+        "line": 22,
+        "snippet": ".postMessage({type:'share'});$('openBtn').onclick=()=>{state.active=$('boardSelect').value;save();$('welcome').classList.add('hide');render()};$('joinBtn').onclick=()=>{const c=$('joinCode').value.tri"
+      }
+    ],
+    "total": 9
+  },
+  "extracted_references": [],
+  "extracted_references_notes": {
+    "withheld_dependency_metadata": 0,
+    "truncated": 0,
+    "what_this_is": "Domains, URLs and filenames found in the package text. NOT confirmed attacker infrastructure and NOT safe to auto-blocklist -- a URL in a code comment appears here too. Use it as a starting point for analysis, and check vt_detections/reputation before acting.",
+    "rule": "References extracted from node_modules are excluded: they describe a dependency, not this extension. Deduplicated on (type, value)."
+  },
+  "ioc_enrichment": [],
+  "shared_infrastructure": {},
+  "ai_analysis": {
+    "verdict": "MALICIOUS",
+    "risk_score": 0.95,
+    "confidence": 0.95,
+    "blocks_parsed": 2,
+    "blocks_seen": 2,
+    "summaries": [
+      {
+        "target": "extension/src/extension.js (chunk 1/2)",
+        "summary": "The extension exhibits critical malicious behavior. It employs heavy code obfuscation to hide its logic and implements a Remote Code Execution (RCE) mechanism. Specifically, the `joinRemote` function fetches data from a remote server, and if the response contains a `js` field, the `wlm` function writes this content to a file in the system's temporary directory and executes it using `child_process.execFile`. This allows an attacker controlling the remote endpoint to execute arbitrary commands on the victim's machine. The obfuscation is specifically designed to mask the arguments to `execFile` and the remote URLs, confirming malicious intent."
+      },
+      {
+        "target": "extension/src/extension.js (chunk 2/2)",
+        "summary": "The extension source code is heavily obfuscated using techniques typical of malware (string array rotation, XOR decoding, mathematical index obfuscation). It contains references to remote hook execution (`apiJoinBase`) and data exfiltration patterns (`postMessage`). This behavior is completely disproportionate to the stated purpose of a 'CanvasBoard' extension and indicates a high likelihood of malicious intent, such as credential theft or remote code execution."
+      }
+    ],
+    "findings": [
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The entire source code is heavily obfuscated using a string-array rotation decoder loop (characteristic of obfuscator.io). This technique hides the true intent of the code, specifically masking the arguments passed to `execFile` and the URLs used in `fetch`, preventing static analysis of the payload.",
+        "code_reference": "const ofC_OwzJAuXj_rIISUZaMYcCrF = LZRjzzCBmt; ... EGvOQhjyTClBpUIIcklzDK['push'](EGvOQhjyTClBpUIIcklzDK['shift']());",
+        "line_hint": "1-25",
+        "target": "extension/src/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "ARBITRARY_CODE_EXECUTION",
+        "description": "The extension imports `child_process` and defines a function `wlm` that writes a string (`klOIBVTCuCec_$jYwBP`) to a file in the OS temp directory and then executes it via `execFile`. The content of this file and the command executed are derived from remote data (`ISyLwXElSUWmRNYEkGvc['js']`), allowing remote attackers to execute arbitrary shell commands on the victim's machine.",
+        "code_reference": "fs[clFV_j$jfCdsshcS(0x94)](WOqiJp_WmdWXi, klOIBVTCuCec_$jYwBP + '\\x0a', ...); execFile(PrwPKsgRbMlNtlD(0xab), [WOqiJp_WmdWXi], ...)",
+        "line_hint": "145-155",
+        "target": "extension/src/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "REMOTE_HOOK_EXECUTION",
+        "description": "The `joinRemote` function fetches data from a remote API (`apiJoinBase`). If the response contains a `js` property, it is passed to the `wlm` function, which writes it to disk and executes it. This constitutes a Remote Code Execution (RCE) vector where the server can push malicious payloads to the client.",
+        "code_reference": "typeof ISyLwXElSUWmRNYEkGvc['js'] === NGYY$s(0xc2) && ISyLwXElSUWmRNYEkGvc['js'][NGYY$s(0xd0)]() && ISyLwXElSUWmRNYEkGvc['js'] !== null && await wlm(ISyLwXElSUWmRNYEkGvc);",
+        "line_hint": "135-140",
+        "target": "extension/src/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'Kanban board' tool. However, it contains logic to fetch remote JavaScript/Shell code, write it to the temporary directory, and execute it via `child_process`. A productivity tool has no legitimate need to download and execute arbitrary remote scripts.",
+        "code_reference": "async function joinRemote(...) { ... await wlm(ISyLwXElSUWmRNYEkGvc); }",
+        "line_hint": "125-140",
+        "target": "extension/src/extension.js (chunk 1/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "CODE_OBFUSCATION",
+        "description": "The code employs heavy obfuscation techniques, including string array rotation loops (characteristic of obfuscator.io), mathematical obfuscation of indices, and XOR-based string decoding. This is a classic technique used to hide malicious payloads, such as C2 addresses or credential harvesting logic, from static analysis and human review.",
+        "code_reference": "while (!![]) { try { var KwBEJ$dMjlMCr_Hu = Math['floor'](-parseFloat(gsOTvmxS(0x1e9)) ... } catch (Fc$nGkvwIteRIoW) { okjOEYbf$jpHHfh['push'](okjOEYbf$jpHHfh['shift']()); } }",
+        "line_hint": "1-25",
+        "target": "extension/src/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "CRITICAL",
+        "category": "DATA_EXFILTRATION",
+        "description": "The code contains logic to decode and execute remote hooks or payloads. The presence of `apiJoinBase` and `postMessage` combined with the obfuscated string decoding suggests the extension may be exfiltrating data or executing remote commands via a hidden communication channel.",
+        "code_reference": "apiJoinBase",
+        "line_hint": "1",
+        "target": "extension/src/extension.js (chunk 2/2)"
+      },
+      {
+        "severity": "HIGH",
+        "category": "CAPABILITY_DISCONNECT",
+        "description": "The extension is advertised as a 'CanvasBoard' tool (likely a drawing or whiteboard utility) but contains heavily obfuscated code with remote hook execution capabilities. A legitimate canvas/drawing extension has no need for obfuscated string decoders or remote hook execution mechanisms.",
+        "code_reference": "N/A",
+        "line_hint": "N/A",
+        "target": "extension/src/extension.js (chunk 2/2)"
+      }
+    ],
+    "findings_truncated": 0
+  },
+  "ai_summary": "The extension exhibits critical malicious behavior. It employs heavy code obfuscation to hide its logic and implements a Remote Code Execution (RCE) mechanism. Specifically, the `joinRemote` function fetches data from a remote server, and if the response contains a `js` field, the `wlm` function writes this content to a file in the system's temporary directory and executes it using `child_process.execFile`. This allows an attacker controlling the remote endpoint to execute arbitrary commands on the victim's machine. The obfuscation is specifically designed to mask the arguments to `execFile` and the remote URLs, confirming malicious intent.",
+  "escalation_reasons": [
+    "6 CRITICAL findings",
+    "Composite risk 0.48 >= 0.45",
+    "AI verdict: MALICIOUS"
+  ],
+  "virustotal": {
+    "malicious": 0,
+    "total_engines": 0,
+    "known_malicious": false
+  },
+  "marketplace": {
+    "install_count": 1050,
+    "published_date": "2026-09-26T20:28:36.483+00:00",
+    "removed_by_microsoft": true,
+    "removal_type": "Malware"
+  },
+  "analysis_coverage": {
+    "partial": false,
+    "excluded_phases": [],
+    "ai_phase_ran": true
+  },
+  "scanned_at": "2026-10-02T18:17:13.938245+00:00Z"
+}
